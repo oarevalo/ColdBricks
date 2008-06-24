@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<config>
+	<!-- This section describes application-specific settings -->
+	<settings>
+		<setting name="applicationTitle" value="ColdBricks"/>
+		<setting name="versionTag" value="1.0.377" />
+		<setting name="permissionsConfigHREF" value="/ColdBricks/config/permissions-config.xml" />
+
+		<!-- These settings control the bug reporting features. Use 
+			in conjunction with the appropriate bugtracking service.
+			To start submittng bug reports add an email address to the
+			bugEmailRecipients setting; and/or use the bugLogListener
+			setting to hook into a bugLog server -->
+		<setting name="bugEmailRecipients" value="" />
+		<setting name="bugEmailSender" value="info@coldbricks.com" />
+		<setting name="bugLogListener" value="" />
+
+		<!-- This flag controls wether detailed error information is displayed
+			in case the application encounters an unhandled exception -->
+		<setting name="debugMode" value="true" />
+		
+		<!-- This is the location of directory where ColdBricks will store its
+			data files. If the directory doesnt exist, then it will be created.
+			You can use an ColdFusion mapping for this. -->
+		<Setting name="dp_dataRoot" value="/ColdBricksData" />
+
+		<!-- This is the location where ColdBricks will look for SiteTemplates -->			
+		<setting name="siteTemplatesRoot" value="/ColdBricks/siteTemplates"/>
+
+		<!-- Set this flag to false for archive files to remain in the archives 
+			directory (<data_root>/archives) after an archive download -->	
+		<setting name="deleteAfterArchiveDownload" value="true" />
+	</settings>
+
+
+	<!-- This section describes all services that will be loaded into the application -->
+	<services>
+		<service name="rss" class="ColdBricks.components.services.rss">
+		</service>
+
+		<!-- error reporting service -->
+		<service name="bugTracker" class="ColdBricks.components.services.bugTrackerService">
+			<init-param name="bugEmailSender" settingName="bugEmailSender" />
+			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
+		</service> 
+
+		<!-- Use this service to hook into a bugLog server 
+		<service name="bugTracker" class="ColdBricks.components.services.bugLogService">
+			<init-param name="bugLogListener" settingName="bugLogListener" />
+			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
+			<init-param name="bugEmailSender" settingName="bugEmailSender" />
+		</service> -->
+		
+		<!-- use permissions service to control access to event handlers -->
+		<service name="permissions" class="ColdBricks.components.services.permissionsService">
+			<init-param name="configHREF" settingName="permissionsConfigHREF" />
+		</service> 
+			
+	</services>
+</config>
+
