@@ -23,4 +23,6 @@
 	<resource id="ehUsers.*" roles="admin" />
 	<resource id="ehSetup.*" roles="admin" />
 	
+	<resource id="test.*.*" roles="admin" />
+	
 </permissions-config>

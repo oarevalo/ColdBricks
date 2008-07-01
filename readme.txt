@@ -49,6 +49,10 @@ and portals created using the HomePortals framework.
 -----------------------------------------------------------------------
 2. Release Notes
 -----------------------------------------------------------------------
+Version 1.1
+- Updated internal application framework to version 1.3 of the core framework
+
+Version 1.0
 - This is the first public release of ColdBricks. Have fun, send feedback!
 
 
