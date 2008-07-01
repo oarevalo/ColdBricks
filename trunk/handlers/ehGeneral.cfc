@@ -51,11 +51,6 @@
 		}
 			
 		try {
-			// make sure that we always access everything via events
-			if(event eq "") {
-				throw("All requests must specify the event to execute. Direct access to views is not allowed");
-			}
-
 			// check login
 			if(not listFindNoCase(lstFreeEvents,event) and (session.userID eq 0 or session.userID eq "")) {
 				setMessage("Warning","Please enter your username and password");
@@ -262,7 +257,6 @@
 		var dataRoot = getSetting("dp_dataRoot");
 		
 		if(not directoryExists(expandPath(dataRoot))) {
-			consoledump("Data directory for XML dataProvider type is missing. Creating directory now.");
 			setupDataDirectory(dataRoot);
 			redirect("index.cfm");
 		}

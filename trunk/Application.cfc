@@ -15,97 +15,54 @@
 	<cfset this.setDomainCookies = false>	
 
 	<!--- Application Framework settings --->
-	<cfset this.appFrameworkVersion = "1.2">
+	<cfset this.appFrameworkVersion = "1.3">
 	<cfset this.defaultEvent = "ehGeneral.dspMain">
-	<cfset this.defaultView = "vwMain">
 	<cfset this.defaultLayout = "Layout.Main">
 	<cfset this.topLevelErrorRecipient = "bugs@coldbricks.com">
 	<cfset this.topLevelErrorSender = "info@coldbricks.com">
 	<cfset this.restartKey = "cookieMonster">
-	<cfset this.configDoc = "config/config.xml">
-	<cfset this.modelsPath = "components/model">
+	<cfset this.configDoc = "config.xml">
+	<cfset this.modulesPath = "/ColdBricksPlugins">
 	<cfset this.emailErrors = false>
-	<cfset this.verbose = false>
 
 	<cffunction name="onRequestStart">
-		<cfparam name="Event" default="#this.defaultEvent#"> <!--- use to determine the action to perform --->
-		<cfparam name="View" default="#this.defaultView#"> <!--- use to indicate which view to display --->
-		<cfparam name="Layout" default="#this.defaultLayout#"> <!--- use to indicate which layout to use for the view --->
+		<cfparam name="Event" default=""> <!--- use to determine the action to perform --->
 		<cfparam name="resetApp" default="false"> <!--- use to reset the application state --->
-	
  		<cfscript>
-			// Check that there is always a value for the view param
-			if(view eq "" and event eq "") {
-				view = this.defaultView;
-				event = this.defaultEvent;
-			}
-			if(layout eq "") layout = this.defaultLayout;
+			// Check that there is always a value for the event param
+			if(event eq "") event = this.defaultEvent;
+
+			// Check application reset conditions
+			resetApp = resetApp or (Not structKeyExists(application,"_restartKey") or application["_restartKey"] neq this.restartKey);
 
 			// create a structure to hold current request state
 			reqState = duplicate(form);
 			StructAppend(reqState, url);
+			
+			// set initial values in reqState
 			reqState.event = event;
-			reqState.view = view;
-			reqState.layout = layout;
-			reqState["_modelsPath"] = this.modelsPath;
-			reqState["_verbose"] = this.verbose;
+			reqState.layout = this.defaultLayout;
+			reqState.view = "";
+			reqState.module = "";
 
 			// instantiate the general event handler
-			appEventHandler = createObject("component","handlers.ehGeneral").init(reqState);
-
-			// check restartKey
-			resetApp = resetApp or (Not structKeyExists(application,"_restartKey") or application["_restartKey"] neq this.restartKey);
+			appEventHandler = createObject("component", "handlers.ehGeneral").init(reqState);
 
 			// handle application initialization and re-initialization
-			if(Not structKeyExists(application,"_appInited") or resetApp) {
-				consoleDump("Initilizing application");
-
-				if(this.configDoc neq "") {
-					// load configuration file
-					xmlDoc = xmlParse(expandPath(this.configDoc));
-	
-					// load application settings
-					loadApplicationSettings(xmlDoc);
-	
-					// load application services
-					loadApplicationServices(xmlDoc);
-				}
-
-				// execute application-specific initialization tasks
-				consoleDump("Executing event: ehGeneral.onApplicationStart()");
-				appEventHandler.onApplicationStart();
-				
-				// flag application as initialized
-				application["_appInited"] = true;
-
-				// replace restartKey (this flags current server as restarted)
-				application["_restartKey"] = this.restartKey;
-			}
+			if(Not structKeyExists(application,"_appInited") or resetApp) 
+				startApplication(appEventHandler);
 			
 			// call app's onRequestStart
-			consoleDump("Executing event: ehGeneral.onRequestStart()");
 			appEventHandler.onRequestStart();
 			
-			// get the event from the event handler, this allows the onRequestStart to override the event without redirecting the request
-			event = appEventHandler.getEvent();
-			
-			if(listLen(event,".") eq 2) {
-				// Parse event handler
-				eh_cfc = listFirst(event,".");
-				eh_method = listLast(event,".");	
-
-				// Instantiate the event handler
-				myEventHandler = createObject("component","handlers.#eh_cfc#").init(reqState);
-				
-				// Call the selected method on the eventhandler, 
-				// passing the request and request state structures.
-				consoleDump("Executing event: #eh_cfc#.#eh_method#()");
-				evaluate("myEventHandler.#eh_method#()");
-			}
+			// execute requested event
+			runEventHandler(reqState);
 
 			// call app's onRequestEnd
-			consoleDump("Executing event: ehGeneral.onRequestEnd()");
 			appEventHandler.onRequestEnd();
+
+			// define path to the view template
+			reqState.viewTemplatePath = getViewTemplatePath(reqState);
 
 			// copy requestState structure to request scope so it can be used by the views and layouts
 			request.requestState = reqState;
@@ -114,7 +71,11 @@
 	
 	<cffunction name="onRequest">
 		<cfargument name="targetPage" type="String" required="true" />
-		<cfinclude template="layouts/#request.requestState.layout#.cfm">
+		<cfif request.requestState.layout neq "">
+			<cfinclude template="layouts/#request.requestState.layout#.cfm">
+		<cfelse>
+			<cfinclude template="#targetPage#">
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="onError" returntype="void" output="true" hint="This method will handle all controller-level exceptions, or any other exceptions not handled by the eventHandler or the view.">
@@ -147,14 +108,79 @@
 		<cfabort>
 	</cffunction>
 	
+
+	<!--- Do application startup --->
+	<cffunction name="startApplication" access="private" returntype="void" hint="This method handles the application startup tasks">
+		<cfargument name="appHandler" type="any" required="true">
+		<cfset var xmlDoc = 0>
+
+		<cflock name="frAppStart_#this.name#" type="exclusive" timeout="10">
+			<cfscript>
+				if(this.configDoc neq "") {
+					// load configuration file
+					xmlDoc = xmlParse(expandPath("config/" & this.configDoc));
+	
+					// load application settings
+					loadApplicationSettings(xmlDoc);
+	
+					// load application services
+					loadApplicationServices(xmlDoc);
+				}
+	
+				// execute application-specific initialization tasks
+				arguments.appHandler.onApplicationStart();
+				
+				// flag application as initialized
+				application["_appInited"] = true;
+	
+				// replace restartKey (this flags current server as restarted)
+				application["_restartKey"] = this.restartKey;
+			</cfscript>
+		</cflock>
+	</cffunction>
+	
+	<!--- Execute Event Handler --->
+	<cffunction name="runEventHandler" access="private" returntype="void" hint="This method is in charge of executing the requested event">
+		<cfargument name="reqState" type="struct" required="true">
+		<cfscript>
+			var oEventHandler = 0;
+			var eh_cfc = ""; var eh_path = "";
+			var rq = arguments.reqState;
+			var mp = "";
+
+			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lte 3) {
+				
+				// convert modulesPath to a valid dot notation
+				mp = replace(this.modulesPath,"/",".","ALL");
+				if(left(mp,1) eq ".") mp = right(mp,len(mp)-1);
+				if(right(mp,1) neq ".") mp = mp & ".";
+				
+				// Parse event handler
+				if(listLen(rq.event,".") eq 2) {
+					eh_cfc = listFirst(rq.event,".");
+					eh_path = "handlers.";
+					
+				} else if(listLen(rq.event,".") eq 3) {
+					rq.module = listFirst(rq.event,".");
+					eh_cfc = listGetAt(rq.event,2,".");
+					eh_path = mp & rq.module & ".handlers.";
+				}
+				
+				// Instantiate the event handler
+				oEventHandler = createObject("component", eh_path & eh_cfc).init(rq);
+			
+				// Call the selected method on the eventhandler
+				evaluate("oEventHandler." & listLast(rq.event,".") & "()");
+			}		
+		</cfscript>
+	</cffunction>
+
 	<!--- Load Application Settings --->
 	<cffunction name="loadApplicationSettings" access="private" returntype="void">
 		<cfargument name="xmlConfig" type="XML" required="true">
 		<cfscript>
 			var i = 0;
 			var xmlNode = 0;
-
-			consoleDump("Loading application settings...");
 
 			// initialize area for settings
 			application["_appSettings"] = structNew();
@@ -181,8 +207,6 @@
 			var stArguments = structNew();
 			var oService = 0;
 
-			consoleDump("Loading application services...");
-			
 			// initialize area for services
 			application["_appServices"] = structNew();
 
@@ -224,19 +248,27 @@
 						// add service instance into application scope
 						application["_appServices"][xmlNode.xmlAttributes.name] = oService;
 						
-						consoleDump("Loaded service: #xmlNode.xmlAttributes.name# [#xmlNode.xmlAttributes.class#]");
 					}
 				}
 			}
 		</cfscript>	
 	</cffunction>
 
-	<cffunction name="consoleDump" access="private" returntype="void" hint="dumps a message to the console">
-		<cfargument name="msg" type="string" required="true">
-		<!--- this is commented for compatibility with railo, uncomment for debugging in CF8
-		<cfset var msg1 = "[#application.applicationName#] " & timeformat(now(),"hh:mm:ss")  & ": " & arguments.msg>
-		<cfif this.verbose>
-			<cfdump var="#msg1#" output="console">
-		</cfif> --->
+	<!--- Compose Path To View Template --->
+	<cffunction name="getViewTemplatePath" access="private" returntype="string" hint="Returns the full path to the template corresponding to the requested view">
+		<cfargument name="reqState" type="struct" required="true">
+		<cfscript>
+			var basePath = "..";
+			var viewPath = "";
+			
+			if(arguments.reqState.view neq "") {
+				if(arguments.reqState.module neq "")
+					basePath = this.modulesPath & "/" & arguments.reqState.module;
+				viewPath = basePath & "/views/" & arguments.reqState.view & ".cfm";
+			}
+			
+			return viewPath;
+		</cfscript>
 	</cffunction>
+
 </cfcomponent>

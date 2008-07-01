@@ -22,6 +22,7 @@
 			var role = "";
 			var token1 = "";
 			var token2 = "";
+			var token3 = "";
 			var i = 0;
 
 			// check for specific resource			
@@ -52,6 +53,18 @@
 					// check for resources in the form *.token
 					if(structKeyExists(variables.mapResToRoles, "*." & token2))
 						return isAllowed("*." & token2, arguments.lstRoles);
+				} 
+
+				// check for resources of the form token.*.*
+				if(listLen(arguments.resource,".") eq 3) {
+					token1 = listFirst(arguments.resource,".");
+					token2 = listGetAt(arguments.resource,2,".");
+					
+					// check for resources in the form token.*.*
+					if(structKeyExists(variables.mapResToRoles, token1 & ".*.*"))	return isAllowed(token1 & ".*.*", arguments.lstRoles);
+	
+					// check for resources in the form *.token.*
+					if(structKeyExists(variables.mapResToRoles, token1 & "." & token2 & ".*"))		return isAllowed(token1 & "." & token2 & ".*", arguments.lstRoles);
 				} 
 			}
 

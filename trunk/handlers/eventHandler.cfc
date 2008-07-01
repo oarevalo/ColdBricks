@@ -7,14 +7,17 @@
 		function getView() {return variables.requestState.view;}
 		function getEvent() {return variables.requestState.event;}
 		function getLayout() {return variables.requestState.layout;}
+		function getModule() {return variables.requestState.module;}
+
 
 		function setView(data) {variables.requestState.view = arguments.data;}
 		function setEvent(data) {variables.requestState.event = arguments.data;}
 		function setLayout(data) {variables.requestState.layout = arguments.data;}
+		function setModule(data) {variables.requestState.module = arguments.data;}
 	</cfscript>
 	
 	<!--- Constructor ---->
-	<cffunction name="init">
+	<cffunction name="init" access="public" hint="Constructor">
 		<cfargument name="requestState" type="struct" required="true">
 		<cfset variables.requestState = arguments.requestState>
 		<cfreturn this>
@@ -26,7 +29,6 @@
 		<cfargument name="event"  			hint="The name of the event to run." 			type="string" required="Yes" >    
 		<cfargument name="queryString"  	hint="The query string to append, if needed."   type="string" required="No" default="">  
 		<cfargument name="scriptName" 		hint="The name of the script where to redirect." type="string" required="No" default="#cgi.SCRIPT_NAME#">    
-		<cfset consoleDump("Redirecting to Event: #arguments.event#")>
 		<cflocation url="#arguments.scriptName#?event=#trim(arguments.event)#&#trim(arguments.queryString)#" addtoken="no">
 	</cffunction>		
 
@@ -34,7 +36,6 @@
 		<cfargument name="view"  			hint="The name of the view to display." 		type="string" required="Yes" >    
 		<cfargument name="queryString"  	hint="The query string to append, if needed."   type="string" required="No" default="">  
 		<cfargument name="scriptName" 		hint="The name of the script where to redirect." type="string" required="No" default="#cgi.SCRIPT_NAME#">    
-		<cfset consoleDump("Redirecting to View: #arguments.event#")>
 		<cflocation url="#arguments.scriptName#?view=#trim(arguments.view)#&#trim(arguments.queryString)#" addtoken="no">
 	</cffunction>		
 	
@@ -117,85 +118,4 @@
 		</cfif>
 	</cffunction>
 
-	<!--- access to domain-model components  --->
-	<cffunction name="getModel" access="private" returntype="WEB-INF.cftags.component">
-		<cfargument name="className" type="string" required="true">
-		<cfreturn createInstance(variables.requestState["_modelsPath"] & "/" & arguments.className & ".cfc")>
-	</cffunction>
-
-
-	<cffunction name="createInstance" returntype="Any" access="private">
-		<cfargument name="path" type="String" required="true">
-		<cfargument name="type" type="String" required="no" default="">
-
-		<cfscript>
-			/****************************************************************
-			 UDF:    component(path, type)
-			 Author: Dan G. Switzer, II
-			 Date:   5/26/2004
-			
-			 Arguments:
-			  path - the path to the component. can be standard 
-			         dot notation, relative path or absolute path
-			  type - the type of path specified. "component" uses
-			         the standard CF dot notation. "relative" uses
-			         a relative path the the CFC (including file
-			         extension.) "absolute" indicates your using
-			         the direct OS path to the CFC. By default
-			         this tag will either be set to "component"
-			         (if no dots or no slashes and dots are found)
-			         or it'll be set to "relative". As a shortcut,
-			         you can use just the first letter of the type.
-			         (i.e. "c" for "component, etc.)
-			 Notes:
-			  This is based upon some code that has floated around the
-			  different CF lists.
-			****************************************************************/
-				var sPath=Arguments.path;var oProxy="";var oFile="";var sProxyPath = "";
-				var sType = lcase(Arguments.type);
-			
-				// determine a default type	
-				if( len(sType) eq 0 ){
-					if( (sPath DOES NOT CONTAIN ".") OR ((sPath CONTAINS ".") AND (sPath DOES NOT CONTAIN "/") AND (sPath DOES NOT CONTAIN "\")) ) sType = "component";
-					else sType = "relative";
-				}
-				
-				// create the component
-				switch( left(sType,1) ){
-					case "c":
-						return createObject("component", sPath);
-					break;
-			
-					default:
-						if( left(sType, 1) neq "a" ) sPath = expandPath(sPath);
-						// updated to work w/CFMX v6.1 and v6.0
-						// if this code breaks, MACR has either moved the TemplateProxy
-						// again or simply prevented it from being publically accessed
-						if( left(server.coldFusion.productVersion, 3) eq "6,0") sProxyPath = "coldfusion.runtime.TemplateProxy";
-						else sProxyPath = "coldfusion.runtime.TemplateProxyFactory";
-						try {
-							oProxy = createObject("java", sProxyPath);
-							oFile = createObject("java", "java.io.File");
-							oFile.init(sPath);
-							return oProxy.resolveFile(getPageContext(), oFile);
-						}
-						catch(Any exception){
-							throw("An error occured initializing the component #arguments.path#.");
-							return;
-						}
-					break;
-				}
-		</cfscript>
-	</cffunction>
-
-	<cffunction name="consoleDump" access="private" returntype="void" hint="dumps a message to the console">
-		<cfargument name="msg" type="string" required="true">
-		<!--- this is commented for compatibility with railo, uncomment for debugging in CF8
-		<cfset var msg1 = "[#application.applicationName#] " & timeformat(now(),"hh:mm:ss")  & ": " & arguments.msg>
-		<cfif variables.requestState["_verbose"]>
-			<cfdump var="#msg1#" output="console">
-		</cfif>
-		--->
-	</cffunction>
-	
 </cfcomponent>

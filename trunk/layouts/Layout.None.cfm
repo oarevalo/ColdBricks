@@ -1,3 +1,5 @@
+<cfparam name="request.requestState.viewTemplatePath" default="">
+
 <!--- this is to avoid caching --->
 <meta http-equiv="Expires" content="0">
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
@@ -7,6 +9,6 @@
 
 <cfinclude template="../includes/message.cfm">
 
-<cfif request.requestState.view neq "">
-	<cfinclude template="../views/#request.requestState.view#.cfm">
+<cfif request.requestState.viewTemplatePath neq "">
+	<cfinclude template="#request.requestState.viewTemplatePath#">
 </cfif>
