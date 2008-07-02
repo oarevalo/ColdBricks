@@ -22,7 +22,7 @@
 		<!-- This is the location of directory where ColdBricks will store its
 			data files. If the directory doesnt exist, then it will be created.
 			You can use an ColdFusion mapping for this. -->
-		<Setting name="dp_dataRoot" value="/ColdBricksData" />
+		<Setting name="dataRoot" value="/ColdBricksData" />
 
 		<!-- This is the location where ColdBricks will look for SiteTemplates -->			
 		<setting name="siteTemplatesRoot" value="/ColdBricks/siteTemplates"/>
@@ -30,6 +30,13 @@
 		<!-- Set this flag to false for archive files to remain in the archives 
 			directory (<data_root>/archives) after an archive download -->	
 		<setting name="deleteAfterArchiveDownload" value="true" />
+
+		<!-- This is the location of directory where ColdBricks will look for
+			installed plugins. If this is changed to other than the default value
+			then it must also be changed on the Application.cfc file.
+			You can use an ColdFusion mapping for this. -->
+		<Setting name="pluginsRoot" value="/ColdBricksPlugins" />
+	
 	</settings>
 
 
@@ -55,7 +62,17 @@
 		<service name="permissions" class="ColdBricks.components.services.permissionsService">
 			<init-param name="configHREF" settingName="permissionsConfigHREF" />
 		</service> 
-			
+
+		<!-- this service handles access to plugins -->
+		<service name="plugins" class="ColdBricks.components.services.plugins.pluginService">
+			<init-param name="pluginsRoot" settingName="pluginsRoot" />
+		</service> 
+
+		<!-- this service is used to create DAO instances -->
+		<service name="DAOFactory" class="ColdBricks.components.services.dao.XMLDAOFactory">
+			<init-param name="dataRoot" settingName="dataRoot" />
+			<init-param name="modelsPath">ColdBricks.components.model.</init-param>>
+		</service>
 	</services>
 </config>
 

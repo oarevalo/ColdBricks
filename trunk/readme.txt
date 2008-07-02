@@ -51,6 +51,7 @@ and portals created using the HomePortals framework.
 -----------------------------------------------------------------------
 Version 1.1
 - Updated internal application framework to version 1.3 of the core framework
+- Added support for third-party plugins to extend functionality
 
 Version 1.0
 - This is the first public release of ColdBricks. Have fun, send feedback!
@@ -62,7 +63,7 @@ Version 1.0
 Since the sites created and managed by ColdBricks rely on the HomePortals engine to function, 
 ColdBricks itself has a very small footprint in your server (around 15mb including the data directory).
 Additional requirements:
-- Adobe ColdFusion server (version 7 and up), Railo 2.0, BlueDragon 7, OpenBlueDragon (*)
+- Adobe ColdFusion server (version 7 and up), Railo 2 and up, BlueDragon 7, OpenBlueDragon (*)
 - HomePortals Framework (version 3) - optionally included in the ColdBricks distribution package
 - ColdBricks can be deployed on any of the ColdFusion supported platforms. 
 
@@ -100,11 +101,17 @@ ColdBricks is installed, both by linking directly to it and by referencing it vi
 The ColdBricks/config/config.xml file contains some entries that can be modified to adapt
 to specific environments. The most important ones are:
 
-[[ dp_dataRoot ]]  
+[[ dataRoot ]]  
 This is the location of directory where ColdBricks will store its
-data files. If the directory doesnt exist, then it will be created.
+data files. If the directory doesn't exist, then it will be created.
 You can use an ColdFusion mapping for this. 
 Default value is /ColdBricksData
+
+[[ pluginsRoot ]]
+This is the location of directory where ColdBricks will look for
+installed plugins. If this is changed to other than the default value
+then it must also be changed on the Application.cfc file.
+You can use an ColdFusion mapping for this.
 
 [[ siteTemplatesRoot ]] 
 This is the location where ColdBricks will look for SiteTemplates. You can add your own

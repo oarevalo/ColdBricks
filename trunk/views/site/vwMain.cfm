@@ -7,6 +7,7 @@
 <cfparam name="request.requestState.qlAccount" default="">
 <cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.firstTime" default="false">
+<cfparam name="request.requestState.aPlugins" default="">
 
 <cfset qrySite = request.requestState.qrySite>
 <cfset aResourceTypes = request.requestState.aResourceTypes>
@@ -17,6 +18,7 @@
 <cfset qlAccount = request.requestState.qlAccount>
 <cfset aPages = request.requestState.aPages>
 <cfset firstTime = request.requestState.firstTime>
+<cfset aPlugins = request.requestState.aPlugins>
 
 <!--- sort accounts --->
 <cfquery name="qryAccounts" dbtype="query">
@@ -52,6 +54,16 @@
 			if(key=="siteMap") helpText = "The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.";
 			if(key=="settings") helpText = "For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files";
 			if(key=="download") helpText = "Download a zipped version of this site for backup or migration";
+		
+			<cfoutput>
+			<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
+				<cfset oPlugin = aPlugins[i]>
+				<cfset tmpID = oPlugin.getID()>
+				<cfset tmpDesc = oPlugin.getDescription()>
+				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
+			</cfloop>
+			</cfoutput>		
+		
 			$("helpTextDiv").style.display = "block";
 			$("helpTextDiv").innerHTML = "<img src='images/help.png' align='absmiddle'> " + helpText;
 		}
@@ -170,6 +182,24 @@
 					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySite.siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
 					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySite.siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
 				</div>
+
+				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
+					<cfset oPlugin = aPlugins[i]>
+					<cfset module = oPlugin.getModuleName()>
+					<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
+					<cfset tmpID = oPlugin.getID()>
+					<cfset tmpName = oPlugin.getName()>
+					<cfif oPlugin.getIconSrc() neq "">
+						<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
+					<cfelse>
+						<cfset tmpImage = "images/cb-blocks.png">
+					</cfif>
+						<cfset tmpImage = "images/cb-blocks.png">
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
+						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
+					</div>
+				</cfloop>
 				
 				<br style="clear:both;" />
 				

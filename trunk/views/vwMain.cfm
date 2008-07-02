@@ -2,11 +2,13 @@
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.userInfo" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
+<cfparam name="request.requestState.aPlugins" default="">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset userInfo = request.requestState.userInfo>
 <cfset loadSiteID = request.requestState.loadSiteID>
+<cfset aPlugins = request.requestState.aPlugins>
 
 <!--- check if there is another site besides the hp engine --->
 <cfquery name="qrySitesCheck" dbtype="query">
@@ -34,6 +36,16 @@
 			if(key=="sites") helpText = "Access the sites management module, from there you can add, remove, archive and access individual sites";
 			if(key=="users") helpText = "This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.";
 			if(key=="settings") helpText = "For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files";
+			
+			<cfoutput>
+			<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
+				<cfset oPlugin = aPlugins[i]>
+				<cfset tmpID = oPlugin.getID()>
+				<cfset tmpDesc = oPlugin.getDescription()>
+				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
+			</cfloop>
+			</cfoutput>
+			
 			$("helpTextDiv").style.display = "block";
 			$("helpTextDiv").innerHTML = "<img src='images/help.png' align='absmiddle'> " + helpText;
 		}
@@ -111,6 +123,24 @@
 					<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
 					<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
 				</div>
+
+				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
+					<cfset oPlugin = aPlugins[i]>
+					<cfset module = oPlugin.getModuleName()>
+					<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
+					<cfset tmpID = oPlugin.getID()>
+					<cfset tmpName = oPlugin.getName()>
+					<cfif oPlugin.getIconSrc() neq "">
+						<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
+					<cfelse>
+						<cfset tmpImage = "images/cb-blocks.png">
+					</cfif>
+						<cfset tmpImage = "images/cb-blocks.png">
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
+						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
+					</div>
+				</cfloop>
 
 				<br style="clear:both;" />
 				

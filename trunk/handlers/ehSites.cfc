@@ -2,7 +2,6 @@
 
 	<cffunction name="dspMain">
 		<cfscript>
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var oUserDAO = 0;
 			var qrySites = 0;
@@ -10,9 +9,8 @@
 			var userID = getValue("userID");
 			
 			try {
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
-				oUserSiteDAO = createObject("component","ColdBricks.components.model.userSiteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
+				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 				
 				qrySites = oSiteDAO.getAll();
 				qryUserSites = oUserSiteDAO.search(userID = userID);
@@ -60,14 +58,12 @@
 	<cffunction name="dspDelete">
 		<cfscript>
 			var siteID = getValue("siteID");
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var qrySite = 0;
 			
 			try {			
 				// get site information
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySite = oSiteDAO.get(siteID);
 
 				if(qrySite.path eq "/")
@@ -111,7 +107,6 @@
 			var bCreateAccountDir = false;
 			var bCreateResourceDir = false;
 			
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
 			var siteID = 0;
@@ -137,8 +132,7 @@
 				}
 				
 				// check if site is already registered in coldbricks
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySiteCheck = oSiteDAO.search(siteName = name);
 				if(qrySiteCheck.recordCount gt 0) 
 					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
@@ -229,14 +223,12 @@
 	<cffunction name="doDelete">
 		<cfscript>
 			var siteID = getValue("siteID");
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var qrySite = 0;
 			
 			try {			
 				// get site information
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySite = oSiteDAO.get(siteID);
 
 				// make sure we are deleting something safe (if directory exists at all)
@@ -277,7 +269,6 @@
 			var appRoot = getValue("appRoot");
 			var name = getValue("name");
 
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
 			var siteID = 0;
@@ -287,8 +278,7 @@
 				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
 
 				// check if site is already registered in coldbricks
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySiteCheck = oSiteDAO.search(siteName = name);
 				if(qrySiteCheck.recordCount gt 0) 
 					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
@@ -331,10 +321,9 @@
 
 	<cffunction name="doArchiveSite">
 		<cfset var siteID = getValue("siteID")>
-		<cfset var oDataProvider = 0>
 		<cfset var oSiteDAO = 0>
 		<cfset var qrySite = 0>
-		<cfset var dataRoot = getSetting("dp_dataRoot")>
+		<cfset var dataRoot = getSetting("dataRoot")>
 		<cfset var archivesPath = dataRoot & "/archives">
 		<cfset var zipFilePath = "">
 		<cfset var zipFileName = "">
@@ -343,8 +332,7 @@
 		
 		<cftry>
 			<!--- get site information ---->
-			<cfset oDataProvider = application.oDataProvider>
-			<cfset oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider)>
+			<cfset oSiteDAO = getService("DAOFactory").getDAO("site")>
 			<cfset qrySite = oSiteDAO.get(siteID)>
 		
 			<!--- make sure the directory exists --->

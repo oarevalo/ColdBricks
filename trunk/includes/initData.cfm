@@ -1,10 +1,8 @@
 <cfscript>
-	oDataProvider = application.oDataProvider;
-	
-	oHelpDAO = createObject("component","ColdBricks.components.model.helpDAO").init(oDataProvider);
-	oMiscDAO = createObject("component","ColdBricks.components.model.miscDAO").init(oDataProvider);
-	oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
-	oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
+	oHelpDAO = getService("DAOFactory").getDAO("help");
+	oMiscDAO = getService("DAOFactory").getDAO("misc");
+	oSiteDAO = getService("DAOFactory").getDAO("site");
+	oUserDAO = getService("DAOFactory").getDAO("user");
 
 	// config files --->
 	oHelpDAO.save(id="", name="homePortals-config.xml", description="This is the main configuration file for a HomePortals application. In addition of the main homeportals-config.xml file in the /Home/ directory, each application must have its own homePortals-config.xml to override only the settings needed for that particular application.");

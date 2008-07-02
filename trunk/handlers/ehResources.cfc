@@ -42,7 +42,6 @@
 			var id = getValue("id","NEW");
 			var pkg = getValue("pkg","");
 			var oResourceBean = 0;
-			var oDataProvider = 0;
 			var oHelpDAO = 0;
 			var qryHelp = 0;
 			
@@ -68,8 +67,7 @@
 				}
 				
 				// get info on resource type
-				oDataProvider = application.oDataProvider;
-				oHelpDAO = createObject("component","ColdBricks.components.model.helpDAO").init(oDataProvider);
+				oHelpDAO = getService("DAOFactory").getDAO("help");
 				qryHelp = oHelpDAO.search(name = "rt_#resourceType#");
 				if(qryHelp.recordCount gt 0) setValue("resourceTypeInfo", qryHelp.description);
 				
@@ -130,7 +128,6 @@
 			var hp = 0;
 			var oCatalog = 0;
 			var resourceType = getValue("resourceType","");
-			var oDataProvider = 0;
 			var oHelpDAO = 0;
 			var qryHelp = 0;
 			
@@ -144,8 +141,7 @@
 				qryResources = oCatalog.getResourcesByType(resourceType);
 				
 				// get info on resource type
-				oDataProvider = application.oDataProvider;
-				oHelpDAO = createObject("component","ColdBricks.components.model.helpDAO").init(oDataProvider);
+				oHelpDAO = getService("DAOFactory").getDAO("help");
 				qryHelp = oHelpDAO.search(name = "rt_#resourceType#");
 				if(qryHelp.recordCount gt 0) setValue("resourceTypeInfo", qryHelp.description);
 				
@@ -184,8 +180,7 @@
 			var qrySourceSite = 0;
 			var qrySites = 0;
 			
-			oDataProvider = application.oDataProvider;
-			oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+			oSiteDAO = getService("DAOFactory").getDAO("site");
 
 			if(userInfo.administrator) {
 				// administrator can import from all sites
@@ -310,8 +305,7 @@
 			var resRootSrc = ""; var resRootTgt = "";
 			
 			try {				
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 	
 				qrySourceSite = oSiteDAO.get(sourceSiteID);
 				if(qrySourceSite.recordCount eq 0) throw("Site not found!","coldBricks.validation");

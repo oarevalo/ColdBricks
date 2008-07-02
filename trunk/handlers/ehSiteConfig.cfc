@@ -117,8 +117,7 @@
 					setValue("xmlDoc", xmlDoc);
 					
 					// get help on selected file
-					oDataProvider = application.oDataProvider;
-					oHelpDAO = createObject("component","ColdBricks.components.model.helpDAO").init(oDataProvider);
+					oHelpDAO = getService("DAOFactory").getDAO("help");
 					qryHelp = oHelpDAO.search(name = getFileFromPath(configFile));
 					setValue("qryHelp", qryHelp);
 				}
