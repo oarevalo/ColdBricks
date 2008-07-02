@@ -2,13 +2,11 @@
 
 	<cffunction name="dspMain">
 		<cfscript>
-			var oDataProvider = 0;
 			var oUserDAO = 0;
 			var qryUsers = 0;
 			
 			try {
-				oDataProvider = application.oDataProvider;
-				oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
+				oUserDAO = getService("DAOFactory").getDAO("user");
 				qryUsers = oUserDAO.getAll();
 
 				setValue("qryUsers",qryUsers);
@@ -24,16 +22,16 @@
 	
 	<cffunction name="dspEdit">
 		<cfscript>
-			var oDataProvider = 0;
 			var oUserDAO = 0;
+			var oUserSiteDAO = 0;
+			var oSiteDAO = 0;
 			var qryUser = 0;
 			var editUserID = getValue("editUserID",0);
 			
 			try {
-				oDataProvider = application.oDataProvider;
-				oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
-				oUserSiteDAO = createObject("component","ColdBricks.components.model.userSiteDAO").init(oDataProvider);
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oUserDAO = getService("DAOFactory").getDAO("user");
+				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 				
 				qryUser = oUserDAO.get(editUserID);
 				qryUserSites = oUserSiteDAO.search(userID = editUserID);
@@ -54,8 +52,8 @@
 
 	<cffunction name="doSave">
 		<cfscript>
-			var oDataProvider = 0;
 			var oUserDAO = 0;
+			var oUserSiteDAO = 0;
 			var editUserID = getValue("editUserID",0);
 			var username = getValue("username","");
 			var password = getValue("password","");
@@ -66,9 +64,8 @@
 			var lstSiteID = getValue("lstSiteID","");
 			
 			try {
-				oDataProvider = application.oDataProvider;
-				oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
-				oUserSiteDAO = createObject("component","ColdBricks.components.model.userSiteDAO").init(oDataProvider);
+				oUserDAO = getService("DAOFactory").getDAO("user");
+				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 				
 				// validate record
 				if(username eq "") throw("Username cannot be empty","coldBricks.validation");
@@ -119,13 +116,11 @@
 
 	<cffunction name="doDelete">
 		<cfscript>
-			var oDataProvider = 0;
 			var oUserDAO = 0;
 			var editUserID = getValue("editUserID",0);
 			
 			try {
-				oDataProvider = application.oDataProvider;
-				oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
+				oUserDAO = getService("DAOFactory").getDAO("user");
 				
 				// save record
 				oUserDAO.delete(editUserID);

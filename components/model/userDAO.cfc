@@ -1,4 +1,4 @@
-<cfcomponent extends="ColdBricks.components.model.db.DAO">
+<cfcomponent extends="ColdBricks.components.services.dao.DAO">
 
 	<cffunction name="initTableParams" access="package" returntype="void" hint="setup table specific settings">
 		<cfset setTableName("users")>

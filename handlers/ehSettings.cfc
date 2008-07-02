@@ -50,6 +50,9 @@
 		<cfscript>
 			var aConfigFiles = arrayNew(1);
 			var configFile = getValue("configFile");
+			var oHelpDAO = 0;
+			var xmlDoc = 0;
+			var qryHelp = 0;
 			
 			try {
 				arrayAppend(aConfigFiles, "/Home/Config/homePortals-config.xml");
@@ -67,8 +70,7 @@
 					setValue("xmlDoc", xmlDoc);
 
 					// get help on selected file
-					oDataProvider = application.oDataProvider;
-					oHelpDAO = createObject("component","ColdBricks.components.model.helpDAO").init(oDataProvider);
+					oHelpDAO = getService("DAOFactory").getDAO("help");
 					qryHelp = oHelpDAO.search(name = getFileFromPath(configFile));
 					setValue("qryHelp", qryHelp);
 				}

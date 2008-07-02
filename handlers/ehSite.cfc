@@ -4,7 +4,6 @@
 		<cfscript>
 			var siteID = getValue("siteID");
 			var firstTime = getValue("firstTime",false);	// this is to flag a site being opened for the first time after creation
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var qrySite = 0;
 			var loadSite = false;
@@ -21,8 +20,7 @@
 					siteID = session.context.siteID;
 				}
 
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 
 				// get site information
 				qrySite = oSiteDAO.get(siteID);
@@ -57,6 +55,7 @@
 			var oAccountSite = 0;
 			var aPages = arrayNew(1);
 			var aPagesSorted = arrayNew(1);
+			var aPlugins = arrayNew(1);
 			
 			try {
 				// get resource types
@@ -90,6 +89,8 @@
 
 				}
 				
+				aPlugins = getService("plugins").getPluginsByType("site");
+				
 				setValue("qrySite", session.context.siteInfo);
 				setValue("aResourceTypes", aResourceTypes);	
 				setValue("qryResources", qryResources);	
@@ -97,6 +98,7 @@
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("defaultAccount", hp.getConfig().getDefaultAccount() );
 				setValue("aPages", aPagesSorted );
+				setValue("aPlugins",aPlugins);
 				
 				setView("site/vwMain");
 			
@@ -110,14 +112,12 @@
 
 	<cffunction name="doSaveNotes">
 		<cfscript>
-			var oDataProvider = 0;
 			var oSiteDAO = 0;
 			var notes = getValue("notes");
 			var siteID = session.context.siteID;
 
 			try {
-				oDataProvider = application.oDataProvider;
-				oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
+				oSiteDAO = getService("DAOFactory").getDAO("site");
 			
 				// save note
 				oSiteDAO.save(id=siteID, notes=notes);

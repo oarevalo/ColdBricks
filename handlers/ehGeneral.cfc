@@ -1,25 +1,8 @@
 <cfcomponent extends="eventHandler">
 
 <cffunction name="onApplicationStart">
-	<!--- application initialization code goes here --->
-	<cfscript>
-		var oConfigBean = 0;
-		var oDataProvider = 0;
-
-		// data provider settings
-		var dataRoot = getSetting("dp_dataRoot");
-		
-		// setup dataProvider config
-		oConfigBean = createObject("component","ColdBricks.components.model.db.dataProviderConfigBean").init();
-		oConfigBean.setDataRoot(dataRoot);
-		
-		// initialize dataProvider and copy to application scope
-		oDataProvider = createObject("component","ColdBricks.components.model.db.xmlDataProvider").init(oConfigBean);
-		application.oDataProvider = oDataProvider;
-
-		// setup data directory (if needed for xml data storage)
-		checkDataRoot();
-	</cfscript>
+	<!--- setup data directory (if needed for xml data storage) --->
+	<cfset checkDataRoot()>
 </cffunction>
 
 <cffunction name="onRequestStart">
@@ -92,26 +75,28 @@
 
 <cffunction name="dspMain">
 	<cfscript>
-		var oDataProvider = 0;
 		var oSiteDAO = 0;
 		var oUserDAO = 0;
 		var qrySites = 0;
 		var userInfo = getValue("userInfo");
 		var userID = getValue("userID");
+		var aPlugins = arrayNew(1);
 
 		try {
 			// if this is a regular user then go to sites screen
 			if(not userInfo.administrator) 	setNextEvent("ehSites.dspMain");
 
-			oDataProvider = application.oDataProvider;
-			oSiteDAO = createObject("component","ColdBricks.components.model.siteDAO").init(oDataProvider);
-			oUserSiteDAO = createObject("component","ColdBricks.components.model.userSiteDAO").init(oDataProvider);
+			oSiteDAO = getService("DAOFactory").getDAO("site");
+			oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 			
 			qrySites = oSiteDAO.getAll();
 			qryUserSites = oUserSiteDAO.search(userID = userID);
 
+			aPlugins = getService("plugins").getPluginsByType("admin");
+
 			setValue("qrySites",qrySites);
 			setValue("qryUserSites",qryUserSites);
+			setValue("aPlugins",aPlugins);
 			setView("vwMain");
 		
 		} catch(any e) {
@@ -148,13 +133,11 @@
 <cffunction name="doLogin">
 	<cfset var usr = getValue("usr")>
 	<cfset var pwd = getValue("pwd")>
-	<cfset var oDataProvider = 0>
 	<cfset var oUserDAO = 0>
 
 	<cfscript>
 		try {
-			oDataProvider = application.oDataProvider;
-			oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
+			oUserDAO = getService("DAOFactory").getDAO("user");
 
 			qry = oUserDAO.search(username = usr, password = pwd);
 
@@ -191,7 +174,6 @@
 
 <cffunction name="doChangePassword">
 	<cfscript>
-		var oDataProvider = 0;
 		var oUserDAO = 0;
 		var userID = getValue("userID");
 		var userInfo = getValue("userInfo");
@@ -200,8 +182,7 @@
 		var new_pwd2 = getValue("new_pwd2","");
 		
 		try {
-			oDataProvider = application.oDataProvider;
-			oUserDAO = createObject("component","ColdBricks.components.model.userDAO").init(oDataProvider);
+			oUserDAO = getService("DAOFactory").getDAO("user");
 			
 			// validate record
 			if(curr_pwd neq userInfo.password) throw("Invalid password","coldBricks.validation");
@@ -254,7 +235,7 @@
 
 <cffunction name="checkDataRoot" access="private" returntype="void">
 	<cfscript>
-		var dataRoot = getSetting("dp_dataRoot");
+		var dataRoot = getSetting("dataRoot");
 		
 		if(not directoryExists(expandPath(dataRoot))) {
 			setupDataDirectory(dataRoot);
