@@ -1,3 +1,5 @@
+<cfparam name="request.requestState.oUser" default="">
+<cfset oUser = request.requestState.oUser>
 
 <h2>Change Password</h2>
 
@@ -7,7 +9,7 @@
 	<table>
 		<tr>
 			<td><strong>Username:</strong></td>
-			<td>#request.requestState.userInfo.username#</td>
+			<td>#oUser.getUsername()#</td>
 		</tr>
 		<tr>
 			<td><strong>Current Password:</strong></td>

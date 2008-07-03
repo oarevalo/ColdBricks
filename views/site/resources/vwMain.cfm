@@ -1,10 +1,8 @@
-<cfparam name="request.requestState.userInfo" default="">
 <cfparam name="request.requestState.resType" default="">
 <cfparam name="request.requestState.pkg" default="">
 <cfparam name="request.requestState.id" default="">
 <cfparam name="request.requestState.qryResources" default="">
 
-<cfset userInfo = request.requestState.userInfo>
 <cfset resType = request.requestState.resType>
 <cfset pkg = request.requestState.pkg>
 <cfset id = request.requestState.id>

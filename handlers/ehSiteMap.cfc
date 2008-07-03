@@ -2,7 +2,8 @@
 
 	<cffunction name="dspMain">
 		<cfscript>
-			hp = session.context.hp;
+			var oContext = getService("sessionContext").getContext();
+			hp = oContext.getHomePortals();
 			setValue("appRoot", hp.getConfig().getAppRoot() );
 			setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 			setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
@@ -19,11 +20,12 @@
 			var oAccountSite = 0;
 			var validChars = "a-zA-Z0-9_. -!";
 			var pageName = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oAcc = hp.getAccountsService();
 	
 				// if this is a .cfm file, then read it and check if it was generated with the sitemap tool
@@ -63,8 +65,9 @@
 	</cffunction>
 
 	<cffunction name="dspTreeNode">
+		<cfset var oContext = getService("sessionContext").getContext()>
 		<cfset var path = getValue("path")>
-		<cfset var hp = session.context.hp>
+		<cfset var hp = oContext.getHomePortals()>
 		<cfset var appRoot = hp.getConfig().getAppRoot()>
 		<cfset var qryDir = 0>
 
@@ -140,6 +143,7 @@
 			var fileName = "";
 			var oPageRenderer = 0;
 			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {
 				if(account eq "") throw("Account name cannot be empty","coldBricks.validation");
@@ -180,7 +184,7 @@
 						break;
 				
 					case "static":
-						hp = session.context.hp;
+						hp = oContext.getHomePortals();
 						
 						// put a refernce to the homeportals object in the application scope. 
 						// This is needed for the rendering

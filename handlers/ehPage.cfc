@@ -6,27 +6,30 @@
 			var resType = getValue("resType");
 			var pageHREF = "";
 			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var oPage = 0;
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 			
 				if(page neq "") {
-					pageHREF = hp.getConfig().getAccountsRoot() & "/" & session.context.accountName & "/layouts/" & page;
-					session.context.page = createObject("component","Home.Components.page").init( pageHREF );
+					pageHREF = hp.getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
+					oPage = createObject("component","Home.Components.page").init( pageHREF );
+					oContext.setPage(oPage);
 				}			
 
 				// get default resource type
-				if(not structKeyExists(session.context,"pageResourceTypeView")) session.context.pageResourceTypeView = "module";
-				if(resType neq "") session.context.pageResourceTypeView = resType;
-
-				setValue("pageTitle", session.context.page.getPage().getTitle() );
-				setValue("accountName", session.context.accountName);
+				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
+				if(resType neq "") oContext.setPageResourceTypeView(resType);
+				
+				setValue("pageTitle", oContext.getPage().getPage().getTitle() );
+				setValue("accountName", oContext.getAccountName());
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("resType", session.context.pageResourceTypeView);
+				setValue("resType", oContext.getPageResourceTypeView);
 				
-				setValue("oSite", session.context.accountSite);
-				setValue("oPage", session.context.page);
+				setValue("oSite", oContext.getAccountSite());
+				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 				
 				setView("site/accounts/vwPage");
@@ -43,14 +46,15 @@
 		<cfscript>
 			var oPage = 0;
 			var moduleID = getValue("moduleID","");
+			var oContext = getService("sessionContext").getContext();
 
 			try {
 				// remove prefixes added to avoid mixing with existing page elements
 				moduleID = replace(moduleID,"ppm_","","ALL");
 
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 				
 				stModule = oPage.getModule(moduleID);
 				
@@ -78,20 +82,21 @@
 			var moduleCatID = "";
 			var hp = 0;
 			var missingModuleBean = true;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 
 				// remove prefixes added to avoid mixing with existing page elements
 				moduleID = replace(moduleID,"ppm_","","ALL");
 				
 				// check if we have a site and page cfcs loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				
 				// get site and page from session
-				oSite = session.context.accountSite;
-				oPage = session.context.page;
+				oSite = oContext.getAccountSite();
+				oPage = oContext.getPage();
 
 				oCatalog = hp.getCatalog();
 
@@ -143,17 +148,18 @@
 			var oPage = 0;
 			var oSite = 0;
 			var oCatalog = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a site and page cfcs loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				
 				// get site and page from session
-				oSite = session.context.accountSite;
-				oPage = session.context.page;
+				oSite = oContext.getAccountSite();
+				oPage = oContext.getPage();
 				oCatalog = hp.getCatalog();
 				
 				// pass values to view
@@ -179,15 +185,16 @@
 		<cfscript>
 			var oPage = 0;
 			var oSite = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a site and page cfcs loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				
 				// get site and page from session
-				oSite = session.context.accountSite;
-				oPage = session.context.page;
+				oSite = oContext.getAccountSite();
+				oPage = oContext.getPage();
 
 				// pass values to view
 				setValue("oSite", oSite );
@@ -211,15 +218,16 @@
 		<cfscript>
 			var oPage = 0;
 			var oSite = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a site and page cfcs loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				
 				// get site and page from session
-				oSite = session.context.accountSite;
-				oPage = session.context.page;
+				oSite = oContext.getAccountSite();
+				oPage = oContext.getPage();
 
 				// pass values to view
 				setValue("oSite", oSite );
@@ -246,9 +254,10 @@
 			var resourceID = getValue("resourceID","");
 			var resType = getValue("resType","");
 			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
 				oResourceBean = oCatalog.getResourceNode(resType, resourceID);
 
@@ -272,17 +281,18 @@
 		<cfscript>
 			var oPage = 0;
 			var oSite = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a site and page cfcs loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				
 				// get site and page from session
-				oSite = session.context.accountSite;
-				oPage = session.context.page;
+				oSite = oContext.getAccountSite();
+				oPage = oContext.getPage();
 				
 				// pass values to view
 				setValue("oSite", oSite );
@@ -306,11 +316,12 @@
 		<cfscript>
 			var oPage = 0;
 			var moduleID = getValue("moduleID","");
+			var oContext = getService("sessionContext").getContext();
 
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 				
 				stModule = oPage.getModule(moduleID);
 				
@@ -335,20 +346,21 @@
 			var resType = getValue("resType");
 			var pageHREF = "";
 			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 			
 				// get default resource type
-				if(not structKeyExists(session.context,"pageResourceTypeView")) session.context.pageResourceTypeView = "module";
-				if(resType neq "") session.context.pageResourceTypeView = resType;
+				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
+				if(resType neq "") oContext.setPageResourceTypeView(resType);
 
-				setValue("resType", session.context.pageResourceTypeView);
+				setValue("resType", oContext.getPageResourceTypeView());
 				
-				setValue("oSite", session.context.accountSite);
-				setValue("oPage", session.context.page);
+				setValue("oSite", oContext.getAccountSite());
+				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 				
 				setView("site/accounts/vwResourceTree");
@@ -371,15 +383,16 @@
 			var moduleID = "";
 			var	stAttributes = structNew();
 			var moduleResType = "module";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
-				oPage = session.context.page;
+				oPage = oContext.getPage();
 				oCatalog = hp.getCatalog();
 
 
@@ -441,11 +454,12 @@
 		<cfscript>
 			var moduleID = getValue("moduleID","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.deleteModule(moduleID);
 				setMessage("info", "Module deleted");
@@ -469,11 +483,12 @@
 		<cfscript>
 			var layout = getValue("layout","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				// remove prefixes added to avoid mixing with existing page elements
 				layout = replaceList(layout,"ppm_,pps_",",");
@@ -502,11 +517,12 @@
 			var oPage = 0;
 			var stAttribs = structNew();
 			var lstAllAttribs = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				// create a structure with the module attributes
 				lstAllAttribs = form["_allAttribs"];
@@ -555,15 +571,16 @@
 			var oPage = 0;
 			var hp = 0;
 			var	stAttributes = structNew();
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
-				oPage = session.context.page;
+				oPage = oContext.getPage();
 				
 				resBean = createObject("component","Home.Components.resourceBean").init();
 				resBean.setID("contentModule");
@@ -599,13 +616,14 @@
 			var oSite = 0;
 			var originalPageHREF = "";
 			var newPageHREF = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+				oSite = oContext.getAccountSite();
 		
 				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
 
@@ -651,11 +669,12 @@
 		<cfscript>
 			var skinID = getValue("skinID","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				if(skinID eq "NONE") skinID = "";
 		
@@ -686,14 +705,15 @@
 			var oPage = 0; var oResourceBean = 0;
 			var hp = 0; var oCatalog = 0;
 			var resRoot = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				// get resource root
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				resRoot = hp.getConfig().getResourceLibraryPath();
 		
 				// get pagetemplate resource
@@ -724,11 +744,12 @@
 		<cfscript>
 			var xmlContent = getValue("xmlContent","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				if(not isXml(xmlContent)) {
 					setMessage("warning", "The given content is not a valid XML document");
@@ -758,11 +779,12 @@
 		<cfscript>
 			var cssContent = getValue("cssContent","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.savePageCSS(cssContent);
 				setMessage("info", "Page stylesheet saved.");
@@ -788,13 +810,14 @@
 			var oPage = 0;
 			var oSite = 0;
 			var pageHREF = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account.","coldBricks.validation");
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+				oSite = oContext.getAccountSite();
 		
 				if(pageTitle eq "") throw("The page title cannot be blank.","coldBricks.validation");
 
@@ -833,12 +856,13 @@
 			var oResourceLibrary = 0;
 			var resourceType = "skin";
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {		
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 
 				// get the content of the css page
-				oPage = session.context.page;
+				oPage = oContext.getPage();
 				body = oPage.getPageCSS();
 
 				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
@@ -853,7 +877,7 @@
 				oResourceBean.setName(name);
 				oResourceBean.setAccessType("general"); 
 				oResourceBean.setPackage(id); 
-				oResourceBean.setOwner(session.context.accountName);
+				oResourceBean.setOwner(oContext.getAccountName());
 				oResourceBean.setDescription("Skin created based on stylesheet from page #oPage.getHREF()#");
 				oResourceBean.setType(resourceType); 
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
@@ -892,11 +916,12 @@
 			var j = 0;
 			var qryLocationsByType = 0;
 			var bCanUseName = true;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				// create a name for the new location
 				qryLocationsByType = oPage.getLocationsByType(locationType);
@@ -935,11 +960,12 @@
 			var locationNewName = getValue("locationNewName","");
 			var locationClass = getValue("locationClass","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.saveLocation(locationOriginalName, locationNewName, locationType, locationClass);
 				setMessage("info", "Layout section updated.");
@@ -963,11 +989,12 @@
 		<cfscript>
 			var locationName = getValue("locationName","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 				
 				// delete location		
 				oPage.deleteLocation(locationName);
@@ -997,11 +1024,12 @@
 			var eventName = getValue("eventName","");
 			var eventHandler = getValue("eventHandler","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				// check data
 				if(eventName eq "") throw("You must select an event from the list","coldBricks.validation");
@@ -1029,11 +1057,12 @@
 		<cfscript>
 			var index = getValue("index",0);
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.deleteEventHandler(index);
 				setMessage("info", "Event handler deleted.");
@@ -1063,11 +1092,12 @@
 			var name = getValue("name","");
 			var content = getValue("content","");
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.saveMetaTag(index, name, content);
 				setMessage("info", "User-defined meta tag saved.");
@@ -1091,11 +1121,12 @@
 		<cfscript>
 			var index = getValue("index",0);
 			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not structKeyExists(session.context,"page")) throw("Please select a page.","coldBricks.validation");
-				oPage = session.context.page;
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
 				oPage.deleteMetaTag(index);
 				setMessage("info", "User-defined meta tag deleted.");

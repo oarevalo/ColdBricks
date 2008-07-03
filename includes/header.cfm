@@ -1,8 +1,8 @@
 <cfparam name="request.requestState.hostName" default="">
 <cfparam name="request.requestState.applicationTitle" default="#application.applicationName#">
-<cfparam name="request.requestState.userInfo" default="">
+<cfparam name="request.requestState.oUser" default="">
 
-<cfset userInfo = request.requestState.userInfo>
+<cfset oUser = request.requestState.oUser>
 <cfset hostName = request.requestState.hostName>
 <cfset appTitle = request.requestState.applicationTitle>
 
@@ -16,10 +16,10 @@
 			</td> 
 			<td align="right" style="padding-right:10px;">
 				<span style="font-size:10px;font-weight:bold;border-bottom:1px dotted ##333;padding-bottom:8px;">
-					<cfif userInfo.administrator>
+					<cfif oUser.getIsAdministrator()>
 						<span style="color:red;">Administrator</span>
 					<cfelse>
-						<span style="color:green;">#userInfo.username#</span>
+						<span style="color:green;">#oUser.getusername()#</span>
 					</cfif>
 					&nbsp;&bull;&nbsp;
 					#lsDateFormat(now())#

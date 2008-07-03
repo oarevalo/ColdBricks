@@ -1,8 +1,8 @@
 
 <cfparam name="request.requestState.event" default="">
-<cfparam name="request.requestState.userInfo" default="">
+<cfparam name="request.requestState.oUser" default="">
 
-<cfset userInfo = request.requestState.userInfo>
+<cfset oUser = request.requestState.oUser>
 <cfset event = request.requestState.event>
 
 <cfscript>
@@ -12,7 +12,7 @@
 	st.label = "Home";
 	st.event = "ehGeneral.dspMain";
 	st.selected = event eq "ehGeneral.dspMain";
-	st.display = userInfo.administrator;
+	st.display = oUser.getIsAdministrator();
 	st.hint = "Main administration dashboard";
 	arrayAppend(aOptions,st);
 
@@ -20,7 +20,7 @@
 	st.label = "My Sites";
 	st.event = "ehSites.dspMain";
 	st.selected = listFindNoCase("ehSites", listFirst(event,"."));
-	st.display = not userInfo.administrator;
+	st.display = not oUser.getIsAdministrator();
 	st.hint = "Displays a list of existing sites for the current user";
 	arrayAppend(aOptions,st);
 

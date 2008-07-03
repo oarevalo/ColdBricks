@@ -16,13 +16,18 @@
 		var firstRunDate = "";
 		var ls = "";
 		var isAllowed = true;
+		var oUser = 0;
+		var oContext = getService("sessionContext").getContext();
+	
+		// get user object in session (if exists)
+		if(oContext.hasUser())
+			oUser = oContext.getUser();
+		else {
+			oUser = createObject("component","ColdBricks.components.model.userBean").init();
+			oContext.setUser(oUser);
+		}
 		
-		// make sure session vars for user and context exist
-		if(Not structKeyExists(session,"userID")) session.userID = 0;
-		if(Not structKeyExists(session,"userInfo")) session.userInfo = queryNew("");
-		if(Not structKeyExists(session,"userRole")) session.userRole = "";
-		if(Not structKeyExists(session,"context")) session.context = structNew();
-		
+
 		try {
 			// check for data directory
 			checkDataRoot();
@@ -35,13 +40,13 @@
 			
 		try {
 			// check login
-			if(not listFindNoCase(lstFreeEvents,event) and (session.userID eq 0 or session.userID eq "")) {
+			if(not listFindNoCase(lstFreeEvents,event) and (oUser.getID() eq 0 or oUser.getID() eq "")) {
 				setMessage("Warning","Please enter your username and password");
 				setNextEvent("ehGeneral.dspLogin");
 			}
 
 			// check authorization
-			isAllowed = getService("permissions").isAllowed(event, session.userRole);
+			isAllowed = getService("permissions").isAllowed(event, oUser.getRole());
 			if(not isAllowed) {
 				setMessage("Warning","The requested action is restricted.");
 				setNextEvent("ehGeneral.dspMain");
@@ -50,9 +55,9 @@
 			// set generally available values on the request context
 			setValue("hostName", hostName);
 			setValue("applicationTitle", appTitle);
-			setValue("userInfo", session.userInfo);
-			setValue("userID", session.userID);
+			setValue("oUser", oUser);
 			setValue("versionTag", versionTag);
+			setValue("oContext", oContext);
 
 		} catch(any e) {
 			setMessage("error",e.message);
@@ -78,19 +83,18 @@
 		var oSiteDAO = 0;
 		var oUserDAO = 0;
 		var qrySites = 0;
-		var userInfo = getValue("userInfo");
-		var userID = getValue("userID");
+		var oUser = getValue("oUser");
 		var aPlugins = arrayNew(1);
 
 		try {
 			// if this is a regular user then go to sites screen
-			if(not userInfo.administrator) 	setNextEvent("ehSites.dspMain");
+			if(not oUser.getIsAdministrator()) 	setNextEvent("ehSites.dspMain");
 
 			oSiteDAO = getService("DAOFactory").getDAO("site");
 			oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 			
 			qrySites = oSiteDAO.getAll();
-			qryUserSites = oUserSiteDAO.search(userID = userID);
+			qryUserSites = oUserSiteDAO.search(userID = oUser.getID());
 
 			aPlugins = getService("plugins").getPluginsByType("admin");
 
@@ -134,6 +138,8 @@
 	<cfset var usr = getValue("usr")>
 	<cfset var pwd = getValue("pwd")>
 	<cfset var oUserDAO = 0>
+	<cfset var oUser = 0>
+	<cfset var oContext = 0>
 
 	<cfscript>
 		try {
@@ -144,10 +150,19 @@
 			if(qry.recordCount eq 0) 
 				throw("Invalid username/password","coldBricks.validation");
 			else {
-				session.userID = qry.userID;
-				session.userInfo = qry;
-				session.userRole = "user";
-				if(qry.administrator) session.userRole = listAppend(session.userRole,"admin");
+				oUser = createObject("component","ColdBricks.components.model.userBean").init();
+				oUser.setID(qry.userID);
+				oUser.setRole("user");
+				oUser.setFirstName(qry.firstName);
+				oUser.setLastName(qry.lastName);
+				oUser.setUsername(qry.username);
+				oUser.setPassword(qry.password);
+				oUser.setEmail(qry.email);
+				oUser.setIsAdministrator(qry.administrator);
+				if(qry.administrator) oUser.setRole( listAppend(oUser.getRole(),"admin") );
+				
+				oContext = getService("sessionContext").getContext();
+				oContext.setUser(oUser);
 			}
 
 			setNextEvent("ehGeneral.dspMain");
@@ -165,18 +180,14 @@
 </cffunction>
 
 <cffunction name="doLogoff">
-	<cfset session.userID = 0>
-	<cfset structDelete(session,"userInfo")>
-	<cfset structDelete(session,"context")>
-	<cfset structDelete(session,"ac")>
+	<cfset getService("sessionContext").flushContext()>
 	<cfset setNextEvent("ehGeneral.dspMain")>
 </cffunction>
 
 <cffunction name="doChangePassword">
 	<cfscript>
 		var oUserDAO = 0;
-		var userID = getValue("userID");
-		var userInfo = getValue("userInfo");
+		var oUser = getValue("oUser");
 		var curr_pwd = getValue("curr_pwd","");
 		var new_pwd = getValue("new_pwd","");
 		var new_pwd2 = getValue("new_pwd2","");
@@ -185,14 +196,16 @@
 			oUserDAO = getService("DAOFactory").getDAO("user");
 			
 			// validate record
-			if(curr_pwd neq userInfo.password) throw("Invalid password","coldBricks.validation");
+			if(curr_pwd neq oUser.getPassword()) throw("Invalid password","coldBricks.validation");
 			if(new_pwd neq new_pwd2) throw("Password confirmation did not match","coldBricks.validation");
 			if(len(new_pwd) lt 5) throw("Password must be at least 5 characters long","coldBricks.validation");
 			
 			// save record
-			oUserDAO.save(id = userID,
+			oUserDAO.save(id = oUser.getID(),
 							password = new_pwd
 							);
+
+			getService("sessionContext").getContext().setUser( oUser.setPassword(new_pwd) );
 
 			setMessage("info","Your password has been changed. You must log-in again for changes to take effect");
 		

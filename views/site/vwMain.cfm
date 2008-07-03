@@ -1,4 +1,4 @@
-<cfparam name="request.requestState.qrySite" default="">
+<cfparam name="request.requestState.oSiteInfo" default="">
 <cfparam name="request.requestState.aResourceTypes" default="">
 <cfparam name="request.requestState.qryResources" default="">
 <cfparam name="request.requestState.qryAccounts" default="">
@@ -9,7 +9,7 @@
 <cfparam name="request.requestState.firstTime" default="false">
 <cfparam name="request.requestState.aPlugins" default="">
 
-<cfset qrySite = request.requestState.qrySite>
+<cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset aResourceTypes = request.requestState.aResourceTypes>
 <cfset qryResources = request.requestState.qryResources>
 <cfset qryAccounts = request.requestState.qryAccounts>
@@ -19,6 +19,8 @@
 <cfset aPages = request.requestState.aPages>
 <cfset firstTime = request.requestState.firstTime>
 <cfset aPlugins = request.requestState.aPlugins>
+
+<cfset siteID = oSiteInfo.getID()>
 
 <!--- sort accounts --->
 <cfquery name="qryAccounts" dbtype="query">
@@ -179,8 +181,8 @@
 				</div>
 
 				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySite.siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
-					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySite.siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
+					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
+					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
 				</div>
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
@@ -239,22 +241,25 @@
 					<table class="dsb_siteSection" width="100%">
 						<tr>
 							<td width="70"><strong>Site Name:</strong></td>
-							<td>#qrySite.sitename#</td>
+							<td>#oSiteInfo.getsitename()#</td>
 						</tr>	
 						<tr>
 							<td width="70"><strong>Site URL:</strong></td>
-							<td>#qrySite.path#</td>
+							<td>#oSiteInfo.getpath()#</td>
 						</tr>
 						<tr>
 							<td width="70"><strong>Create Date:</strong></td>
-							<td>#qrySite.createdDate#</td>
+							<td>#oSiteInfo.getcreatedDate()#</td>
 						</tr>
 						<tr><td colspan="2">&nbsp;</td></tr>
 						<tr>
 							<td colspan="2"><strong>Notes:</strong></td>
 						</tr>
 						<tr>
-							<td colspan="2"><textarea name="notes" id="notesField">#qrySite.notes#</textarea></td>
+							<td colspan="2">
+								<cfset tmp = oSiteInfo.getnotes()>
+								<textarea name="notes" id="notesField">#tmp#</textarea>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
@@ -269,10 +274,5 @@
 		</td>
 	</tr>
 </table>
-			
-	
-	
-
-
 
 </cfoutput>

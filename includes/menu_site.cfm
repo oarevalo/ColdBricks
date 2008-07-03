@@ -1,8 +1,14 @@
 <cfparam name="request.requestState.event" default="">
 <cfparam name="attributes.title" default="">
 <cfparam name="attributes.icon" default="">
+<cfparam name="attributes.oContext" default="">
 
 <cfset event = request.requestState.event>
+<cfset oContext = request.requestState.oContext>
+
+<cfset oSiteInfo = oContext.getSiteInfo()>
+<cfset accountID = oContext.getAccountID()>
+<cfset accountName = oContext.getAccountName()>
 
 <cfscript>
 	aOptions = arrayNew(1);
@@ -80,15 +86,15 @@
 		#attributes.title#
 	</h2>
 	<div class="siteName" style="margin-bottom:15px;">
-		&raquo; Site: <a href="index.cfm?event=ehSite.dspMain">#session.context.siteInfo.siteName#</a>
+		&raquo; Site: <a href="index.cfm?event=ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
 		
-		<cfif structKeyExists(session.context,"accountID") and session.context.accountID neq "">
+		<cfif accountID neq "">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#session.context.accountID#&showAccount=true">#session.context.accountName#</a>
+			&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>
 		</cfif>
 		
-		<cfif structKeyExists(session.context,"page")>
-			<cfset oPage = session.context.page.getPage()>
+		<cfif oContext.hasPage()>
+			<cfset oPage = oContext.getPage().getPage()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#oPage.getTitle()#</a>
 		</cfif>

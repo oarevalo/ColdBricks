@@ -73,6 +73,12 @@
 			<init-param name="dataRoot" settingName="dataRoot" />
 			<init-param name="modelsPath">ColdBricks.components.model.</init-param>>
 		</service>
+
+		<!-- this service handles access to the session scope -->
+		<service name="sessionContext" class="ColdBricks.components.services.sessionContext">
+			<init-param name="contextBeanClass">ColdBricks.components.model.contextBean</init-param>
+			<init-param name="contextName">cbContext</init-param>
+		</service> 		
 	</services>
 </config>
 

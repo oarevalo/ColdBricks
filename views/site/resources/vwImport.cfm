@@ -1,9 +1,14 @@
 <cfparam name="request.requestState.qrySites" default="">
 <cfparam name="request.requestState.qryResources" default="">
 <cfparam name="request.requestState.sourceSiteID" default="">
+<cfparam name="request.requestState.oContext" default="">
+
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryResources = request.requestState.qryResources>
 <cfset sourceSiteID = request.requestState.sourceSiteID>
+<cfset oContext = request.requestState.oContext>
+
+<cfset oSiteInfo = oContext.getSiteInfo()>
 
 <!--- filter out any svn specific directories --->
 <cfif isquery(qryResources)>
@@ -19,7 +24,7 @@
 <cfquery name="qrySites" dbtype="query">
 	SELECT *
 		FROM qrySites
-		WHERE siteID <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#session.context.siteInfo.siteID#">
+		WHERE siteID <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oSiteInfo.getID()#">
 		ORDER BY siteName
 </cfquery>
 
