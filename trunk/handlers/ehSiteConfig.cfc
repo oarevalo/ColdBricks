@@ -11,9 +11,10 @@
 			var appRoot = 0;
 			var configFile = "";
 			var stAppConfig = structNew();
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
 				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
@@ -43,9 +44,10 @@
 			var hp = 0;
 			var appRoot = 0;
 			var configFile = "";
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/accounts-config.xml.cfm");
 
@@ -76,9 +78,10 @@
 			var oConfigBeanBase = 0;
 			var hp = 0;
 			var appRoot = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
 				oConfigBeanBase = getModulePropertiesConfigBean();
@@ -102,9 +105,10 @@
 			var configFile = getValue("configFile");
 			var hp = 0;
 			var appRoot = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 				
@@ -172,9 +176,10 @@
 			var propertyName = getValue("propertyName");
 			var propertyValue = getValue("propertyValue");
 			var oConfigBean = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
 				if(moduleName eq "") throw("The module name is required","validation");
@@ -208,9 +213,10 @@
 			var oldPropertyName = getValue("old_propertyName");
 			var index = getValue("index");
 			var oConfigBean = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
 				if(moduleName eq "") throw("The module name is required","validation");
@@ -248,9 +254,10 @@
 			var moduleName = getValue("moduleName");
 			var propertyName = getValue("propertyName");
 			var oConfigBean = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
 				oConfigBean = getModulePropertiesConfigBean(appRoot & "/Config/module-properties.xml");
@@ -284,9 +291,10 @@
 			var hp = 0;
 			var appRoot = 0;
 			var configFile = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
 
@@ -345,6 +353,7 @@
 			var hp = 0;
 			var appRoot = 0;
 			var configFile = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			var accountsRoot = getValue("accountsRoot");
 			var storageType = getValue("storageType");
@@ -360,7 +369,7 @@
 			var siteTemplate = getValue("siteTemplate");
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/accounts-config.xml.cfm");
 
@@ -424,9 +433,10 @@
 			var type = getValue("type");
 			var href = getValue("href");
 			var oConfigBean = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
 
@@ -476,9 +486,10 @@
 			var href_old = getValue("href_old");
 			var oConfigBean = 0;
 			var aRes = arrayNew(1);
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
 
@@ -533,9 +544,10 @@
 			var href = getValue("href");
 			var oConfigBean = 0;
 			var aRes = arrayNew(1);
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
 

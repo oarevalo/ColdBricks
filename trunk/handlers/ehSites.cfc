@@ -5,19 +5,18 @@
 			var oSiteDAO = 0;
 			var oUserDAO = 0;
 			var qrySites = 0;
-			var userInfo = getValue("userInfo");
-			var userID = getValue("userID");
+			var oUser = getValue("oUser");
 			
 			try {
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 				
 				qrySites = oSiteDAO.getAll();
-				qryUserSites = oUserSiteDAO.search(userID = userID);
+				qryUserSites = oUserSiteDAO.search(userID = oUser.getID());
 
 				// if this is a regular user that has only one site, then 
 				// go directly to that site
-				if(not userInfo.administrator and qryUserSites.recordCount eq 1)
+				if(not oUser.getIsAdministrator() and qryUserSites.recordCount eq 1)
 					setNextEvent("ehSite.doLoadSite","siteID=#qryUserSites.siteID#");
 
 				setValue("qrySites",qrySites);
@@ -101,6 +100,7 @@
 			var useDefault_rl = getValue("useDefault_rl",0);
 			var siteTemplate = getValue("siteTemplate");
 			var defaultAccount = "default";
+			var oUser = getValue("oUser");
 			
 			var siteTemplatePath = getSetting("siteTemplatesRoot");
 			
@@ -202,7 +202,7 @@
 				}
 
 				// create site record for coldbricks
-				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=session.userID, createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
+				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
 
 				setMessage("info", "The new site has been created.");
 
@@ -268,6 +268,7 @@
 		<cfscript>
 			var appRoot = getValue("appRoot");
 			var name = getValue("name");
+			var oUser = getValue("oUser");
 
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
@@ -299,7 +300,7 @@
 					throw("The given application directory does not point to a valid HomePortals application. Please check the directory and try again.","coldBricks.validation");
 
 				// create site record for coldbricks
-				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=session.userID, createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
+				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
 
 				setMessage("info", "The site has been registered.");
 				

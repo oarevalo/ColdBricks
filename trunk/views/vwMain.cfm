@@ -1,12 +1,10 @@
 <cfparam name="request.requestState.qrySites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
-<cfparam name="request.requestState.userInfo" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
 <cfparam name="request.requestState.aPlugins" default="">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
-<cfset userInfo = request.requestState.userInfo>
 <cfset loadSiteID = request.requestState.loadSiteID>
 <cfset aPlugins = request.requestState.aPlugins>
 

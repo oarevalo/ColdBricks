@@ -6,31 +6,36 @@
 			var firstTime = getValue("firstTime",false);	// this is to flag a site being opened for the first time after creation
 			var oSiteDAO = 0;
 			var qrySite = 0;
-			var loadSite = false;
 			var oHomePortals = 0;
+			var oSiteBean = 0;
+			var oContext = 0;
 			
 			try {
 				// if a siteID is given, then set it on the context struct
 				if(siteID neq "") {
-					session.context = structNew();
-					session.context.siteID = siteID;
-					loadSite = true;
-				} else {
-					setValue("siteID", session.context.siteID);
-					siteID = session.context.siteID;
-				}
 
-				oSiteDAO = getService("DAOFactory").getDAO("site");
+					// load site information
+					oSiteDAO = getService("DAOFactory").getDAO("site");
+					qrySite = oSiteDAO.get(siteID);
 
-				// get site information
-				qrySite = oSiteDAO.get(siteID);
+					// create site bean
+					oSiteBean = createObject("component","ColdBricks.components.model.siteBean").init();
+					oSiteBean.setID( siteID );
+					oSiteBean.setSiteName( qrySite.siteName );
+					oSiteBean.setPath( qrySite.path );
+					oSiteBean.setOwnerUserID( qrySite.ownerUserID );
+					oSiteBean.setCreatedDate( qrySite.createdDate );
+					oSiteBean.setNotes( qrySite.notes );
+				
+					// instantiate HomePortals application
+					oHomePortals = createObject("Component","Home.Components.homePortals").init(oSiteBean.getPath());
 
-				if(loadSite) {
-					oHomePortals = createObject("Component","Home.Components.homePortals").init(qrySite.path);
-
-					// prepare context and keep it in session
-					session.context.hp = oHomePortals;
-					session.context.siteInfo = qrySite;
+					// store site and app in session					
+					oContext = getService("sessionContext").getContext();
+					oContext.clearSiteContext();
+					oContext.setSiteInfo(oSiteBean);
+					oContext.setHomePortals(oHomePortals);
+					
 				}
 
 				setNextEvent("ehSite.dspMain","firstTime=#firstTime#");
@@ -56,14 +61,21 @@
 			var aPages = arrayNew(1);
 			var aPagesSorted = arrayNew(1);
 			var aPlugins = arrayNew(1);
+			var oContext = 0;
+			var oSiteInfo = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
+				// get site
+				oSiteInfo = oContext.getSiteInfo();
+				
 				// get resource types
 				oResourceLibrary = createObject("component","Home.Components.resourceLibrary");
 				aResourceTypes = oResourceLibrary.getResourceTypes();
 							
 				// create catalog object and instantiate for this page
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
 				
 				// get resources
@@ -73,7 +85,7 @@
 				qryAccounts = hp.getAccountsService().GetUsers();
 				
 				// if this is the hp engine, display a warning
-				if(session.context.siteInfo.siteName eq "homePortalsEngine")
+				if(oSiteInfo.getSiteName() eq "homePortalsEngine")
 					setMessage("warning","This is the runtime engine for the HomePortals framework.");
 
 				// if there is an account selected, get the account pages
@@ -91,7 +103,7 @@
 				
 				aPlugins = getService("plugins").getPluginsByType("site");
 				
-				setValue("qrySite", session.context.siteInfo);
+				setValue("oSiteInfo", oSiteInfo);
 				setValue("aResourceTypes", aResourceTypes);	
 				setValue("qryResources", qryResources);	
 				setValue("qryAccounts",  qryAccounts);
@@ -114,7 +126,9 @@
 		<cfscript>
 			var oSiteDAO = 0;
 			var notes = getValue("notes");
-			var siteID = session.context.siteID;
+			var oContext = getService("sessionContext").getContext();
+			var siteID = oContext.getSiteInfo().getID();
+			var qry = 0;
 
 			try {
 				oSiteDAO = getService("DAOFactory").getDAO("site");
@@ -123,7 +137,7 @@
 				oSiteDAO.save(id=siteID, notes=notes);
 				
 				// update site info in memory
-				session.context.siteInfo = oSiteDAO.get(siteID);
+				oContext.getSiteInfo().setNotes( oSiteDAO.get(siteID).notes );
 				
 				setMessage("info", "Notes saved");	
 				setNextEvent("ehSite.dspMain");
@@ -143,9 +157,12 @@
 			var pageHREF = "";
 			var hp = 0;
 			var qryAccount = 0;
+			var oContext = getService("sessionContext").getContext();
+			var oPage = 0;
+			var oSite = 0;
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// if not account given, then get the default account
 				if(account eq "") account = hp.getConfig().getDefaultAccount();
@@ -154,9 +171,10 @@
 				qryAccount = hp.getAccountsService().getAccountByUsername(account);
 				
 				// load account
-				session.context.accountID = qryAccount.userID;
-				session.context.accountName = account;
-				session.context.accountSite = createObject("component","Home.Components.site").init(account, hp.getAccountsService() );
+				oContext.setAccountID(qryAccount.userID);
+				oContext.setAccountName(account);
+				oSite = createObject("component","Home.Components.site").init(account, hp.getAccountsService() );
+				oContext.setAccountSite( oSite );
 
 				// if no page given, the load default page in account
 				if(page eq "")	
@@ -165,7 +183,8 @@
 					pageHREF = hp.getConfig().getAccountsRoot() & "/" & account & "/layouts/" & page;
 
 				// load page
-				session.context.page = createObject("component","Home.Components.page").init( pageHREF );
+				oPage = createObject("component","Home.Components.page").init( pageHREF );
+				oContext.setPage( oPage );
 			
 				setNextEvent("ehPage.dspMain");
 			

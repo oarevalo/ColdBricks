@@ -1,8 +1,8 @@
 <cfparam name="request.requestState.qryUsers" default="#queryNew("")#">
-<cfparam name="request.requestState.userInfo" default="#queryNew("")#">
+<cfparam name="request.requestState.oUser" default="0">
 
 <cfset qryUsers = request.requestState.qryUsers>
-<cfset userInfo = request.requestState.userInfo>
+<cfset oUser = request.requestState.oUser>
 
 <script type="text/javascript">
 	function confirmDelete(ID) {
@@ -46,7 +46,7 @@
 			</div>	
 
 			<p>
-				<cfif userInfo.administrator>
+				<cfif oUser.getIsAdministrator()>
 					<input type="button" 
 							name="btnCreate" 
 							value="Create New User" 

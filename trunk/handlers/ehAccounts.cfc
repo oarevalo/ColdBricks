@@ -6,14 +6,15 @@
 			var oAcc = 0;
 			var loaded = getValue("loaded",false);
 			var showAccount = getValue("showAccount", true );
+			var oContext = getService("sessionContext").getContext();
 						
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oAcc = hp.getAccountsService();
 				
-				if(showAccount and structKeyExists(session.context,"accountID") and session.context.accountID neq "") {
+				if(showAccount and oContext.getAccountID() neq "" and oContext.getAccountID() neq 0) {
 					setValue("showAccount", true );
-					setValue("accountID", session.context.accountID );
+					setValue("accountID", oContext.getAccountID() );
 				}
 				
 				setValue("appRoot", hp.getConfig().getAppRoot() );
@@ -40,32 +41,33 @@
 			var hp = 0;
 			var oAccountSite = 0;
 			var aPages = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 
 				// if a siteID is given, then set it on the context struct
 				if(accountID neq "") {
-					session.context.accountID = accountID;
-					session.context.accountName = accountName;
-					session.context.accountSite = createObject("component","Home.Components.site").init(accountName, hp.getAccountsService() );
+					oContext.setAccountID(accountID);
+					oContext.setAccountName(accountName);
+					oContext.setAccountSite(createObject("component","Home.Components.site").init(accountName, hp.getAccountsService() ));
 				} else {
-					setValue("accountID", session.context.accountID);
-					setValue("accountName", session.context.accountName);
+					setValue("accountID", oContext.getAccountID());
+					setValue("accountName", oContext.getAccountName());
 				}
 				
 				// get default view type
-				if(not structKeyExists(session.context,"accountViewType")) session.context.accountViewType = "details";
-				if(viewType neq "") session.context.accountViewType = viewType;
+				if(oContext.getAccountViewType() eq "") oContext.setAccountViewType("details");
+				if(viewType neq "") oContext.setAccountViewType(viewType);
 				
-				oAccountSite = session.context.accountSite;
+				oAccountSite = oContext.getAccountSite();
 				aPages = oAccountSite.getPages();
 
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("aPages",aPages);
 				setValue("siteTitle",oAccountSite.getSiteTitle());
-				setValue("viewType",session.context.accountViewType);
+				setValue("viewType",oContext.getAccountViewType());
 				
 				setView("site/accounts/vwAccount");
 				setLayout("Layout.None");
@@ -82,17 +84,18 @@
 			var hp = 0;
 			var numPages = 0;
 			var oAccountSite = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
-				hp = session.context.hp;
-				oAccountSite = session.context.accountSite;
+				hp = oContext.getHomePortals();
+				oAccountSite = oContext.getAccountSite();
 				
 				numPages = arrayLen(oAccountSite.getPages());
 
-				setValue("accountID", session.context.accountID);
-				setValue("accountName", session.context.accountName);
+				setValue("accountID", oContext.getAccountID());
+				setValue("accountName", oContext.getAccountName());
 				setValue("oAccountSite", oAccountSite);
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 				setValue("numPages", numPages);
@@ -115,12 +118,13 @@
 			var stPage = 0;
 			var page = getValue("page");
 			var pageHREF = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");	
 
-				hp = session.context.hp;
-				oAccountSite = session.context.accountSite;
+				hp = oContext.getHomePortals();
+				oAccountSite = oContext.getAccountSite();
 				aPages = oAccountSite.getPages();
 
 				if(page neq "") {
@@ -132,11 +136,11 @@
 					}
 				}
 
-				pageHREF = hp.getConfig().getAccountsRoot() & "/" & session.context.accountName & "/layouts/" & page;
+				pageHREF = hp.getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
 				
 				setValue("pageExists", fileExists(expandPath(pageHREF)));
 				setValue("stPage",stPage);
-				setValue("accountName", session.context.accountName);
+				setValue("accountName", oContext.getAccountName());
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setView("site/accounts/vwPageInfo");
 
@@ -155,15 +159,16 @@
 			var qryAccount = 0;
 			var aCatalogPages = 0;
 			var aPages = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a site cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
 				
 				// get site from session
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 
 				// get info from site
 				userID = oSite.getUserID();
@@ -196,15 +201,16 @@
 			var oSite = 0;
 			var pageHREF = getValue("pageHREF","");
 			var numCopies = getValue("numCopies",1);
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// check if we have a site cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
 				
 				// get site from session
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 
 				// get user
 				userID = oSite.getUserID();
@@ -243,9 +249,10 @@
 			var	qryAccount = 0;
 			var accountID = getValue("accountID",0);
 			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				
 				// get accounts info 
 				oAccounts = hp.getAccountsService();
@@ -292,9 +299,10 @@
 			var pwd_new2 = getValue("pwd_new2");
 			var changePwd = getValue("changePwd",0);
 			var NewUserID = "";
+			var oContext = getService("sessionContext").getContext();
 
 			try {
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
 
 				if(username eq "") throw("Username cannot be empty.","coldBricks.validation");
@@ -337,16 +345,17 @@
 		<cfscript>
 			var oAccounts = 0;
 			var accountID = getValue("accountID","");
+			var oContext = getService("sessionContext").getContext();
 
 			try {
 				if(accountID eq "") throw("Please indicate the user account to delete.","coldBricks.validation");
 				
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
 				oAccounts.delete(accountID);
 				
-				session.context.accountID = "";
-				session.context.accountSite = 0;
+				oContext.setAccountID("");
+				oContext.clearAccountSite();
 				
 				setMessage("info", "Account has been deleted.");
 				setNextEvent("ehAccounts.dspMain");
@@ -367,9 +376,10 @@
 		<cfscript>
 			var title = getValue("title","");
 			var oSite = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 				oSite.setSiteTitle(title);
 				setMessage("info", "Site title changed.");
 
@@ -385,8 +395,10 @@
 		<cfscript>
 			var page = getValue("page","");
 			var oSite = 0;
+			var oContext = getService("sessionContext").getContext();
+			
 			try {
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 				oSite.setDefaultPage(page);
 				setMessage("info", "Default page set.");
 
@@ -403,9 +415,10 @@
 			var page = getValue("page","");
 			var oSite = 0;
 			var userID = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 				for(i=1;i lte listLen(page);i=i+1) {
 					oSite.deletePage(listGetAt(page,i));
 				}
@@ -424,11 +437,12 @@
 			var pageName = getValue("pageName","");
 			var oSite = 0;
 			var tmpFirstPart = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// get site from session
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				oSite = oContext.getAccountSite();
 				
 				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
 				
@@ -448,7 +462,7 @@
 				oSite.addPage(pageName);
 
 				setMessage("info", "New page created.");
-				session.context.accountID = "";
+				oContext.setAccountID("");
 				setNextEvent("ehAccounts.dspMain");
 
 			} catch(coldBricks.validation e) {
@@ -470,11 +484,12 @@
 			var tokenize = getValue("tokenize",0);
 			var oSite = 0;
 			var userID = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// get site from session
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				oSite = oContext.getAccountSite();
 				
 				if(val(numCopies) eq 0) throw("The number of copies to make must be a valid number greater or equal to 1","coldBricks.validation");
 				if(tokenize eq 1) setNextEvent("ehAccounts.dspTokenizePage","pageHREF=#pageHREF#&numCopies=#numCopies#");
@@ -484,7 +499,7 @@
 				}
 				
 				setMessage("info", "Page copied.");
-				session.context.accountID = "";
+				oContext.setAccountID("");
 				setNextEvent("ehAccounts.dspMain");
 
 			} catch(coldBricks.validation e) {
@@ -505,14 +520,15 @@
 			var oSite = 0;
 			var hp = 0; var resRoot = "";
 			var oCatalog = 0; var oResourceBean = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// get site from session
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				oSite = oContext.getAccountSite();
 				
 				// get resource root
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				resRoot = hp.getConfig().getResourceLibraryPath();
 		
 				// get pagetemplate resource
@@ -523,7 +539,7 @@
 				oSite.addPageResource(oResourceBean, resRoot);
 				
 				setMessage("info", "Page added to site.");
-				session.context.accountID = "";
+				oContext.setAccountID("");
 				setNextEvent("ehAccounts.dspMain");
 
 			} catch(any e) {
@@ -549,11 +565,12 @@
 			var pageTitle = "";
 			var aStatus = arrayNew(1);
 			var st = structNew();
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// get site from session
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.","coldBricks.validation");
-				oSite = session.context.accountSite;
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.","coldBricks.validation");
+				oSite = oContext.getAccountSite();
 				
 				if(val(numCopies) eq 0) throw("Please enter a valid greater or equal to 1 for the number of copies to be made","coldBricks.validation");
 				if(val(numTokens) eq 0) throw("Please enter a valid greater or equal to 1 for the number of tokens to use","coldBricks.validation");
@@ -611,10 +628,10 @@
 				
 				
 				// check if we have a site cfc loaded 
-				if(Not structKeyExists(session.context,"accountSite")) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
 				
 				// get site from session
-				oSite = session.context.accountSite;
+				oSite = oContext.getAccountSite();
 
 				// find account
 				qryAccount = oSite.getAccount().getAccountByUserID( oSite.getUserID() );
@@ -625,7 +642,7 @@
 				setValue("numCopies", numCopies);
 				setValue("numTokens", numTokens);
 				setValue("qryAccount", qryAccount);
-				setValue("appRoot", session.context.hp.getConfig().getAppRoot() );
+				setValue("appRoot", oContext.getHomePortals().getConfig().getAppRoot() );
 				setView("site/accounts/vwTokenizationStatus");
 				
 			} catch(coldBricks.validation e) {

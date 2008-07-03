@@ -1,13 +1,15 @@
 <cfparam name="request.requestState.qrySites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
-<cfparam name="request.requestState.userInfo" default="#queryNew("")#">
+<cfparam name="request.requestState.oUser" default="">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
-<cfset userInfo = request.requestState.userInfo>
+<cfset oUser = request.requestState.oUser>
+
+<cfset isAdmin = oUser.getIsAdministrator()>
 
 <!--- if not admin user, then show only allowed sites --->
-<cfif not userInfo.administrator>
+<cfif not isAdmin>
 	<cfquery name="qrySites" dbtype="query">
 		SELECT *
 			FROM qrySites, qryUserSites
@@ -30,7 +32,7 @@
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 		<td>
-			<cfif userInfo.administrator and qrySitesCheck.recordCount eq 0>
+			<cfif isAdmin and qrySitesCheck.recordCount eq 0>
 				<div class="helpBox" style="margin-top:10px;padding:10px;border:1px solid silver;">
 					<img src="images/quick_start.gif" style="margin-bottom:5px;"><br>
 					It seems that you have no sites configured to manage with ColdBricks.
@@ -65,7 +67,7 @@
 							<td align="center">
 								<a href="#tmpRefreshURL#" target="_blank"><img src="images/arrow_refresh.png" align="absmiddle" border="0" alt="Reset Site" title="Reset Site"></a>
 								<a href="index.cfm?event=ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" ><img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"></a>
-								<cfif userInfo.administrator>
+								<cfif isAdmin>
 									<a href="index.cfm?event=ehSites.dspDelete&siteID=#qrySites.siteID#"><img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"></a>
 								</cfif>
 								<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
@@ -79,7 +81,7 @@
 			</div>	
 
 			<p>
-				<cfif userInfo.administrator>
+				<cfif isAdmin>
 					<input type="button" 
 							name="btnCreate" 
 							value="Create New Site" 
@@ -94,7 +96,7 @@
 				<b>Legend:</b> &nbsp;&nbsp;
 				<img src="images/arrow_refresh.png" align="absmiddle" border="0" alt="Reset Site" title="Reset Site"> Reset Site &nbsp;&nbsp;
 				<img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"> Open Site &nbsp;&nbsp;
-				<cfif userInfo.administrator>
+				<cfif isAdmin>
 					<img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"> Delete Site&nbsp;&nbsp;
 				</cfif>
 				<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Create Achive of Site &nbsp;&nbsp;

@@ -7,13 +7,14 @@
 			var aResourceTypes = arrayNew(1);
 			var qryResources = queryNew(""); 
 			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			// get resource types
 			oResourceLibrary = createObject("component","Home.Components.resourceLibrary");
 			aResourceTypes = oResourceLibrary.getResourceTypes();
 						
 			// create catalog object and instantiate for this page
-			hp = session.context.hp;
+			hp = oContext.getHomePortals();
 			oCatalog = hp.getCatalog();
 			
 			// rebuild catalog if requested
@@ -44,11 +45,12 @@
 			var oResourceBean = 0;
 			var oHelpDAO = 0;
 			var qryHelp = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
 
 				qryResources = oCatalog.getResourcesByType(resourceType);
@@ -130,11 +132,12 @@
 			var resourceType = getValue("resourceType","");
 			var oHelpDAO = 0;
 			var qryHelp = 0;
+			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
 
 				// get resources
@@ -173,7 +176,7 @@
 	
 	<cffunction name="dspImport">
 		<cfscript>
-			var userInfo = getValue("userInfo");
+			var oUser = getValue("oUser");
 			var sourceSiteID = getValue("sourceSiteID");
 			var oResourceLibrary = 0;
 			var resRoot = "";
@@ -182,7 +185,7 @@
 			
 			oSiteDAO = getService("DAOFactory").getDAO("site");
 
-			if(userInfo.administrator) {
+			if(oUser.getIsAdministrator()) {
 				// administrator can import from all sites
 				qrySites = oSiteDAO.getAll();
 			} else {	
@@ -220,9 +223,10 @@
 			var oResourceBean = 0;
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {		
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 
 				if(name eq "") throw("The resource name cannot be empty","coldBricks.validation"); 
 				if(body eq "" and resourceType neq "feed") throw("The resource body cannot be empty","coldBricks.validation"); 
@@ -274,9 +278,10 @@
 			var pkg = getValue("pkg","");
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {		
-				hp = session.context.hp;
+				hp = oContext.getHomePortals();
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 
 				/// remove resource from the library
@@ -299,10 +304,11 @@
 	
 	<cffunction name="doImport">
 		<cfscript>
-			var userInfo = getValue("userInfo");
+			var oUser = getValue("oUser");
 			var sourceSiteID = getValue("sourceSiteID");
 			var lstPackages = getValue("lstPackages");
 			var resRootSrc = ""; var resRootTgt = "";
+			var oContext = getService("sessionContext").getContext();
 			
 			try {				
 				oSiteDAO = getService("DAOFactory").getDAO("site");
@@ -314,7 +320,7 @@
 				resRootSrc = getResourceLibraryPathFromSite(qrySourceSite.path);
 	
 				// resource library root from target site
-				resRootTgt = getResourceLibraryPathFromSite(session.context.siteInfo.path);
+				resRootTgt = getResourceLibraryPathFromSite(oContext.getSiteInfo().getPath());
 	
 				// copy packages
 				for(i=1;i lte listLen(lstPackages);i=i+1) {

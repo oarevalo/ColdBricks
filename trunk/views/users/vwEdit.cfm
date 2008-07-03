@@ -1,13 +1,11 @@
 <cfparam name="request.requestState.qryUser" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUser" default="#queryNew("")#">
-<cfparam name="request.requestState.userInfo" default="#queryNew("")#">
 <cfparam name="request.requestState.editUserID" default="0">
 
 <cfset qryUser = request.requestState.qryUser>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset qrySites = request.requestState.qrySites>
-<cfset userInfo = request.requestState.userInfo>
 <cfset editUserID = request.requestState.editUserID>
 
 <cfparam name="username" default="#qryUser.username#">
