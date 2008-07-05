@@ -42,7 +42,7 @@ function enableUpdateModuleOrder() {
 
 function updateModuleOrder() {
 	var newLayout = DragDrop.serData('g1');
-	document.location = "?event=ehPage.doUpdateModuleOrder&layout=" + newLayout;	
+	document.location = "?event=ehPage.doUpdateModuleOrder&newlayout=" + newLayout;	
 }
 
 function showLayoutSectionTitles(display) {

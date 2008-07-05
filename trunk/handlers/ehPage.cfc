@@ -481,7 +481,7 @@
 	
 	<cffunction name="doUpdateModuleOrder" access="public" returntype="void">
 		<cfscript>
-			var layout = getValue("layout","");
+			var layout = getValue("newlayout","");
 			var oPage = 0;
 			var oContext = getService("sessionContext").getContext();
 			
