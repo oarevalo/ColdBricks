@@ -87,6 +87,9 @@
 		var aPlugins = arrayNew(1);
 
 		try {
+			// clear site from context (releases memory allocated to the site context)
+			getService("sessionContext").getContext().clearSiteContext();
+			
 			// if this is a regular user then go to sites screen
 			if(not oUser.getIsAdministrator()) 	setNextEvent("ehSites.dspMain");
 
