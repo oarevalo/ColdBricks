@@ -39,6 +39,10 @@
 						return true;
 					}
 				}
+				
+				// permission is explicitly assigned to another role, so is not allowed
+				return false;
+				
 			} else {
 			
 				// if specific resource not found, then check for alternat forms token.* or *.token
@@ -69,7 +73,7 @@
 			}
 
 			// resource is not defined, return default permission
-			return false;
+			return (variables.defaultAction eq "allow");
 		</cfscript>
 	</cffunction>
 
