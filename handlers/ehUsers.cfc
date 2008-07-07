@@ -26,6 +26,7 @@
 			var oUserSiteDAO = 0;
 			var oSiteDAO = 0;
 			var qryUser = 0;
+			var qryRoles = 0;
 			var editUserID = getValue("editUserID",0);
 			
 			try {
@@ -36,10 +37,12 @@
 				qryUser = oUserDAO.get(editUserID);
 				qryUserSites = oUserSiteDAO.search(userID = editUserID);
 				qrySites = oSiteDAO.getAll();
+				qryRoles = getService("permissions").getRoles();
 
 				setValue("qryUser",qryUser);
 				setValue("qryUserSites",qryUserSites);
 				setValue("qrySites",qrySites);
+				setValue("qryRoles",qryRoles);
 				setView("users/vwEdit");
 			
 			} catch(any e) {
@@ -60,8 +63,8 @@
 			var firstName = getValue("firstName","");
 			var lastName = getValue("lastName","");
 			var email = getValue("email","");
-			var administrator = getValue("administrator",0);
 			var lstSiteID = getValue("lstSiteID","");
+			var role = getValue("role","");
 			
 			try {
 				oUserDAO = getService("DAOFactory").getDAO("user");
@@ -71,6 +74,7 @@
 				if(username eq "") throw("Username cannot be empty","coldBricks.validation");
 				if(password eq "") throw("Password cannot be empty","coldBricks.validation");
 				if(len(password) lt 5) throw("Password must be at least 5 characters long","coldBricks.validation");
+				if(role eq "") throw("User role cannot be empty","coldBricks.validation");
 				
 				// save record
 				editUserID = oUserDAO.save(id = editUserID,
@@ -79,7 +83,7 @@
 											firstName = firstName,
 											lastName = lastName,
 											email = email,
-											administrator = administrator
+											role = role
 											);
 
 				// save sites

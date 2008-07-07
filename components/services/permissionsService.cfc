@@ -3,6 +3,7 @@
 	<!--- this structure is used to store all resources that should be controlled --->
 	<cfset variables.mapResToRoles = structNew()>
 	<cfset variables.mapRoleToRes = structNew()>
+	<cfset variables.qryRoles = queryNew("name,label,description")>
 	
 	<!--- this is the default action when a resource has not been defined --->
 	<cfset variables.defaultAction = "deny">
@@ -31,6 +32,9 @@
 				// check if this is an open resource
 				if(variables.mapResToRoles[arguments.resource] eq "") return true;
 				
+				// check if this is a resource open to all roles
+				if(variables.mapResToRoles[arguments.resource] eq "*" and arguments.lstRoles neq "") return true;
+				
 				// check each role
 				for(i=1; i lte listLen(arguments.lstRoles);i=i+1) {
 					role = listGetAt(arguments.lstRoles,i);
@@ -45,7 +49,7 @@
 				
 			} else {
 			
-				// if specific resource not found, then check for alternat forms token.* or *.token
+				// if specific resource not found, then check for alternate forms token.* or *.token
 				if(listLen(arguments.resource,".") eq 2) {
 					token1 = listFirst(arguments.resource,".");
 					token2 = listLast(arguments.resource,".");
@@ -95,11 +99,26 @@
 			if(xmlDoc.xmlRoot.xmlName neq "permissions-config")
 				throw("Invalid config file");
 				
+			// get default permission	
 			if(structKeyExists(xmlDoc.xmlRoot.xmlAttributes,"default"))
 				variables.defaultAction = xmlDoc.xmlRoot.xmlAttributes.default;
+			
+			// create a query of defined roles
+			if(structKeyExists(xmlDoc.xmlRoot,"roles")) {
+				for(i=1;i lte arrayLen(xmlDoc.xmlRoot.roles.xmlChildren);i=i+1) {
+					xmlNode = xmlDoc.xmlRoot.roles.xmlChildren[i];
+					if(xmlNode.xmlName eq "role") {
+						queryAddRow(variables.qryRoles,1);
+						querySetCell(variables.qryRoles, "name", xmlNode.xmlAttributes.name);
+						querySetCell(variables.qryRoles, "label", xmlNode.xmlAttributes.label);
+						querySetCell(variables.qryRoles, "description", xmlNode.xmlText);
+					}
+				}
+			}
 				
-			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.xmlChildren);i=i+1) {
-				xmlNode = xmlDoc.xmlRoot.xmlChildren[i];
+			// parse roles/permissions assignments	
+			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.resources.xmlChildren);i=i+1) {
+				xmlNode = xmlDoc.xmlRoot.resources.xmlChildren[i];
 				if(xmlNode.xmlName eq "resource") {
 					tmpResID = xmlNode.xmlAttributes.id;
 					tmpRoles = xmlNode.xmlAttributes.roles;
@@ -118,6 +137,10 @@
 				}
 			}	
 		</cfscript>
+	</cffunction>
+
+	<cffunction name="getRoles" access="public" returntype="query">
+		<cfreturn variables.qryRoles>
 	</cffunction>
 
 	<cffunction name="throw" access="private" hint="Facade for cfthrow">
