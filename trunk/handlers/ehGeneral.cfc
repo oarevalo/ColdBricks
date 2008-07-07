@@ -49,7 +49,13 @@
 			isAllowed = getService("permissions").isAllowed(event, oUser.getRole());
 			if(not isAllowed) {
 				setMessage("Warning","The requested action is restricted.");
-				setNextEvent("ehGeneral.dspMain");
+				
+				// check if we can send the user to the admin dashboard page
+				// if not, then send them to the login page
+				if(getService("permissions").isAllowed("ehGeneral.dspMain", oUser.getRole()))
+					setNextEvent("ehGeneral.dspMain");
+				else
+					setNextEvent("ehGeneral.dspLogin");
 			}
 
 			// set generally available values on the request context
@@ -155,14 +161,24 @@
 			else {
 				oUser = createObject("component","ColdBricks.components.model.userBean").init();
 				oUser.setID(qry.userID);
-				oUser.setRole("user");
 				oUser.setFirstName(qry.firstName);
 				oUser.setLastName(qry.lastName);
 				oUser.setUsername(qry.username);
 				oUser.setPassword(qry.password);
 				oUser.setEmail(qry.email);
-				oUser.setIsAdministrator(qry.administrator);
-				if(qry.administrator) oUser.setRole( listAppend(oUser.getRole(),"admin") );
+
+				// if user has a valid role then use that, otherwise
+				// check for legacy admin flag
+				// ** this is added for compatibility with 1.0
+				if(isDefined("qry.role") and qry.role neq "") {
+					oUser.setRole(qry.role);
+					oUser.setIsAdministrator(qry.role eq "admin");
+				} else {
+					oUser.setRole("mngr");
+					if(isDefined("qry.administrator") and isBoolean(qry.administrator)) {
+						if(qry.administrator) oUser.setRole( "admin" );
+					}
+				}
 				
 				oContext = getService("sessionContext").getContext();
 				oContext.setUser(oUser);

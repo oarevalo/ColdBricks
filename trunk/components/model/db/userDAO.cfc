@@ -9,7 +9,7 @@
 		<cfset addColumn("firstName", "cf_sql_varchar")>
 		<cfset addColumn("lastName", "cf_sql_varchar")>
 		<cfset addColumn("email", "cf_sql_varchar")>
-		<cfset addColumn("administrator", "cf_sql_numeric")>
+		<cfset addColumn("role", "cf_sql_varchar")>
 	</cffunction>
 
 </cfcomponent>

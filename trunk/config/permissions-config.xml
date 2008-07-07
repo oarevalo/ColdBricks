@@ -1,28 +1,62 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<permissions-config default="allow">
-	<!-- open to anyone -->
-	<resource id="ehGeneral.dspLogin" roles="" />
-	<resource id="ehGeneral.doLogin" roles="" />
-	<resource id="ehGeneral.dspRegister" roles="" />
-	<resource id="ehGeneral.doRegister" roles="" />
-	
-	<!-- allowed to general users -->
-	<resource id="ehGeneral.*" roles="user" />
-	<resource id="ehSite.*" roles="user" />
-	<resource id="ehAccounts.*" roles="user" />
-	<resource id="ehPage.*" roles="user" />
-	<resource id="ehResources.*" roles="user" />
-	<resource id="ehSiteConfig.*" roles="user" />
-	<resource id="ehSiteMap.*" roles="user" />
-	<resource id="ehSites.dspMain" roles="user" />
-	<resource id="ehSites.doArchiveSite" roles="user" />
+<permissions-config default="deny">
+	<!-- permissions-config.xml
+		
+		This file defines the permissions to access the different aspects
+		of the application. Each resource maps to a specific event handler
+		and indicates which roles are allowed to access such event handler.
+		
+		Event handlers are declared using the resource tag. The ID attribute
+		identifies a specific event handler. The star (*) is a wildcard that
+		is used to mean any value.
+		
+		To flag a resource as open to everyone (with or without a role) use
+		an empty string for the roles attribute.
+		
+		To flag a resource as open to only users that have an assigned role,
+		use a star (*) for the roles attribute.
+		
+		If an event handler is not found, then the attribute 'default' on the
+		root element will determine if the user will be allowed or denied access
+		to such resource. Possible values are "allow" or "deny".
+		
+		The roles section is only used to declare the list of roles that the
+		application can use. The host application can call the method getRoles()
+		on the permissions service to obtain this list.
+	-->
 
-	<!-- allowed only to admin users -->
-	<resource id="ehSites.*" roles="admin" />
-	<resource id="ehSettings.*" roles="admin" />
-	<resource id="ehUsers.*" roles="admin" />
-	<resource id="ehSetup.*" roles="admin" />
+	<roles>
+		<role name="admin" label="Administrator" />
+		<role name="mngr" label="Site Manager" />
+		<role name="edit" label="Site Editor" />
+		<role name="cont" label="Site Contributor" />
+		<role name="plugins" label="Plugins Only" />
+	</roles>
 	
-	<resource id="test.*.*" roles="admin" />
+	<resources>
+		<!-- open to anyone -->
+		<resource id="ehGeneral.*" roles="" />
+		
+		<!-- allowed to all users -->
+		<resource id="ehGeneral.dspMain" roles="*" />
+		<resource id="ehSites.dspMain" roles="*" />
+		<resource id="ehSite.*" roles="*" />
+
+		<!-- allowed to administrator, managers and editors -->
+		<resource id="ehAccounts.*" roles="admin,mngr,edit" />
+		<resource id="ehPage.*" roles="admin,mngr,edit" />
+		<resource id="ehResources.*" roles="admin,mngr,edit,cont" />
+
+		<!-- allowed to administrators and managers -->
+		<resource id="ehSiteConfig.*" roles="admin,mngr" />
+		<resource id="ehSiteMap.*" roles="admin,mngr" />
+		<resource id="ehSites.doArchiveSite" roles="admin,mngr" />
+	
+		<!-- allowed only to administrators -->
+		<resource id="ehSites.*" roles="admin" />
+		<resource id="ehSettings.*" roles="admin" />
+		<resource id="ehUsers.*" roles="admin" />
+		<resource id="ehSetup.*" roles="admin" />
+	</resources>
 	
 </permissions-config>

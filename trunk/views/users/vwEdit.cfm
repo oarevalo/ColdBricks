@@ -1,11 +1,13 @@
 <cfparam name="request.requestState.qryUser" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUser" default="#queryNew("")#">
+<cfparam name="request.requestState.qryRoles" default="#queryNew("")#">
 <cfparam name="request.requestState.editUserID" default="0">
 
 <cfset qryUser = request.requestState.qryUser>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset qrySites = request.requestState.qrySites>
+<cfset qryRoles = request.requestState.qryRoles>
 <cfset editUserID = request.requestState.editUserID>
 
 <cfparam name="username" default="#qryUser.username#">
@@ -13,9 +15,20 @@
 <cfparam name="firstName" default="#qryUser.firstName#">
 <cfparam name="lastName" default="#qryUser.lastName#">
 <cfparam name="email" default="#qryUser.email#">
-<cfparam name="administrator" default="#qryUser.administrator#">
+<cfparam name="role" default="#qryUser.role#">
 
-<cfset isAdmin = isBoolean(administrator) and administrator>
+<cfif isDefined("qryUser.administrator") and qryUser.role eq "">
+	<cfif isBoolean(qryUser.administrator) and qryUser.administrator>
+		<cfset tmpRole = "admin">
+	<cfelse>
+		<cfset tmpRole = "mngr">
+	</cfif>
+<cfelse>
+	<cfset tmpRole = qryUser.role>
+</cfif>
+
+<cfset isAdmin = (tmpRole eq "admin")>
+
 
 <h2>Add/Edit User</h2>
 
@@ -45,9 +58,13 @@
 			<td><input type="text" name="email" value="#email#" size="50" class="formField"></td>
 		</tr>
 		<tr>
-			<td><strong>Administrator:</strong></td>
+			<td><strong>Role:</strong></td>
 			<td>
-				<input type="checkbox" name="administrator" value="1" <cfif isAdmin>checked</cfif>>
+				<select name="role" class="formField">
+					<cfloop query="qryRoles">
+						<option value="#qryRoles.name#" <cfif tmpRole eq qryRoles.name>selected</cfif>>#qryRoles.label#</option>
+					</cfloop>
+				</select>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
