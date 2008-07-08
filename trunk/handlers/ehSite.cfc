@@ -65,6 +65,7 @@
 			var oSiteInfo = 0;
 			var stModAccess = structNew();
 			var oUser = getValue("oUser");
+			var oUserPluginDAO = 0;
 			
 			try {
 				oContext = getService("sessionContext").getContext();
@@ -105,6 +106,8 @@
 
 				// get installed site plugins
 				aPlugins = getService("plugins").getPluginsByType("site");
+				oUserPluginDAO = getService("DAOFactory").getDAO("userPlugin");
+				qryUserPlugins = oUserPluginDAO.search(userID = oUser.getID());
 				
 				setValue("oSiteInfo", oSiteInfo);
 				setValue("aResourceTypes", aResourceTypes);	
@@ -114,6 +117,7 @@
 				setValue("defaultAccount", hp.getConfig().getDefaultAccount() );
 				setValue("aPages", aPagesSorted );
 				setValue("aPlugins",aPlugins);
+				setValue("qryUserPlugins",qryUserPlugins);
 				
 				setView("site/vwMain");
 			

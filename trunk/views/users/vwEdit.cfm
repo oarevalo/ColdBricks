@@ -1,14 +1,21 @@
 <cfparam name="request.requestState.qryUser" default="#queryNew("")#">
-<cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
-<cfparam name="request.requestState.qryUser" default="#queryNew("")#">
+<cfparam name="request.requestState.qrySites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryRoles" default="#queryNew("")#">
+<cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
+<cfparam name="request.requestState.qryUserPlugins" default="#queryNew("")#">
 <cfparam name="request.requestState.editUserID" default="0">
+<cfparam name="request.requestState.aPlugins" default="#arrayNew(1)#">
 
 <cfset qryUser = request.requestState.qryUser>
-<cfset qryUserSites = request.requestState.qryUserSites>
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryRoles = request.requestState.qryRoles>
+<cfset qryUserSites = request.requestState.qryUserSites>
+<cfset qryUserPlugins = request.requestState.qryUserPlugins>
 <cfset editUserID = request.requestState.editUserID>
+<cfset aPlugins = request.requestState.aPlugins>
+
+<cfset lstUserSites = valueList(qryUserSites.siteID)>
+<cfset lstUserPlugins = valueList(qryUserPlugins.pluginID)>
 
 <cfparam name="username" default="#qryUser.username#">
 <cfparam name="password" default="#qryUser.password#">
@@ -21,6 +28,15 @@
 
 <script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 <script type="text/javascript">
+	function changeRole(role) {
+		showHelp(role);
+		
+		d1 = document.getElementById("lstSiteID");
+		d2 = document.getElementById("lstPluginID");
+
+		d1.disabled = (role=="admin");
+		d2.disabled = (role=="admin" || role=="mngr");
+	}
 	function showHelp(key) {
 		var helpText = "";
 		<cfoutput query="qryRoles">
@@ -77,10 +93,12 @@
 						<td>Email:</td>
 						<td><input type="text" name="email" value="#email#" size="50" class="formField"></td>
 					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr valign="top">
 						<td><strong>Role:</strong></td>
 						<td>
-							<select name="role" class="formField" onchange="showHelp(this.value)">
+							<select name="role" class="formField" onchange="changeRole(this.value)">
+								<option value=""></option>
 								<cfloop query="qryRoles">
 									<option value="#qryRoles.name#" <cfif role eq qryRoles.name>selected</cfif>>#qryRoles.label#</option>
 								</cfloop>
@@ -88,19 +106,34 @@
 							<div id="helpTextDiv" style="display:none;"></div>
 						</td>
 					</tr>
-					<cfif not isAdmin>
-					<tr valign="top">
-						<td><strong>Allowed Sites:</strong></td>
-						<td>
-							<cfset lstUserSites = valueList(qryUserSites.siteID)>
-							<select name="lstSiteID" multiple="true" size="5" class="formField">
-								<cfloop query="qrySites">
-									<option value="#qrySites.siteID#" <cfif listFind(lstUserSites,qrySites.siteID)>selected</cfif>>#qrySites.siteName#</option>
-								</cfloop>
-							</select>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td colspan="2">
+							<table width="100%">
+								<tr>
+									<td width="50%">
+										<strong>Allowed Sites:</strong><br>
+										<select id="lstSiteID" name="lstSiteID" multiple="true" size="5" class="formField" style="width:200px;">
+											<cfloop query="qrySites">
+												<option value="#qrySites.siteID#" <cfif listFind(lstUserSites,qrySites.siteID)>selected</cfif>>#qrySites.siteName#</option>
+											</cfloop>
+										</select>
+									</td>
+									<td>
+										<strong>Allowed Plugins:</strong>
+										<select id="lstPluginID" name="lstPluginID" multiple="true" size="5" class="formField" style="width:200px;">
+											<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
+												<cfset oPlugin = aPlugins[i]>
+												<cfset tmpID = oPlugin.getID()>
+												<option value="#tmpID#" <cfif listFind(lstUserPlugins,tmpID)>selected</cfif>>#oPlugin.getName()#</option>
+											</cfloop>
+										</select>
+									</td>
+								</tr>
+							</table>
 						</td>
 					</tr>
-					</cfif>
+					<tr><td colspan="2">&nbsp;</td></tr>
 				</table>
 				* Fields in <b>bold</b> are required.
 				<br><br>
@@ -110,21 +143,26 @@
 		</td>
 		
 		<td width="250">
-			<div class="cp_sectionBox helpBox"  style="margin:10px;margin-right:0px;margin-bottom:0px;height:400px;line-height:18px;width:250px;">
+			<div class="cp_sectionBox helpBox"  style="margin:0px;height:450px;line-height:18px;width:250px;">
 				<div style="margin:10px;">
 					<h2>Add/Edit Users</h2>
 					<p>
 						This screen allows you to either create new ColdBricks users or modify details for existing users.
 					</p>
 					<p>
-						<strong>User Roles:</strong><br>
-						All users must be assigned to a role. The role a user belongs determines the ColdBricks features available to the user.
+						<strong>&raquo; User Roles:</strong><br>
+						Roles determine the ColdBricks features available to a user. All users must be assigned to a role. 
 					</p>
 					<p>
-						<strong>Allowed Sites:</strong><br>
+						<strong>&raquo; Allowed Sites:</strong><br>
 						All non-administrator users must be granted explicit access to one or more sites. Use the select field to choose all sites
-						the given user will be allowed to enter. To select more than one record hold the CTRL key while selecting the items from
-						the list.
+						the given user will be allowed to access. 
+					</p>
+					<p>
+						<strong>&raquo; Allowed Plugins:</strong><br />
+						Plugins are extensions mechanisms that add functionality to ColdBricks. Non-administrator users
+						must be given access to individual plugins in order to use them. Site Managers automatically
+						are allowed to access all 'site' plugins.
 					</p>
 				</div>
 			</div>
@@ -134,7 +172,7 @@
 
 <cfif role neq "">
 	<script type="text/javascript">
-		showHelp('#role#');
+		changeRole('#role#');
 	</script>
 </cfif>
 

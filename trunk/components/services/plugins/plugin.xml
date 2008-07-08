@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- plugin.xml
+
+This is a sample plugin descriptor file.
+Plugins are individual directories within the plugins root dir.
+Each plugin dir must contain a plugin.xml in order to be a valid
+plugin
+-->
+
+<plugin id="pluginID" name="A Sample Plugin" version="1.0">
+
+	<!-- Required elements -->
+
+	<!-- defaultEvent 
+		This is the event the entry point for the module.
+	-->
+	<defaultEvent>ehGeneral.dspMain</defaultEvent>
+
+	<!-- Plugin Type 
+		Indicates the type of plugin. The valid types are:
+		admin: Use this for administrative plugins. They are accessible
+			through the admin dashboard and are concerned with server-wide tasks
+			or tasks that involve all sites on a server.
+		site: Use this for plugins that affect only one site at a time.
+			They are accessible through the Site Dashboard.
+	-->
+	<type>admin</type>	
+
+
+
+	<!-- Optional elements -->
+	
+	<!-- Plugin description -->
+	<description>This is a sample plugin</description>
+	
+	<!-- Plugin icon image 
+		This is an image that will be used to represent the plugin. The path
+		to the image must be relative to the directory containing the plugin
+	-->
+	<iconSrc>images/icon.png</iconSrc>
+
+	<!-- Minimum version of the host application that can use this plugin -->
+	<minHostVersion>1.1.0</minHostVersion>
+
+	<!-- Author information -->
+	<author>ColdBricks</author>
+	<authorURL>http://www.coldbricks.com</authorURL>
+
+	<!-- URL where to obtain further documentation -->
+	<docURL>http://www.coldbricks.com</docURL>
+</plugin>

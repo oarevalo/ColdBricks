@@ -30,21 +30,27 @@
 			var qryUser = 0;
 			var qryRoles = 0;
 			var editUserID = getValue("editUserID",0);
+			var aPlugins = arrayNew(1);
 			
 			try {
 				oUserDAO = getService("DAOFactory").getDAO("user");
-				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 				oSiteDAO = getService("DAOFactory").getDAO("site");
+				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
+				oUserPluginDAO = getService("DAOFactory").getDAO("userPlugin");
 				
 				qryUser = oUserDAO.get(editUserID);
-				qryUserSites = oUserSiteDAO.search(userID = editUserID);
 				qrySites = oSiteDAO.getAll();
+				qryUserSites = oUserSiteDAO.search(userID = editUserID);
+				qryUserPlugins = oUserPluginDAO.search(userID = editUserID);
 				qryRoles = getService("permissions").getRoles();
+				aPlugins = getService("plugins").getPlugins();
 
 				setValue("qryUser",qryUser);
-				setValue("qryUserSites",qryUserSites);
 				setValue("qrySites",qrySites);
+				setValue("qryUserSites",qryUserSites);
+				setValue("qryUserPlugins",qryUserPlugins);
 				setValue("qryRoles",qryRoles);
+				setValue("aPlugins",aPlugins);
 				setView("users/vwEdit");
 			
 			} catch(any e) {
@@ -59,6 +65,7 @@
 		<cfscript>
 			var oUserDAO = 0;
 			var oUserSiteDAO = 0;
+			var oUserPluginDAO = 0;
 			var editUserID = getValue("editUserID",0);
 			var username = getValue("username","");
 			var password = getValue("password","");
@@ -66,11 +73,14 @@
 			var lastName = getValue("lastName","");
 			var email = getValue("email","");
 			var lstSiteID = getValue("lstSiteID","");
+			var lstPluginID = getValue("lstPluginID","");
 			var role = getValue("role","");
+			var qry = 0;
 			
 			try {
 				oUserDAO = getService("DAOFactory").getDAO("user");
 				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
+				oUserPluginDAO = getService("DAOFactory").getDAO("userPlugin");
 				
 				// validate record
 				if(username eq "") throw("Username cannot be empty","coldBricks.validation");
@@ -89,10 +99,10 @@
 											);
 
 				// save sites
-				qryUserSites = oUserSiteDAO.search(userID = editUserID);
-				if(qryUserSites.recordCount gt 0) {
-					for(i=1;i lte qryUserSites.recordCount;i=i+1) {
-						oUserSiteDAO.delete( qryUserSites.userSiteID[i] );
+				qry = oUserSiteDAO.search(userID = editUserID);
+				if(qry.recordCount gt 0) {
+					for(i=1;i lte qry.recordCount;i=i+1) {
+						oUserSiteDAO.delete( qry.userSiteID[i] );
 					}
 				}
 	
@@ -101,6 +111,22 @@
 						oUserSiteDAO.save( id = "",
 										userID = editUserID,
 										siteID = listGetAt(lstSiteID,i) );
+					}
+				}
+			
+				// save plugins
+				qry = oUserPluginDAO.search(userID = editUserID);
+				if(qry.recordCount gt 0) {
+					for(i=1;i lte qry.recordCount;i=i+1) {
+						oUserPluginDAO.delete( qry.userPluginID[i] );
+					}
+				}
+	
+				if(lstPluginID neq "") {
+					for(i=1;i lte listLen(lstPluginID);i=i+1) {
+						oUserPluginDAO.save( id = "",
+											userID = editUserID,
+											pluginID = listGetAt(lstPluginID,i) );
 					}
 				}
 			

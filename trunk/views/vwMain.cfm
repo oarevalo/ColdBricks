@@ -42,6 +42,9 @@
 				<cfset oPlugin = aPlugins[i]>
 				<cfset tmpID = oPlugin.getID()>
 				<cfset tmpDesc = oPlugin.getDescription()>
+				<cfif tmpDesc eq "">
+					<cfset tmpDesc = "<em>No description available</em>">
+				</cfif>
 				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
 			</cfloop>
 			</cfoutput>
