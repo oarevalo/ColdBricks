@@ -21,6 +21,8 @@
 
 				setValue("qrySites",qrySites);
 				setValue("qryUserSites",qryUserSites);
+				setValue("cbPageTitle", "Site Management");
+				setValue("cbPageIcon", "images/folder_desktop_48x48.png");
 				setView("sites/vwMain");
 			
 			} catch(any e) {
@@ -46,6 +48,8 @@
 			
 		<cfset setValue("siteTemplatesRoot", siteTemplatesRoot)>
 		<cfset setValue("qrySiteTemplates", qrySiteTemplates)>
+		<cfset setValue("cbPageTitle", "Site Management > Create New Site")>
+		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
 		
 		<cfif getValue("ls",0) eq 1>
 			<cfset setMessage("warning","The Free Trial edition of ColdBricks only allow to manage up to 2 sites. To create or register unlimited sites please purchase a license")>
@@ -69,6 +73,8 @@
 					throw("Sites located at the root level cannot be deleted from within this application.","coldBricks.validation");
 
 				setValue("qrySite",qrySite);
+				setValue("cbPageTitle", "Site Management > Confirm Site Deletion");
+				setValue("cbPageIcon", "images/folder_desktop_48x48.png");
 				setView("sites/vwDelete");
 
 			} catch(coldBricks.validation e) {
@@ -87,6 +93,8 @@
 		<cfif getValue("ls",0) eq 1>
 			<cfset setMessage("warning","The Free Trial edition of ColdBricks only allow to manage up to 2 sites. To create or register unlimited sites please purchase a license")>
 		</cfif>
+		<cfset setValue("cbPageTitle", "Site Management > Register Existing Site")>
+		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
 		<cfset setView("sites/vwRegister")>
 	</cffunction>
 

@@ -1,8 +1,6 @@
 <cfparam name="request.requestState.oUser" default="">
 <cfset oUser = request.requestState.oUser>
 
-<h2>Change Password</h2>
-
 <cfoutput>
 <form name="frm" method="post" action="index.cfm">
 	<input type="hidden" name="event" value="ehGeneral.doChangePassword">

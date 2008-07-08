@@ -7,6 +7,10 @@
 			setValue("appRoot", hp.getConfig().getAppRoot() );
 			setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 			setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
+			setValue("cbPageTitle", "SiteMap Tool");
+			setValue("cbPageIcon", "Globe_48x48.png");
+			setValue("cbShowSiteMenu", true);
+
 			setView("site/siteMap/vwMain");
 		</cfscript>
 	</cffunction>

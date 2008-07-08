@@ -28,8 +28,6 @@
 		ORDER BY siteName
 </cfquery>
 
-<cfmodule template="../../../includes/menu_site.cfm" title="Site Resources > Import Packages">
-	
 <form name="frmImport" method="post" action="index.cfm">
 	<input type="hidden" name="event" value="ehResources.doImport">
 	<cfoutput><input type="hidden" name="sourceSiteID" value="#sourceSiteID#"></cfoutput>

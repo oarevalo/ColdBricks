@@ -8,6 +8,9 @@
 		<cfscript>
 			try {
 				setView("settings/vwMain");
+				setValue("cbPageTitle", "Server Settings");
+				setValue("cbPageIcon", "images/configure_48x48.png");
+
 				setValue("oHomePortalsConfigBean", getHomePortalsConfigBean() );
 				
 			} catch(any e) {
@@ -23,6 +26,8 @@
 			try {
 				setView("settings/vwAccounts");
 				setValue("oAccountsConfigBean", getAccountsConfigBean() );
+				setValue("cbPageTitle", "Server Settings");
+				setValue("cbPageIcon", "images/configure_48x48.png");
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -37,6 +42,8 @@
 			try {
 				setView("settings/vwModuleProperties");
 				setValue("oModulePropertiesConfigBean", getModulePropertiesConfigBean() );
+				setValue("cbPageTitle", "Server Settings");
+				setValue("cbPageIcon", "images/configure_48x48.png");
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -78,6 +85,8 @@
 				setValue("aConfigFiles", aConfigFiles);
 				setValue("configFile", configFile);
 				setView("settings/vwEditXML");
+				setValue("cbPageTitle", "Server Settings");
+				setValue("cbPageIcon", "images/configure_48x48.png");
 				
 			} catch(any e) {
 				setMessage("error",e.message);

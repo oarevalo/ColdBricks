@@ -62,9 +62,6 @@
 }
 </style>
 
-
-<h2><img src="images/users_48x48.png" align="absmiddle"> User Management</h2>
-
 <cfoutput>
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">

@@ -1,5 +1,3 @@
-<h2>Register Existing Site</h2>
-
 <cfoutput>
 <form name="frm" method="post" action="index.cfm">
 	<input type="hidden" name="event" value="ehSites.doRegister">

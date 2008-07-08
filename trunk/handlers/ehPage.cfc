@@ -31,6 +31,10 @@
 				setValue("oSite", oContext.getAccountSite());
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
+
+				setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getPage().getTitle()#");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwPage");
 
@@ -128,6 +132,10 @@
 				setValue("stModule", stModule);
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
 				setValue("missingModuleBean", missingModuleBean);
+
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Edit Module");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwEditModuleProperties");
 
@@ -166,6 +174,10 @@
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
+
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Event Handlers");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwEventHandlers");
 
@@ -199,6 +211,10 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Page XML");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwEditXML");
 
@@ -232,6 +248,10 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Stylesheet");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwEditCSS");
 
@@ -297,6 +317,10 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > User-Defined Meta Tags");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwMetaTags");
 

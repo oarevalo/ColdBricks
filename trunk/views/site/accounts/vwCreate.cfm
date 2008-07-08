@@ -7,8 +7,6 @@
 <cfparam name="email" default="">
 
 <cfoutput>
-	<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > Create New Account">
-
 	<br>
 	<form name="frm" action="index.cfm" method="post">
 		<input type="hidden" name="event" value="ehAccounts.doSave">

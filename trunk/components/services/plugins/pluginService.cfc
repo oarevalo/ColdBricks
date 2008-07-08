@@ -98,8 +98,20 @@
 		<cfif structKeyExists(variables.pluginsMap, arguments.id)>
 			<cfreturn variables.pluginsMap[arguments.id]>
 		<cfelse>
-			<cfthrow message="pluginService.pluginNotFound">
+			<cfthrow message="Plugin not found" type="pluginService.pluginNotFound">
 		</cfif>
+	</cffunction>
+
+	<cffunction name="getPluginByModuleName" access="public" returntype="plugin">
+		<cfargument name="moduleName" type="string" required="true">
+		<cfset var plugin = "">
+		<cfset var found = false>
+		<cfloop collection="#variables.pluginsMap#" item="plugin">
+			<cfif variables.pluginsMap[plugin].getModuleName() eq arguments.moduleName>
+				<cfreturn variables.pluginsMap[plugin]>
+			</cfif>
+		</cfloop>
+		<cfthrow message="Plugin not found" type="pluginService.pluginNotFound">
 	</cffunction>
 
 	<cffunction name="getPlugins" access="public" returntype="array">

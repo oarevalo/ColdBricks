@@ -27,7 +27,6 @@
 <cfhtmlhead text="#tmpHTML#">
 
 <cfoutput>
-<cfmodule template="../../../includes/menu_site.cfm" title="SiteMap Tool" icon="Globe_48x48.png">
 
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">

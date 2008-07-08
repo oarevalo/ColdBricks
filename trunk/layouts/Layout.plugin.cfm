@@ -2,16 +2,35 @@
 
 <cfparam name="request.requestState.applicationTitle" default="#application.applicationName#">
 <cfparam name="request.requestState.viewTemplatePath" default="">
+
 <cfparam name="request.requestState.cbPageTitle" default="">
 <cfparam name="request.requestState.cbPageIcon" default="">
 <cfparam name="request.requestState.cbShowSiteMenu" default="">
+
+<cfparam name="request.requestState.oPlugin" default="">
+
+<cfset oPlugin = request.requestState.oPlugin>
+<cfset cbPageTitle = request.requestState.cbPageTitle>
+<cfset cbPageIcon = request.requestState.cbPageIcon>
+<cfset cbShowSiteMenu = request.requestState.cbShowSiteMenu>
+
+<cfif cbPageTitle eq "">
+	<cfset cbPageTitle = oPlugin.getName()>
+</cfif>
+
+<cfif cbPageIcon eq "" and oPlugin.getIconSrc() neq "">
+	<cfset cbPageIcon = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
+<cfelse>
+	<cfset cbPageIcon = "images/cb-blocks.png">
+</cfif>
 
 <cfoutput>
 	<html>
 		<head>
 			<title>
 				#request.requestState.applicationTitle# 
-				<cfif request.requestState.cbPageTitle neq "">:: #request.requestState.cbPageTitle#</cfif>
+				:: Plugin
+				<cfif cbPageTitle neq "">:: #cbPageTitle#</cfif>
 			</title>
 			<link href="includes/css/style.css" rel="stylesheet" type="text/css">
 			<script type="text/javascript" src="includes/js/main.js"></script>
@@ -28,21 +47,21 @@
 					<cfinclude template="../includes/message.cfm">
 					
 					<table style="width:95%;font-size:11px;" align="center">
-						<tr>	
+						<tr valign="top">
 							<td>
-								<cfif isBoolean(request.requestState.cbShowSiteMenu) and request.requestState.cbShowSiteMenu>
+								<cfif oPlugin.getType() eq "site">
 									<cfmodule template="../includes/menu_site.cfm" 
-												title="#request.requestState.cbPageTitle#" 
-												icon="#request.requestState.cbPageIcon#">
+												title="#cbPageTitle#" 
+												icon="#cbPageIcon#">
 								<cfelse>
-									<cfif request.requestState.cbPageTitle neq "">
+									<cfif cbPageTitle neq "">
 										<h2>
-											<cfif request.requestState.cbPageIcon neq ""><img src="#request.requestState.cbPageIcon#" align="absmiddle"></cfif>
-											#request.requestState.cbPageTitle#
+											<cfif cbPageIcon neq ""><img src="#cbPageIcon#" align="absmiddle"></cfif>
+											#cbPageTitle#
 										</h2>
 									</cfif>
 								</cfif>
-								
+
 								<cfif request.requestState.viewTemplatePath neq "">
 									<cfinclude template="#request.requestState.viewTemplatePath#">
 								</cfif>
@@ -55,4 +74,3 @@
 		</body>
 	</html>
 </cfoutput>
-

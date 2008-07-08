@@ -37,7 +37,6 @@
 
 
 <cfoutput>
-<h2>Create New Site</h2>
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 		<td>

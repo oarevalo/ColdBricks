@@ -41,7 +41,6 @@
 
 
 <cfoutput>
-<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > #owner# > #title# > Stylesheet">
 
 <table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="8" cellspacing="0">
 	<tr>

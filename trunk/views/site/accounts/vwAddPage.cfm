@@ -23,8 +23,6 @@
 </cfquery>
 
 <cfoutput>
-	<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > #qryAccount.username# > Add Page">
-
 	<p>
 	<fieldset class="formEdit">
 		<legend><img src="images/page.png" align="absmiddle"> <b>Add a Blank Page</b></legend>

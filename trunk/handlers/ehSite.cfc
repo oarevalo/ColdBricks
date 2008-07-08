@@ -118,7 +118,7 @@
 				setValue("aPages", aPagesSorted );
 				setValue("aPlugins",aPlugins);
 				setValue("qryUserPlugins",qryUserPlugins);
-				
+				setValue("cbPageTitle", "Site Dashboard");
 				setView("site/vwMain");
 			
 			} catch(any e) {
