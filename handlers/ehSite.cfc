@@ -63,6 +63,8 @@
 			var aPlugins = arrayNew(1);
 			var oContext = 0;
 			var oSiteInfo = 0;
+			var stModAccess = structNew();
+			var oUser = getValue("oUser");
 			
 			try {
 				oContext = getService("sessionContext").getContext();
@@ -100,7 +102,8 @@
 					arraySort(aPagesSorted,"textnocase","asc");
 
 				}
-				
+
+				// get installed site plugins
 				aPlugins = getService("plugins").getPluginsByType("site");
 				
 				setValue("oSiteInfo", oSiteInfo);

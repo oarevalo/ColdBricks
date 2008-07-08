@@ -1,8 +1,17 @@
 <cfparam name="request.requestState.qryUsers" default="#queryNew("")#">
 <cfparam name="request.requestState.oUser" default="0">
+<cfparam name="request.requestState.qryRoles" default="#queryNew("")#">
 
 <cfset qryUsers = request.requestState.qryUsers>
 <cfset oUser = request.requestState.oUser>
+<cfset qryRoles = request.requestState.qryRoles>
+
+<cfquery name="qryUsers" dbtype="query">
+	SELECT qryUsers.*, qryRoles.label as roleLabel
+		FROM qryUsers, qryRoles
+		WHERE qryUsers.role = qryRoles.name
+		
+</cfquery>
 
 <script type="text/javascript">
 	function confirmDelete(ID) {
@@ -24,7 +33,7 @@
 						<th width="20">No</th>
 						<th width="150">Username</th>
 						<th>Full Name</th>
-						<th>Administrator?</th>
+						<th>Role</th>
 						<th width="70">Action</th>
 					</tr>
 					<cfoutput query="qryUsers">
@@ -32,7 +41,7 @@
 							<td>#qryUsers.currentRow#</td>
 							<td><a href="index.cfm?event=ehUsers.dspEdit&editUserID=#qryUsers.userID#">#qryUsers.username#</a></td>
 							<td>#qryUsers.lastname#, #qryUsers.firstname#</td></td>
-							<td align="center" width="100">#yesNoFormat(qryUsers.administrator)#</td>
+							<td align="center" width="100">#qryUsers.roleLabel#</td>
 							<td align="center">
 								<a href="index.cfm?event=ehUsers.dspEdit&editUserID=#qryUsers.userID#"><img src="images/user_edit.png" align="absmiddle" border="0" alt="Edit User" title="Edit User"></a>
 								<a onclick="confirmDelete('#qryUsers.userID#')" href="##"><img src="images/user_delete.png" align="absmiddle" border="0" alt="Delete User" title="Delete User"></a>

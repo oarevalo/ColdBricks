@@ -28,7 +28,7 @@
 	oMiscDAO.save(id="", name="fr", value="1-2-3456");
 
 	// user data
-	userID = oUserDAO.save(id="", username="admin", firstName="Administrator", lastName="", administrator=1, password="admin", email="info@coldbricks.com");
+	userID = oUserDAO.save(id="", username="admin", firstName="Administrator", lastName="", role="admin", password="admin", email="youremail@yourdomain.com");
 
 	// sites data
 	oSiteDAO.save(id="", path="/Home", ownerUserID=userID, siteName="HomePortalsEngine", createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");

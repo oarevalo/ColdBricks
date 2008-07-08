@@ -8,8 +8,10 @@
 			try {
 				oUserDAO = getService("DAOFactory").getDAO("user");
 				qryUsers = oUserDAO.getAll();
+				qryRoles = getService("permissions").getRoles();
 
 				setValue("qryUsers",qryUsers);
+				setValue("qryRoles",qryRoles);
 				setView("users/vwMain");
 			
 			} catch(any e) {

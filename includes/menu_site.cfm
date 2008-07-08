@@ -2,13 +2,17 @@
 <cfparam name="attributes.title" default="">
 <cfparam name="attributes.icon" default="">
 <cfparam name="attributes.oContext" default="">
+<cfparam name="attributes.oUser" default="">
 
 <cfset event = request.requestState.event>
 <cfset oContext = request.requestState.oContext>
+<cfset oUser = request.requestState.oUser>
 
 <cfset oSiteInfo = oContext.getSiteInfo()>
 <cfset accountID = oContext.getAccountID()>
 <cfset accountName = oContext.getAccountName()>
+
+<cfset stAccessMap = oUser.getAccessMap()>
 
 <cfscript>
 	aOptions = arrayNew(1);
@@ -20,6 +24,7 @@
 	st.hint = "Site Dashboard";
 	st.icon = "images/house.png";
 	st.titleIcon = "";
+	st.hasAccess = true;
 	arrayAppend(aOptions,st);
 	
 	st = structNew();
@@ -29,6 +34,7 @@
 	st.hint = "Site and account management";
 	st.icon = "images/users_24x24.png";
 	st.titleIcon = "images/users_48x48.png";
+	st.hasAccess = stAccessMap.accounts;
 	arrayAppend(aOptions,st);
 
 	st = structNew();
@@ -38,6 +44,7 @@
 	st.hint = "Manage the site's resource library";
 	st.icon = "images/folder2_yellow_32x32.png";
 	st.titleicon = "images/folder2_yellow_48x48.png";
+	st.hasAccess = stAccessMap.resources;
 	arrayAppend(aOptions,st);
 
 	st = structNew();
@@ -47,6 +54,7 @@
 	st.hint = "SiteMap tool";
 	st.icon = "images/Globe_22x22.png";
 	st.titleicon = "images/Globe_48x48.png";
+	st.hasAccess = stAccessMap.siteMap;
 	arrayAppend(aOptions,st);
 
 	st = structNew();
@@ -56,6 +64,7 @@
 	st.hint = "View and edit configuration files";
 	st.icon = "images/configure_22x22.png";
 	st.titleicon = "images/configure_48x48.png";
+	st.hasAccess = stAccessMap.siteSettings;
 	arrayAppend(aOptions,st);
 
 </cfscript>
@@ -68,14 +77,16 @@
 				<cfif st.selected>
 					<cfset attributes.icon = st.titleicon>
 				</cfif>
-				[ 
-					<img src="#st.icon#" align="absmiddle" title="#st.Hint#" alt="#st.Hint#">
-					<a href="index.cfm?event=#st.event#" 
-						<cfif st.selected>style="font-weight:bold;"</cfif>
-						title="#st.Hint#" alt="#st.Hint#"
-						>#st.label#</a> 
-				]
-				&nbsp;&nbsp;
+				<cfif st.hasAccess>
+					[ 
+						<img src="#st.icon#" align="absmiddle" title="#st.Hint#" alt="#st.Hint#">
+						<a href="index.cfm?event=#st.event#" 
+							<cfif st.selected>style="font-weight:bold;"</cfif>
+							title="#st.Hint#" alt="#st.Hint#"
+							>#st.label#</a> 
+					]
+					&nbsp;&nbsp;
+				</cfif>
 			</cfloop>	
 		</div>
 		
@@ -90,13 +101,21 @@
 		
 		<cfif accountID neq "">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>
+			<cfif stAccessMap.accounts>
+				&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>
+			<cfelse>
+				&raquo; Account: #accountName#
+			</cfif>
 		</cfif>
 		
 		<cfif oContext.hasPage()>
 			<cfset oPage = oContext.getPage().getPage()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#oPage.getTitle()#</a>
+			<cfif stAccessMap.pages>
+				&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#oPage.getTitle()#</a>
+			<cfelse>
+				&raquo; Page: #oPage.getTitle()#
+			</cfif>
 		</cfif>
 	</div>
 </cfoutput>

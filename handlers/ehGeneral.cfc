@@ -27,7 +27,6 @@
 			oContext.setUser(oUser);
 		}
 		
-
 		try {
 			// check for data directory
 			checkDataRoot();
@@ -149,6 +148,9 @@
 	<cfset var oUserDAO = 0>
 	<cfset var oUser = 0>
 	<cfset var oContext = 0>
+	<cfset var stAccessMap = structNew()>
+	<cfset var qryRoles = queryNew("")>
+	<Cfset var i = 0>
 
 	<cfscript>
 		try {
@@ -159,6 +161,7 @@
 			if(qry.recordCount eq 0) 
 				throw("Invalid username/password","coldBricks.validation");
 			else {
+				// build user bean
 				oUser = createObject("component","ColdBricks.components.model.userBean").init();
 				oUser.setID(qry.userID);
 				oUser.setFirstName(qry.firstName);
@@ -166,17 +169,30 @@
 				oUser.setUsername(qry.username);
 				oUser.setPassword(qry.password);
 				oUser.setEmail(qry.email);
-
-				// if user has a valid role then use that, otherwise
-				// check for legacy admin flag
-				// ** this is added for compatibility with 1.0
-				if(isDefined("qry.role") and qry.role neq "") {
-					oUser.setRole(qry.role);
-					oUser.setIsAdministrator(qry.role eq "admin");
-				} else {
-					oUser.setRole("mngr");
-					if(isDefined("qry.administrator") and isBoolean(qry.administrator)) {
-						if(qry.administrator) oUser.setRole( "admin" );
+				oUser.setRole(qry.role);
+				oUser.setRoleLabel(qry.role);
+				oUser.setIsAdministrator(qry.role eq "admin");
+				
+				// build access map
+				stAccessMap.sites = getService("permissions").isAllowed("ehSites.*", oUser.getRole());
+				stAccessMap.settings = getService("permissions").isAllowed("ehSettings.*", oUser.getRole());
+				stAccessMap.users = getService("permissions").isAllowed("ehUsers.*", oUser.getRole());
+				stAccessMap.setup = getService("permissions").isAllowed("ehSetup.*", oUser.getRole());
+				stAccessMap.pages = getService("permissions").isAllowed("ehPage.*", oUser.getRole());
+				stAccessMap.accounts = getService("permissions").isAllowed("ehAccounts.*", oUser.getRole());
+				stAccessMap.resources = getService("permissions").isAllowed("ehResources.*", oUser.getRole());
+				stAccessMap.siteSettings = getService("permissions").isAllowed("ehSiteConfig.*", oUser.getRole());
+				stAccessMap.siteMap = getService("permissions").isAllowed("ehSiteMap.*", oUser.getRole());
+				stAccessMap.downloadSite = getService("permissions").isAllowed("ehSites.doArchiveSite", oUser.getRole());
+				stAccessMap.saveNotes = getService("permissions").isAllowed("ehSite.doSaveNotes", oUser.getRole());				
+				oUser.setAccessMap(stAccessMap);
+				
+				// get role label
+				qryRoles = getService("permissions").getRoles();
+				for(i=1;i lte qryRoles.recordCount;i=i+1) {
+					if(qryRoles.name[i] eq qry.role) {
+						oUser.setRoleLabel(qryRoles.label[i]);
+						break;
 					}
 				}
 				
@@ -244,12 +260,19 @@
 
 <cffunction name="setupDataDirectory" access="private" returntype="void">
 	<cfargument name="dataRoot" type="string" required="true">
+	<cfargument name="deleteExisting" type="boolean" required="false" default="false" hint="indicates whether to delete the data root dir in case it already exists">
+
 	<cfset var tmpFile = "">
 	<cfset var pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator")>
 	
 	<!--- check for invalid names --->
 	<cfif listFindNoCase("/,/Home,/ColdBricks",arguments.dataRoot) or arguments.dataRoot eq "">
 		<cfthrow message="The dataRoot property is invalid." type="ColdBricks.setup.invalidDataRoot">
+	</cfif>
+	
+	<!--- check if we want to delete the existing directory --->
+	<cfif arguments.deleteExisting and directoryExists(expandPath(arguments.dataRoot))>
+		<cfdirectory action="delete" directory="#expandPath(arguments.dataRoot)#" recurse="true">
 	</cfif>
 	
 	<cfif not directoryExists(expandPath(arguments.dataRoot))>
@@ -274,6 +297,12 @@
 			redirect("index.cfm");
 		}
 	</cfscript>
+</cffunction>
+
+<cffunction name="reinstall" access="private" returntype="void">
+	<cfset var dataRoot = getSetting("dataRoot")>
+	<cfset setupDataDirectory(dataRoot, true)>
+	<cfset redirect("index.cfm")>
 </cffunction>
 
 </cfcomponent>
