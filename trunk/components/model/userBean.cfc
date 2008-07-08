@@ -3,12 +3,14 @@
 	<cfset variables.instance = structNew()>
 	<cfset variables.instance.ID = "">
 	<cfset variables.instance.Role = "">
+	<cfset variables.instance.roleLabel = "">
 	<cfset variables.instance.Username = "">
 	<cfset variables.instance.Password = "">
 	<cfset variables.instance.FirstName = "">
 	<cfset variables.instance.LastName = "">
 	<cfset variables.instance.email = "">
 	<cfset variables.instance.IsAdministrator = false>
+	<cfset variables.instance.AccessMap = structNew()>
 	
 	<cffunction name="init" access="public" returntype="userBean">
 		<cfreturn this>
@@ -30,6 +32,15 @@
 	<cffunction name="setRole" access="public" returntype="void">
 		<cfargument name="data" type="string" required="true">
 		<cfset variables.instance.Role = arguments.data>
+	</cffunction>
+	
+	<cffunction name="getroleLabel" access="public" returntype="string">
+		<cfreturn variables.instance.roleLabel>
+	</cffunction>
+
+	<cffunction name="setroleLabel" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.roleLabel = arguments.data>
 	</cffunction>
 	
 	<cffunction name="getUsername" access="public" returntype="string">
@@ -84,6 +95,15 @@
 	<cffunction name="setIsAdministrator" access="public" returntype="void">
 		<cfargument name="data" type="boolean" required="true">
 		<cfset variables.instance.IsAdministrator = arguments.data>
+	</cffunction>
+
+	<cffunction name="getAccessMap" access="public" returntype="struct">
+		<cfreturn variables.instance.AccessMap>
+	</cffunction>
+
+	<cffunction name="setAccessMap" access="public" returntype="void">
+		<cfargument name="data" type="struct" required="true">
+		<cfset variables.instance.AccessMap = arguments.data>
 	</cffunction>
 	
 </cfcomponent>

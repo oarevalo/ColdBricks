@@ -8,6 +8,7 @@
 <cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.firstTime" default="false">
 <cfparam name="request.requestState.aPlugins" default="">
+<cfparam name="request.requestState.oUser" default="">
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset aResourceTypes = request.requestState.aResourceTypes>
@@ -19,8 +20,10 @@
 <cfset aPages = request.requestState.aPages>
 <cfset firstTime = request.requestState.firstTime>
 <cfset aPlugins = request.requestState.aPlugins>
+<cfset oUser = request.requestState.oUser>
 
 <cfset siteID = oSiteInfo.getID()>
+<cfset stAccessMap = oUser.getAccessMap()>
 
 <!--- sort accounts --->
 <cfquery name="qryAccounts" dbtype="query">
@@ -100,41 +103,45 @@
 				</div>	
 			</div>
 			
-			<div id="dsb_siteAccounts" style="margin-top:25px;">
-				<div class="dsb_secTitle">Accounts Summary:</div>
-				<div class="dsb_siteSection">
-					<strong>No of Accounts:</strong> #qryAccounts.recordCount#<br><br>
-					<strong>Default Account:</strong> #defaultAccount#<br><br>
-					<img src="images/add.png" align="absmiddle"> <a href="index.cfm?event=ehAccounts.dspCreate"> Create Account</a>
+			<cfif stAccessMap.accounts>
+				<div id="dsb_siteAccounts" style="margin-top:25px;">
+					<div class="dsb_secTitle">Accounts Summary:</div>
+					<div class="dsb_siteSection">
+						<strong>No of Accounts:</strong> #qryAccounts.recordCount#<br><br>
+						<strong>Default Account:</strong> #defaultAccount#<br><br>
+						<img src="images/add.png" align="absmiddle"> <a href="index.cfm?event=ehAccounts.dspCreate"> Create Account</a>
+					</div>
 				</div>
-			</div>
+			</cfif>
 			
-			<div id="dsb_siteResources" style="margin-top:35px;">
-				<div class="dsb_secTitle">Resources Summary:</div>
-				<div class="dsb_siteSection">
-					<div style="margin-bottom:5px;">
-						<img src="images/brick.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=module" class="resTreeItem" id="resTreeItem_module">Modules</a> (<cfif structKeyExists(stResCount,"module")>#stResCount.module#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/folder_page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=content" class="resTreeItem" id="resTreeItem_content">Content</a> (<cfif structKeyExists(stResCount,"content")>#stResCount.content#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/feed-icon16x16.gif" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=feed" class="resTreeItem" id="resTreeItem_feed">Feeds</a> (<cfif structKeyExists(stResCount,"feed")>#stResCount.feed#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/css.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=skin" class="resTreeItem" id="resTreeItem_skin">Skins</a> (<cfif structKeyExists(stResCount,"skin")>#stResCount.skin#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=page" class="resTreeItem" id="resTreeItem_page">Pages</a> (<cfif structKeyExists(stResCount,"page")>#stResCount.page#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/page_code.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=pageTemplate" class="resTreeItem" id="resTreeItem_pageTemplate"> Page Templates</a> (<cfif structKeyExists(stResCount,"pageTemplate")>#stResCount.pageTemplate#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/html.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=html" class="resTreeItem" id="resTreeItem_html">HTML</a> (<cfif structKeyExists(stResCount,"html")>#stResCount.html#<cfelse>0</cfif>)
+			<cfif stAccessMap.resources>
+				<div id="dsb_siteResources" style="margin-top:35px;">
+					<div class="dsb_secTitle">Resources Summary:</div>
+					<div class="dsb_siteSection">
+						<div style="margin-bottom:5px;">
+							<img src="images/brick.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=module" class="resTreeItem" id="resTreeItem_module">Modules</a> (<cfif structKeyExists(stResCount,"module")>#stResCount.module#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/folder_page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=content" class="resTreeItem" id="resTreeItem_content">Content</a> (<cfif structKeyExists(stResCount,"content")>#stResCount.content#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/feed-icon16x16.gif" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=feed" class="resTreeItem" id="resTreeItem_feed">Feeds</a> (<cfif structKeyExists(stResCount,"feed")>#stResCount.feed#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/css.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=skin" class="resTreeItem" id="resTreeItem_skin">Skins</a> (<cfif structKeyExists(stResCount,"skin")>#stResCount.skin#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=page" class="resTreeItem" id="resTreeItem_page">Pages</a> (<cfif structKeyExists(stResCount,"page")>#stResCount.page#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/page_code.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=pageTemplate" class="resTreeItem" id="resTreeItem_pageTemplate"> Page Templates</a> (<cfif structKeyExists(stResCount,"pageTemplate")>#stResCount.pageTemplate#<cfelse>0</cfif>)
+						</div>
+						<div style="margin-bottom:5px;">
+							<img src="images/html.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=html" class="resTreeItem" id="resTreeItem_html">HTML</a> (<cfif structKeyExists(stResCount,"html")>#stResCount.html#<cfelse>0</cfif>)
+						</div>
 					</div>
 				</div>
-			</div>
+			</cfif>
 
 		</td>
 		<td>
@@ -155,35 +162,47 @@
 			<div id="dsb_siteManagement">
 				<div class="dsb_secTitle">Site Management:</div>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
-					<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
-				</div>
+				<cfif stAccessMap.pages>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
+						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
+					</div>
+				</cfif>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
-					<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()">Accounts</a>
-				</div>
+				<cfif stAccessMap.accounts>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
+						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()">Accounts</a>
+					</div>
+				</cfif>
 		
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()"><img src="images/folder2_yellow_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
-					<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()">Resources</a>
-				</div>
+				<cfif stAccessMap.resources>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()"><img src="images/folder2_yellow_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
+						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()">Resources</a>
+					</div>
+				</cfif>
 		
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()"><img src="images/Globe_48x48.png" border="0" alt="Site Map" title="Site Map"><br>
-					<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()">Site Map</a>
-				</div>
+				<cfif stAccessMap.siteMap>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()"><img src="images/Globe_48x48.png" border="0" alt="Site Map" title="Site Map"><br>
+						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()">Site Map</a>
+					</div>
+				</cfif>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
-					<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
-				</div>
+				<cfif stAccessMap.siteSettings>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
+						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
+					</div>
+				</cfif>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
-					<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
-				</div>
+				<cfif stAccessMap.downloadSite>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
+						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
+					</div>
+				</cfif>
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
 					<cfset oPlugin = aPlugins[i]>
@@ -209,30 +228,32 @@
 			</div>
 		</td>
 		<td width="350">
-			<div id="dsb_quickLink" style="width:300px;margin-bottom:30px;">
-				<div class="dsb_secTitle">Quick Links:</div>
-				<div class="dsb_siteSection">
-					Use the following dropdowns to quckly access any
-					page on this site.<br><br>
-					<select name="account" style="width:130px;font-size:10px;border:1px solid silver;" 
-							onchange="document.location='index.cfm?event=ehSite.dspMain&qlAccount='+this.value">
-						<option value="">-- Select Account --</option>
-						<cfloop query="qryAccounts">
-							<option value="#username#" <cfif qlAccount eq username>selected</cfif>>#username#</option>
-						</cfloop>
-					</select>
-
-					<cfif qlAccount neq "">
-						<select name="page" style="width:130px;font-size:10px;border:1px solid silver;"
-								onchange="document.location='index.cfm?event=ehSite.doLoadAccountPage&account=#qlAccount#&page='+this.value">
-								<option value="">-- Select Page --</option>
-							<cfloop from="1" to="#arrayLen(aPages)#" index="i">
-								<option value="#aPages[i]#">#aPages[i]#</option>
+			<cfif stAccessMap.pages>
+				<div id="dsb_quickLink" style="width:300px;margin-bottom:30px;">
+					<div class="dsb_secTitle">Quick Links:</div>
+					<div class="dsb_siteSection">
+						Use the following dropdowns to quckly access any
+						page on this site.<br><br>
+						<select name="account" style="width:130px;font-size:10px;border:1px solid silver;" 
+								onchange="document.location='index.cfm?event=ehSite.dspMain&qlAccount='+this.value">
+							<option value="">-- Select Account --</option>
+							<cfloop query="qryAccounts">
+								<option value="#username#" <cfif qlAccount eq username>selected</cfif>>#username#</option>
 							</cfloop>
 						</select>
-					</cfif>
-				</div>
-			</div>	
+	
+						<cfif qlAccount neq "">
+							<select name="page" style="width:130px;font-size:10px;border:1px solid silver;"
+									onchange="document.location='index.cfm?event=ehSite.doLoadAccountPage&account=#qlAccount#&page='+this.value">
+									<option value="">-- Select Page --</option>
+								<cfloop from="1" to="#arrayLen(aPages)#" index="i">
+									<option value="#aPages[i]#">#aPages[i]#</option>
+								</cfloop>
+							</select>
+						</cfif>
+					</div>
+				</div>	
+			</cfif>
 		
 			<div id="dsb_siteInfo">
 				<div class="dsb_secTitle">Site Information:</div>
@@ -255,19 +276,29 @@
 						<tr>
 							<td colspan="2"><strong>Notes:</strong></td>
 						</tr>
-						<tr>
-							<td colspan="2">
-								<cfset tmp = oSiteInfo.getnotes()>
-								<textarea name="notes" id="notesField">#tmp#</textarea>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<div class="buttonImage btnSmall">
-									<a href="##" onclick="frmNotes.submit()">Apply</a>
-								</div>	
-							</td>
-						</tr>
+
+						<cfset tmp = oSiteInfo.getnotes()>
+						<cfif stAccessMap.saveNotes>
+							<tr>
+								<td colspan="2">
+									<textarea name="notes" id="notesField">#tmp#</textarea>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div class="buttonImage btnSmall">
+										<a href="##" onclick="frmNotes.submit()">Apply</a>
+									</div>	
+								</td>
+							</tr>
+						<cfelse>
+							<cfif tmp eq ""><cfset tmp = "<em>None</em>"></cfif>
+							<tr>
+								<td colspan="2">
+									<div id="notesField" style="overflow:auto;background-color:##fff;">#tmp#</div>
+								</td>
+							</tr>
+						</cfif>
 					</table>
 				</form>
 			</div>	

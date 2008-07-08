@@ -1,10 +1,8 @@
 <cfparam name="request.requestState.hostName" default="">
-<cfparam name="request.requestState.applicationTitle" default="#application.applicationName#">
 <cfparam name="request.requestState.oUser" default="">
 
 <cfset oUser = request.requestState.oUser>
 <cfset hostName = request.requestState.hostName>
-<cfset appTitle = request.requestState.applicationTitle>
 
 <cfoutput>
 	<table width="100%">
@@ -16,17 +14,15 @@
 			</td> 
 			<td align="right" style="padding-right:10px;">
 				<span style="font-size:10px;font-weight:bold;border-bottom:1px dotted ##333;padding-bottom:8px;">
-					<cfif oUser.getIsAdministrator()>
-						<span style="color:red;">Administrator</span>
-					<cfelse>
-						<span style="color:green;">#oUser.getusername()#</span>
-					</cfif>
+					<span style="color:green;">#oUser.getusername()#</span>
 					&nbsp;&bull;&nbsp;
 					#lsDateFormat(now())#
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					#hostName#
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					<a href="?event=ehGeneral.doLogoff">Log off</a>
+					<br>
+					<span style="color:red;">#oUser.getRoleLabel()#</span>
 				</span>
 			</td>
 		</tr>

@@ -2,11 +2,13 @@
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
 <cfparam name="request.requestState.aPlugins" default="">
+<cfparam name="request.requestState.oUser" default="">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset loadSiteID = request.requestState.loadSiteID>
 <cfset aPlugins = request.requestState.aPlugins>
+<cfset oUser = request.requestState.oUser>
 
 <!--- check if there is another site besides the hp engine --->
 <cfquery name="qrySitesCheck" dbtype="query">
@@ -23,7 +25,7 @@
 		WHERE siteName LIKE 'HomePortalsEngine'
 </cfquery>
 
-
+<cfset stAccessMap = oUser.getAccessMap()>
 
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
@@ -67,18 +69,19 @@
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">
-			<div class="dsb_siteSection" style="width:150px;padding:0px;">
-				<div class="buttonImage btnLarge">
-					<a href="index.cfm?event=ehSites.dspCreate" title="Click here to create a new portal or site"><img src="images/folder_add.png" border="0" align="absmiddle">&nbsp; Create New Site</a>
-				</div>	
-
-
-				<div class="buttonImage btnLarge">
-					<a href="index.cfm?event=ehSites.dspRegister" title="Click here to register an existing portal or site in ColdBricks"><img src="images/folder_page.png" border="0" align="absmiddle">&nbsp; Register Site</a>
-				</div>	
-			</div>
-
-			<br><br>
+			<cfif stAccessMap.sites>
+				<div class="dsb_siteSection" style="width:150px;padding:0px;">
+					<div class="buttonImage btnLarge">
+						<a href="index.cfm?event=ehSites.dspCreate" title="Click here to create a new portal or site"><img src="images/folder_add.png" border="0" align="absmiddle">&nbsp; Create New Site</a>
+					</div>	
+	
+	
+					<div class="buttonImage btnLarge">
+						<a href="index.cfm?event=ehSites.dspRegister" title="Click here to register an existing portal or site in ColdBricks"><img src="images/folder_page.png" border="0" align="absmiddle">&nbsp; Register Site</a>
+					</div>	
+				</div>
+				<br><br>
+			</cfif>
 
 			<div class="dsb_siteSection" style="width:150px;padding:0px;">
 				<div style="margin:10px;" id="hpInfoPanel">
@@ -107,20 +110,26 @@
 			<div id="dsb_serverManagement">
 				<div class="dsb_secTitle">Server Management:</div>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()"><img src="images/folder_desktop_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
-					<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()">Sites</a>
-				</div>
+				<cfif stAccessMap.sites>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()"><img src="images/folder_desktop_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
+						<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()">Sites</a>
+					</div>
+				</cfif>
 
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
-					<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()">Users</a>
-				</div>
+				<cfif stAccessMap.users>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
+						<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()">Users</a>
+					</div>
+				</cfif>
 		
-				<div class="dsb_secBox">
-					<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
-					<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
-				</div>
+				<cfif stAccessMap.settings>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
+						<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
+					</div>
+				</cfif>
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
 					<cfset oPlugin = aPlugins[i]>

@@ -7,6 +7,7 @@
 <cfset oUser = request.requestState.oUser>
 
 <cfset isAdmin = oUser.getIsAdministrator()>
+<cfset stAccessMap = oUser.getAccessMap()>
 
 <!--- if not admin user, then show only allowed sites --->
 <cfif not isAdmin>
@@ -70,7 +71,9 @@
 								<cfif isAdmin>
 									<a href="index.cfm?event=ehSites.dspDelete&siteID=#qrySites.siteID#"><img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"></a>
 								</cfif>
-								<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
+								<cfif stAccessMap.downloadSite>
+									<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
+								</cfif>
 							</td>
 						</tr>
 					</cfoutput>
@@ -99,7 +102,9 @@
 				<cfif isAdmin>
 					<img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"> Delete Site&nbsp;&nbsp;
 				</cfif>
-				<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Create Achive of Site &nbsp;&nbsp;
+				<cfif stAccessMap.downloadSite>
+					<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Create Achive of Site &nbsp;&nbsp;
+				</cfif>
 			</p>
 		</td>
 		

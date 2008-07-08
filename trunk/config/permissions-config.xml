@@ -51,6 +51,7 @@
 		<resource id="ehSiteConfig.*" roles="admin,mngr" />
 		<resource id="ehSiteMap.*" roles="admin,mngr" />
 		<resource id="ehSites.doArchiveSite" roles="admin,mngr" />
+		<resource id="ehSite.doSaveNotes" roles="admin,mngr" />
 	
 		<!-- allowed only to administrators -->
 		<resource id="ehSites.*" roles="admin" />
