@@ -3,6 +3,9 @@
 <cffunction name="onApplicationStart">
 	<!--- setup data directory (if needed for xml data storage) --->
 	<cfset checkDataRoot()>
+	
+	<!--- setup plugins permissions for admins --->
+	<cfset setupPluginAccess()>
 </cffunction>
 
 <cffunction name="onRequestStart">
@@ -303,6 +306,25 @@
 	<cfset var dataRoot = getSetting("dataRoot")>
 	<cfset setupDataDirectory(dataRoot, true)>
 	<cfset redirect("index.cfm")>
+</cffunction>
+
+<cffunction name="setupPluginAccess" access="private" returntype="void" hint="Allows access to registered plugins to the admin and manager roles">
+	<cfscript>
+		// get list of installed plugins
+		aPlugins = getService("plugins").getPlugins();
+
+		for(i=1;i lte arrayLen(aPlugins);i=i+1) {
+			tmpEvent = aPlugins[i].getModuleName() & ".*.*";
+			
+			// allow admins to access plugin
+			getService("permissions").addResource(tmpEvent, "admin");
+			
+			// allow site managers to access site plugins
+			if(aPlugins[i].getType() eq "site") {
+				getService("permissions").addResource(tmpEvent, "mngr");
+			}
+		}
+	</cfscript>
 </cffunction>
 
 </cfcomponent>

@@ -87,9 +87,7 @@
 		<cfscript>
 			var xmlDoc = 0;
 			var xmlNode = 0;
-			var tmpResID = "";
-			var tmpRoles = ""; var tmpRole = "";
-			var i = 0; var j=0;
+			var i = 0; 
 			
 			if(not fileExists(configPath))
 				throw("Permissions config file not found!");
@@ -108,10 +106,7 @@
 				for(i=1;i lte arrayLen(xmlDoc.xmlRoot.roles.xmlChildren);i=i+1) {
 					xmlNode = xmlDoc.xmlRoot.roles.xmlChildren[i];
 					if(xmlNode.xmlName eq "role") {
-						queryAddRow(variables.qryRoles,1);
-						querySetCell(variables.qryRoles, "name", xmlNode.xmlAttributes.name);
-						querySetCell(variables.qryRoles, "label", xmlNode.xmlAttributes.label);
-						querySetCell(variables.qryRoles, "description", xmlNode.xmlText);
+						addRole(xmlNode.xmlAttributes.name, xmlNode.xmlAttributes.label, xmlNode.xmlText);
 					}
 				}
 			}
@@ -120,28 +115,51 @@
 			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.resources.xmlChildren);i=i+1) {
 				xmlNode = xmlDoc.xmlRoot.resources.xmlChildren[i];
 				if(xmlNode.xmlName eq "resource") {
-					tmpResID = xmlNode.xmlAttributes.id;
-					tmpRoles = xmlNode.xmlAttributes.roles;
-
-					// mapping between resources and roles
-					variables.mapResToRoles[tmpResID] = tmpRoles;
-
-					// mapping between a role to its resources
-					for(j=1;j lte listLen(tmpRoles);j=j+1) {
-						tmpRole = listGetAt(tmpRoles,j);
-						if(not structKeyExists(variables.mapRoleToRes, tmpRole))
-							variables.mapRoleToRes[tmpRole] = tmpResID;
-						else
-							variables.mapRoleToRes[tmpRole] = listAppend(variables.mapRoleToRes[tmpRole], tmpResID);
-					}
+					addResource(xmlNode.xmlAttributes.id, xmlNode.xmlAttributes.roles);
 				}
 			}	
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getRoles" access="public" returntype="query">
+	<cffunction name="getRoles" access="public" returntype="query" hint="Returns a query with all declared roles">
 		<cfreturn variables.qryRoles>
 	</cffunction>
+
+	<cffunction name="addRole" access="public" returntype="void" hint="Adds a role entry.">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="label" type="string" required="false" default="">
+		<cfargument name="description" type="string" required="true" default="">
+		<cfscript>
+			if(arguments.label eq "") arguments.label = arguments.name;
+			
+			queryAddRow(variables.qryRoles,1);
+			querySetCell(variables.qryRoles, "name", arguments.name);
+			querySetCell(variables.qryRoles, "label", arguments.label);
+			querySetCell(variables.qryRoles, "description", arguments.description);		
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="addResource" access="public" returntype="void" hint="Adds a resource permission declaration. Takes an ID to identify the resource and the list of roles allowed access to that resource">
+		<cfargument name="id" type="string" required="true">
+		<cfargument name="roles" type="string" required="true">
+		<cfscript>
+			var tmpRole = "";
+			var j = 0;
+			
+			// mapping between resources and roles
+			variables.mapResToRoles[arguments.id] = arguments.roles;
+
+			// mapping between a role to its resources
+			for(j=1;j lte listLen(arguments.roles);j=j+1) {
+				tmpRole = listGetAt(arguments.roles,j);
+				if(not structKeyExists(variables.mapRoleToRes, tmpRole))
+					variables.mapRoleToRes[tmpRole] = arguments.id;
+				else
+					variables.mapRoleToRes[tmpRole] = listAppend(variables.mapRoleToRes[tmpRole], arguments.id);
+			}		
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction name="throw" access="private" hint="Facade for cfthrow">
 		<cfargument name="message" 		type="String" required="yes">

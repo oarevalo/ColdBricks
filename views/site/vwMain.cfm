@@ -9,6 +9,7 @@
 <cfparam name="request.requestState.firstTime" default="false">
 <cfparam name="request.requestState.aPlugins" default="">
 <cfparam name="request.requestState.oUser" default="">
+<cfparam name="request.requestState.qryUserPlugins" default="">
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset aResourceTypes = request.requestState.aResourceTypes>
@@ -21,9 +22,14 @@
 <cfset firstTime = request.requestState.firstTime>
 <cfset aPlugins = request.requestState.aPlugins>
 <cfset oUser = request.requestState.oUser>
+<cfset qryUserPlugins = request.requestState.qryUserPlugins>
 
 <cfset siteID = oSiteInfo.getID()>
 <cfset stAccessMap = oUser.getAccessMap()>
+
+<cfset lstUserPlugins = valueList(qryUserPlugins.pluginID)>
+
+<cfset showAllModules = (oUser.getRole() eq "admin" or oUser.getRole() eq "mngr")>
 
 <!--- sort accounts --->
 <cfquery name="qryAccounts" dbtype="query">
@@ -65,6 +71,9 @@
 				<cfset oPlugin = aPlugins[i]>
 				<cfset tmpID = oPlugin.getID()>
 				<cfset tmpDesc = oPlugin.getDescription()>
+				<cfif tmpDesc eq "">
+					<cfset tmpDesc = "<em>No description available</em>">
+				</cfif>
 				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
 			</cfloop>
 			</cfoutput>		
@@ -159,6 +168,8 @@
 				</div>
 			</cfif>
 			
+			<cfset hasModuleAccess = false>
+			
 			<div id="dsb_siteManagement">
 				<div class="dsb_secTitle">Site Management:</div>
 
@@ -167,6 +178,7 @@
 						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
 						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 
 				<cfif stAccessMap.accounts>
@@ -174,6 +186,7 @@
 						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
 						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()">Accounts</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 		
 				<cfif stAccessMap.resources>
@@ -181,6 +194,7 @@
 						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()"><img src="images/folder2_yellow_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
 						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()">Resources</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 		
 				<cfif stAccessMap.siteMap>
@@ -188,6 +202,7 @@
 						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()"><img src="images/Globe_48x48.png" border="0" alt="Site Map" title="Site Map"><br>
 						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()">Site Map</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 
 				<cfif stAccessMap.siteSettings>
@@ -195,6 +210,7 @@
 						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
 						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 
 				<cfif stAccessMap.downloadSite>
@@ -202,25 +218,33 @@
 						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
 						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
 					</div>
+					<cfset hasModuleAccess = true>
 				</cfif>
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
 					<cfset oPlugin = aPlugins[i]>
-					<cfset module = oPlugin.getModuleName()>
-					<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
 					<cfset tmpID = oPlugin.getID()>
-					<cfset tmpName = oPlugin.getName()>
-					<cfif oPlugin.getIconSrc() neq "">
-						<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
-					<cfelse>
-						<cfset tmpImage = "images/cb-blocks.png">
+					
+					<cfif showAllModules or listFind(lstUserPlugins,tmpID)>
+						<cfset module = oPlugin.getModuleName()>
+						<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
+						<cfset tmpName = oPlugin.getName()>
+						<cfif oPlugin.getIconSrc() neq "">
+							<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
+						<cfelse>
+							<cfset tmpImage = "images/cb-blocks.png">
+						</cfif>
+						<div class="dsb_secBox">
+							<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
+							<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
+						</div>
+						<cfset hasModuleAccess = true>
 					</cfif>
-						<cfset tmpImage = "images/cb-blocks.png">
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
-						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
-					</div>
 				</cfloop>
+				
+				<cfif not hasModuleAccess>
+					<em>No allowed modules found.</em>
+				</cfif>
 				
 				<br style="clear:both;" />
 				
