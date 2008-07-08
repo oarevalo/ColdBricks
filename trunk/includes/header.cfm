@@ -3,6 +3,7 @@
 
 <cfset oUser = request.requestState.oUser>
 <cfset hostName = request.requestState.hostName>
+<cfset tmpColor = iif( oUser.getIsAdministrator(), de("red"), de("green"))>
 
 <cfoutput>
 	<table width="100%">
@@ -14,15 +15,13 @@
 			</td> 
 			<td align="right" style="padding-right:10px;">
 				<span style="font-size:10px;font-weight:bold;border-bottom:1px dotted ##333;padding-bottom:8px;">
-					<span style="color:green;">#oUser.getusername()#</span>
+					<span style="color:#tmpColor#;">#oUser.getusername()# (#oUser.getRoleLabel()#)</span>
 					&nbsp;&bull;&nbsp;
 					#lsDateFormat(now())#
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					#hostName#
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					<a href="?event=ehGeneral.doLogoff">Log off</a>
-					<br>
-					<span style="color:red;">#oUser.getRoleLabel()#</span>
 				</span>
 			</td>
 		</tr>
