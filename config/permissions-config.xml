@@ -26,11 +26,28 @@
 	-->
 
 	<roles>
-		<role name="admin" label="Administrator" />
-		<role name="mngr" label="Site Manager" />
-		<role name="edit" label="Site Editor" />
-		<role name="cont" label="Site Contributor" />
-		<role name="plugins" label="Plugins Only" />
+		<role name="admin" label="Administrator">
+			Administrator users have unrestricted access to any part of the application. 
+			They are the only ones that can create/register sites, manage ColdBricks users 
+			and modify server-wide settings.
+		</role>
+		<role name="mngr" label="Site Manager">
+			Site Managers have complete access to the sites assigned to them. Within their sites
+			they have full control over configuration, archiving and content.
+		</role>
+		<role name="edit" label="Site Editor">
+			Site Editors have access to modify site content, manage site accounts, and 
+			manage site resources. Site Editors cannot alter the configuration or settings of
+			a site.
+		</role>
+		<role name="cont" label="Site Contributor">
+			Site Contributors are only allowed to work on site resources. They can only
+			create or modify resources for the sites they have been granted access.
+		</role>
+		<role name="plugins" label="Plugins Only">
+			The plugins-only role does not have access to any standard ColdBricks module,
+			however they can be given access to specific plugins or extension modules.
+		</role>
 	</roles>
 	
 	<resources>
