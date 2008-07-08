@@ -22,8 +22,6 @@
 </script>
 
 <cfoutput>
-<h2><img src="images/configure_48x48.png" align="absmiddle"> Server Settings</h2>
-
 <div>
 	[ <a href="index.cfm?event=ehSettings.dspMain">General</a> ] &nbsp;&nbsp;
 	[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;

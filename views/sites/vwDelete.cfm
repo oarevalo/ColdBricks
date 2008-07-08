@@ -4,7 +4,6 @@
 <cfset qrySite = request.requestState.qrySite>
 
 <cfoutput>
-<h2>Confirm Site Deletion</h2>
 <form name="frm" method="post" action="index.cfm">
 	<input type="hidden" name="event" value="ehSites.doDelete">
 	<input type="hidden" name="siteID" value="#siteID#">

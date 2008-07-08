@@ -20,6 +20,9 @@
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("qryAccounts", oAcc.GetUsers() );
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("cbPageTitle", "Accounts");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				setView("site/accounts/vwMain");
 				
 			} catch(any e) {
@@ -186,6 +189,10 @@
 				setValue("aPages", aPages);
 				setValue("aCatalogPages", aCatalogPages);
 
+				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Add Page");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
+
 				setView("site/accounts/vwAddPage");		
 
 			} catch(any e) {
@@ -233,6 +240,10 @@
 				setValue("numCopies",numCopies);
 				setValue("oPage", oPage );
 				setValue("qryAccount", qryAccount );
+				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Tokenize Page");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
+
 				setView("site/accounts/vwTokenizePage");		
 
 			} catch(any e) {
@@ -266,6 +277,10 @@
 				setValue("stAccountInfo", stAccountInfo);
 				setValue("qryAccount", qryAccount);
 				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+
+				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Account Profile");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 				setView("site/accounts/vwEdit");
 	
@@ -279,6 +294,9 @@
 
 	<cffunction name="dspCreate">
 		<cfscript>
+			setValue("cbPageTitle", "Accounts > Create New Account");
+			setValue("cbPageIcon", "images/users_48x48.png");
+			setValue("cbShowSiteMenu", true);
 			setView("site/accounts/vwCreate");
 		</cfscript>
 	</cffunction>
@@ -643,6 +661,11 @@
 				setValue("numTokens", numTokens);
 				setValue("qryAccount", qryAccount);
 				setValue("appRoot", oContext.getHomePortals().getConfig().getAppRoot() );
+				
+				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Tokenize Page Results");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
+				
 				setView("site/accounts/vwTokenizationStatus");
 				
 			} catch(coldBricks.validation e) {

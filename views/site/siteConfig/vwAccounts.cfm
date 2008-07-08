@@ -25,8 +25,6 @@
 </script>
 
 <cfoutput>
-<cfmodule template="../../../includes/menu_site.cfm" title="Site Settings" icon="configure_48x48.png">
-
 <div>
 	[ <a href="index.cfm?event=ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
 	[ <a href="index.cfm?event=ehSiteConfig.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;

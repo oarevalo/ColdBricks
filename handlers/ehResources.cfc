@@ -30,7 +30,11 @@
 			setValue("oCatalog", oCatalog);	
 			setValue("aResourceTypes", aResourceTypes);	
 			setValue("qryResources", qryResources);	
-						
+
+			setValue("cbPageTitle", "Site Resources");
+			setValue("cbPageIcon", "folder2_yellow_48x48.png");
+			setValue("cbShowSiteMenu", true);
+
 			setView("site/resources/vwMain");
 		</cfscript>		
 	</cffunction>
@@ -203,6 +207,10 @@
 			}
 					
 			setValue("qrySites",qrySites);		
+			setValue("cbPageTitle", "Site Resources > Import Packages");
+			setValue("cbPageIcon", "folder2_yellow_48x48.png");
+			setValue("cbShowSiteMenu", true);
+
 			setView("site/resources/vwImport");	
 		</cfscript>
 	</cffunction>

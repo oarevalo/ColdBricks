@@ -13,8 +13,6 @@
 <cfset appRoot = request.requestState.appRoot>
 
 <cfoutput>
-	<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > #qryAccount.username# > Tokenize Page Results">
-
 	<b>Source Page:</b> #pageHREF#<br>
 	<b>Number of Copies:</b> #numCopies#<Br>
 	<b>Number of Tokens:</b> #numTokens#<Br><br>

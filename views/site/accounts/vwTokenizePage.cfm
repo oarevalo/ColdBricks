@@ -17,8 +17,6 @@
 <cfset title = oPage.getPageTitle()>
 
 <cfoutput>
-	<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > #qryAccount.username# > Tokenize Page">
-
 	<form name="frm" method="post" action="index.cfm">
 		<input type="hidden" name="event" value="ehAccounts.doCopyTokenizedPage">
 		<input type="hidden" name="pageHREF" value="#getFileFromPath(pageHREF)#">

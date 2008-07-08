@@ -21,6 +21,7 @@
 		var isAllowed = true;
 		var oUser = 0;
 		var oContext = getService("sessionContext").getContext();
+		var oPlugin = 0;
 	
 		// get user object in session (if exists)
 		if(oContext.hasUser())
@@ -60,12 +61,24 @@
 					setNextEvent("ehGeneral.dspLogin");
 			}
 
+			// if this is a plugin request, then get the plugin info
+			if(listLen(getEvent(),".") eq 3) {
+				oPlugin = getService("plugins").getPluginByModuleName( listFirst(getEvent(),".") );
+			} 
+
 			// set generally available values on the request context
 			setValue("hostName", hostName);
 			setValue("applicationTitle", appTitle);
-			setValue("oUser", oUser);
 			setValue("versionTag", versionTag);
+
+			setValue("oUser", oUser);
 			setValue("oContext", oContext);
+			setValue("oPlugin", oPlugin);
+
+			// these are values that can be used to modify the layout
+			setValue("cbPageTitle", "");
+			setValue("cbPageIcon", "");
+			setValue("cbShowSiteMenu", false);
 
 		} catch(any e) {
 			setMessage("error",e.message);
@@ -75,7 +88,10 @@
 </cffunction>
 
 <cffunction name="onRequestEnd">
-	<!--- code to execute at the end of each request --->
+	<!--- override main layout for plugins --->	
+	<cfif getLayout() eq "Layout.Main" and getModule() neq "">
+		<cfset setLayout("Layout.Plugin")>
+	</cfif>
 </cffunction>
 
 
@@ -112,6 +128,7 @@
 			setValue("qrySites",qrySites);
 			setValue("qryUserSites",qryUserSites);
 			setValue("aPlugins",aPlugins);
+			setValue("cbPageTitle", "Administration Dashboard");
 			setView("vwMain");
 		
 		} catch(any e) {
@@ -123,6 +140,7 @@
 </cffunction>
 
 <cffunction name="dspChangePassword">
+	<cfset setValue("cbPageTitle", "Change Password")>
 	<cfset setView("vwChangePassword")>
 </cffunction>
 

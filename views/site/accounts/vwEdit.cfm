@@ -12,8 +12,6 @@
 </cfscript>
 
 <cfoutput>
-	<cfmodule template="../../../includes/menu_site.cfm" title="Accounts > #qryAccount.username# > Account Profile">
-
 	<br>
 	<form name="frm" action="index.cfm" method="post">
 	<table class="dataFormTable">

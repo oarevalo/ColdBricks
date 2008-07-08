@@ -12,6 +12,9 @@
 
 				setValue("qryUsers",qryUsers);
 				setValue("qryRoles",qryRoles);
+				setValue("cbPageTitle", "User Management");
+				setValue("cbPageIcon", "images/users_48x48.png");
+				
 				setView("users/vwMain");
 			
 			} catch(any e) {
@@ -51,6 +54,9 @@
 				setValue("qryUserPlugins",qryUserPlugins);
 				setValue("qryRoles",qryRoles);
 				setValue("aPlugins",aPlugins);
+				setValue("cbPageTitle", "User Management");
+				setValue("cbPageIcon", "images/users_48x48.png");
+
 				setView("users/vwEdit");
 			
 			} catch(any e) {

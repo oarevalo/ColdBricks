@@ -29,6 +29,10 @@
 				setView("site/siteConfig/vwMain");
 				setValue("oHomePortalsConfigBean", oConfigBean );
 				setValue("stAppConfig", stAppConfig );
+
+				setValue("cbPageTitle", "Site Settings");
+				setValue("cbPageIcon", "configure_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -63,6 +67,10 @@
 				setView("site/siteConfig/vwAccounts");
 				setValue("oAccountsConfigBean", oConfigBean);
 				setValue("stAppConfig", stAppConfig );
+
+				setValue("cbPageTitle", "Site Settings");
+				setValue("cbPageIcon", "configure_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -90,6 +98,10 @@
 				setView("site/siteConfig/vwModuleProperties");
 				setValue("oModulePropertiesConfigBeanBase", oConfigBeanBase );
 				setValue("oModulePropertiesConfigBean", oConfigBean );
+
+				setValue("cbPageTitle", "Site Settings");
+				setValue("cbPageIcon", "configure_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -129,6 +141,10 @@
 				setValue("aConfigFiles", aConfigFiles);
 				setValue("configFile", configFile);
 				setView("site/siteConfig/vwEditXML");
+
+				setValue("cbPageTitle", "Site Settings");
+				setValue("cbPageIcon", "configure_48x48.png");
+				setValue("cbShowSiteMenu", true);
 				
 			} catch(any e) {
 				setMessage("error",e.message);

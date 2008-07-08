@@ -89,9 +89,7 @@
 <cfhtmlhead text="#tmpHTML#">
 
 <cfoutput>
-	
-<h2>Site Dashboard</h2>	
-	
+		
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">

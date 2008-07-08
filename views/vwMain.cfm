@@ -67,8 +67,6 @@
 
 <cfoutput>
 	
-<h2>Administration Dashboard</h2>	
-	
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">
@@ -145,7 +143,6 @@
 					<cfelse>
 						<cfset tmpImage = "images/cb-blocks.png">
 					</cfif>
-						<cfset tmpImage = "images/cb-blocks.png">
 					<div class="dsb_secBox">
 						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
 						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
