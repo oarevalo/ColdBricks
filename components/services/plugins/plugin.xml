@@ -10,14 +10,12 @@ plugin
 
 <plugin id="pluginID" name="A Sample Plugin" version="1.0">
 
-	<!-- Required elements -->
-
-	<!-- defaultEvent 
+	<!-- defaultEvent  [Required]
 		This is the event the entry point for the module.
 	-->
 	<defaultEvent>ehGeneral.dspMain</defaultEvent>
 
-	<!-- Plugin Type 
+	<!-- Plugin Type [Required]
 		Indicates the type of plugin. The valid types are:
 		admin: Use this for administrative plugins. They are accessible
 			through the admin dashboard and are concerned with server-wide tasks
@@ -27,26 +25,13 @@ plugin
 	-->
 	<type>admin</type>	
 
-
-
-	<!-- Optional elements -->
-	
-	<!-- Plugin description -->
+	<!-- Plugin description [Optional] -->
 	<description>This is a sample plugin</description>
 	
-	<!-- Plugin icon image 
+	<!-- Plugin icon image  [Optional]
 		This is an image that will be used to represent the plugin. The path
 		to the image must be relative to the directory containing the plugin
 	-->
 	<iconSrc>images/icon.png</iconSrc>
 
-	<!-- Minimum version of the host application that can use this plugin -->
-	<minHostVersion>1.1.0</minHostVersion>
-
-	<!-- Author information -->
-	<author>ColdBricks</author>
-	<authorURL>http://www.coldbricks.com</authorURL>
-
-	<!-- URL where to obtain further documentation -->
-	<docURL>http://www.coldbricks.com</docURL>
 </plugin>

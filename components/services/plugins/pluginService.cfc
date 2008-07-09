@@ -45,15 +45,14 @@
 					<cfset xmlDoc = xmlParse(tmp)>
 					
 					<!--- build plugin bean --->
-					<cfset oPlugin = createObject("component","plugin").init()>
+					<cfset oPlugin = createObject("component","plugin").init(qryDir.name, variables.pluginsRoot & "/" & qryDir.name)>
 					
 					<!--- mandatory properties --->
-					<cfset oPlugin.setModuleName(qryDir.name)>
 					<cfset oPlugin.setID(xmlDoc.xmlRoot.xmlAttributes.id)>
 					<cfset oPlugin.setName(xmlDoc.xmlRoot.xmlAttributes.name)>
 					<cfset oPlugin.setVersion(xmlDoc.xmlRoot.xmlAttributes.version)>
 					<cfset oPlugin.setDefaultEvent(xmlDoc.xmlRoot.defaultEvent.xmlText)>
-					<cfset oPlugin.setPath(variables.pluginsRoot & "/" & qryDir.name)>
+					<cfset oPlugin.setType(xmlDoc.xmlRoot.type.xmlText)>
 					
 					<!--- optional properties --->
 					<cfif structKeyExists(xmlDoc.xmlRoot,"description")>
@@ -61,21 +60,6 @@
 					</cfif>
 					<cfif structKeyExists(xmlDoc.xmlRoot,"iconSrc")>
 						<cfset oPlugin.setIconSrc(xmlDoc.xmlRoot.iconSrc.xmlText)>
-					</cfif>
-					<cfif structKeyExists(xmlDoc.xmlRoot,"type")>
-						<cfset oPlugin.setType(xmlDoc.xmlRoot.type.xmlText)>
-					</cfif>
-					<cfif structKeyExists(xmlDoc.xmlRoot,"minHostVersion")>
-						<cfset oPlugin.setMinHostVersion(xmlDoc.xmlRoot.minHostVersion.xmlText)>
-					</cfif>
-					<cfif structKeyExists(xmlDoc.xmlRoot,"author")>
-						<cfset oPlugin.setAuthor(xmlDoc.xmlRoot.author.xmlText)>
-					</cfif>
-					<cfif structKeyExists(xmlDoc.xmlRoot,"authorURL")>
-						<cfset oPlugin.setAuthorURL(xmlDoc.xmlRoot.authorURL.xmlText)>
-					</cfif>
-					<cfif structKeyExists(xmlDoc.xmlRoot,"docURL")>
-						<cfset oPlugin.setDocURL(xmlDoc.xmlRoot.docURL.xmlText)>
 					</cfif>
 					
 					<cfset addPlugin(oPlugin)>
@@ -88,12 +72,12 @@
 		</cfoutput>
 	</cffunction>
 
-	<cffunction name="addPlugin" access="public" returntype="void">
+	<cffunction name="addPlugin" access="public" returntype="void" hint="Adds a reference to a plugin">
 		<cfargument name="plugin" type="plugin" required="true">
 		<cfset variables.pluginsMap[ arguments.plugin.getID() ] = arguments.plugin>
 	</cffunction>
 
-	<cffunction name="getPlugin" access="public" returntype="plugin">
+	<cffunction name="getPlugin" access="public" returntype="plugin" hint="Retrieves a registered plugin object by its ID">
 		<cfargument name="id" type="string" required="true">
 		<cfif structKeyExists(variables.pluginsMap, arguments.id)>
 			<cfreturn variables.pluginsMap[arguments.id]>
@@ -102,7 +86,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="getPluginByModuleName" access="public" returntype="plugin">
+	<cffunction name="getPluginByModuleName" access="public" returntype="plugin" hint="Retrieves a registered plugin object by its associated module name">
 		<cfargument name="moduleName" type="string" required="true">
 		<cfset var plugin = "">
 		<cfset var found = false>
@@ -114,7 +98,7 @@
 		<cfthrow message="Plugin not found" type="pluginService.pluginNotFound">
 	</cffunction>
 
-	<cffunction name="getPlugins" access="public" returntype="array">
+	<cffunction name="getPlugins" access="public" returntype="array" hint="Returns an array with all registered plugins">
 		<cfset var aRtn = arrayNew(1)>
 		<cfset var plugin = "">
 		<cfloop collection="#variables.pluginsMap#" item="plugin">
@@ -123,7 +107,7 @@
 		<cfreturn aRtn>
 	</cffunction>
 	
-	<cffunction name="getPluginsByType" access="public" returntype="array">
+	<cffunction name="getPluginsByType" access="public" returntype="array" hint="Returns an array with all registered plugins of the given type">
 		<cfargument name="type" type="string" required="true">
 		<cfset var aRtn = arrayNew(1)>
 		<cfset var plugin = "">
