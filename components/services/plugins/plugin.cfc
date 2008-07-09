@@ -10,6 +10,7 @@
 	<cfset variables.instance.type = "">
 	<cfset variables.instance.defaultEvent = "">
 	<cfset variables.instance.path = "">
+	<cfset variables.instance.stCustomSettings = structNew()>
 
 	<!--- Constructor --->
 	<cffunction name="init" access="public" returntype="plugin">
@@ -92,6 +93,25 @@
 	<cffunction name="setDefaultEvent" access="public" returntype="void">
 		<cfargument name="data" type="string" required="true">
 		<cfset variables.instance.DefaultEvent = arguments.data>
+	</cffunction>
+
+	<cffunction name="getCustomSetting" access="public" returntype="string">
+		<cfargument name="name" type="string" required="true">
+		<cfif structKeyExists(variables.instance.stCustomSettings, arguments.name)>
+			<cfreturn variables.instance.stCustomSettings[arguments.name]>
+		<cfelse>
+			<cfthrow type="pluginService.invalidCustomSetting" message="The requested custom setting does not exist">
+		</cfif>
+	</cffunction>
+
+	<cffunction name="setCustomSetting" access="public" returntype="string">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="value" type="string" required="true">
+		<cfset variables.instance.stCustomSettings[arguments.name] = arguments.value>
+	</cffunction>
+
+	<cffunction name="getCustomSettings" access="public" returntype="struct">
+		<cfreturn duplicate(variables.instance.stCustomSettings)>
 	</cffunction>
 	
 
