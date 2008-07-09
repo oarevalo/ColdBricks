@@ -16,6 +16,8 @@
 		<cfset var qryDir = 0>
 		<cfset var oPlugin = 0>
 		<cfset var tmp = "">
+		<cfset var i = 0>
+		<cfset var aNodes = arrayNew(1)>
 		
 		<!--- if the plugins directory doesnt exist, then get out --->
 		<cfif variables.pluginsRoot eq "" or not directoryExists(expandPath(variables.pluginsRoot))>
@@ -55,18 +57,25 @@
 					<cfset oPlugin.setType(xmlDoc.xmlRoot.type.xmlText)>
 					
 					<!--- optional properties --->
-					<cfif structKeyExists(xmlDoc.xmlRoot,"description")>
+					<cfif structKeyExist1s(xmlDoc.xmlRoot,"description")>
 						<cfset oPlugin.setDescription(xmlDoc.xmlRoot.description.xmlText)>
 					</cfif>
 					<cfif structKeyExists(xmlDoc.xmlRoot,"iconSrc")>
 						<cfset oPlugin.setIconSrc(xmlDoc.xmlRoot.iconSrc.xmlText)>
+					</cfif>
+					<cfif structKeyExists(xmlDoc.xmlRoot,"custom-settings")>
+						<cfset aNodes = xmlDoc.xmlRoot["custom-settings"].xmlChildren>
+						<cfloop from="1" to="#arrayLen(aNodes)#" index="i">
+							<cfset oPlugin.setCustomSetting(aNodes[i].xmlAttributes.name, aNodes[i].xmlText)>
+						</cfloop>
 					</cfif>
 					
 					<cfset addPlugin(oPlugin)>
 				</cfif>
 				
 				<cfcatch type="any">
-					<!--- ignore --->
+					<!--- An error ocurred while loading the plugin,
+						so discard the plugin and continue --->
 				</cfcatch>
 			</cftry>
 		</cfoutput>

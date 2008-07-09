@@ -34,4 +34,11 @@ plugin
 	-->
 	<iconSrc>images/icon.png</iconSrc>
 
+	<!-- Custom Settings [Optional]
+		This section is used to enter custom settings that are available
+		to the plugin object -->
+	<custom-settings>
+		<setting name="some_name">some_value</setting>
+	</custom-settings>
+
 </plugin>
