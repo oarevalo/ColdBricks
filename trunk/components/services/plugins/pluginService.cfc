@@ -57,7 +57,7 @@
 					<cfset oPlugin.setType(xmlDoc.xmlRoot.type.xmlText)>
 					
 					<!--- optional properties --->
-					<cfif structKeyExist1s(xmlDoc.xmlRoot,"description")>
+					<cfif structKeyExists(xmlDoc.xmlRoot,"description")>
 						<cfset oPlugin.setDescription(xmlDoc.xmlRoot.description.xmlText)>
 					</cfif>
 					<cfif structKeyExists(xmlDoc.xmlRoot,"iconSrc")>
@@ -74,8 +74,15 @@
 				</cfif>
 				
 				<cfcatch type="any">
-					<!--- An error ocurred while loading the plugin,
-						so discard the plugin and continue --->
+					<!--- An error ocurred while loading the plugin --->
+					<b>An error ocurred while registering a plugin.</b><br><br>
+					<cfif isDefined("qryDir.name")>
+						<b>Plugin:</b> #qryDir.name#<br>
+					</cfif>
+					<b>Error:</b> #cfcatch.message# #cfcatch.detail#<br>
+					<br>
+					Please correct the error or remove the plugin in order to continue
+					<Cfabort>
 				</cfcatch>
 			</cftry>
 		</cfoutput>
