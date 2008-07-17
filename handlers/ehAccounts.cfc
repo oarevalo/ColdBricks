@@ -323,9 +323,8 @@
 				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
 
-				if(username eq "") throw("Username cannot be empty.","coldBricks.validation");
+				if(username eq "") throw("Account name cannot be empty.","coldBricks.validation");
 				if(accountID eq "" and password eq "") throw("Password cannot be empty.","coldBricks.validation");
-				if(email eq "") throw("Email address cannot be empty.","coldBricks.validation");
 				if(accountID neq "" and changePwd and pwd_new eq "")  throw("New password cannot be empty.","coldBricks.validation");
 				if(accountID neq "" and changePwd and pwd_new neq pwd_new2)  throw("Passwords do not match.","coldBricks.validation");
 
@@ -334,8 +333,7 @@
 					if(changePwd) oAccounts.changePassword(accountID, pwd_new);
 					setMessage("info", "Account saved");
 				} else {
-					accountID = oAccounts.CreateAccount(username, password, email);
-					oAccounts.UpdateAccount(accountID, firstName, middleName, lastName, email);
+					accountID = oAccounts.CreateAccount(username, password, firstName, middleName, lastName, email);
 					setMessage("info", "Account created");
 				}
 
@@ -366,7 +364,7 @@
 			var oContext = getService("sessionContext").getContext();
 
 			try {
-				if(accountID eq "") throw("Please indicate the user account to delete.","coldBricks.validation");
+				if(accountID eq "") throw("Please indicate the name of the account to delete.","coldBricks.validation");
 				
 				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
