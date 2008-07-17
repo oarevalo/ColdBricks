@@ -113,7 +113,7 @@
 		<cfreturn not isSimpleValue(variables.instance.AccountSite)>
 	</cffunction>
 
-	<cffunction name="clearAccountSite" access="public" returntype="boolean">
+	<cffunction name="clearAccountSite" access="public" returntype="void">
 		<cfset variables.instance.AccountSite = 0>
 	</cffunction>
 
