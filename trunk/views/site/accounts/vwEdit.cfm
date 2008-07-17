@@ -16,12 +16,26 @@
 	<form name="frm" action="index.cfm" method="post">
 	<table class="dataFormTable">
 		<tr>
-			<td width="100"><strong>Username:</strong></td>
+			<td width="100"><strong>Account Name:</strong></td>
 			<td>
 				<input type="text" name="username1" value="#qryAccount.username#" size="50" class="formField" disabled="yes">
 				<input type="hidden" name="username" value="#qryAccount.username#">
 			</td>
 		</tr>
+		<tr>
+			<td>Account Directory:</td>
+			<td><a href="#accountsRoot#/#qryAccount.username#" target="_blank">#accountsRoot#/#qryAccount.username#</a></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="font-size:9px;font-weight:bold;">
+				<cfif qryAccount.createDate neq "">
+					Account Created On #lsDateFormat(qryAccount.createDate)# #lsTimeFormat(qryAccount.createDate)#
+				</cfif>
+			</td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2" style="font-size:13px;"><strong>Account Profile Information:</strong></td></tr>
+		<tr><td colspan="2" style="font-size:10px;">This information is optional and is only applicable when using Accounts to identify individual users.</td></tr>
 		<tr>
 			<td>First Name:</td>
 			<td><input type="text" name="firstName" value="#qryAccount.firstName#" size="50" class="formField"></td>
@@ -35,22 +49,11 @@
 			<td><input type="text" name="lastName" value="#qryAccount.lastName#" size="50" class="formField"></td>
 		</tr>
 		<tr>
-			<td><strong>Email:</strong></td>
+			<td>Email:</td>
 			<td><input type="text" name="email" value="#qryAccount.email#" size="50" class="formField"></td>
 		</tr>
-		<tr>
-			<td>Home:</td>
-			<td><a href="#accountsRoot#/#qryAccount.username#" target="_blank">#accountsRoot#/#qryAccount.username#</a></td>
-		</tr>
-		<tr>
-			<td colspan="2" style="font-size:9px;font-weight:bold;">
-				<cfif qryAccount.createDate neq "">
-					Account Creted On #lsDateFormat(qryAccount.createDate)# #lsTimeFormat(qryAccount.createDate)#
-				</cfif>
-			</td>
-		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
-		<tr><td colspan="2"><input type="checkbox" name="changePwd" value="1"> <b>Change Password</b></td></tr>
+		<tr><td colspan="2" style="font-size:13px;"><input type="checkbox" name="changePwd" value="1"> <b>Change Password</b></td></tr>
 		<tr>
 			<td>New Password:</td>
 			<td><input type="password" name="pwd_new" value="" size="50" class="formField"></td>

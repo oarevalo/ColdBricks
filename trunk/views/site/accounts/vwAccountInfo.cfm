@@ -26,10 +26,10 @@
 
 <cfoutput>
 	<div style="margin:10px;">
-		<strong>Username:</strong> 	#accountName#
+		<strong>Name:</strong> 	#accountName#
 	
 		<div style="margin-top:10px;">
-			<strong>Account Directory:</strong><br>
+			<strong>Directory:</strong><br>
 			#accountsRoot#/#accountName#/
 			<!--- <a href="?event=ehAccounts.dspFileManager&accountID=#accountID#" style="color:blue !important;">[View Files]</a> --->
 		</div>
