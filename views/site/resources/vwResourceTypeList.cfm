@@ -5,6 +5,7 @@
 <cfparam name="request.requestState.resTypeIcon" default="">
 <cfparam name="request.requestState.resourceTypeInfo" default="">
 <cfparam name="request.requestState.startRow" default="1">
+<cfparam name="request.requestState.searchTerm" default="">
 
 <cfset resourceType = request.requestState.resourceType>
 <cfset qryResources = request.requestState.qryResources>
@@ -13,6 +14,20 @@
 <cfset resTypeIcon = request.requestState.resTypeIcon>
 <cfset resourceTypeInfo = request.requestState.resourceTypeInfo>
 <cfset startRow = request.requestState.startRow>
+<cfset searchTerm = request.requestState.searchTerm>
+
+<!--- sort/filter resources  --->
+<cfquery name="qryResources" dbtype="query">
+	SELECT *
+		FROM qryResources
+		<cfif searchTerm neq "">
+			WHERE upper(package) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
+				OR upper(name) LIKE  <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
+				OR upper(id) LIKE  <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
+		</cfif>
+		ORDER BY package,name,id
+</cfquery>
+
 
 <cfscript>
 	// page for when viewing in details mode
@@ -26,17 +41,11 @@
 	lastPageStartRow = (numPages-1)*rowsPerPage;
 </cfscript>
 
-<!--- sort resources  --->
-<cfquery name="qryResources" dbtype="query">
-	SELECT *
-		FROM qryResources
-		ORDER BY package,name,id
-</cfquery>
 
 <cfoutput>
 	<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="0" cellspacing="0">
 		<tr>
-			<td nowrap="yes" style="width:350px;">
+			<td nowrap="yes" style="width:200px;">
 				<div style="margin:10px;">
 					<cfif resTypeIcon neq "">
 						<img src="images/#resTypeIcon#" align="absmiddle">
@@ -44,13 +53,20 @@
 					<b>#resTypeLabel# (#qryResources.recordCount#)</b>
 				</div>
 			</td>
-			<cfif resourceType neq "module">
-				<td align="right" style="padding-right:10px;">
+			<td align="center" nowrap="yes">
+				<form name="frmSearch" method="post" action="index.cfm" style="padding:0px;margin:0px;">
+					<input type="hidden" name="resourceType" value="#resourceType#">
+					<input type="text" name="searchTerm" value="#searchTerm#" class="formField" style="width:130px;font-size:11px;">
+					<input type="button" value="Search" style="width:auto;" onclick="doFormEvent('ehResources.dspResourceTypeList','nodePanel',this.form)">
+				</form>
+			</td>
+			<td align="right" style="padding-right:10px;width:150px;">
+				<cfif resourceType neq "module">
 					<div class="buttonImage btnLarge" style="margin:0px;">
 						<a href="##" onclick="selectResource('#resourceType#','NEW','')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
 					</div>	
-				</td>
-			</cfif>
+				</cfif>
+			</td>
 		</tr>
 	</table>
 	
@@ -96,22 +112,22 @@
 
 	<div class="pagingControls">
 		Page 
-			<select name="pageJump" style="font-size:10px;" onchange="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:(this.value-1)*#rowsPerPage#+1})">
+			<select name="pageJump" style="font-size:10px;" onchange="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:(this.value-1)*#rowsPerPage#+1,searchTerm:'#jsstringformat(searchTerm)#'})">
 				<cfloop from="1" to="#numPages#" index="i">
 					<option value="#i#" <cfif i eq pageNum>selected</cfif>>#i#</option>
 				</cfloop>
 			</select>
 		of #numPages# &nbsp;&middot;&nbsp;
 		<cfif startRow gt 1>
-			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:1})">First</a> &nbsp;&middot;&nbsp;
-			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#prevPageStartRow#})">Previous</a>
+			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:1,searchTerm:'#jsstringformat(searchTerm)#'})">First</a> &nbsp;&middot;&nbsp;
+			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#prevPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#'})">Previous</a>
 		<cfelse>
 			<span style="color:##999;">First &nbsp;&middot;&nbsp; Previous</span>
 		</cfif>
 		&nbsp;&middot;&nbsp;
 		<cfif endRow lte qryResources.recordCount>
-			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#nextPageStartRow#})">Next</a> &nbsp;&middot;&nbsp;
-			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#lastPageStartRow#})">Last</a> 
+			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#nextPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#'})">Next</a> &nbsp;&middot;&nbsp;
+			<a href="##" onclick="doEvent('ehResources.dspResourceTypeList','nodePanel',{resourceType:'#resourceType#',startRow:#lastPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#'})">Last</a> 
 		<cfelse>
 			<span style="color:##999;">Next &nbsp;&middot;&nbsp; Last</span>
 		</cfif>
