@@ -7,6 +7,7 @@
 <cfparam name="request.requestState.pageName" default="">
 <cfparam name="request.requestState.hpRoot" default="/Home">
 <cfparam name="request.requestState.path" default="">
+<cfparam name="request.requestState.oUser" default="">
 
 <cfset account = request.requestState.account>
 <cfset pageName = request.requestState.pageName>
@@ -17,6 +18,7 @@
 <cfset aPages = request.requestState.aPages>
 <cfset hpRoot = request.requestState.hpRoot>
 <cfset path = request.requestState.path>
+<cfset oUser = request.requestState.oUser>
 
 <cfscript>
 	coldbricksRoot = "/coldBricks/";
@@ -53,7 +55,12 @@
 			arrayAppend(aPagesSorted, aPages[i].href);
 		}
 		arraySort(aPagesSorted,"textnocase","asc");
-	}					
+	}	
+	
+	
+	// check if the user is allowed to edit pages
+	stAccessMap = oUser.getAccessMap();
+	allowedToEditPages = stAccessMap.pages;
 </cfscript>
 
 <cfquery name="qryAccounts" dbtype="query">
@@ -251,7 +258,11 @@
 					</tr>
 					<tr>
 						<td><b>Name:</b></td>
-						<td><input type="text" name="name" value="#getFileFromPath(path)#" size="50" style="width:350px;" class="formField" disabled></td>
+						<td><input type="text" name="name" value="#getFileFromPath(path)#" size="50" style="width:270px;" class="formField" disabled>
+							<cfif allowedToEditPages>
+								<a href="index.cfm?event=ehSite.doLoadAccountPage&account=#account#&page=#pageName#.xml"><img src="images/page_edit.png" align="absmiddle" border="0"> Edit Page</a>
+							</cfif>
+						</td>
 					</tr>
 					<tr>
 						<td><b>Type:</b></td>
