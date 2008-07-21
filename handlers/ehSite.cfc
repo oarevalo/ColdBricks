@@ -30,6 +30,9 @@
 					// instantiate HomePortals application
 					oHomePortals = createObject("Component","Home.Components.homePortals").init(oSiteBean.getPath());
 
+					// load the full index of the resource library
+					oHomePortals.getCatalog().index();
+
 					// store site and app in session					
 					oContext = getService("sessionContext").getContext();
 					oContext.clearSiteContext();
