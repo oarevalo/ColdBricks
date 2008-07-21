@@ -19,7 +19,7 @@
 			
 			// rebuild catalog if requested
 			if(rebuildCatalog) {
-				oCatalog.rebuildCatalog();
+				oCatalog.index();
 				setMessage("info", "Catalog has been rebuilt.");
 			}
 
