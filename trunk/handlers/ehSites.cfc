@@ -51,10 +51,6 @@
 		<cfset setValue("cbPageTitle", "Site Management > Create New Site")>
 		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
 		
-		<cfif getValue("ls",0) eq 1>
-			<cfset setMessage("warning","The Free Trial edition of ColdBricks only allow to manage up to 2 sites. To create or register unlimited sites please purchase a license")>
-		</cfif>
-
 		<cfset setView("sites/vwCreate")>	
 	</cffunction>
 
@@ -90,9 +86,6 @@
 	</cffunction>
 
 	<cffunction name="dspRegister">
-		<cfif getValue("ls",0) eq 1>
-			<cfset setMessage("warning","The Free Trial edition of ColdBricks only allow to manage up to 2 sites. To create or register unlimited sites please purchase a license")>
-		</cfif>
 		<cfset setValue("cbPageTitle", "Site Management > Register Existing Site")>
 		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
 		<cfset setView("sites/vwRegister")>

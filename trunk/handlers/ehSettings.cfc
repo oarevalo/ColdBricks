@@ -305,7 +305,6 @@
 			var storageFileHREF = getValue("storageFileHREF");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
-			var siteTemplate = getValue("siteTemplate");
 
 			try {
 				if(accountsRoot eq "") throw("The accounts root directory is required","validation");
@@ -313,7 +312,6 @@
 
 				if(newAccountTemplate eq "") throw("The location of the 'New Account' template is required","validation");
 				if(newPageTemplate eq "") throw("The location of the 'New Page' template is required","validation");
-				if(siteTemplate eq "") throw("The location of the 'New Site' template is required","validation");
 
 				switch(storageType) {
 					case "xml":
@@ -347,7 +345,6 @@
 				oConfigBean.setStorageFileHREF(storageFileHREF);
 				oConfigBean.setNewAccountTemplate(newAccountTemplate);
 				oConfigBean.setNewPageTemplate(newPageTemplate);
-				oConfigBean.setSiteTemplate(siteTemplate);
 			
 				// save changes
 				saveAccountsConfigBean( oConfigBean );
