@@ -5,7 +5,6 @@
 	accountsRoot = oAccountsConfigBean.getAccountsRoot();
 	newAccountTemplate = oAccountsConfigBean.getNewAccountTemplate();
 	newPageTemplate = oAccountsConfigBean.getNewPageTemplate();
-	siteTemplate = oAccountsConfigBean.getSiteTemplate();
 	storageType = oAccountsConfigBean.getStorageType();
 	storageCFC = oAccountsConfigBean.getStorageCFC();
 	accountsTable = oAccountsConfigBean.getAccountsTable();
@@ -113,13 +112,6 @@
 						<td>
 							<input type="text" name="newPageTemplate" value="#newPageTemplate#" size="30" class="formField">
 							<a href="index.cfm?event=ehSettings.dspEditXML&configFile=#newPageTemplate#">Edit XML</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="150"><strong>New Site:</strong></td>
-						<td>
-							<input type="text" name="siteTemplate" value="#siteTemplate#" size="30" class="formField">
-							<a href="index.cfm?event=ehSettings.dspEditXML&configFile=#siteTemplate#">Edit XML</a>
 						</td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>

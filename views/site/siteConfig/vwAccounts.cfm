@@ -7,7 +7,6 @@
 	accountsRoot = oAccountsConfigBean.getAccountsRoot();
 	newAccountTemplate = oAccountsConfigBean.getNewAccountTemplate();
 	newPageTemplate = oAccountsConfigBean.getNewPageTemplate();
-	siteTemplate = oAccountsConfigBean.getSiteTemplate();
 	storageType = oAccountsConfigBean.getStorageType();
 	storageCFC = oAccountsConfigBean.getStorageCFC();
 	accountsTable = oAccountsConfigBean.getAccountsTable();
@@ -156,18 +155,6 @@
 							<input type="text" name="newPageTemplate" value="#newPageTemplate#" size="30" class="formField" id="fld_newPageTemplate" <cfif not structKeyExists(stAppConfig,"newPageTemplate")>disabled</cfif>>
 							<cfif structKeyExists(stAppConfig,"newPageTemplate")>
 								<a href="index.cfm?event=ehSiteConfig.dspEditXML&configFile=#newPageTemplate#">Edit XML</a>
-							</cfif>
-						</td>
-					</tr>
-					<tr>
-						<td width="170">
-							<input type="checkbox" name="appSettings" value="siteTemplate" <cfif structKeyExists(stAppConfig,"siteTemplate")>checked</cfif> onclick="toggleField(this.checked,'siteTemplate')">
-							<strong>New Site:</strong>
-						</td>
-						<td>
-							<input type="text" name="siteTemplate" value="#siteTemplate#" size="30" class="formField" id="fld_siteTemplate" <cfif not structKeyExists(stAppConfig,"siteTemplate")>disabled</cfif>>
-							<cfif structKeyExists(stAppConfig,"siteTemplate")>
-								<a href="index.cfm?event=ehSiteConfig.dspEditXML&configFile=#siteTemplate#">Edit XML</a>
 							</cfif>
 						</td>
 					</tr>

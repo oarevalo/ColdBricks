@@ -382,7 +382,6 @@
 			var storageFileHREF = getValue("storageFileHREF");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
-			var siteTemplate = getValue("siteTemplate");
 
 			try {
 				hp = oContext.getHomePortals();
@@ -394,7 +393,6 @@
 
 				if(listFind(appSettings,"newAccountTemplate") and newAccountTemplate eq "") throw("The location of the 'New Account' template is required","validation");
 				if(listFind(appSettings,"newPageTemplate") and newPageTemplate eq "") throw("The location of the 'New Page' template is required","validation");
-				if(listFind(appSettings,"siteTemplate") and siteTemplate eq "") throw("The location of the 'New Site' template is required","validation");
 
 				switch(storageType) {
 					case "xml":
@@ -706,7 +704,6 @@
 			if(structKeyExists(xmlDoc.xmlRoot,"storageCFC")) stAppConfig["storageCFC"] = xmlDoc.xmlRoot.storageCFC.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"newAccountTemplate")) stAppConfig["newAccountTemplate"] = xmlDoc.xmlRoot.newAccountTemplate.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"newPageTemplate")) stAppConfig["newPageTemplate"] = xmlDoc.xmlRoot.newPageTemplate.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"siteTemplate")) stAppConfig["siteTemplate"] = xmlDoc.xmlRoot.siteTemplate.xmlText;
 			
 			return stAppConfig;
 		</cfscript>

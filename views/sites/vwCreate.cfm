@@ -10,17 +10,6 @@
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
-		function showDBHelp(key) {
-			var helpText = "";
-			if(key=="sites") helpText = "Access the sites management module, from there you can add, remove, archive and access individual sites";
-			if(key=="users") helpText = "This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.";
-			if(key=="settings") helpText = "For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files";
-			$("helpTextDiv").style.display = "block";
-			$("helpTextDiv").innerHTML = "<img src='images/help.png' align='absmiddle'> " + helpText;
-		}
-		function hideDBHelp() {
-			$("helpTextDiv").style.display = "none";
-		}
 		function toggleSiteTemplate(opt) {
 			var d = document.getElementById("tblCustom");
 			if(opt=="")
@@ -50,15 +39,15 @@
 						<b>Select a site template by clicking on one of the icons below. To create a blank site without using any template, select <u>Default</u>.</b><br><br>
 					
 						<div class="dsb_secBox">
-							<a href="##" onclick="selectSiteTemplate('default')"><img src="images/Globe_48x48.png" border="0" alt="Default site" title="Default site"><br>
-							<a href="##" onclick="selectSiteTemplate('default')">Default</a>
+							<a href="javascript:selectSiteTemplate('default')"><img src="images/Globe_48x48.png" border="0" alt="Default site" title="Default site"><br>
+							<a href="javascript:selectSiteTemplate('default')">Default</a>
 						</div>
 	
 						<cfloop query="qrySiteTemplates">
 							<cfif qrySiteTemplates.name neq "default">
 								<div class="dsb_secBox">
-									<a href="##" onclick="selectSiteTemplate('#qrySiteTemplates.name#')"><img src="images/Globe_48x48.png" border="0" alt="#qrySiteTemplates.name#" title="#qrySiteTemplates.name#"><br>
-									<a href="##" onclick="selectSiteTemplate('#qrySiteTemplates.name#')">#qrySiteTemplates.name#</a>
+									<a href="javascript:selectSiteTemplate('#qrySiteTemplates.name#')"><img src="images/Globe_48x48.png" border="0" alt="#qrySiteTemplates.name#" title="#qrySiteTemplates.name#"><br>
+									<a href="javascript:selectSiteTemplate('#qrySiteTemplates.name#')">#qrySiteTemplates.name#</a>
 								</div>
 							</cfif>
 						</cfloop>
