@@ -97,6 +97,7 @@
 				// check if we have a site and page cfcs loaded 
 				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(moduleID eq "") throw("Please select a module to edit","coldBricks.validation");
 				
 				// get site and page from session
 				oSite = oContext.getAccountSite();
@@ -566,7 +567,8 @@
 					structDelete(stAttribs,"resourceID_content");
 					structDelete(stAttribs,"resourceID_html");
 					structDelete(stAttribs,"name");
-					stAttribs.cacheTTL = val(stAttribs.cacheTTL);
+					if(getValue("cacheTTL") neq "")
+						stAttribs["cacheTTL"] = getValue("cacheTTL");
 				}
 		
 				oPage.saveModule(moduleID, stAttribs);
@@ -578,12 +580,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("ehPage.dspEditModuleProperties","moduleID=#moduleID#");
 				
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspEditModuleProperties");
+				setNextEvent("ehPage.dspEditModuleProperties","moduleID=#moduleID#");
 			}			
 		</cfscript>
 	</cffunction>		

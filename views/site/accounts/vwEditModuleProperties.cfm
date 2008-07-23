@@ -58,6 +58,9 @@
 	<cfparam name="thisModule.cache" default="">
 	<cfparam name="thisModule.cacheTTL" default="">
 	<cfparam name="thisModule.href" default="">
+	<cfif not isBoolean(thisModule.cache)>
+		<cfset thisModule.cache = true>
+	</cfif>
 </cfif>
 
 
