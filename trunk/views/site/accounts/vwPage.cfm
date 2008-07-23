@@ -78,10 +78,21 @@
 		}
 		
 		function changeSkin(skinID) {
-			if(skinID=="NEW")
+			if(skinID=="_NEW")
 				document.location='?event=ehResources.dspMain&resType=skin&id=NEW';
+			else if(resID=="_IMPORT")
+				document.location='?event=ehResources.dspImport';
 			else if(skinID!=0) 
 				document.location='?event=ehPage.doApplySkin&skinID=' + skinID;
+		}
+		
+		function applyPageTemplate(resID) {
+			if(resID=="_NEW")
+				document.location='?event=ehResources.dspMain&resType=pagetemplate&id=NEW';
+			else if(resID=="_IMPORT")
+				document.location='?event=ehResources.dspImport';
+			else if(resID!="")
+				document.location='?event=ehPage.doApplyPageTemplate&resourceID='+this.value
 		}
 	</script>
 </cfsavecontent>
@@ -103,12 +114,13 @@
 		<td align="center" nowrap="yes">
 			<strong>Skin:</strong>
 			<select name="skin" style="width:150px;font-size:11px;" class="formField"  onchange="changeSkin(this.value)">
-				<option value="0">--- Select Skin ---</option>
-				<option value="NONE">--- None ---</option>
+				<option value="0">-- Select Skin --</option>
+				<option value="NONE">-- None --</option>
 				<cfloop query="qrySkins">
 					<option value="#qrySkins.id#" <cfif qrySkins.id eq skinID>selected</cfif>>#qrySkins.id#</option>
 				</cfloop>
-				<option value="NEW"> -- New Skin -- </option>
+				<option value="_NEW">-- New Skin --</option>
+				<option value="_IMPORT">-- Import Skins --</option>
 			</select>
 			<cfif skinID neq "">
 				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=#skinID#">Edit</a>
@@ -280,11 +292,13 @@
 					
 					<div style="float:right;">
 						<strong>Apply Template:</strong>
-						<select name="pageTemplate" style="width:160px;font-size:10px;" onchange="document.location='?event=ehPage.doApplyPageTemplate&resourceID='+this.value">
+						<select name="pageTemplate" style="width:160px;font-size:10px;" onchange="applyPageTemplate(this.value)">
 							<option value="" selected="yes">-- Select layout template --</option>
 							<cfloop query="qryPageTemplates">
 								<option value="#qryPageTemplates.id#">#qryPageTemplates.id#</option>
 							</cfloop>
+							<option value="_NEW">-- New Template --</option>
+							<option value="_IMPORT">-- Import Templates --</option>
 						</select>					
 					</div>
 					
