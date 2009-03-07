@@ -483,11 +483,11 @@
 	<!---------------------------------------->
 	<!--- getSite			                --->
 	<!---------------------------------------->
-	<cffunction name="getSite" access="private" output="false" returntype="Home.Components.site">
+	<cffunction name="getSite" access="private" output="false" returntype="Home.Components.accounts.site">
 		<cfscript>
 			var oAccountsService = application.homePortals.getAccountsService();
 			var owner = variables.oPage.getOwner();
-			return createObject("component","Home.Components.site").init(owner, oAccountsService);
+			return createObject("component","Home.Components.accounts.site").init(owner, oAccountsService);
 		</cfscript>
 	</cffunction>
 		

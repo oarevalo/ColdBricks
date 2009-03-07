@@ -18,8 +18,8 @@
 				}
 				
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("qryAccounts", oAcc.GetUsers() );
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("qryAccounts", oAcc.getAccounts() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("cbPageTitle", "Accounts");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
@@ -53,7 +53,7 @@
 				if(accountID neq "") {
 					oContext.setAccountID(accountID);
 					oContext.setAccountName(accountName);
-					oContext.setAccountSite(createObject("component","Home.Components.site").init(accountName, hp.getAccountsService() ));
+					oContext.setAccountSite(createObject("component","Home.Components.accounts.site").init(accountName, hp.getAccountsService() ));
 				} else {
 					setValue("accountID", oContext.getAccountID());
 					setValue("accountName", oContext.getAccountName());
@@ -66,7 +66,7 @@
 				oAccountSite = oContext.getAccountSite();
 				aPages = oAccountSite.getPages();
 
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("aPages",aPages);
 				setValue("siteTitle",oAccountSite.getSiteTitle());
@@ -100,7 +100,7 @@
 				setValue("accountID", oContext.getAccountID());
 				setValue("accountName", oContext.getAccountName());
 				setValue("oAccountSite", oAccountSite);
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("numPages", numPages);
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 	
@@ -139,7 +139,7 @@
 					}
 				}
 
-				pageHREF = hp.getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
+				pageHREF = hp.getAccountsService().getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
 				
 				setValue("pageExists", fileExists(expandPath(pageHREF)));
 				setValue("stPage",stPage);
@@ -158,7 +158,7 @@
 		<cfscript>
 			var oSite = 0;
 			var oAccounts = 0;
-			var userID = 0;
+			var accountID = 0;
 			var qryAccount = 0;
 			var aCatalogPages = 0;
 			var aPages = 0;
@@ -174,12 +174,11 @@
 				oSite = oContext.getAccountSite();
 
 				// get info from site
-				userID = oSite.getUserID();
 				aPages = oSite.getPages();
 
 				// get accounts info 
-				oAccounts = oSite.getAccount();
-				qryAccount = oAccounts.getAccountByUserID(userID);
+				accountID = oContext.getAccountID();
+				qryAccount = hp.getAccountsService().getAccountByID(accountID);
 
 				// get catalog
 				oCatalog = hp.getCatalog();
@@ -189,7 +188,7 @@
 				setValue("aPages", aPages);
 				setValue("aCatalogPages", aCatalogPages);
 
-				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Add Page");
+				setValue("cbPageTitle", "Accounts > #qryAccount.accountname# > Add Page");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 
@@ -226,10 +225,10 @@
 				oAccounts = oSite.getAccount();
 
 				// search account
-				qryAccount = oAccounts.getAccountByUserID(userID);
+				qryAccount = oAccounts.getAccountByID(userID);
 
 				// build full page address
-				pageHREF = hp.getConfig().getAccountsRoot() & "/" & qryAccount.username & "/layouts/" & pageHREF;
+				pageHREF = hp.getAccountsService().getConfig().getAccountsRoot() & "/" & qryAccount.accountname & "/layouts/" & pageHREF;
 
 				// create page object 
 				opage = createObject("component","Home.Components.page").init( pageHREF );
@@ -240,7 +239,7 @@
 				setValue("numCopies",numCopies);
 				setValue("oPage", oPage );
 				setValue("qryAccount", qryAccount );
-				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Tokenize Page");
+				setValue("cbPageTitle", "Accounts > #qryAccount.accountname# > Tokenize Page");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 
@@ -272,13 +271,13 @@
 				if(accountID eq 0) throw("Please select an account first");
 	
 				// search account
-				qryAccount = oAccounts.getAccountByUserID(accountID);
+				qryAccount = oAccounts.getAccountByID(accountID);
 				
 				setValue("stAccountInfo", stAccountInfo);
 				setValue("qryAccount", qryAccount);
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 
-				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Account Profile");
+				setValue("cbPageTitle", "Accounts > #qryAccount.accountname# > Account Profile");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
@@ -307,9 +306,8 @@
 		<cfscript>
 			var oAccounts = 0;
 			var accountID = getValue("accountID","");
-			var username = getValue("username");
+			var accountname = getValue("accountname");
 			var firstName = getValue("firstName");
-			var middleName = getValue("middleName");
 			var lastname = getValue("lastname");
 			var email = getValue("email");
 			var password = getValue("password");
@@ -323,17 +321,17 @@
 				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
 
-				if(username eq "") throw("Account name cannot be empty.","coldBricks.validation");
+				if(accountname eq "") throw("Account name cannot be empty.","coldBricks.validation");
 				if(accountID eq "" and password eq "") throw("Password cannot be empty.","coldBricks.validation");
 				if(accountID neq "" and changePwd and pwd_new eq "")  throw("New password cannot be empty.","coldBricks.validation");
 				if(accountID neq "" and changePwd and pwd_new neq pwd_new2)  throw("Passwords do not match.","coldBricks.validation");
 
 				if(accountID neq "") {
-					oAccounts.UpdateAccount(accountID, firstName, middleName, lastName, email);
+					oAccounts.UpdateAccount(accountID, firstName, lastName, email);
 					if(changePwd) oAccounts.changePassword(accountID, pwd_new);
 					setMessage("info", "Account saved");
 				} else {
-					accountID = oAccounts.CreateAccount(username, password, firstName, middleName, lastName, email);
+					accountID = oAccounts.CreateAccount(accountname, password, firstName, lastName, email);
 					setMessage("info", "Account created");
 				}
 
@@ -650,7 +648,7 @@
 				oSite = oContext.getAccountSite();
 
 				// find account
-				qryAccount = oSite.getAccount().getAccountByUserID( oSite.getUserID() );
+				qryAccount = oSite.getAccount().getAccountByID( oSite.getUserID() );
 				
 				
 				setValue("aStatus", aStatus);
@@ -660,7 +658,7 @@
 				setValue("qryAccount", qryAccount);
 				setValue("appRoot", oContext.getHomePortals().getConfig().getAppRoot() );
 				
-				setValue("cbPageTitle", "Accounts > #qryAccount.username# > Tokenize Page Results");
+				setValue("cbPageTitle", "Accounts > #qryAccount.accountname# > Tokenize Page Results");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				

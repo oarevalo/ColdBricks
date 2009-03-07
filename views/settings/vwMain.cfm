@@ -8,12 +8,13 @@
 	baseResourceEditType = request.requestState.baseResourceEditType;
 	
 	resourceLibraryPath = oHomePortalsConfigBean.getResourceLibraryPath();
-	accountsRoot = oHomePortalsConfigBean.getAccountsRoot();
-	defaultAccount = oHomePortalsConfigBean.getDefaultAccount();
+	defaultPage = oHomePortalsConfigBean.getDefaultPage();
 	pageCacheSize = oHomePortalsConfigBean.getPageCacheSize();
 	pageCacheTTL = oHomePortalsConfigBean.getPageCacheTTL();
 	contentCacheSize = oHomePortalsConfigBean.getContentCacheSize();
 	contentCacheTTL = oHomePortalsConfigBean.getContentCacheTTL();
+	rssCacheSize = oHomePortalsConfigBean.getRSSCacheSize();
+	rssCacheTTL = oHomePortalsConfigBean.getRSSCacheTTL();
 	
 	try{ rt_page = oHomePortalsConfigBean.getRenderTemplate("page"); } catch(any e) { rt_page = ""; }
 	try{ rt_module = oHomePortalsConfigBean.getRenderTemplate("module"); } catch(any e) { rt_module = ""; }
@@ -56,32 +57,50 @@
 				<table class="dataFormTable">
 					<tr><td colspan="2"><h2>General Settings:</h2></td></tr>
 					<tr>
-						<td width="150"><strong>Default Account:</strong></td>
-						<td><input type="text" name="defaultAccount" value="#defaultAccount#" size="30" class="formField"></td>
-					</tr>
-					<tr>
-						<td width="150"><strong>Page Cache Max Size:</strong></td>
-						<td><input type="text" name="pageCacheSize" value="#pageCacheSize#" size="30" class="formField"></td>
-					</tr>
-					<tr>
-						<td width="150"><strong>Page Cache TTL (min):</strong></td>
-						<td><input type="text" name="pageCacheTTL" value="#pageCacheTTL#" size="30" class="formField"></td>
-					</tr>
-					<tr>
-						<td width="150"><strong>Content Cache Max Size:</strong></td>
-						<td><input type="text" name="contentCacheSize" value="#contentCacheSize#" size="30" class="formField"></td>
-					</tr>
-					<tr>
-						<td width="150"><strong>Content Catch TTL (min):</strong></td>
-						<td><input type="text" name="contentCacheTTL" value="#contentCacheTTL#" size="30" class="formField"></td>
-					</tr>
-					<tr>
-						<td width="150"><strong>Accounts Root:</strong></td>
-						<td><input type="text" name="accountsRoot" value="#accountsRoot#" size="30" class="formField"></td>
-					</tr>
-					<tr>
 						<td width="150"><strong>Resource Library Root:</strong></td>
 						<td><input type="text" name="resourceLibraryPath" value="#resourceLibraryPath#" size="30" class="formField"></td>
+					</tr>
+					<tr>
+						<td width="150"><strong>Default Page:</strong></td>
+						<td><input type="text" name="defaultPage" value="#defaultPage#" id="fld_defaultPage" size="30" class="formField"></td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr><td colspan="2"><h2>Caching:</h2></td></tr>
+					<tr>
+						<td width="150">
+							<strong>Pages:</strong>
+						</td>
+						<td>
+							<strong>Max Size:</strong>
+							<input type="text" name="pageCacheSize" value="#pageCacheSize#" id="fld_pageCacheSize" size="5" style="width:50px;" class="formField">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<strong>TTL (min):</strong>
+							<input type="text" name="pageCacheTTL" value="#pageCacheTTL#" id="fld_pageCacheTTL" size="5" style="width:50px;" class="formField">	
+						</td>
+					</tr>
+					<tr>
+						<td width="150">
+							<strong>Content:</strong>
+						</td>
+						<td>
+							<strong>Max Size:</strong>
+							<input type="text" name="contentCacheSize" value="#contentCacheSize#" id="fld_contentCacheSize" size="5" style="width:50px;" class="formField">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<strong>TTL (min):</strong>
+							<input type="text" name="contentCacheTTL" value="#contentCacheTTL#" id="fld_contentCacheTTL" size="5" style="width:50px;" class="formField">
+						</td>
+					</tr>
+					<tr>
+						<td width="150">
+							<strong>RSS Feeds:</strong>
+						</td>
+						<td>
+							<strong>Max Size:</strong>
+							<input type="text" name="rssCacheSize" value="#rssCacheSize#" id="fld_rssCacheSize" size="5" style="width:50px;" class="formField">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<strong>TTL (min):</strong>
+							<input type="text" name="rssCacheTTL" value="#rssCacheTTL#" id="fld_rssCacheTTL" size="5" style="width:50px;" class="formField">
+						</td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2"><h2>Base Resources:</h2></td></tr>

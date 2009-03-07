@@ -11,9 +11,9 @@
 			To start submittng bug reports add an email address to the
 			bugEmailRecipients setting; and/or use the bugLogListener
 			setting to hook into a bugLog server -->
-		<setting name="bugEmailRecipients" value="" />
+		<setting name="bugEmailRecipients" value="oarevalo@gmail.com" />
 		<setting name="bugEmailSender" value="info@coldbricks.com" />
-		<setting name="bugLogListener" value="" />
+		<setting name="bugLogListener" value="http://www.oscararevalo.com/bugLog/listeners/bugLogListenerWS.cfc?wsdl" />
 
 		<!-- This flag controls wether detailed error information is displayed
 			in case the application encounters an unhandled exception -->
@@ -45,18 +45,18 @@
 		<service name="rss" class="ColdBricks.components.services.rss">
 		</service>
 
-		<!-- error reporting service -->
+		<!-- error reporting service 
 		<service name="bugTracker" class="ColdBricks.components.services.bugTrackerService">
 			<init-param name="bugEmailSender" settingName="bugEmailSender" />
 			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
-		</service> 
+		</service> -->
 
-		<!-- Use this service to hook into a bugLog server 
+		<!-- Use this service to hook into a bugLog server -->
 		<service name="bugTracker" class="ColdBricks.components.services.bugLogService">
 			<init-param name="bugLogListener" settingName="bugLogListener" />
 			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
 			<init-param name="bugEmailSender" settingName="bugEmailSender" />
-		</service> -->
+		</service> 
 		
 		<!-- use permissions service to control access to event handlers -->
 		<service name="permissions" class="ColdBricks.components.services.permissionsService">

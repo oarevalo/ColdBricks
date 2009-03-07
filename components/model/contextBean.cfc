@@ -13,6 +13,7 @@
 	<cfset variables.instance.accountViewType = "">
 
 	<cfset variables.instance.page = 0>
+	<cfset variables.instance.pageHREF = "">
 	<cfset variables.instance.pageResourceTypeView = "">
 	
 	
@@ -100,12 +101,12 @@
 		<cfset variables.instance.AccountName = arguments.data>
 	</cffunction>
 
-	<cffunction name="getAccountSite" access="public" returntype="Home.Components.site">
+	<cffunction name="getAccountSite" access="public" returntype="Home.Components.accounts.site">
 		<cfreturn variables.instance.AccountSite>
 	</cffunction>
 
 	<cffunction name="setAccountSite" access="public" returntype="void">
-		<cfargument name="data" type="Home.Components.site" required="true">
+		<cfargument name="data" type="Home.Components.accounts.site" required="true">
 		<cfset variables.instance.AccountSite = arguments.data>
 	</cffunction>
 
@@ -131,13 +132,22 @@
 
 	<!--- Page --->
 
-	<cffunction name="getPage" access="public" returntype="Home.Components.page">
+	<cffunction name="getPage" access="public" returntype="Home.Components.pageBean">
 		<cfreturn variables.instance.Page>
 	</cffunction>
 
+	<cffunction name="getPageHREF" access="public" returntype="string">
+		<cfreturn variables.instance.PageHREF>
+	</cffunction>
+
 	<cffunction name="setPage" access="public" returntype="void">
-		<cfargument name="data" type="Home.Components.page" required="true">
+		<cfargument name="data" type="Home.Components.pageBean" required="true">
 		<cfset variables.instance.Page = arguments.data>
+	</cffunction>
+
+	<cffunction name="setPageHREF" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.PageHREF = arguments.data>
 	</cffunction>
 
 	<cffunction name="hasPage" access="public" returntype="boolean">

@@ -33,7 +33,7 @@
 
 <!--- sort accounts --->
 <cfquery name="qryAccounts" dbtype="query">
-	SELECT *, upper(username) as u_username
+	SELECT *, upper(accountName) as u_username
 		FROM qryAccounts
 		ORDER BY u_username
 </cfquery>
@@ -260,7 +260,7 @@
 								onchange="document.location='index.cfm?event=ehSite.dspMain&qlAccount='+this.value">
 							<option value="">-- Select Account --</option>
 							<cfloop query="qryAccounts">
-								<option value="#username#" <cfif qlAccount eq username>selected</cfif>>#username#</option>
+								<option value="#qryAccounts.accountname#" <cfif qlAccount eq qryAccounts.accountname>selected</cfif>>#qryAccounts.accountname#</option>
 							</cfloop>
 						</select>
 	

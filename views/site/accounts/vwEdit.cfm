@@ -18,18 +18,18 @@
 		<tr>
 			<td width="100"><strong>Account Name:</strong></td>
 			<td>
-				<input type="text" name="username1" value="#qryAccount.username#" size="50" class="formField" disabled="yes">
-				<input type="hidden" name="username" value="#qryAccount.username#">
+				<input type="text" name="accountname1" value="#qryAccount.accountname#" size="50" class="formField" disabled="yes">
+				<input type="hidden" name="accountname" value="#qryAccount.accountname#">
 			</td>
 		</tr>
 		<tr>
 			<td>Account Directory:</td>
-			<td><a href="#accountsRoot#/#qryAccount.username#" target="_blank">#accountsRoot#/#qryAccount.username#</a></td>
+			<td><a href="#accountsRoot#/#qryAccount.accountname#" target="_blank">#accountsRoot#/#qryAccount.accountname#</a></td>
 		</tr>
 		<tr>
 			<td colspan="2" style="font-size:9px;font-weight:bold;">
-				<cfif qryAccount.createDate neq "">
-					Account Created On #lsDateFormat(qryAccount.createDate)# #lsTimeFormat(qryAccount.createDate)#
+				<cfif qryAccount.createdOn neq "">
+					Account Created On #lsDateFormat(qryAccount.createdOn)# #lsTimeFormat(qryAccount.createdOn)#
 				</cfif>
 			</td>
 		</tr>
@@ -39,10 +39,6 @@
 		<tr>
 			<td>First Name:</td>
 			<td><input type="text" name="firstName" value="#qryAccount.firstName#" size="50" class="formField"></td>
-		</tr>
-		<tr>
-			<td>Middle Name:</td>
-			<td><input type="text" name="middleName" value="#qryAccount.middleName#" size="50" class="formField"></td>
 		</tr>
 		<tr>
 			<td>Last Name:</td>

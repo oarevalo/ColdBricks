@@ -66,7 +66,7 @@
 <cfquery name="qryAccounts" dbtype="query">
 	SELECT *
 		FROM qryAccounts
-		ORDER BY username
+		ORDER BY accountName
 </cfquery>
 
 <cfoutput>
@@ -147,7 +147,7 @@
 									onchange="reloadNode('#path#',this.value)">
 								<option value=""></option>
 								<cfloop query="qryAccounts">
-									<option value="#username#" <cfif account eq username>selected</cfif>>#username#</option>
+									<option value="#qryAccounts.accountName#" <cfif account eq qryAccounts.accountName>selected</cfif>>#qryAccounts.accountName#</option>
 								</cfloop>
 							</select>
 						</td>
@@ -232,7 +232,7 @@
 									onchange="reloadNode('#path#',this.value)">
 								<option value=""></option>
 								<cfloop query="qryAccounts">
-									<option value="#username#" <cfif account eq username>selected</cfif>>#username#</option>
+									<option value="#qryAccounts.accountName#" <cfif account eq qryAccounts.accountName>selected</cfif>>#qryAccounts.accountName#</option>
 								</cfloop>
 							</select>
 						</td>

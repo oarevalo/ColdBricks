@@ -24,7 +24,7 @@
 	<cfquery name="qryAccounts" dbtype="query">
 		SELECT *
 			FROM qryAccounts
-			ORDER BY username
+			ORDER BY accountName
 	</cfquery>
 </cfif>
 
@@ -184,7 +184,7 @@
 								<select name="owner" style="width:100px;">
 									<option value=""></option>
 									<cfloop query="qryAccounts">
-										<option value="#username#" <cfif username eq owner>selected <cfset ownerFound = true></cfif>>#username#</option>
+										<option value="#accountName#" <cfif accountName eq owner>selected <cfset ownerFound = true></cfif>>#accountName#</option>
 									</cfloop>
 									<cfif not ownerFound>
 										<option value="#owner#" selected>#owner#</option>

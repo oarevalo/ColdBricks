@@ -88,7 +88,7 @@
 				qryResources = oCatalog.getResources();
 				
 				// get accounts
-				qryAccounts = hp.getAccountsService().GetUsers();
+				qryAccounts = hp.getAccountsService().getAccounts();
 				
 				// if this is the hp engine, display a warning
 				if(oSiteInfo.getSiteName() eq "homePortalsEngine")
@@ -96,7 +96,7 @@
 
 				// if there is an account selected, get the account pages
 				if(qlAccount neq "") {
-					oAccountSite = createObject("component","Home.Components.site").init(qlAccount, hp.getAccountsService() );		
+					oAccountSite = createObject("component","Home.Components.accounts.site").init(qlAccount, hp.getAccountsService() );		
 					aPages = oAccountSite.getPages();		
 
 					// sort pages
@@ -117,7 +117,7 @@
 				setValue("qryResources", qryResources);	
 				setValue("qryAccounts",  qryAccounts);
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("defaultAccount", hp.getConfig().getDefaultAccount() );
+				setValue("defaultAccount", hp.getAccountsService().getConfig().getDefaultAccount() );
 				setValue("aPages", aPagesSorted );
 				setValue("aPlugins",aPlugins);
 				setValue("qryUserPlugins",qryUserPlugins);
@@ -175,26 +175,24 @@
 				hp = oContext.getHomePortals();
 				
 				// if not account given, then get the default account
-				if(account eq "") account = hp.getConfig().getDefaultAccount();
+				if(account eq "") account = hp.getAccountsService().getConfig().getDefaultAccount();
 				
 				// get account info
-				qryAccount = hp.getAccountsService().getAccountByUsername(account);
+				qryAccount = hp.getAccountsService().getAccountByName(account);
 				
 				// load account
-				oContext.setAccountID(qryAccount.userID);
+				oContext.setAccountID(qryAccount.accountID);
 				oContext.setAccountName(account);
-				oSite = createObject("component","Home.Components.site").init(account, hp.getAccountsService() );
+				oSite = createObject("component","Home.Components.accounts.site").init(account, hp.getAccountsService() );
 				oContext.setAccountSite( oSite );
 
 				// if no page given, the load default page in account
-				if(page eq "")	
-					pageHREF = hp.getAccountsService().getAccountDefaultPage(account);
-				else
-					pageHREF = hp.getConfig().getAccountsRoot() & "/" & account & "/layouts/" & page;
+				if(page eq "")	page = oSite.getDefaultPage();
 
 				// load page
-				oPage = createObject("component","Home.Components.page").init( pageHREF );
+				oPage = oSite.getPage(page);
 				oContext.setPage( oPage );
+				oContext.setPageHREF( oSite.getPageHREF(page) );
 			
 				setNextEvent("ehPage.dspMain");
 			

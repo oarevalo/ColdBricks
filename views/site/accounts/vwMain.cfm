@@ -13,7 +13,7 @@
 <cfquery name="qryAccounts" dbtype="query">
 	SELECT *
 		FROM qryAccounts
-		ORDER BY username
+		ORDER BY accountName
 </cfquery>
 
 <cfsavecontent variable="tmpHTML">
@@ -41,14 +41,14 @@
 				style="margin-top:0px;width:200px;padding:0px;height:430px;margin-right:0px;margin-left:0px;border-top:0px;">
 				<div id="accountsTree" style="margin:5px;">
 					<cfloop query="qryAccounts">
-						<cfset tmpHREF = "javascript:loadAccount('#qryAccounts.userID#','#qryAccounts.username#')">
+						<cfset tmpHREF = "javascript:loadAccount('#qryAccounts.accountID#','#qryAccounts.accountname#')">
 						<div>
-							<img src="images/folder.png" align="absmiddle" class="accountTreeItemImage" id="accountTreeItemImage_#qryAccounts.userID#"> 
+							<a href="#tmpHREF#"><img src="images/folder.png" align="absmiddle" class="accountTreeItemImage" id="accountTreeItemImage_#qryAccounts.accountID#"></a> 
 							<a href="#tmpHREF#" class="accountTreeItem" 
 								style="font-weight:normal;"
 								alt="Click to view account's pages"
 								title="Click to view account's pages"
-								id="accountTreeItem_#qryAccounts.userID#">#username#</a>
+								id="accountTreeItem_#qryAccounts.accountID#">#qryAccounts.accountname#</a>
 						</div>
 					</cfloop>
 				</div>

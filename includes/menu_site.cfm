@@ -109,7 +109,7 @@
 		</cfif>
 		
 		<cfif oContext.hasPage()>
-			<cfset oPage = oContext.getPage().getPage()>
+			<cfset oPage = oContext.getPage()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.pages>
 				&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#oPage.getTitle()#</a>

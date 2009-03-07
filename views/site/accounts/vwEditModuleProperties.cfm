@@ -5,6 +5,7 @@
 <cfparam name="request.requestState.oResourceBean" default="">
 <cfparam name="request.requestState.accountsRoot" default="">
 <cfparam name="request.requestState.missingModuleBean" default="false">
+<cfparam name="request.requestState.pageHREF" default="">
 
 <cfscript>
 	oSite = request.requestState.oSite;
@@ -14,6 +15,7 @@
 	thisModule = request.requestState.stModule;
 	oResourceBean = request.requestState.oResourceBean;
 	missingModuleBean = request.requestState.missingModuleBean;
+	thisPageHREF = request.requestState.pageHREF;	
 
 	accountsRoot = request.requestState.accountsRoot;
 
@@ -29,12 +31,12 @@
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
-	title = oPage.getPageTitle();
+	title = oPage.getTitle();
 	
-	oAccounts = oSite.getAccount();
+	oAccounts = oSite.getAccountsService();
 	stAccountInfo = oAccounts.getConfig();
 	
-	thisPageHREF = oPage.getHREF();	
+	
 	
 	// sort account pages
 	aPagesSorted = arrayNew(1);

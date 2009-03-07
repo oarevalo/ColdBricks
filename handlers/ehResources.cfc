@@ -68,7 +68,7 @@
 						oResourceBean = oCatalog.getResourceNode(resourceType,id);
 
 
-					setValue("qryAccounts", hp.getAccountsService().GetUsers() );
+					setValue("qryAccounts", hp.getAccountsService().GetAccounts() );
 					setValue("oResourceBean", oResourceBean);	
 				}
 				

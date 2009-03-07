@@ -13,26 +13,29 @@
 				hp = oContext.getHomePortals();
 			
 				if(page neq "") {
-					pageHREF = hp.getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
-					oPage = createObject("component","Home.Components.page").init( pageHREF );
+					oPage = oContext.getAccountSite().getPage(page);
+					pageHREF = oContext.getAccountSite().getPageHREF(page);
 					oContext.setPage(oPage);
+					oContext.setPageHREF(pageHREF);
 				}			
 
 				// get default resource type
 				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
 				if(resType neq "") oContext.setPageResourceTypeView(resType);
 				
-				setValue("pageTitle", oContext.getPage().getPage().getTitle() );
+				setValue("pageTitle", oContext.getPage().getTitle() );
 				setValue("accountName", oContext.getAccountName());
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("resType", oContext.getPageResourceTypeView);
+				setValue("aLayoutSectionTypes", listToArray(hp.getConfig().getLayoutSections()));
+				setValue("pageHREF", oContext.getPageHREF());
 				
 				setValue("oSite", oContext.getAccountSite());
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 
-				setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getPage().getTitle()#");
+				setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getTitle()#");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
@@ -131,10 +134,11 @@
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
 				setValue("stModule", stModule);
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("missingModuleBean", missingModuleBean);
+				setValue("pageHREF", oContext.getPageHREF());
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Edit Module");
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Edit Module");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				

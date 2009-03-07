@@ -319,12 +319,13 @@
 				setValue("appRoot", appRoot);
 
 				// only validate the settings that will be overriden
-				if(listFind(appSettings,"defaultAccount") and defaultAccount eq "") throw("The default account is required","validation");
+				if(listFind(appSettings,"defaultPage") and defaultPage eq "") throw("The default page is required","validation");
 				if(listFind(appSettings,"pageCacheSize") and val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(listFind(appSettings,"pageCacheTTL") and val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
 				if(listFind(appSettings,"contentCacheSize") and val(contentCacheSize) eq 0) throw("You must enter a valid number for the content cache maximum size","validation");
 				if(listFind(appSettings,"contentCacheTTL") and val(contentCacheTTL) eq 0) throw("You must enter a valid number for the content cache TTL","validation");
-				if(listFind(appSettings,"accountsRoot") and accountsRoot eq "") throw("The accounts root directory is required","validation");
+				if(listFind(appSettings,"rssCacheSize") and val(rssCacheSize) eq 0) throw("You must enter a valid number for the content RSS maximum size","validation");
+				if(listFind(appSettings,"rssCacheTTL") and val(rssCacheTTL) eq 0) throw("You must enter a valid number for the content RSS TTL","validation");
 				if(listFind(appSettings,"resourceLibraryPath") and resourceLibraryPath eq "") throw("The resources library directory is required","validation");
 				if(listFind(appSettings,"rt_page") and rt_page eq "") throw("The location of the 'page' render template is required","validation");
 				if(listFind(appSettings,"rt_module") and rt_module eq "") throw("The location of the 'module' render template is required","validation");
@@ -372,14 +373,12 @@
 			var oContext = getService("sessionContext").getContext();
 
 			var accountsRoot = getValue("accountsRoot");
+			var defaultAccount = getValue("defaultAccount");
 			var storageType = getValue("storageType");
-			var storageCFC = getValue("storageCFC");
-			var accountsTable = getValue("accountsTable");
 			var datasource = getValue("datasource");
 			var username = getValue("username");
 			var password = getValue("password");
 			var dbType = getValue("dbType");
-			var storageFileHREF = getValue("storageFileHREF");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
 
@@ -396,19 +395,14 @@
 
 				switch(storageType) {
 					case "xml":
-						if(listFind(appSettings,"storageFileHREF") and storageFileHREF eq "") throw("For 'XML' storage, the storage file location is required","validation");
+						// no properties required for xml storage
 						break;
 
 					case "db":
 						if(listFind(appSettings,"datasource") and datasource eq "") throw("For 'Database' storage, the datasource is required","validation");
-						if(listFind(appSettings,"accountsTable") and accountsTable eq "") throw("For 'Database' storage, the accounts table name is required","validation");
 						if(listFind(appSettings,"dbType") and dbType eq "") throw("For 'Database' storage, the database type is required","validation");
 						break;
 
-					case "custom":
-						if(listFind(appSettings,"storageCFC") and storageCFC eq "") throw("For 'Custom CFC' storage, the path to your custom CFC that wil handle accounts storage is required","validation");
-						break;
-						
 					default:
 						throw("You have selected an invalid storage type.","validation");
 				} 
@@ -618,9 +612,9 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.Components.accountsConfigBean">
+	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.Components.accounts.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.Components.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
+			var oConfigBean = createObject("component","Home.Components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
@@ -651,13 +645,14 @@
 			// now get current config xml
 			xmlDoc = xmlParse(arguments.configFile);
 			
-			if(structKeyExists(xmlDoc.xmlRoot,"defaultAccount")) stAppConfig.defaultAccount = xmlDoc.xmlRoot.defaultAccount.xmlText;
+			if(structKeyExists(xmlDoc.xmlRoot,"resourceLibraryPath")) stAppConfig.resourceLibraryPath = xmlDoc.xmlRoot.resourceLibraryPath.xmlText;
+			if(structKeyExists(xmlDoc.xmlRoot,"defaultPage")) stAppConfig.defaultPage = xmlDoc.xmlRoot.defaultPage.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"pageCacheSize")) stAppConfig.pageCacheSize = xmlDoc.xmlRoot.pageCacheSize.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"pageCacheTTL")) stAppConfig.pageCacheTTL = xmlDoc.xmlRoot.pageCacheTTL.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"contentCacheSize")) stAppConfig.contentCacheSize = xmlDoc.xmlRoot.contentCacheSize.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"contentCacheTTL")) stAppConfig.contentCacheTTL = xmlDoc.xmlRoot.contentCacheTTL.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"resourceLibraryPath")) stAppConfig.resourceLibraryPath = xmlDoc.xmlRoot.resourceLibraryPath.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"accountsRoot")) stAppConfig.accountsRoot = xmlDoc.xmlRoot.accountsRoot.xmlText;
+			if(structKeyExists(xmlDoc.xmlRoot,"rssCacheSize")) stAppConfig.rssCacheSize = xmlDoc.xmlRoot.rssCacheSize.xmlText;
+			if(structKeyExists(xmlDoc.xmlRoot,"rssCacheTTL")) stAppConfig.rssCacheTTL = xmlDoc.xmlRoot.rssCacheTTL.xmlText;
 
 			aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='page']");
 			if(arrayLen(aNode) gt 0) stAppConfig.rt_page = aNode[1].xmlAttributes.href;
@@ -695,13 +690,12 @@
 			xmlDoc = xmlParse(arguments.configFile);
 			
 			if(structKeyExists(xmlDoc.xmlRoot,"accountsRoot")) stAppConfig["accountsRoot"] = xmlDoc.xmlRoot.accountsRoot.xmlText;
+			if(structKeyExists(xmlDoc.xmlRoot,"defaultAccount")) stAppConfig["defaultAccount"] = xmlDoc.xmlRoot.defaultAccount.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"storageType")) stAppConfig["storageType"] = xmlDoc.xmlRoot.storageType.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"storageFileHREF")) stAppConfig["storageFileHREF"] = xmlDoc.xmlRoot.storageFileHREF.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"datasource")) stAppConfig["datasource"] = xmlDoc.xmlRoot.datasource.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"username")) stAppConfig["username"] = xmlDoc.xmlRoot.username.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"password")) stAppConfig["password"] = xmlDoc.xmlRoot.password.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"dbType")) stAppConfig["dbType"] = xmlDoc.xmlRoot.dbType.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"storageCFC")) stAppConfig["storageCFC"] = xmlDoc.xmlRoot.storageCFC.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"newAccountTemplate")) stAppConfig["newAccountTemplate"] = xmlDoc.xmlRoot.newAccountTemplate.xmlText;
 			if(structKeyExists(xmlDoc.xmlRoot,"newPageTemplate")) stAppConfig["newPageTemplate"] = xmlDoc.xmlRoot.newPageTemplate.xmlText;
 			
@@ -760,12 +754,13 @@
 						switch(key) {
 							case "appRoot":			keyName = "appRoot"; break;
 							case "resourceLibraryPath":	keyName = "resourceLibraryPath"; break;
-							case "accountsRoot":	keyName = "accountsRoot"; break;
-							case "defaultAccount":	keyName = "defaultAccount"; break;
+							case "defaultPage":	keyName = "defaultPage"; break;
 							case "pageCacheSize":	keyName = "pageCacheSize"; break;
 							case "pageCacheTTL":	keyName = "pageCacheTTL"; break;
 							case "contentCacheSize":	keyName = "contentCacheSize"; break;
 							case "contentCacheTTL":	keyName = "contentCacheTTL"; break;
+							case "rssCacheSize":	keyName = "rssCacheSize"; break;
+							case "rssCacheTTL":	keyName = "rssCacheTTL"; break;
 						}
 						xmlNode = xmlElemNew(xmlDoc, keyName);
 						xmlNode.xmlText = arguments.stAppConfig[key];
