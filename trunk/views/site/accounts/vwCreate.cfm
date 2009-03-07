@@ -1,8 +1,7 @@
 <!--- Accounts Manager Create Account View --->
-<cfparam name="username" default="">
+<cfparam name="accountname" default="">
 <cfparam name="password" default="">
 <cfparam name="firstName" default="">
-<cfparam name="middleName" default="">
 <cfparam name="lastName" default="">
 <cfparam name="email" default="">
 
@@ -13,7 +12,7 @@
 		<table class="dataFormTable">
 			<tr>
 				<td width="100"><strong>Account Name:</strong></td>
-				<td><input type="text" name="username" value="#username#" size="50" class="formField"></td>
+				<td><input type="text" name="accountname" value="#accountname#" size="50" class="formField"></td>
 			</tr>
 			<tr>
 				<td width="100"><strong>Password:</strong></td>
@@ -25,10 +24,6 @@
 			<tr>
 				<td>First Name:</td>
 				<td><input type="text" name="firstName" value="#firstName#" size="50" class="formField"></td>
-			</tr>
-			<tr>
-				<td>Middle Name:</td>
-				<td><input type="text" name="middleName" value="#middleName#" size="50" class="formField"></td>
 			</tr>
 			<tr>
 				<td>Last Name:</td>

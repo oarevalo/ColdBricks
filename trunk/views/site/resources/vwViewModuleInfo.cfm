@@ -151,6 +151,9 @@ h2.title {
 				<td>#tmpNode.description#</td>
 			</tr>
 		</cfloop>
+		<cfif arrayLen(aMethods) eq 0>
+			<tr><td colspan="3"><em>None</em></td></tr>
+		</cfif>
 
 		<tr><td colspan="3"><b><em>Events:</em></b></tr>
 		<cfloop from="1" to="#arrayLen(aEvents)#" index="i">
@@ -163,6 +166,9 @@ h2.title {
 				<td>#tmpNode.description#</td>
 			</tr>
 		</cfloop>
+		<cfif arrayLen(aEvents) eq 0>
+			<tr><td colspan="3"><em>None</em></td></tr>
+		</cfif>
 	</table>
 </cfif>
 

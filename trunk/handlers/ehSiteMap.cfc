@@ -3,15 +3,23 @@
 	<cffunction name="dspMain">
 		<cfscript>
 			var oContext = getService("sessionContext").getContext();
-			hp = oContext.getHomePortals();
-			setValue("appRoot", hp.getConfig().getAppRoot() );
-			setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
-			setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
-			setValue("cbPageTitle", "SiteMap Tool");
-			setValue("cbPageIcon", "Globe_48x48.png");
-			setValue("cbShowSiteMenu", true);
-
-			setView("site/siteMap/vwMain");
+			
+			try {
+				hp = oContext.getHomePortals();
+				setValue("appRoot", hp.getConfig().getAppRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
+				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
+				setValue("cbPageTitle", "SiteMap Tool");
+				setValue("cbPageIcon", "Globe_48x48.png");
+				setValue("cbShowSiteMenu", true);
+	
+				setView("site/siteMap/vwMain");
+			
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSite.dspMain");
+			}
 		</cfscript>
 	</cffunction>
 
@@ -48,16 +56,16 @@
 
 				// if there is an account selected, get the account pages
 				if(account neq "") {
-					oAccountSite = createObject("component","Home.Components.site").init(account, hp.getAccountsService() );		
+					oAccountSite = createObject("component","Home.Components.accounts.site").init(account, hp.getAccountsService() );		
 					aPages = oAccountSite.getPages();		
 					setValue("aPages", aPages );
 				}
 	
 				setValue("account", account );
 				setValue("pageName", pageName );
-				setValue("qryAccounts", oAcc.GetUsers() );
+				setValue("qryAccounts", oAcc.GetAccounts() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("accountsRoot", hp.getConfig().getAccountsRoot() );
+				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
 				setView("site/siteMap/vwNode");
 

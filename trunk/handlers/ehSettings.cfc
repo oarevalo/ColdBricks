@@ -130,24 +130,25 @@
 		
 	<cffunction name="doSaveGeneral" access="public" returntype="void">
 		<cfscript>
-			var defaultAccount = getValue("defaultAccount");
+			var defaultPage = getValue("defaultPage");
 			var pageCacheSize = getValue("pageCacheSize");
 			var pageCacheTTL = getValue("pageCacheTTL");
 			var contentCacheSize = getValue("contentCacheSize");
 			var contentCacheTTL = getValue("contentCacheTTL");
-			var accountsRoot = getValue("accountsRoot");
+			var rssCacheSize = getValue("rssCacheSize");
+			var rssCacheTTL = getValue("rssCacheTTL");
 			var resourceLibraryPath = getValue("resourceLibraryPath");
 			var rt_page = getValue("rt_page");
 			var rt_module = getValue("rt_module");
 			var rt_moduleNC = getValue("rt_moduleNC");
 
 			try {
-				if(defaultAccount eq "") throw("The default account is required","validation");
 				if(val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
 				if(val(contentCacheSize) eq 0) throw("You must enter a valid number for the content cache maximum size","validation");
 				if(val(contentCacheTTL) eq 0) throw("You must enter a valid number for the content cache TTL","validation");
-				if(accountsRoot eq "") throw("The accounts root directory is required","validation");
+				if(val(rssCacheSize) eq 0) throw("You must enter a valid number for the RSS cache maximum size","validation");
+				if(val(rssCacheTTL) eq 0) throw("You must enter a valid number for the RSS cache TTL","validation");
 				if(resourceLibraryPath eq "") throw("The resources library directory is required","validation");
 				if(rt_page eq "") throw("The location of the 'page' render template is required","validation");
 				if(rt_module eq "") throw("The location of the 'module' render template is required","validation");
@@ -155,12 +156,13 @@
 				
 				// set new values
 				oConfigBean = getHomePortalsConfigBean();
-				oConfigBean.setDefaultAccount(defaultAccount);
+				oConfigBean.setDefaultPage(defaultPage);
 				oConfigBean.setPageCacheSize(pageCacheSize);
 				oConfigBean.setPageCacheTTL(pageCacheTTL);
 				oConfigBean.setContentCacheSize(contentCacheSize);
 				oConfigBean.setContentCacheTTL(contentCacheTTL);
-				oConfigBean.setAccountsRoot(accountsRoot);
+				oConfigBean.setRSSCacheSize(rssCacheSize);
+				oConfigBean.setRSSCacheTTL(rssCacheTTL);
 				oConfigBean.setResourceLibraryPath(resourceLibraryPath);
 			
 				oConfigBean.setRenderTemplate("page", rt_page);
@@ -295,14 +297,12 @@
 	<cffunction name="doSaveAccounts" access="public" returntype="void">
 		<cfscript>
 			var accountsRoot = getValue("accountsRoot");
+			var defaultAccount = getValue("defaultAccount");
 			var storageType = getValue("storageType");
-			var storageCFC = getValue("storageCFC");
-			var accountsTable = getValue("accountsTable");
 			var datasource = getValue("datasource");
 			var username = getValue("username");
 			var password = getValue("password");
 			var dbType = getValue("dbType");
-			var storageFileHREF = getValue("storageFileHREF");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
 
@@ -315,19 +315,14 @@
 
 				switch(storageType) {
 					case "xml":
-						if(storageFileHREF eq "") throw("For 'XML' storage, the storage file location is required","validation");
+						// nothing here
 						break;
 
 					case "db":
 						if(datasource eq "") throw("For 'Database' storage, the datasource is required","validation");
-						if(accountsTable eq "") throw("For 'Database' storage, the accounts table name is required","validation");
 						if(dbType eq "") throw("For 'Database' storage, the database type is required","validation");
 						break;
 
-					case "custom":
-						if(storageCFC eq "") throw("For 'Custom CFC' storage, the path to your custom CFC that wil handle accounts storage is required","validation");
-						break;
-						
 					default:
 						throw("You have selected an invalid storage type.","validation");
 				} 
@@ -335,14 +330,12 @@
 				// set new values
 				oConfigBean = getAccountsConfigBean();
 				oConfigBean.setAccountsRoot(accountsRoot);
+				oConfigBean.setDefaultAccount(defaultAccount);
 				oConfigBean.setStorageType(storageType);
-				oConfigBean.setStorageCFC(storageCFC);
-				oConfigBean.setAccountsTable(accountsTable);
 				oConfigBean.setDatasource(datasource);
 				oConfigBean.setUsername(username);
 				oConfigBean.setPassword(password);
 				oConfigBean.setDBType(dbType);
-				oConfigBean.setStorageFileHREF(storageFileHREF);
 				oConfigBean.setNewAccountTemplate(newAccountTemplate);
 				oConfigBean.setNewPageTemplate(newPageTemplate);
 			
@@ -483,9 +476,9 @@
 		<cfset writeFile( expandPath(variables.homePortalsConfigPath), toString( arguments.configBean.toXML() ) )>
 	</cffunction>
 
-	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.Components.accountsConfigBean">
+	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.Components.accounts.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.Components.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
+			var oConfigBean = createObject("component","Home.Components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>

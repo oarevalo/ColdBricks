@@ -10,13 +10,14 @@
 	stAppConfig = request.requestState.stAppConfig;
 	
 	appRoot = oHomePortalsConfigBean.getAppRoot();
+	defaultPage = oHomePortalsConfigBean.getDefaultPage();
 	resourceLibraryPath = oHomePortalsConfigBean.getResourceLibraryPath();
-	accountsRoot = oHomePortalsConfigBean.getAccountsRoot();
-	defaultAccount = oHomePortalsConfigBean.getDefaultAccount();
 	pageCacheSize = oHomePortalsConfigBean.getPageCacheSize();
 	pageCacheTTL = oHomePortalsConfigBean.getPageCacheTTL();
 	contentCacheSize = oHomePortalsConfigBean.getContentCacheSize();
 	contentCacheTTL = oHomePortalsConfigBean.getContentCacheTTL();
+	rssCacheSize = oHomePortalsConfigBean.getRSSCacheSize();
+	rssCacheTTL = oHomePortalsConfigBean.getRSSCacheTTL();
 	
 	try{ rt_page = oHomePortalsConfigBean.getRenderTemplate("page"); } catch(any e) { rt_page = ""; }
 	try{ rt_module = oHomePortalsConfigBean.getRenderTemplate("module"); } catch(any e) { rt_module = ""; }
@@ -71,13 +72,6 @@
 					</tr>
 					<tr>
 						<td width="170">
-							<input type="checkbox" name="appSettings" value="accountsRoot" <cfif structKeyExists(stAppConfig,"accountsRoot")>checked</cfif> onclick="toggleField(this.checked,'accountsRoot')">
-							<strong>Accounts Root:</strong>
-						</td>
-						<td><input type="text" name="accountsRoot" value="#accountsRoot#" id="fld_accountsRoot" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"accountsRoot")>disabled</cfif>></td>
-					</tr>
-					<tr>
-						<td width="170">
 							<input type="checkbox" name="appSettings" value="resourceLibraryPath" <cfif structKeyExists(stAppConfig,"resourceLibraryPath")>checked</cfif> onclick="toggleField(this.checked,'resourceLibraryPath')">
 							<strong>Resource Library Root:</strong>
 						</td>
@@ -85,38 +79,54 @@
 					</tr>
 					<tr>
 						<td width="170">
-							<input type="checkbox" name="appSettings" value="defaultAccount" <cfif structKeyExists(stAppConfig,"defaultAccount")>checked</cfif> onclick="toggleField(this.checked,'defaultAccount')">
-							<strong>Default Account:</strong>
+							<input type="checkbox" name="appSettings" value="defaultPage" <cfif structKeyExists(stAppConfig,"defaultPage")>checked</cfif> onclick="toggleField(this.checked,'defaultPage')">
+							<strong>Default Page:</strong>
 						</td>
-						<td><input type="text" name="defaultAccount" value="#defaultAccount#" id="fld_defaultAccount" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"defaultAccount")>disabled</cfif>></td>
+						<td><input type="text" name="defaultPage" value="#defaultPage#" id="fld_defaultPage" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"defaultPage")>disabled</cfif>></td>
 					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr><td colspan="2"><h2>Caching:</h2></td></tr>
 					<tr>
 						<td width="170">
+							<strong>Pages:</strong>
+						</td>
+						<td>
 							<input type="checkbox" name="appSettings" value="pageCacheSize" <cfif structKeyExists(stAppConfig,"pageCacheSize")>checked</cfif> onclick="toggleField(this.checked,'pageCacheSize')">
-							<strong>Page Cache Max Size:</strong>
-						</td>
-						<td><input type="text" name="pageCacheSize" value="#pageCacheSize#" id="fld_pageCacheSize" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"pageCacheSize")>disabled</cfif>></td>
-					</tr>
-					<tr>
-						<td width="170">
+							<strong>Max Size:</strong>
+							<input type="text" name="pageCacheSize" value="#pageCacheSize#" id="fld_pageCacheSize" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"pageCacheSize")>disabled</cfif>>
+							&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="checkbox" name="appSettings" value="pageCacheTTL" <cfif structKeyExists(stAppConfig,"pageCacheTTL")>checked</cfif> onclick="toggleField(this.checked,'pageCacheTTL')">
-							<strong>Page Cache TTL (min):</strong>
+							<strong>TTL (min):</strong>
+							<input type="text" name="pageCacheTTL" value="#pageCacheTTL#" id="fld_pageCacheTTL" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"pageCacheTTL")>disabled</cfif>>	
 						</td>
-						<td><input type="text" name="pageCacheTTL" value="#pageCacheTTL#" id="fld_pageCacheTTL" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"pageCacheTTL")>disabled</cfif>></td>
 					</tr>
 					<tr>
 						<td width="170">
+							<strong>Content:</strong>
+						</td>
+						<td>
 							<input type="checkbox" name="appSettings" value="contentCacheSize" <cfif structKeyExists(stAppConfig,"contentCacheSize")>checked</cfif> onclick="toggleField(this.checked,'contentCacheSize')">
-							<strong>Content Cache Max Size:</strong>
+							<strong>Max Size:</strong>
+							<input type="text" name="contentCacheSize" value="#contentCacheSize#" id="fld_contentCacheSize" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"contentCacheSize")>disabled</cfif>>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="checkbox" name="appSettings" value="contentCacheTTL" <cfif structKeyExists(stAppConfig,"contentCacheTTL")>checked</cfif> onclick="toggleField(this.checked,'contentCacheTTL')">
+							<strong>TTL (min):</strong>
+							<input type="text" name="contentCacheTTL" value="#contentCacheTTL#" id="fld_contentCacheTTL" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"contentCacheTTL")>disabled</cfif>>
 						</td>
-						<td><input type="text" name="contentCacheSize" value="#contentCacheSize#" id="fld_contentCacheSize" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"contentCacheSize")>disabled</cfif>></td>
 					</tr>
 					<tr>
 						<td width="170">
-							<input type="checkbox" name="appSettings" value="contentCacheTTL" <cfif structKeyExists(stAppConfig,"contentCacheTTL")>checked</cfif> onclick="toggleField(this.checked,'contentCacheTTL')">
-							<strong>Content Catch TTL (min):</strong>
+							<strong>RSS Feeds:</strong>
 						</td>
-						<td><input type="text" name="contentCacheTTL" value="#contentCacheTTL#" id="fld_contentCacheTTL" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"contentCacheTTL")>disabled</cfif>></td>
+						<td>
+							<input type="checkbox" name="appSettings" value="rssCacheSize" <cfif structKeyExists(stAppConfig,"rssCacheSize")>checked</cfif> onclick="toggleField(this.checked,'rssCacheSize')">
+							<strong>Max Size:</strong>
+							<input type="text" name="rssCacheSize" value="#rssCacheSize#" id="fld_rssCacheSize" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"rssCacheSize")>disabled</cfif>>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="checkbox" name="appSettings" value="rssCacheTTL" <cfif structKeyExists(stAppConfig,"rssCacheTTL")>checked</cfif> onclick="toggleField(this.checked,'rssCacheTTL')">
+							<strong>TTL (min):</strong>
+							<input type="text" name="rssCacheTTL" value="#rssCacheTTL#" id="fld_rssCacheTTL" size="5" style="width:50px;" class="formField" <cfif not structKeyExists(stAppConfig,"rssCacheTTL")>disabled</cfif>>
+						</td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2"><h2>Base Resources:</h2></td></tr>

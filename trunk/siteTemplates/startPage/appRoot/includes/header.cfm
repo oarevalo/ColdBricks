@@ -14,7 +14,7 @@
 		pageAccess = request.oPage.getAccess();
 		
 		// create site object
-		request.oSite = CreateObject("component", "Home.Components.site").init(siteOwner, oAccountsService);
+		request.oSite = CreateObject("component", "Home.Components.accounts.site").init(siteOwner, oAccountsService);
 
 		// Get information on any currently logged-in user
 		oUserRegistry = createObject("Component","Home.Components.userRegistry").init();

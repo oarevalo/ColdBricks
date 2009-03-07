@@ -3,16 +3,14 @@
 	oAccountsConfigBean = request.requestState.oAccountsConfigBean;
 	
 	accountsRoot = oAccountsConfigBean.getAccountsRoot();
+	defaultAccount = oAccountsConfigBean.getDefaultAccount();
 	newAccountTemplate = oAccountsConfigBean.getNewAccountTemplate();
 	newPageTemplate = oAccountsConfigBean.getNewPageTemplate();
 	storageType = oAccountsConfigBean.getStorageType();
-	storageCFC = oAccountsConfigBean.getStorageCFC();
-	accountsTable = oAccountsConfigBean.getAccountsTable();
 	datasource = oAccountsConfigBean.getDatasource();
 	username = oAccountsConfigBean.getUsername();
 	password = oAccountsConfigBean.getPassword();
 	dbType = oAccountsConfigBean.getDBType();
-	storageFileHREF = oAccountsConfigBean.getStorageFileHREF();
 </cfscript>
 
 
@@ -40,23 +38,17 @@
 						<td><input type="text" name="accountsRoot" value="#accountsRoot#" size="30" class="formField"></td>
 					</tr>
 					<tr>
+						<td width="150"><strong>Default Account:</strong></td>
+						<td><input type="text" name="defaultAccount" value="#defaultAccount#" id="fld_defaultAccount" size="30" class="formField"></td>
+					</tr>
+					<tr>
 						<td width="150"><strong>Account Storage Type:</strong></td>
 						<td>
 							<select name="storageType" class="formField">
 								<option value="xml" <cfif storageType eq "xml">selected</cfif>>XML File</option>
 								<option value="db" <cfif storageType eq "db">selected</cfif>>Database</option>
-								<option value="custom" <cfif storageType eq "custom">selected</cfif>>Custom CFC</option>
 							</select>
 						</td>
-					</tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td colspan="2">
-						<h2 style="margin-bottom:6px;">XML Storage Settings:</h2>
-						<div style="font-size:11px;line-height:18px;color:red;"><b>Note:</b> Settings on this section are only applicable when the selected Account Storage is 'XML'</div>
-					</td></tr>
-					<tr>
-						<td width="150"><strong>Storage File:</strong></td>
-						<td><input type="text" name="storageFileHREF" value="#storageFileHREF#" size="30" class="formField"></td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2">
@@ -76,27 +68,13 @@
 						<td><input type="text" name="password" value="#password#" size="30" class="formField"></td>
 					</tr>
 					<tr>
-						<td width="150"><strong>Accounts Table:</strong></td>
-						<td><input type="text" name="accountsTable" value="#accountsTable#" size="30" class="formField"></td>
-					</tr>
-					<tr>
 						<td width="150"><strong>DB Type:</strong></td>
 						<td>
 							<select name="dbType" class="formField">
 								<option value="MSSQL" <cfif dbType eq "MSSQL">selected</cfif>>MS SQL Server</option>
 								<option value="MySQL" <cfif dbType eq "MySQL">selected</cfif>>MySQL</option>
-								<option value="Other" <cfif dbType neq "MSSQL" and dbType neq "MySQL">selected</cfif>>Other</option>
 							</select>
 						</td>
-					</tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td colspan="2">
-						<h2 style="margin-bottom:6px;">Custom Storage Settings:</h2>
-						<div style="font-size:11px;line-height:18px;color:red;"><b>Note:</b> Settings on this section are only applicable when the selected Account Storage is 'Custom CFC'</div>
-					</td></tr>
-					<tr>
-						<td width="150"><strong>CFC Path:</strong></td>
-						<td><input type="text" name="storageCFC" value="#storageCFC#" size="30" class="formField"></td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2"><h2>Account Templates:</h2></td></tr>
