@@ -19,11 +19,11 @@
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	qryMetaTags = oPage.getMetaTags();
+	aMetaTags = oPage.getMetaTags();
 	
-	if(index gt 0 and index lte qryMetaTags.recordCount) {
-		name = qryMetaTags.name[index];	
-		content = qryMetaTags.content[index];	
+	if(index gt 0 and index lte arrayLen(aMetaTags)) {
+		name = aMetaTags[index].name;	
+		content = aMetaTags[index].content;	
 	}
 	
 	lstMetaTags = "description,keywords,robots,author,copyright,refresh";
@@ -76,18 +76,18 @@ function deleteMetaTag(index) {
 						<th>Content</th>
 						<th width="30">&nbsp;</th>
 					</tr>
-					<cfloop query="qryMetaTags">
-						<tr <cfif qryMetaTags.currentRow mod 2>style="background-color:##f3f3f3;"</cfif>>
-							<td align="right"><b>#qryMetaTags.currentRow#.</b></td>
-							<td>#qryMetaTags.name#</td>
-							<td>#qryMetaTags.content#</td>
+					<cfloop from="1" to="#arrayLen(aMetaTags)#" index="i">
+						<tr <cfif i mod 2>style="background-color:##f3f3f3;"</cfif>>
+							<td align="right"><b>#i#.</b></td>
+							<td>#aMetaTags[i].name#</td>
+							<td>#aMetaTags[i].content#</td>
 							<td align="right">
-								<a href="index.cfm?event=ehPage.dspMeta&index=#qryMetaTags.currentRow#"><img src="images/page_edit.png" align="absmiddle" border="0"></a>
-								<a href="javascript:deleteMetaTag(#qryMetaTags.currentRow#)"><img src="images/waste_small.gif" align="absmiddle" border="0"></a>
+								<a href="index.cfm?event=ehPage.dspMeta&index=#i#"><img src="images/page_edit.png" align="absmiddle" border="0"></a>
+								<a href="javascript:deleteMetaTag(#i#)"><img src="images/waste_small.gif" align="absmiddle" border="0"></a>
 							</td>
 						</tr>
 					</cfloop>
-					<cfif qryMetaTags.recordCount eq 0>
+					<cfif arrayLen(aMetaTags) eq 0>
 						<tr><td colspan="4"><em>No user-defined meta tags found.</em></td></tr>
 					</cfif>
 				</table>

@@ -19,11 +19,11 @@
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	oAccounts = oSite.getAccount();
+	oAccounts = oSite.getAccountsService();
 	stAccountInfo = oAccounts.getConfig();
 	
 	aModules = oPage.getModules();
-	qryListeners = oPage.getEventHandlers();
+	aListeners = oPage.getEventListeners();
 	aAllEvents = ArrayNew(1);
 	aAllEventHandlers = ArrayNew(1); 
 
@@ -102,17 +102,17 @@ function deleteEventHandler(index) {
 						<th>Action</th>
 						<th width="10">&nbsp;</th>
 					</tr>
-					<cfloop query="qryListeners">
-						<tr <cfif qryListeners.currentRow mod 2>style="background-color:##f3f3f3;"</cfif>>
-							<td align="right"><b>#qryListeners.currentRow#.</b></td>
-							<td>#qryListeners.objectName#.#qryListeners.eventName#</td>
-							<td>#qryListeners.eventHandler#</td>
+					<cfloop from="1" to="#arrayLen(aListeners)#" index="i">
+						<tr <cfif i mod 2>style="background-color:##f3f3f3;"</cfif>>
+							<td align="right"><b>#i#.</b></td>
+							<td>#aListeners[i].objectName#.#aListeners[i].eventName#</td>
+							<td>#aListeners[i].eventHandler#</td>
 							<td align="right">
-								<a href="javascript:deleteEventHandler(#qryListeners.currentRow#)"><img src="images/waste_small.gif" align="absmiddle" border="0"></a>
+								<a href="javascript:deleteEventHandler(#i#)"><img src="images/waste_small.gif" align="absmiddle" border="0"></a>
 							</td>
 						</tr>
 					</cfloop>
-					<cfif qryListeners.recordCount eq 0>
+					<cfif arrayLen(aListeners) eq 0>
 						<tr><td colspan="4"><em>No event handlers found.</em></td></tr>
 					</cfif>
 				</table>
