@@ -409,6 +409,7 @@
 		</cfscript>	
 	</cffunction>
 
+
 	<!-----  Module Actions  ---->			
 	<cffunction name="doAddResource">
 		<cfscript>
@@ -470,6 +471,8 @@
 				
 				resBean = oCatalog.getResourceNode(moduleResType, moduleID);
 				oPage.addModule(resBean, locationName, stAttributes);
+				savePage();
+				
 				setMessage("info", "Resource added to page");
 				
 				// go to the page editor
@@ -499,6 +502,8 @@
 				oPage = oContext.getPage();
 		
 				oPage.deleteModule(moduleID);
+				savePage();
+				
 				setMessage("info", "Module deleted");
 				
 				// go to the page editor
@@ -531,6 +536,8 @@
 				layout = replaceList(layout,"ppm_,pps_",",");
 		
 				oPage.setModuleOrder(layout);
+				savePage();
+				
 				setMessage("info", "Modules layout changed");
 				
 				// go to the page editor
@@ -584,6 +591,7 @@
 				}
 		
 				oPage.saveModule(moduleID, stAttribs);
+				savePage();
 				
 				setMessage("info", "Module attributes saved");
 				
@@ -627,6 +635,8 @@
 				stAttributes["moduleType"] = "content";
 				
 				oPage.addModule(resBean, locationName, stAttributes);
+				savePage();
+				
 				setMessage("info", "Empty content module added to page");
 				
 				// go to the page editor
@@ -643,7 +653,6 @@
 			}				
 		</cfscript>
 	</cffunction>
-		
 		
 		
 	<!-----  Page Level Actions  ---->		
@@ -717,6 +726,8 @@
 				if(skinID eq "NONE") skinID = "";
 		
 				oPage.setSkinID(skinID);
+				savePage();
+				
 				if(skinID eq "") 
 					setMessage("info", "Skin removed");
 				else 
@@ -760,6 +771,7 @@
 		
 				// apply template
 				oPage.applyPageTemplate(oResourceBean, resRoot);
+				savePage();
 				
 				setMessage("info", "The page template has been applied.");
 				
@@ -782,6 +794,7 @@
 		<cfscript>
 			var xmlContent = getValue("xmlContent","");
 			var oPage = 0;
+			var oSite = 0;
 			var oPageCheck = 0;
 			var oContext = getService("sessionContext").getContext();
 			var pageHREF = oContext.getPageHREF();
@@ -790,6 +803,7 @@
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
+				oSite = oContext.getAccountSite();
 		
 				if(not isXml(xmlContent)) {
 					setMessage("warning", "The given content is not a valid XML document");
@@ -807,7 +821,7 @@
 				
 				// update the page
 				oPage.init(xmlContent);
-				oSite.savePage( getFileFromPath(pageHREF), oPage );
+				savePage();
 				
 				// go to the xml editor
 				setMessage("info", "Page XML Changed");
@@ -878,9 +892,10 @@
 							
 				// change page title
 				oPage.setTitle(pageTitle);
+				oSite.updatePageTitle(getFileFromPath(pageHREF), pageTitle);
 				
 				// save page
-				oSite.savePage( getFileFromPath(pageHREF), oPage );
+				savePage();
 				
 				setMessage("info", "Page title changed.");
 				
@@ -992,6 +1007,8 @@
 				}
 		
 				oPage.addLocation(newLocationName, locationType);
+				savePage();
+				
 				setMessage("info", "Layout section created.");
 				
 				// go to the page editor
@@ -1024,6 +1041,8 @@
 				oPage = oContext.getPage();
 		
 				oPage.saveLocation(locationOriginalName, locationNewName, locationType, locationClass);
+				savePage();
+				
 				setMessage("info", "Layout section updated.");
 				
 				// go to the page editor
@@ -1054,6 +1073,8 @@
 				
 				// delete location		
 				oPage.deleteLocation(locationName);
+				savePage();
+				
 				setMessage("info", "Layout section removed.");
 				
 				// go to the page editor
@@ -1070,8 +1091,6 @@
 			}			
 		</cfscript>
 	</cffunction>
-	
-	
 	
 	
 	<!----  Event Handler Actions  ---->
@@ -1091,7 +1110,9 @@
 				if(eventName eq "") throw("You must select an event from the list","coldBricks.validation");
 				if(eventHandler eq "") throw("The event action cannot be empty. Available event actions are given by the existing modules on the page","coldBricks.validation");
 		
-				oPage.saveEventHandler(0, listFirst(eventName,"."), listLast(eventName,"."), eventHandler);
+				oPage.addEventListener(listFirst(eventName,"."), listLast(eventName,"."), eventHandler);
+				savePage();
+				
 				setMessage("info", "Event handler saved.");
 				
 				// go to the event hander view
@@ -1113,6 +1134,7 @@
 		<cfscript>
 			var index = getValue("index",0);
 			var oPage = 0;
+			var aListeners = arrayNew(1);
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
@@ -1120,7 +1142,15 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				oPage.deleteEventHandler(index);
+				aListeners = oPage.getEventListeners();
+				
+				if(index lte arrayLen(aListeners)) {
+					oPage.removeEventListener(aListeners[i].objectName,
+												aListeners[i].eventName,
+												aListeners[i].eventHandler);
+					savePage();
+				}
+				
 				setMessage("info", "Event handler deleted.");
 				
 				// go to the event hander view
@@ -1139,8 +1169,6 @@
 	</cffunction>
 	
 	
-	
-	
 	<!----  Meta Tag Actions  ---->
 	<cffunction name="doAddMetaTag" access="public" returntype="void">
 		<cfscript>
@@ -1155,7 +1183,11 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				oPage.saveMetaTag(index, name, content);
+				if(index gt 0) oPage.removeMetaTag(name);
+				
+				oPage.addMetaTag(name, content);
+				savePage();
+
 				setMessage("info", "User-defined meta tag saved.");
 				
 				// go to the event hander view
@@ -1178,13 +1210,20 @@
 			var index = getValue("index",0);
 			var oPage = 0;
 			var oContext = getService("sessionContext").getContext();
+			var aMetaTags = 0;
 			
 			try {
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				oPage.deleteMetaTag(index);
+				aMetaTags = oPage.getMetaTags();
+				
+				if(index lte arrayLen(aMetaTags)) {
+					oPage.removeMetaTag(aMetaTags[index].name);
+					savePage();
+				}
+
 				setMessage("info", "User-defined meta tag deleted.");
 				
 				// go to the event hander view
@@ -1201,10 +1240,25 @@
 			}			
 		</cfscript>
 	</cffunction>
+
+
+	<!----  Private Methods  ---->
+	<cffunction name="savePage" access="private" returntype="void">
+		<cfscript>
+			var oContext = getService("sessionContext").getContext();
+			var oPage = oContext.getPage();
+			var oSite = oContext.getAccountSite();
+			var pageHREF = oContext.getPageHREF();
+
+			oSite.savePage( getFileFromPath(pageHREF), oPage );
+		</cfscript>
+	
+	</cffunction>
 	
 	<cffunction name="writeFile" access="private" returntype="void">
 		<cfargument name="path" type="string" required="true">
 		<cfargument name="content" type="string" required="true">
 		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
 	</cffunction>
+
 </cfcomponent>
