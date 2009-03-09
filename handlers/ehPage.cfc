@@ -417,6 +417,7 @@
 			var resType = getValue("resType","");
 			var locationName = getValue("locationName","");
 			var oPage = 0;
+			var oPageHelper = 0;
 			var hp = 0;
 			var moduleID = "";
 			var	stAttributes = structNew();
@@ -432,7 +433,6 @@
 
 				oPage = oContext.getPage();
 				oCatalog = hp.getCatalog();
-
 
 				// build custom properties
 				switch(resType) {
@@ -470,7 +470,10 @@
 				}
 				
 				resBean = oCatalog.getResourceNode(moduleResType, moduleID);
-				oPage.addModule(resBean, locationName, stAttributes);
+				
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
+				oPageHelper.setPage( oPage );
+				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
 				setMessage("info", "Resource added to page");
@@ -501,7 +504,7 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				oPage.deleteModule(moduleID);
+				oPage.removeModule(moduleID);
 				savePage();
 				
 				setMessage("info", "Module deleted");
@@ -525,6 +528,7 @@
 		<cfscript>
 			var layout = getValue("newlayout","");
 			var oPage = 0;
+			var oPageHelper = 0;
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
@@ -534,8 +538,10 @@
 		
 				// remove prefixes added to avoid mixing with existing page elements
 				layout = replaceList(layout,"ppm_,pps_",",");
-		
-				oPage.setModuleOrder(layout);
+
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
+				oPageHelper.setPage( oPage );
+				oPageHelper.setModuleOrder(layout);
 				savePage();
 				
 				setMessage("info", "Modules layout changed");
@@ -590,7 +596,7 @@
 						stAttribs["cacheTTL"] = getValue("cacheTTL");
 				}
 		
-				oPage.saveModule(moduleID, stAttribs);
+				oPage.setModule(moduleID, stAttribs);
 				savePage();
 				
 				setMessage("info", "Module attributes saved");
@@ -615,6 +621,7 @@
 			var resType = getValue("resType","content");
 			var locationName = getValue("locationName","");
 			var oPage = 0;
+			var oPageHelper = 0;
 			var hp = 0;
 			var	stAttributes = structNew();
 			var oContext = getService("sessionContext").getContext();
@@ -634,7 +641,9 @@
 
 				stAttributes["moduleType"] = "content";
 				
-				oPage.addModule(resBean, locationName, stAttributes);
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
+				oPageHelper.setPage( oPage );
+				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
 				setMessage("info", "Empty content module added to page");
@@ -753,7 +762,7 @@
 			var href = getValue("resourceID","");
 			var oPage = 0; var oResourceBean = 0;
 			var hp = 0; var oCatalog = 0;
-			var resRoot = "";
+			var resRoot = ""; var oPageHelper = 0;
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
@@ -770,7 +779,9 @@
 				oResourceBean = oCatalog.getResourceNode("pageTemplate", resourceID);
 		
 				// apply template
-				oPage.applyPageTemplate(oResourceBean, resRoot);
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
+				oPageHelper.setPage( oPage );
+				oPageHelper.applyPageTemplate(oResourceBean, resRoot);
 				savePage();
 				
 				setMessage("info", "The page template has been applied.");
