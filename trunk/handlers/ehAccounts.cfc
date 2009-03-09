@@ -1,6 +1,6 @@
 <cfcomponent extends="eventHandler">
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oAcc = 0;
@@ -36,7 +36,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="dspAccount">
+	<cffunction name="dspAccount" access="public" returntype="void">
 		<cfscript>
 			var accountID = getValue("accountID");
 			var accountName = getValue("accountName");
@@ -82,7 +82,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspAccountInfo">
+	<cffunction name="dspAccountInfo" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var numPages = 0;
@@ -113,7 +113,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspPageInfo">
+	<cffunction name="dspPageInfo" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oAccountSite = 0;
@@ -154,7 +154,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspAddPage">
+	<cffunction name="dspAddPage" access="public" returntype="void">
 		<cfscript>
 			var oSite = 0;
 			var oAccounts = 0;
@@ -248,7 +248,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspEdit">
+	<cffunction name="dspEdit" access="public" returntype="void">
 		<cfscript>
 			var oAccounts = structNew();
 			var	qryAccount = 0;
@@ -286,7 +286,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspCreate">
+	<cffunction name="dspCreate" access="public" returntype="void">
 		<cfscript>
 			setValue("cbPageTitle", "Accounts > Create New Account");
 			setValue("cbPageIcon", "images/users_48x48.png");
