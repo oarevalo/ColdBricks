@@ -1,17 +1,17 @@
 <cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.cssContent" default="">
+<cfparam name="request.requestState.pageHREF" default="">
 
 <cfscript>
 	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	cssContent = request.requestState.cssContent;
+	thisPageHREF = request.requestState.pageHREF;	
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
-	
-	thisPageHREF = oPage.getHREF();	
 	
 	if(cssContent eq "")
 		cssContent = oPage.getPageCSS();

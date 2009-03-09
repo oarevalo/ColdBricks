@@ -1,6 +1,7 @@
 <cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.xmlContent" default="">
+<cfparam name="request.requestState.pageHREF" default="">
 
 <cfinclude template="../../../includes/udf.cfm">
 
@@ -8,13 +9,12 @@
 	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	xmlContent = request.requestState.xmlContent;
+	thisPageHREF = request.requestState.pageHREF;	
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	thisPageHREF = oPage.getHREF();	
-
 	xmlDoc = oPage.getXML();
 	if(xmlContent eq "")
 		xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
