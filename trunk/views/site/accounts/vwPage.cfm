@@ -101,7 +101,7 @@
 		function changeSkin(skinID) {
 			if(skinID=="_NEW")
 				document.location='?event=ehResources.dspMain&resType=skin&id=NEW';
-			else if(resID=="_IMPORT")
+			else if(skinID=="_IMPORT")
 				document.location='?event=ehResources.dspImport';
 			else if(skinID!=0) 
 				document.location='?event=ehPage.doApplySkin&skinID=' + skinID;
