@@ -1,5 +1,6 @@
 <cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
+<cfparam name="request.requestState.pageHREF" default="">
 
 <cfparam name="request.requestState.name" default="">
 <cfparam name="request.requestState.content" default="">
@@ -12,13 +13,12 @@
 	name = request.requestState.name;
 	content = request.requestState.content;
 	index = request.requestState.index;
+	thisPageHREF = request.requestState.pageHREF;	
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	thisPageHREF = oPage.getHREF();	
-
 	qryMetaTags = oPage.getMetaTags();
 	
 	if(index gt 0 and index lte qryMetaTags.recordCount) {

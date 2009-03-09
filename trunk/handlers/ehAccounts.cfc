@@ -580,6 +580,7 @@
 			var aStatus = arrayNew(1);
 			var st = structNew();
 			var oContext = getService("sessionContext").getContext();
+			var xmlDoc = 0;
 			
 			try {
 				// get site from session
@@ -588,9 +589,6 @@
 				
 				if(val(numCopies) eq 0) throw("Please enter a valid greater or equal to 1 for the number of copies to be made","coldBricks.validation");
 				if(val(numTokens) eq 0) throw("Please enter a valid greater or equal to 1 for the number of tokens to use","coldBricks.validation");
-
-				// create blank page instance
-				oPage = createObject("component","Home.Components.page");
 
 				// process all copies
 				for(i=1;i lte val(numCopies);i=i+1) {
@@ -618,16 +616,17 @@
 						newPageURL = oSite.addPage(pageTitle);
 						
 						// load new page
-						oPage.init(newPageURL);		
+						xmlDoc = xmlParse(expandPath(newPageURL));
+						oPage = createObject("component","Home.Components.page").init(xmlDoc);		
 						
 						// write page file with updated tokens
-						writeFile( expandPath( oPage.getHREF() ), newXMLContent);
+						writeFile( expandPath( newPageURL ), newXMLContent);
 					
 						st = structNew();
 						st.error = false;
 						st.pageName = pageTitle;
 						st.errorMessage = "";
-						st.url = oPage.getHREF();
+						st.url = newPageURL;
 						arrayAppend(aStatus, st);
 
 					} catch(any e) {

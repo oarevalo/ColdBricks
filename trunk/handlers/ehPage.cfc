@@ -179,6 +179,7 @@
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
+				setValue("pageHREF", oContext.getPageHREF() );
 
 				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Event Handlers");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -216,6 +217,7 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+				setValue("pageHREF", oContext.getPageHREF() );
 
 				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Page XML");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -253,6 +255,7 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+				setValue("pageHREF", oContext.getPageHREF() );
 
 				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Stylesheet");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -322,6 +325,7 @@
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
+				setValue("pageHREF", oContext.getPageHREF() );
 
 				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > User-Defined Meta Tags");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -373,7 +377,6 @@
 	<cffunction name="dspResourceTree" access="public" returntype="void">
 		<cfscript>
 			var resType = getValue("resType");
-			var pageHREF = "";
 			var hp = 0;
 			var oContext = getService("sessionContext").getContext();
 			
@@ -644,6 +647,7 @@
 			var pageName = getValue("pageName","");
 			var oPage = 0;
 			var oSite = 0;
+			var oPageHelper = 0;
 			var originalPageHREF = "";
 			var newPageHREF = "";
 			var oContext = getService("sessionContext").getContext();
@@ -667,16 +671,15 @@
 					if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
 						throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 				}
-		
+
 				// get the original location of the page
-				originalPageHREF = oPage.getHREF();
+				originalPageHREF = oContext.getPageHREF();
 		
-				// rename the actual page 
-				oPage.renamePage(pageName);
-				newPageHREF = oPage.getHREF();
-				
-				// update the site definition
-				oSite.setPageHREF(originalPageHREF, newPageHREF);
+				// rename the page 
+				oSite.renamePage(getFileFromPath(originalPageHREF), pageName);
+
+				// update context
+				oContext.setPageHREF(oSite.getPageHREF(pageName));
 				
 				setMessage("info", "Page name changed.");
 				
@@ -774,7 +777,9 @@
 		<cfscript>
 			var xmlContent = getValue("xmlContent","");
 			var oPage = 0;
+			var oPageCheck = 0;
 			var oContext = getService("sessionContext").getContext();
+			var pageHREF = oContext.getPageHREF();
 			
 			try {
 				// check if we have a page cfc loaded 
@@ -786,12 +791,22 @@
 					dspEditXML();
 					return;
 				}
-
-				writeFile( expandPath( oPage.getHREF() ), xmlContent);
+				
+				// validate xml
+				try {
+					oPageCheck =  createObject("component","Home.Components.pageBean").init(xmlContent);
+				} catch(any e) {
+					// assume any error here as a parsing error
+					throw("The XML provided is not a valid xml for a page. #e.message#","coldBricks.validation");
+				}
+				
+				// update the page
+				oPage.init(xmlContent);
+				oSite.savePage( getFileFromPath(pageHREF), oPage );
 				
 				// go to the xml editor
 				setMessage("info", "Page XML Changed");
-				setNextEvent("ehPage.dspMain","page=#getFileFromPath( oPage.getHREF() )#");
+				setNextEvent("ehPage.dspMain","page=#getFileFromPath( pageHREF )#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -852,11 +867,13 @@
 				if(pageTitle eq "") throw("The page title cannot be blank.","coldBricks.validation");
 
 				// get the original location of the page
-				pageHREF = oPage.getHREF();
+				pageHREF = oContext.getPageHREF();
 							
 				// change page title
-				oPage.setPageTitle(pageTitle);
-				oSite.setPageTitle(pageHREF, pageTitle);
+				oPage.setTitle(pageTitle);
+				
+				// save page
+				oSite.savePage( getFileFromPath(pageHREF), oPage );
 				
 				setMessage("info", "Page title changed.");
 				
@@ -886,6 +903,7 @@
 			var oResourceLibrary = 0;
 			var resourceType = "skin";
 			var oPage = 0;
+			var pageHREF = "";
 			var oContext = getService("sessionContext").getContext();
 
 			try {		
@@ -893,6 +911,7 @@
 
 				// get the content of the css page
 				oPage = oContext.getPage();
+				pageHREF = oContext.getPageHREF();
 				body = oPage.getPageCSS();
 
 				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
@@ -908,7 +927,7 @@
 				oResourceBean.setAccessType("general"); 
 				oResourceBean.setPackage(id); 
 				oResourceBean.setOwner(oContext.getAccountName());
-				oResourceBean.setDescription("Skin created based on stylesheet from page #oPage.getHREF()#");
+				oResourceBean.setDescription("Skin created based on stylesheet from page #pageHREF#");
 				oResourceBean.setType(resourceType); 
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 

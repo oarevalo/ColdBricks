@@ -1,6 +1,7 @@
 <cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.oCatalog" default="">
+<cfparam name="request.requestState.pageHREF" default="">
 
 <cfparam name="request.requestState.eventName" default="">
 <cfparam name="request.requestState.eventHandler" default="">
@@ -9,6 +10,7 @@
 	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;
+	thisPageHREF = request.requestState.pageHREF;	
 	
 	eventName = request.requestState.eventName;
 	eventHandler = request.requestState.eventHandler;
@@ -20,8 +22,6 @@
 	oAccounts = oSite.getAccount();
 	stAccountInfo = oAccounts.getConfig();
 	
-	thisPageHREF = oPage.getHREF();	
-
 	aModules = oPage.getModules();
 	qryListeners = oPage.getEventHandlers();
 	aAllEvents = ArrayNew(1);
