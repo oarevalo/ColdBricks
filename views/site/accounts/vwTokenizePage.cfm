@@ -12,7 +12,7 @@
 <cfset oPage = request.requestState.oPage>
 <cfset qryAccount = request.requestState.qryAccount>
 
-<cfset xmlContent = oPage.getXML()>
+<cfset xmlContent = oPage.toXML()>
 <cfset xmlContent = xmlPrettyPrint( xmlContent.xmlRoot )>
 <cfset title = oPage.getTitle()>
 
