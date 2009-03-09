@@ -2,19 +2,21 @@
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.cssContent" default="">
 <cfparam name="request.requestState.pageHREF" default="">
+<cfparam name="request.requestState.pageCSSContent" default="">
 
 <cfscript>
 	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	cssContent = request.requestState.cssContent;
 	thisPageHREF = request.requestState.pageHREF;	
+	pageCSSContent = request.requestState.pageCSSContent;	
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	if(cssContent eq "")
-		cssContent = oPage.getPageCSS();
+	if(cssContent eq "") 
+		cssContent = pageCSSContent;
 
 	// sort account pages
 	aPagesSorted = arrayNew(1);
