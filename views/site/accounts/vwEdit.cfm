@@ -29,7 +29,8 @@
 		<tr>
 			<td colspan="2" style="font-size:9px;font-weight:bold;">
 				<cfif qryAccount.createdOn neq "">
-					Account Created On #lsDateFormat(qryAccount.createdOn)# #lsTimeFormat(qryAccount.createdOn)#
+					<cfset tmpDate = parseDateTime(qryAccount.createdOn)>
+					Account Created On #lsDateFormat(tmpDate)# #lsTimeFormat(tmpDate)#
 				</cfif>
 			</td>
 		</tr>
