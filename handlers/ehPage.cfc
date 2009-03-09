@@ -242,6 +242,7 @@
 			var oPage = 0;
 			var oSite = 0;
 			var oContext = getService("sessionContext").getContext();
+			var oPageHelper = 0;
 			
 			try {
 				// check if we have a site and page cfcs loaded 
@@ -251,11 +252,15 @@
 				// get site and page from session
 				oSite = oContext.getAccountSite();
 				oPage = oContext.getPage();
+				
+				// get page helper
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
 
 				// pass values to view
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("pageHREF", oContext.getPageHREF() );
+				setValue("pageCSSContent", oPageHelper.getPageCSS() );
 
 				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Stylesheet");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -823,15 +828,17 @@
 	<cffunction name="doSaveCSS" access="public" returntype="void">
 		<cfscript>
 			var cssContent = getValue("cssContent","");
-			var oPage = 0;
 			var oContext = getService("sessionContext").getContext();
+			var oPageHelper = 0;
 			
 			try {
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				oPage = oContext.getPage();
-		
-				oPage.savePageCSS(cssContent);
+
+				// get page helper
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
+				oPageHelper.savePageCSS(cssContent);
+
 				setMessage("info", "Page stylesheet saved.");
 				
 				// go to the page editor
@@ -902,17 +909,17 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var resourceType = "skin";
-			var oPage = 0;
 			var pageHREF = "";
 			var oContext = getService("sessionContext").getContext();
+			var oPageHelper = 0;
 
 			try {		
 				hp = oContext.getHomePortals();
+				pageHREF = oContext.getPageHREF();
 
 				// get the content of the css page
-				oPage = oContext.getPage();
-				pageHREF = oContext.getPageHREF();
-				body = oPage.getPageCSS();
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
+				body = oPageHelper.getPageCSS();
 
 				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
 				if(body eq "") throw("The skin body cannot be empty","coldBricks.validation"); 
