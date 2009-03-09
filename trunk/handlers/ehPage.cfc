@@ -985,7 +985,7 @@
 			var testLocationName = "";
 			var i = 1;
 			var j = 0;
-			var qryLocationsByType = 0;
+			var aLayoutRegions = arrayNew(1);
 			var bCanUseName = true;
 			var oContext = getService("sessionContext").getContext();
 			
@@ -995,18 +995,20 @@
 				oPage = oContext.getPage();
 		
 				// create a name for the new location
-				qryLocationsByType = oPage.getLocationsByType(locationType);
+				aLayoutRegions = oPage.getLayoutRegions();
+				
 				while(newLocationName eq "") {
 					testLocationName = locationType & i;
 					bCanUseName = true;
-					for(j=1; j lte qryLocationsByType.recordCount; j=j+1) {
-						if(qryLocationsByType.name[j] eq testLocationName) bCanUseName = false;
+					for(j=1; j lte arrayLen(aLayoutRegions); j=j+1) {
+						if(aLayoutRegions[j].type eq locationType and aLayoutRegions[j].name eq testLocationName) 
+							bCanUseName = false;
 					}
 					if(bCanUseName) newLocationName = testLocationName;
 					i = i + 1;
 				}
 		
-				oPage.addLocation(newLocationName, locationType);
+				oPage.addLayoutRegion(newLocationName, locationType);
 				savePage();
 				
 				setMessage("info", "Layout section created.");
@@ -1040,7 +1042,8 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				oPage.saveLocation(locationOriginalName, locationNewName, locationType, locationClass);
+				oPage.removeLayoutRegion(locationOriginalName);
+				oPage.addLayoutRegion(locationNewName, locationType, locationClass);
 				savePage();
 				
 				setMessage("info", "Layout section updated.");
@@ -1072,7 +1075,7 @@
 				oPage = oContext.getPage();
 				
 				// delete location		
-				oPage.deleteLocation(locationName);
+				oPage.removeLayoutRegion(locationName);
 				savePage();
 				
 				setMessage("info", "Layout section removed.");

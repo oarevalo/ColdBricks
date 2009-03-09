@@ -35,13 +35,17 @@
 	}
 
 	aLayoutRegions = oPage.getLayoutRegions();
+	stModulesByRegion = structNew();
+	
 	for(i=1;i lte ArrayLen(aLayoutRegions);i=i+1) {
 		if(structKeyExists(stLocationsByType,aLayoutRegions[i].type)) {
 			arrayAppend( stLocationsByType[aLayoutRegions[i].type] , aLayoutRegions[i] );
 		}
+		if(not structKeyExists(stModulesByRegion, aLayoutRegions[i].name))
+			stModulesByRegion[ aLayoutRegions[i].name ] = arrayNew(1);
 	}
 
-	stModulesByRegion = structNew();
+	
 	aModules = oPage.getModules();
 	for(i=1;i lte ArrayLen(aModules);i=i+1) {
 		if(not structKeyExists(stModulesByRegion, aModules[i].location))
