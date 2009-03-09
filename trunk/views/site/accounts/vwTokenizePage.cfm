@@ -14,7 +14,7 @@
 
 <cfset xmlContent = oPage.getXML()>
 <cfset xmlContent = xmlPrettyPrint( xmlContent.xmlRoot )>
-<cfset title = oPage.getPageTitle()>
+<cfset title = oPage.getTitle()>
 
 <cfoutput>
 	<form name="frm" method="post" action="index.cfm">

@@ -11,7 +11,7 @@
 	
 	aPages = oSite.getPages();
 	owner = oSite.getOwner();
-	title = oPage.getPageTitle();
+	title = oPage.getTitle();
 	
 	thisPageHREF = oPage.getHREF();	
 
