@@ -113,7 +113,7 @@
 			else if(resID=="_IMPORT")
 				document.location='?event=ehResources.dspImport';
 			else if(resID!="")
-				document.location='?event=ehPage.doApplyPageTemplate&resourceID='+this.value
+				document.location='?event=ehPage.doApplyPageTemplate&resourceID='+resID
 		}
 	</script>
 </cfsavecontent>
