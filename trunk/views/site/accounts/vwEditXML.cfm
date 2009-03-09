@@ -15,7 +15,7 @@
 	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
-	xmlDoc = oPage.getXML();
+	xmlDoc = oPage.toXML();
 	if(xmlContent eq "")
 		xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
 		
