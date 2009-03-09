@@ -22,7 +22,7 @@
 		bUserLoggedIn = (request.userInfo.userName neq "");
 		bIsOwner = (request.userInfo.userName eq siteOwner); 
 		
-		pageTitle = request.oPage.getPageTitle();
+		pageTitle = request.oPage.getTitle();
 		qryLocations = request.oPage.getLocations();
 		siteTitle = request.oSite.getSiteTitle();	
 		aPages = request.oSite.getPages();

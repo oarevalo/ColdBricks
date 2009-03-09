@@ -180,7 +180,7 @@
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Event Handlers");
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Event Handlers");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
@@ -217,7 +217,7 @@
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Page XML");
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Page XML");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
@@ -254,7 +254,7 @@
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > Stylesheet");
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Stylesheet");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
@@ -323,7 +323,7 @@
 				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getPageTitle()# > User-Defined Meta Tags");
+				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > User-Defined Meta Tags");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
