@@ -42,9 +42,9 @@
 						<cfset href = getFileFromPath(aStatus[i].url)>
 						<cfset fileName = listDeleteAt(href, listlen(href,"."), ".")>
 						<cfif appRoot eq "/">
-							<cfset tmpPageURL = "/index.cfm?account=#qryAccount.username#&page=#fileName#">
+							<cfset tmpPageURL = "/index.cfm?account=#qryAccount.accountName#&page=#fileName#">
 						<cfelse>
-							<cfset tmpPageURL = appRoot & "/index.cfm?account=#qryAccount.username#&page=#fileName#">
+							<cfset tmpPageURL = appRoot & "/index.cfm?account=#qryAccount.accountName#&page=#fileName#">
 						</cfif>	
 						<a href="index.cfm?event=ehPage.dspMain&page=#href#"><img src="images/page_edit.png" align="absmiddle" alt="Edit page" title="Edit page" border="0"></a>
 						<a href="#tmpPageURL#" target="_blank"><img src="images/page_link.png" align="absmiddle" alt="Open page in browser" title="Open page in browser" border="0"></a>

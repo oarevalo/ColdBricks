@@ -205,9 +205,10 @@
 	<cffunction name="dspTokenizePage" access="public" returntype="void">
 		<cfscript>
 			var oSite = 0;
-			var pageHREF = getValue("pageHREF","");
+			var pageName = getValue("pageHREF","");
 			var numCopies = getValue("numCopies",1);
 			var oContext = getService("sessionContext").getContext();
+			var accountName = "";
 
 			try {
 				hp = oContext.getHomePortals();
@@ -218,20 +219,14 @@
 				// get site from session
 				oSite = oContext.getAccountSite();
 
-				// get user
-				userID = oSite.getUserID();
-
-				// get accounts info 
-				oAccounts = oSite.getAccount();
-
 				// search account
-				qryAccount = oAccounts.getAccountByID(userID);
+				qryAccount = hp.getAccountsService().getAccountByName( oSite.getOwner() );
 
-				// build full page address
-				pageHREF = hp.getAccountsService().getConfig().getAccountsRoot() & "/" & qryAccount.accountname & "/layouts/" & pageHREF;
+				// get source page
+				oPage = oSite.getPage(pageName);
 
-				// create page object 
-				opage = createObject("component","Home.Components.page").init( pageHREF );
+				// get full page address
+				pageHREF = oSite.getPageHREF(pageName);
 
 				if(val(numCopies) lt 1) numCopies = 1;
 					
@@ -366,7 +361,7 @@
 				
 				hp = oContext.getHomePortals();
 				oAccounts = hp.getAccountsService();
-				oAccounts.delete(accountID);
+				oAccounts.deleteAccount(accountID);
 				
 				oContext.setAccountID("");
 				oContext.clearAccountSite();
@@ -509,7 +504,7 @@
 				if(tokenize eq 1) setNextEvent("ehAccounts.dspTokenizePage","pageHREF=#pageHREF#&numCopies=#numCopies#");
 				
 				for(i=1;i lte val(numCopies);i=i+1) {
-					oSite.addPage("",pageHREF);
+					oSite.addPage("#getFileFromPath(pageHREF)##i#",pageHREF);
 				}
 				
 				setMessage("info", "Page copied.");
@@ -615,12 +610,11 @@
 						// add blank page to site
 						newPageURL = oSite.addPage(pageTitle);
 						
-						// load new page
-						xmlDoc = xmlParse(expandPath(newPageURL));
-						oPage = createObject("component","Home.Components.page").init(xmlDoc);		
+						// load new page with updated tokens
+						oPage = createObject("component","Home.Components.pageBean").init( newXMLContent );		
 						
-						// write page file with updated tokens
-						writeFile( expandPath( newPageURL ), newXMLContent);
+						// save page
+						oSite.savePage( getFileFromPath(newPageURL), oPage );
 					
 						st = structNew();
 						st.error = false;
@@ -647,7 +641,7 @@
 				oSite = oContext.getAccountSite();
 
 				// find account
-				qryAccount = oSite.getAccount().getAccountByID( oSite.getUserID() );
+				qryAccount = oContext.getHomePortals().getAccountsService().getAccountByName( oSite.getOwner() );
 				
 				
 				setValue("aStatus", aStatus);
