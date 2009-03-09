@@ -1,6 +1,6 @@
 <cfcomponent extends="eventHandler">
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var page = getValue("page");
 			var resType = getValue("resType");
@@ -254,7 +254,7 @@
 				oPage = oContext.getPage();
 				
 				// get page helper
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage, oContext.getPageHREF() );
 
 				// pass values to view
 				setValue("oSite", oSite );
@@ -411,7 +411,7 @@
 
 
 	<!-----  Module Actions  ---->			
-	<cffunction name="doAddResource">
+	<cffunction name="doAddResource" access="public" returntype="void">
 		<cfscript>
 			var resourceID = getValue("resourceID","");
 			var resType = getValue("resType","");
@@ -471,8 +471,7 @@
 				
 				resBean = oCatalog.getResourceNode(moduleResType, moduleID);
 				
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
-				oPageHelper.setPage( oPage );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage );
 				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
@@ -539,8 +538,7 @@
 				// remove prefixes added to avoid mixing with existing page elements
 				layout = replaceList(layout,"ppm_,pps_",",");
 
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
-				oPageHelper.setPage( oPage );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage );
 				oPageHelper.setModuleOrder(layout);
 				savePage();
 				
@@ -641,8 +639,7 @@
 
 				stAttributes["moduleType"] = "content";
 				
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
-				oPageHelper.setPage( oPage );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage );
 				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
@@ -670,7 +667,6 @@
 			var pageName = getValue("pageName","");
 			var oPage = 0;
 			var oSite = 0;
-			var oPageHelper = 0;
 			var originalPageHREF = "";
 			var newPageHREF = "";
 			var oContext = getService("sessionContext").getContext();
@@ -779,8 +775,7 @@
 				oResourceBean = oCatalog.getResourceNode("pageTemplate", resourceID);
 		
 				// apply template
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( autoSave = false );
-				oPageHelper.setPage( oPage );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage, oContext.getPageHREF() );
 				oPageHelper.applyPageTemplate(oResourceBean, resRoot);
 				savePage();
 				
@@ -861,7 +856,7 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
 				// get page helper
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
 				oPageHelper.savePageCSS(cssContent);
 
 				setMessage("info", "Page stylesheet saved.");
@@ -944,7 +939,7 @@
 				pageHREF = oContext.getPageHREF();
 
 				// get the content of the css page
-				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPageHREF() );
+				oPageHelper = createObject("component","Home.Components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
 				body = oPageHelper.getPageCSS();
 
 				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
