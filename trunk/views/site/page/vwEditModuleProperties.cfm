@@ -75,7 +75,7 @@
 				<strong>Title:</strong> #title#
 			</td>
 			<td align="right">
-				<cfmodule template="../../includes/sitePageSelector.cfm">
+				<cfmodule template="../../../includes/sitePageSelector.cfm">
 			</td>
 		</tr>
 	</table>
