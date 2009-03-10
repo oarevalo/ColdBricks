@@ -1,4 +1,3 @@
-<cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.xmlContent" default="">
 <cfparam name="request.requestState.pageHREF" default="">
@@ -6,26 +5,15 @@
 <cfinclude template="../../../includes/udf.cfm">
 
 <cfscript>
-	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	xmlContent = request.requestState.xmlContent;
 	thisPageHREF = request.requestState.pageHREF;	
 	
-	aPages = oSite.getPages();
-	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	
 	xmlDoc = oPage.toXML();
 	if(xmlContent eq "")
 		xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
-		
-	// sort account pages
-	aPagesSorted = arrayNew(1);
-	for(i=1;i lte arrayLen(aPages);i=i+1) {
-		arrayAppend(aPagesSorted, aPages[i].href);
-	}
-	arraySort(aPagesSorted,"textnocase","asc");
-		
 </cfscript>
 
 <cfsavecontent variable="tmpHTML">
@@ -40,13 +28,7 @@
 			<strong>Title:</strong> #title#
 		</td>
 		<td align="right">
-			<strong>Page:</strong>
-			<select name="page" style="width:180px;font-size:11px;" class="formField"  onchange="document.location='?event=ehPage.dspMain&page='+this.value">
-				<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
-					<option value="#aPagesSorted[i]#"
-							<cfif aPagesSorted[i] eq getFileFromPath(thisPageHREF)>selected</cfif>>#aPagesSorted[i]#</option>
-				</cfloop>
-			</select>
+			<cfmodule template="../includes/sitePageSelector.cfm">
 		</td>
 	</tr>
 </table>

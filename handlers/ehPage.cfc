@@ -25,21 +25,23 @@
 				
 				setValue("pageTitle", oContext.getPage().getTitle() );
 				setValue("accountName", oContext.getAccountName());
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("resType", oContext.getPageResourceTypeView);
 				setValue("aLayoutSectionTypes", listToArray(hp.getConfig().getLayoutSections()));
 				setValue("pageHREF", oContext.getPageHREF());
 				
-				setValue("oSite", oContext.getAccountSite());
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 
-				setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getTitle()#");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getTitle()#");
+				else
+					setValue("cbPageTitle", "Pages > #oContext.getPage().getTitle()#");
+
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
-				setView("site/accounts/vwPage");
+				setView("site/page/vwMain");
 
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -66,7 +68,7 @@
 				stModule = oPage.getModule(moduleID);
 				
 				setValue("stModule", stModule);
-				setView("site/accounts/vwModuleProperties");
+				setView("site/page/vwModuleProperties");
 				setLayout("Layout.None");
 
 			} catch(coldBricks.validation e) {
@@ -82,7 +84,6 @@
 	<cffunction name="dspEditModuleProperties" access="public" returntype="void">
 		<cfscript>
 			var oPage = 0;
-			var oSite = 0;
 			var oCatalog = 0;
 			var oResourceBean = 0;
 			var moduleID = getValue("moduleID","");
@@ -98,14 +99,11 @@
 				moduleID = replace(moduleID,"ppm_","","ALL");
 				
 				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				if(moduleID eq "") throw("Please select a module to edit","coldBricks.validation");
 				
-				// get site and page from session
-				oSite = oContext.getAccountSite();
+				// get page from session
 				oPage = oContext.getPage();
-
 				oCatalog = hp.getCatalog();
 
 				stModule = oPage.getModule(moduleID);
@@ -130,7 +128,6 @@
 				} catch(homePortals.catalog.resourceNotFound e) { 	}
 	
 				// pass values to view
-				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
 				setValue("stModule", stModule);
@@ -138,11 +135,14 @@
 				setValue("missingModuleBean", missingModuleBean);
 				setValue("pageHREF", oContext.getPageHREF());
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Edit Module");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Edit Module");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Edit Module");
+				
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
-				
-				setView("site/accounts/vwEditModuleProperties");
+				setView("site/page/vwEditModuleProperties");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -159,33 +159,29 @@
 	<cffunction name="dspEventHandlers" access="public" returntype="void">
 		<cfscript>
 			var oPage = 0;
-			var oSite = 0;
 			var oCatalog = 0;
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				hp = oContext.getHomePortals();
 				
-				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				// check if we have a page loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				
-				// get site and page from session
-				oSite = oContext.getAccountSite();
 				oPage = oContext.getPage();
-				oCatalog = hp.getCatalog();
 				
 				// pass values to view
-				setValue("oSite", oSite );
 				setValue("oPage", oPage );
-				setValue("oCatalog", oCatalog );
+				setValue("oCatalog", hp.getCatalog() );
 				setValue("pageHREF", oContext.getPageHREF() );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Event Handlers");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Event Handlers");
+				e;se
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Event Handlers");
+
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
-				
-				setView("site/accounts/vwEventHandlers");
+				setView("site/page/vwEventHandlers");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -202,28 +198,25 @@
 	<cffunction name="dspEditXML" access="public" returntype="void">
 		<cfscript>
 			var oPage = 0;
-			var oSite = 0;
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
-				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				// check if we have a page loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				
-				// get site and page from session
-				oSite = oContext.getAccountSite();
 				oPage = oContext.getPage();
 
 				// pass values to view
-				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("pageHREF", oContext.getPageHREF() );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Page XML");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Page XML");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Page XML");
+					
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
-				
-				setView("site/accounts/vwEditXML");
+				setView("site/page/vwEditXML");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -240,33 +233,30 @@
 	<cffunction name="dspEditCSS" access="public" returntype="void">
 		<cfscript>
 			var oPage = 0;
-			var oSite = 0;
 			var oContext = getService("sessionContext").getContext();
 			var oPageHelper = 0;
 			
 			try {
-				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				// check if we have a page loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				
-				// get site and page from session
-				oSite = oContext.getAccountSite();
 				oPage = oContext.getPage();
 				
 				// get page helper
 				oPageHelper = createObject("component","Home.Components.pageHelper").init( oPage, oContext.getPageHREF() );
 
 				// pass values to view
-				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("pageHREF", oContext.getPageHREF() );
 				setValue("pageCSSContent", oPageHelper.getPageCSS() );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > Stylesheet");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Stylesheet");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Stylesheet");
+			
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
-				
-				setView("site/accounts/vwEditCSS");
+				setView("site/page/vwEditCSS");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -297,7 +287,7 @@
 				// pass values to view
 				setValue("oResourceBean", oResourceBean);
 				
-				setView("site/accounts/vwResourceInfo");
+				setView("site/page/vwResourceInfo");
 				setLayout("Layout.None");
 				
 			} catch(coldBricks.validation e) {
@@ -313,30 +303,28 @@
 	<cffunction name="dspMeta" access="public" returntype="void">
 		<cfscript>
 			var oPage = 0;
-			var oSite = 0;
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				hp = oContext.getHomePortals();
 				
-				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
+				// check if we have a page loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				
-				// get site and page from session
-				oSite = oContext.getAccountSite();
 				oPage = oContext.getPage();
 				
 				// pass values to view
-				setValue("oSite", oSite );
 				setValue("oPage", oPage );
 				setValue("pageHREF", oContext.getPageHREF() );
 
-				setValue("cbPageTitle", "Accounts > #oSite.getOwner()# > #oPage.getTitle()# > User-Defined Meta Tags");
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > User-Defined Meta Tags");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > User-Defined Meta Tags");
+	
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				
-				setView("site/accounts/vwMetaTags");
+				setView("site/page/vwMetaTags");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -364,7 +352,7 @@
 				stModule = oPage.getModule(moduleID);
 				
 				setValue("stModule", stModule);
-				setView("site/accounts/vwModuleCSS");
+				setView("site/page/vwModuleCSS");
 				setLayout("Layout.None");
 
 			} catch(coldBricks.validation e) {
@@ -395,12 +383,10 @@
 				if(resType neq "") oContext.setPageResourceTypeView(resType);
 
 				setValue("resType", oContext.getPageResourceTypeView());
-				
-				setValue("oSite", oContext.getAccountSite());
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 				
-				setView("site/accounts/vwResourceTree");
+				setView("site/page/vwResourceTree");
 
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -428,7 +414,6 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
 				oPage = oContext.getPage();
@@ -628,7 +613,6 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
 				oPage = oContext.getPage();
@@ -667,16 +651,15 @@
 			var pageName = getValue("pageName","");
 			var oPage = 0;
 			var oSite = 0;
+			var oPageProvider = 0;
 			var originalPageHREF = "";
 			var newPageHREF = "";
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
-				oSite = oContext.getAccountSite();
 		
 				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
 
@@ -694,11 +677,19 @@
 				// get the original location of the page
 				originalPageHREF = oContext.getPageHREF();
 		
-				// rename the page 
-				oSite.renamePage(getFileFromPath(originalPageHREF), pageName);
+				// rename the page (handled differently if there page belongs to a site)
+				if(oContext.hasAccountSite()) {
+					oSite = oContext.getAccountSite();
+					oSite.renamePage(getFileFromPath(originalPageHREF), pageName);
+					newPageHREF = oSite.getPageHREF(pageName);
+				} else {
+					oPageProvider = oContext.getHomePortals().getPageProvider();
+					newPageHREF = replaceNoCase(originalPageHREF, getFileFromPath(originalPageHREF), pageName & ".xml");
+					oPageProvider.move(originalPageHREF, newPageHREF);
+				}
 
 				// update context
-				oContext.setPageHREF(oSite.getPageHREF(pageName));
+				oContext.setPageHREF(newPageHREF);
 				
 				setMessage("info", "Page name changed.");
 				
@@ -800,7 +791,6 @@
 		<cfscript>
 			var xmlContent = getValue("xmlContent","");
 			var oPage = 0;
-			var oSite = 0;
 			var oPageCheck = 0;
 			var oContext = getService("sessionContext").getContext();
 			var pageHREF = oContext.getPageHREF();
@@ -809,7 +799,6 @@
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
-				oSite = oContext.getAccountSite();
 		
 				if(not isXml(xmlContent)) {
 					setMessage("warning", "The given content is not a valid XML document");
@@ -880,16 +869,13 @@
 		<cfscript>
 			var pageTitle = getValue("pageTitle","");
 			var oPage = 0;
-			var oSite = 0;
 			var pageHREF = "";
 			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account.","coldBricks.validation");
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
-				oSite = oContext.getAccountSite();
 		
 				if(pageTitle eq "") throw("The page title cannot be blank.","coldBricks.validation");
 
@@ -898,7 +884,10 @@
 							
 				// change page title
 				oPage.setTitle(pageTitle);
-				oSite.updatePageTitle(getFileFromPath(pageHREF), pageTitle);
+				
+				// if page belongs to a site, then update site too
+				if( oContext.hasAccountSite() )
+					oContext.getAccountSite().updatePageTitle(getFileFromPath(pageHREF), pageTitle);
 				
 				// save page
 				savePage();
@@ -1256,18 +1245,18 @@
 		<cfscript>
 			var oContext = getService("sessionContext").getContext();
 			var oPage = oContext.getPage();
-			var oSite = oContext.getAccountSite();
 			var pageHREF = oContext.getPageHREF();
-
-			oSite.savePage( getFileFromPath(pageHREF), oPage );
+			var oSite = 0;
+			var oPageProvider = 0;
+			
+			if( oContext.hasAccountSite() ) {
+				oSite = oContext.getAccountSite();
+				oSite.savePage( getFileFromPath(pageHREF), oPage );
+			} else {
+				oPageProvider = oContext.getHomePortals().getPageProvider();
+				oPageProvider.save( pageHREF, oPage );
+			}
 		</cfscript>
-	
 	</cffunction>
 	
-	<cffunction name="writeFile" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfargument name="content" type="string" required="true">
-		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
-	</cffunction>
-
 </cfcomponent>

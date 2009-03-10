@@ -1,24 +1,17 @@
-<cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
-<cfparam name="request.requestState.pageHREF" default="">
 
 <cfparam name="request.requestState.name" default="">
 <cfparam name="request.requestState.content" default="">
 <cfparam name="request.requestState.index" default="0">
 
 <cfscript>
-	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	
 	name = request.requestState.name;
 	content = request.requestState.content;
 	index = request.requestState.index;
-	thisPageHREF = request.requestState.pageHREF;	
 	
-	aPages = oSite.getPages();
-	owner = oSite.getOwner();
 	title = oPage.getTitle();
-	
 	aMetaTags = oPage.getMetaTags();
 	
 	if(index gt 0 and index lte arrayLen(aMetaTags)) {
@@ -27,14 +20,6 @@
 	}
 	
 	lstMetaTags = "description,keywords,robots,author,copyright,refresh";
-
-	// sort account pages
-	aPagesSorted = arrayNew(1);
-	for(i=1;i lte arrayLen(aPages);i=i+1) {
-		arrayAppend(aPagesSorted, aPages[i].href);
-	}
-	arraySort(aPagesSorted,"textnocase","asc");
-
 </cfscript>
 
 
@@ -53,13 +38,7 @@ function deleteMetaTag(index) {
 			<strong>Title:</strong> #title#
 		</td>
 		<td align="right">
-			<strong>Page:</strong>
-			<select name="page" style="width:180px;font-size:11px;" class="formField"  onchange="document.location='?event=ehPage.dspMain&page='+this.value">
-				<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
-					<option value="#aPagesSorted[i]#"
-							<cfif aPagesSorted[i] eq getFileFromPath(thisPageHREF)>selected</cfif>>#aPagesSorted[i]#</option>
-				</cfloop>
-			</select>
+			<cfmodule template="../includes/sitePageSelector.cfm">
 		</td>
 	</tr>
 </table>

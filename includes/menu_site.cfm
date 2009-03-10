@@ -1,8 +1,8 @@
 <cfparam name="request.requestState.event" default="">
+<cfparam name="request.requestState.oContext" default="">
+<cfparam name="request.requestState.oUser" default="">
 <cfparam name="attributes.title" default="">
 <cfparam name="attributes.icon" default="">
-<cfparam name="attributes.oContext" default="">
-<cfparam name="attributes.oUser" default="">
 
 <cfset event = request.requestState.event>
 <cfset oContext = request.requestState.oContext>
