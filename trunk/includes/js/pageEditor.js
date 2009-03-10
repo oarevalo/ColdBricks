@@ -126,3 +126,27 @@ function doRenamePage() {
 	}
 }
 
+function changePage(pg) {
+	if(pg!='--NEW--')
+		document.location='?event=ehPage.dspMain&page='+pg;
+	else 
+		document.location='?event=ehAccounts.dspAddPage';	
+}
+
+function changeSkin(skinID) {
+	if(skinID=="_NEW")
+		document.location='?event=ehResources.dspMain&resType=skin&id=NEW';
+	else if(skinID=="_IMPORT")
+		document.location='?event=ehResources.dspImport';
+	else if(skinID!=0) 
+		document.location='?event=ehPage.doApplySkin&skinID=' + skinID;
+}
+
+function applyPageTemplate(resID) {
+	if(resID=="_NEW")
+		document.location='?event=ehResources.dspMain&resType=pagetemplate&id=NEW';
+	else if(resID=="_IMPORT")
+		document.location='?event=ehResources.dspImport';
+	else if(resID!="")
+		document.location='?event=ehPage.doApplyPageTemplate&resourceID='+resID
+}

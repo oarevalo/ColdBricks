@@ -1,13 +1,10 @@
-<cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.oCatalog" default="">
 <cfparam name="request.requestState.pageHREF" default="">
-
 <cfparam name="request.requestState.eventName" default="">
 <cfparam name="request.requestState.eventHandler" default="">
 
 <cfscript>
-	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;
 	thisPageHREF = request.requestState.pageHREF;	
@@ -15,13 +12,8 @@
 	eventName = request.requestState.eventName;
 	eventHandler = request.requestState.eventHandler;
 	
-	aPages = oSite.getPages();
-	owner = oSite.getOwner();
 	title = oPage.getTitle();
-	
-	oAccounts = oSite.getAccountsService();
-	stAccountInfo = oAccounts.getConfig();
-	
+		
 	aModules = oPage.getModules();
 	aListeners = oPage.getEventListeners();
 	aAllEvents = ArrayNew(1);
@@ -51,15 +43,6 @@
 			
 	}
 	ArrayAppend(aAllEvents, "Framework.onPageLoaded");
-
-
-	// sort account pages
-	aPagesSorted = arrayNew(1);
-	for(i=1;i lte arrayLen(aPages);i=i+1) {
-		arrayAppend(aPagesSorted, aPages[i].href);
-	}
-	arraySort(aPagesSorted,"textnocase","asc");
-	
 </cfscript>
 
 
@@ -79,13 +62,7 @@ function deleteEventHandler(index) {
 			<strong>Title:</strong> #title#
 		</td>
 		<td align="right">
-			<strong>Page:</strong>
-			<select name="page" style="width:180px;font-size:11px;" class="formField"  onchange="document.location='?event=ehPage.dspMain&page='+this.value">
-				<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
-					<option value="#aPagesSorted[i]#"
-							<cfif aPagesSorted[i] eq getFileFromPath(thisPageHREF)>selected</cfif>>#aPagesSorted[i]#</option>
-				</cfloop>
-			</select>
+			<cfmodule template="../includes/sitePageSelector.cfm">
 		</td>
 	</tr>
 </table>

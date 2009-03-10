@@ -1,30 +1,26 @@
-<cfparam name="request.requestState.accountName" default="">
 <cfparam name="request.requestState.pageTitle" default="">
-<cfparam name="request.requestState.accountsRoot" default="">
 <cfparam name="request.requestState.resType" default="module">
 <cfparam name="request.requestState.appRoot" default="">
 <cfparam name="request.requestState.aLayoutSectionTypes" default="">
 <cfparam name="request.requestState.pageHREF" default="">
 
-<cfparam name="request.requestState.oSite" default="">
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.oCatalog" default="">
 
+<cfparam name="request.requestState.accountName" default="">
+
 <cfscript>
-	accountName = request.requestState.accountName;
 	pageTitle = request.requestState.pageTitle;
 	thisPageHREF = request.requestState.pageHREF;
-	accountsRoot = request.requestState.accountsRoot;
 	resType = request.requestState.resType;
 	appRoot = request.requestState.appRoot;
 	aLayoutSectionTypes = request.requestState.aLayoutSectionTypes;
 	
-	oSite = request.requestState.oSite;
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;	
+
+	accountName = request.requestState.accountName;
 	
-	aPages = oSite.getPages();
-	owner = oSite.getOwner();
 	title = oPage.getTitle();
 	skinID = oPage.getSkinID();
 	
@@ -44,7 +40,6 @@
 		if(not structKeyExists(stModulesByRegion, aLayoutRegions[i].name))
 			stModulesByRegion[ aLayoutRegions[i].name ] = arrayNew(1);
 	}
-
 	
 	aModules = oPage.getModules();
 	for(i=1;i lte ArrayLen(aModules);i=i+1) {
@@ -56,9 +51,6 @@
 	numColumns = arrayLen(aLayoutRegions);
 	colWidth = 200;
 	if(numColumns gt 0)	colWidth = 200 / numColumns;
-
-	oAccounts = oSite.getAccountsService();
-	stAccountInfo = oAccounts.getConfig();
 	
 	fileName = getFilefromPath(thisPageHREF);
 	fileName = listDeleteAt(fileName, listlen(fileName,"."), ".");
@@ -68,17 +60,11 @@
 	aStyles = oPage.getStylesheets();
 	
 	if(appRoot eq "/")
-		tmpPageURL = "/index.cfm?account=#accountName#&page=#fileName#";
+		tmpPageURL = "/index.cfm?page=#fileName#";
 	else
-		tmpPageURL = appRoot & "/index.cfm?account=#accountName#&page=#fileName#";
-
-
-	// sort account pages
-	aPagesSorted = arrayNew(1);
-	for(i=1;i lte arrayLen(aPages);i=i+1) {
-		arrayAppend(aPagesSorted, aPages[i].href);
-	}
-	arraySort(aPagesSorted,"textnocase","asc");
+		tmpPageURL = appRoot & "/index.cfm?page=#fileName#";
+		
+	if(accountName neq "") tmpPageURL & "&account=" & accountName;
 </cfscript>
 
 
@@ -90,31 +76,6 @@
 	<script type="text/javascript" src="includes/js/dragdrop.js"></script>
 	<script>
 		window.onload = initLayoutPreview;
-		
-		function changePage(pg) {
-			if(pg!='--NEW--')
-				document.location='?event=ehPage.dspMain&page='+pg;
-			else 
-				document.location='?event=ehAccounts.dspAddPage';	
-		}
-		
-		function changeSkin(skinID) {
-			if(skinID=="_NEW")
-				document.location='?event=ehResources.dspMain&resType=skin&id=NEW';
-			else if(skinID=="_IMPORT")
-				document.location='?event=ehResources.dspImport';
-			else if(skinID!=0) 
-				document.location='?event=ehPage.doApplySkin&skinID=' + skinID;
-		}
-		
-		function applyPageTemplate(resID) {
-			if(resID=="_NEW")
-				document.location='?event=ehResources.dspMain&resType=pagetemplate&id=NEW';
-			else if(resID=="_IMPORT")
-				document.location='?event=ehResources.dspImport';
-			else if(resID!="")
-				document.location='?event=ehPage.doApplyPageTemplate&resourceID='+resID
-		}
 	</script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
@@ -150,14 +111,7 @@
 			</cfif>
 		</td>
 		<td align="right" nowrap="yes">
-			<strong>Page:</strong>
-			<select name="page" style="width:180px;font-size:11px;" class="formField"  onchange="changePage(this.value)" id="selCurrentPage">
-				<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
-					<option value="#aPagesSorted[i]#"
-							<cfif aPagesSorted[i] eq getFileFromPath(thisPageHREF)>selected</cfif>>#aPagesSorted[i]#</option>
-				</cfloop>
-				<option value="--NEW--"> -- New Page -- </option>
-			</select>
+			<cfmodule template="../includes/sitePageSelector.cfm">
 			<a href="##" onclick="doRenamePage()">Rename</a>
 		</td>
 	</tr>
