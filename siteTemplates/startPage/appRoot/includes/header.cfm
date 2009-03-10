@@ -7,7 +7,7 @@
 		currentPage = request.oPageRenderer.getPageHREF();
 
 		// create page object
-		request.oPage = CreateObject("component", "Home.Components.page").init(currentPage);
+		request.oPage = request.oPageRenderer.getPage();
 
 		// get page owner
 		siteOwner = request.oPage.getOwner();
@@ -23,17 +23,17 @@
 		bIsOwner = (request.userInfo.userName eq siteOwner); 
 		
 		pageTitle = request.oPage.getTitle();
-		qryLocations = request.oPage.getLocations();
+		aLayoutRegions = request.oPage.getLayoutRegions();
 		siteTitle = request.oSite.getSiteTitle();	
 		aPages = request.oSite.getPages();
 	</cfscript>	
 	
 	<!--- make a js struct with page locations --->
 	<cfset lstLocations = "">
-	<cfoutput query="qryLocations">
-		<cfset tmp = "#id#: { id:'#id#', name:'#name#', type:'#type#', theClass:'#class#' }">
+	<cfloop from="1" to="#arrayLen(aLayoutRegions)#" index="i">
+		<cfset tmp = "#aLayoutRegions[i].id#: { id:'#aLayoutRegions[i].id#', name:'#aLayoutRegions[i].name#', type:'#aLayoutRegions[i].type#', theClass:'#aLayoutRegions[i].class#' }">
 		<cfset lstLocations = listAppend(lstLocations, tmp)>
-	</cfoutput>
+	</cfloop>
 </cfsilent>
 
 

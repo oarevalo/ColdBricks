@@ -34,10 +34,10 @@
 	<cffunction name="init" access="public" returntype="controlPanel" hint="Initializes component.">
 		<cfargument name="pageHREF" type="string" required="true" hint="the address of the current page">
 		<cfscript>
-			variables.accountsRoot = application.homePortals.getConfig().getAccountsRoot();
+			variables.accountsRoot = application.homePortals.getAccountsService().getConfig().getAccountsRoot();
 			variables.pageHREF = arguments.pageHREF;
 				
-			variables.oPage = CreateObject("component", "Home.Components.page").init(variables.pageHREF);	
+			variables.oPage = CreateObject("component", "Home.Components.pageBean").init(xmlParse(expandPath(variables.pageHREF)));	
 			
 			variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(variables.pageHREF),".xml","");
 				
@@ -107,7 +107,8 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				variables.oPage.deleteModule(arguments.moduleID);
+				variables.oPage.removeModule(arguments.moduleID);
+				savePage();
 			</cfscript>
 			<script>
 				controlPanel.removeModuleFromLayout('#arguments.moduleID#');
@@ -172,7 +173,7 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				variables.oPage.setPageTitle(arguments.title);
+				variables.oPage.setTitle(arguments.title);
 			</cfscript>
 			<script>
 				controlPanel.setStatusMessage("Title changed.");
@@ -197,7 +198,7 @@
 				originalPageHREF = variables.oPage.getHREF();
 		
 				// rename the actual page 
-				variables.oPage.setPageTitle(arguments.pageName);
+				variables.oPage.setTitle(arguments.pageName);
 				variables.oPage.renamePage(arguments.pageName);
 				newPageHREF = variables.oPage.getHREF();
 				
@@ -377,11 +378,7 @@
 	<!--- savePage                         --->
 	<!---------------------------------------->
 	<cffunction name="savePage" access="private" hint="Stores a HomePortals page">
-		<cfargument name="pageURL" type="string" hint="Path for the page as a relative URL">
-		<cfargument name="pageContent" type="string" hint="page content">
-
-		<!--- store page --->
-		<cffile action="write" file="#expandpath(arguments.pageURL)#" output="#arguments.pageContent#">
+		<cfset getSite().savePage( getFileFromPath(variables.pageHREF), variables.oPage );>
 	</cffunction>
 	
 	<!---------------------------------------->
@@ -487,7 +484,7 @@
 		<cfscript>
 			var oAccountsService = application.homePortals.getAccountsService();
 			var owner = variables.oPage.getOwner();
-			return createObject("component","Home.Components.accounts.site").init(owner, oAccountsService);
+			return oAccountsService.getSite( owner );
 		</cfscript>
 	</cffunction>
 		

@@ -17,17 +17,20 @@ This template checks the login information
 	<cfset oAccountsService = application.homePortals.getAccountsService()>
 
 	<!--- check login --->
-	<cfset qryUser = oAccountsService.loginUser(username, password)>
+	<cfset qryAccount = oAccountsService.loginUser(username, password)>
 
 	<cfif rememberMe eq 1>
-		<cfset userKey = encrypt(qryUser.userID, localSecret)>
-		<cfcookie name="homeportals_username" value="#qryUser.username#" expires="never">			
+		<cfset userKey = encrypt(qryAccount.accountID, localSecret)>
+		<cfcookie name="homeportals_username" value="#qryAccount.accountName#" expires="never">			
 		<cfcookie name="homeportals_userKey" value="#userKey#" expires="never">			
 	</cfif>
 
-	<cflocation url="../index.cfm?account=#qryUser.username#">
+	<cflocation url="../index.cfm?account=#qryAccount.accountName#">
 			
-	<cfcatch type="any">
+	<cfcatch type="homePortals.accounts.invalidLogin">
 		<cflocation url="../index.cfm?_statusMessage=Invalid%20Login">
+	</cfcatch>		
+	<cfcatch type="any">
+		<cflocation url="../index.cfm?_statusMessage=#cfcatch.message#">
 	</cfcatch>
 </cftry>
