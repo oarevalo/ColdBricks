@@ -111,7 +111,7 @@
 			</cfif>
 		</td>
 		<td align="right" nowrap="yes">
-			<cfmodule template="../../includes/sitePageSelector.cfm">
+			<cfmodule template="../../../includes/sitePageSelector.cfm">
 			<a href="##" onclick="doRenamePage()">Rename</a>
 		</td>
 	</tr>
