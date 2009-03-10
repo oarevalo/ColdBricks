@@ -405,7 +405,7 @@
 		<cfloop query="contents">
 			<cfif contents.type eq "file">
 				<cffile action="copy" source="#arguments.source##dirDelim##name#" destination="#arguments.destination##dirDelim##name#" nameconflict="#arguments.nameConflict#">
-			<cfelseif contents.type eq "dir">
+			<cfelseif contents.type eq "dir" and name neq ".svn">
 				<cfset directoryCopy(arguments.source & dirDelim & name, arguments.destination & dirDelim &  name) />
 			</cfif>
 		</cfloop>
