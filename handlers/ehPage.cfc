@@ -176,7 +176,7 @@
 
 				if(oContext.hasAccountSite())
 					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Event Handlers");
-				e;se
+				else
 					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Event Handlers");
 
 				setValue("cbPageIcon", "images/users_48x48.png");
