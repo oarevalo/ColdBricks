@@ -139,9 +139,9 @@
 					}
 				}
 
-				pageHREF = hp.getAccountsService().getConfig().getAccountsRoot() & "/" & oContext.getAccountName() & "/layouts/" & page;
+				pageHREF = oAccountSite.getPageHREF(page);
 				
-				setValue("pageExists", fileExists(expandPath(pageHREF)));
+				setValue("pageExists", hp.getPageProvider().pageExists(pageHREF));
 				setValue("stPage",stPage);
 				setValue("accountName", oContext.getAccountName());
 				setValue("appRoot", hp.getConfig().getAppRoot() );
