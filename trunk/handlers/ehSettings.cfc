@@ -70,7 +70,6 @@
 				arrayAppend(aConfigFiles, "/Home/Common/Templates/Render/page.xml");
 				arrayAppend(aConfigFiles, "/Home/Common/AccountTemplates/default.xml");
 				arrayAppend(aConfigFiles, "/Home/Common/AccountTemplates/newPage.xml");
-				arrayAppend(aConfigFiles, "/Home/Common/AccountTemplates/site.xml");
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
@@ -130,6 +129,7 @@
 		
 	<cffunction name="doSaveGeneral" access="public" returntype="void">
 		<cfscript>
+			var contentRoot = getValue("contentRoot");
 			var defaultPage = getValue("defaultPage");
 			var pageCacheSize = getValue("pageCacheSize");
 			var pageCacheTTL = getValue("pageCacheTTL");
@@ -164,6 +164,7 @@
 				oConfigBean.setRSSCacheSize(rssCacheSize);
 				oConfigBean.setRSSCacheTTL(rssCacheTTL);
 				oConfigBean.setResourceLibraryPath(resourceLibraryPath);
+				oConfigBean.setContentRoot(contentRoot);
 			
 				oConfigBean.setRenderTemplate("page", rt_page);
 				oConfigBean.setRenderTemplate("module", rt_module);
