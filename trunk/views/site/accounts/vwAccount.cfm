@@ -101,7 +101,7 @@
 								<img src="images/page.png" align="absmiddle"> 
 							</cfif>
 							<a onclick="loadPageInfo('#qryPages.href#',#index#)"
-								ondblclick="openPage('#qryPages.href#')"  
+								ondblclick="openPage('#accountName#','#qryPages.href#')"  
 								class="pagesViewItem" id="pagesViewItem_#index#"	
 								alt="Double-click to open in page editor"
 								title="Double-click to open in page editor"
@@ -112,7 +112,7 @@
 							<cfif qryPages.isDefault>Yes<cfelse>-</cfif>
 						</td>
 						<td align="center">
-							<a href="##" onclick="openPage('#qryPages.href#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit page" title="Edit page" border="0"></a>
+							<a href="##" onclick="openPage('#accountName#','#qryPages.href#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit page" title="Edit page" border="0"></a>
 							<a href="##" onclick="deletePage('#jsstringformat(qryPages.href)#')"><img src="images/waste_small.gif" align="absmiddle" alt="Delete page" title="Delete page" border="0"></a>
 						</td>
 					</tr>

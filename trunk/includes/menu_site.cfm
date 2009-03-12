@@ -26,6 +26,16 @@
 	st.titleIcon = "";
 	st.hasAccess = true;
 	arrayAppend(aOptions,st);
+
+	st = structNew();
+	st.label = "Pages";
+	st.event = "ehPages.dspMain";
+	st.selected = listFindNoCase("ehPages", listFirst(event,"."));
+	st.hint = "Page management";
+	st.icon = "images/page_copy.png";
+	st.titleIcon = "images/documents_48x48.png";
+	st.hasAccess = stAccessMap.pages;
+	arrayAppend(aOptions,st);
 	
 	st = structNew();
 	st.label = "Accounts";
@@ -99,7 +109,7 @@
 	<div class="siteName" style="margin-bottom:15px;">
 		&raquo; Site: <a href="index.cfm?event=ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
 		
-		<cfif accountID neq "">
+		<cfif oContext.hasAccountSite()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.accounts>
 				&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>

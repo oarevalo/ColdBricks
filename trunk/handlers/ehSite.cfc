@@ -194,7 +194,7 @@
 				oContext.setPage( oPage );
 				oContext.setPageHREF( oSite.getPageHREF(page) );
 			
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("ehPage.dspMain","account=#account#");
 			
 			} catch(any e) {
 				setMessage("error",e.message);
