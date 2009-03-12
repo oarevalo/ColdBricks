@@ -137,10 +137,9 @@
 							break;
 						}
 					}
+					pageHREF = oAccountSite.getPageHREF(page);
 				}
 
-				pageHREF = oAccountSite.getPageHREF(page);
-				
 				setValue("pageExists", hp.getPageProvider().pageExists(pageHREF));
 				setValue("stPage",stPage);
 				setValue("accountName", oContext.getAccountName());
