@@ -13,6 +13,7 @@
 	username = oAccountsConfigBean.getUsername();
 	password = oAccountsConfigBean.getPassword();
 	dbType = oAccountsConfigBean.getDBType();
+	dataroot = oAccountsConfigBean.getDataRoot();
 </cfscript>
 
 <script type="text/javascript">
@@ -65,6 +66,18 @@
 								<option value="db" <cfif storageType eq "db">selected</cfif>>Database</option>
 							</select>
 						</td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr><td colspan="2">
+						<h2 style="margin-bottom:6px;">XML Storage Settings:</h2>
+						<div style="font-size:11px;line-height:18px;color:red;"><b>Note:</b> Settings on this section are only applicable when the selected Account Storage is 'XML File'</div>
+					</td></tr>
+					<tr>
+						<td width="170">
+							<input type="checkbox" name="appSettings" value="dataroot" <cfif structKeyExists(stAppConfig,"dataroot")>checked</cfif> onclick="toggleField(this.checked,'dataroot')">
+							<strong>Data Root:</strong>
+						</td>
+						<td><input type="text" name="dataroot" value="#dataroot#" size="30" class="formField" id="fld_dataroot" <cfif not structKeyExists(stAppConfig,"dataroot")>disabled</cfif>></td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2">

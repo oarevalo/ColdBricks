@@ -13,7 +13,6 @@
 	oHelpDAO.save(id="", name="page.xml", description="This file provides the template of the HTML used by the HomePortals engine when rendering a page. The following tokens are available: $PAGE_TITLE$, $PAGE_HTMLHEAD$, $PAGE_ONLOAD$, $PAGE_LAYOUTSECTION[sec][tag]$, $PAGE_CUSTOMSECTION[sec]$");
 	oHelpDAO.save(id="", name="default.xml", description="This file is used as a template when creating a new account. The contents of this file are used as the body of the initial page of the new account. Uses $USERNAME$ as token for the new user's username");
 	oHelpDAO.save(id="", name="newPage.xml", description="A template used when adding new pages to an account.  Uses $USERNAME$ as token for the new user's username");
-	oHelpDAO.save(id="", name="site.xml", description="A template used for the site descriptor when creating a new account. Uses $USERNAME$ as token for the new user's username");
 
 	// resource types --->
 	oHelpDAO.save(id="", name="rt_module", description="Modules are reusable components that allow you page to perform particular tasks. Modules act as mini applications that can do things like displaying calendars, blogs, rss feed contents, etc.");

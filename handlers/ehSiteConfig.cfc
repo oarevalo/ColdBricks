@@ -381,6 +381,7 @@
 			var dbType = getValue("dbType");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
+			var dataroot = getValue("dataroot");
 
 			try {
 				hp = oContext.getHomePortals();
@@ -395,7 +396,7 @@
 
 				switch(storageType) {
 					case "xml":
-						// no properties required for xml storage
+						if(dataroot eq "") throw("For 'XML File' storage, data root is required","validation");
 						break;
 
 					case "db":
@@ -640,42 +641,60 @@
 			var aNode = 0;
 			var aNodes = 0;
 			var i = 0;
+			var j = 0;
+			var xmlNode = 0;
 			var stAppConfig = structNew();
 			
 			// now get current config xml
 			xmlDoc = xmlParse(arguments.configFile);
+
+			for(j=1;j lte arrayLen(xmlDoc.xmlRoot.xmlChildren);j=j+1) {
+				xmlNode = xmlDoc.xmlRoot.xmlChildren[j];
+				switch(xmlNode.xmlName) {
+					
+					case "renderTemplates":
+						aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='page']");
+						if(arrayLen(aNode) gt 0) stAppConfig.rt_page = aNode[1].xmlAttributes.href;
 			
-			if(structKeyExists(xmlDoc.xmlRoot,"resourceLibraryPath")) stAppConfig.resourceLibraryPath = xmlDoc.xmlRoot.resourceLibraryPath.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"defaultPage")) stAppConfig.defaultPage = xmlDoc.xmlRoot.defaultPage.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"pageCacheSize")) stAppConfig.pageCacheSize = xmlDoc.xmlRoot.pageCacheSize.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"pageCacheTTL")) stAppConfig.pageCacheTTL = xmlDoc.xmlRoot.pageCacheTTL.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"contentCacheSize")) stAppConfig.contentCacheSize = xmlDoc.xmlRoot.contentCacheSize.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"contentCacheTTL")) stAppConfig.contentCacheTTL = xmlDoc.xmlRoot.contentCacheTTL.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"rssCacheSize")) stAppConfig.rssCacheSize = xmlDoc.xmlRoot.rssCacheSize.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"rssCacheTTL")) stAppConfig.rssCacheTTL = xmlDoc.xmlRoot.rssCacheTTL.xmlText;
-
-			aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='page']");
-			if(arrayLen(aNode) gt 0) stAppConfig.rt_page = aNode[1].xmlAttributes.href;
-
-			aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='module']");
-			if(arrayLen(aNode) gt 0) stAppConfig.rt_module = aNode[1].xmlAttributes.href;
-
-			aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='moduleNoContainer']");
-			if(arrayLen(aNode) gt 0) stAppConfig.rt_moduleNC = aNode[1].xmlAttributes.href;
+						aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='module']");
+						if(arrayLen(aNode) gt 0) stAppConfig.rt_module = aNode[1].xmlAttributes.href;
 			
-			if(structKeyExists(xmlDoc.xmlRoot,"baseResources")) {
-				aNodes = xmlDoc.xmlRoot.baseResources.xmlChildren;
-				if(arrayLen(aNodes) gt 0) stAppConfig.baseResources = structNew();
-				for(i=1;i lte arrayLen(aNodes);i=i+1) {
-					aNode = xmlDoc.xmlRoot.baseResources.xmlChildren[i];
-					if(aNode.xmlName eq "resource") {
-						if(not structKeyExists(stAppConfig.baseResources, aNode.xmlAttributes.type))
-							stAppConfig.baseResources[aNode.xmlAttributes.type] = arrayNew(1);
-						arrayAppend(stAppConfig.baseResources[aNode.xmlAttributes.type], aNode.xmlAttributes.href);	
-					}
+						aNode = xmlSearch(xmlDoc,"//renderTemplates/renderTemplate[@type='moduleNoContainer']");
+						if(arrayLen(aNode) gt 0) stAppConfig.rt_moduleNC = aNode[1].xmlAttributes.href;
+						break;
+						
+					case "baseResources":
+						aNodes = xmlNode.xmlChildren;
+						if(arrayLen(aNodes) gt 0) stAppConfig.baseResources = structNew();
+						for(i=1;i lte arrayLen(aNodes);i=i+1) {
+							aNode = aNodes[i];
+							if(aNode.xmlName eq "resource") {
+								if(not structKeyExists(stAppConfig.baseResources, aNode.xmlAttributes.type))
+									stAppConfig.baseResources[aNode.xmlAttributes.type] = arrayNew(1);
+								arrayAppend(stAppConfig.baseResources[aNode.xmlAttributes.type], aNode.xmlAttributes.href);	
+							}
+						}
+						break;			
+									
+					case "contentRenderers":
+						aNodes = xmlDoc.xmlRoot.contentRenderers.xmlChildren;
+						if(arrayLen(aNodes) gt 0) stAppConfig.contentRenderers = structNew();
+						for(i=1;i lte arrayLen(aNodes);i=i+1) {
+							aNode = xmlDoc.xmlRoot.contentRenderers.xmlChildren[i];
+							if(aNode.xmlName eq "contentRenderer") {
+								if(not structKeyExists(stAppConfig.contentRenderers, aNode.xmlAttributes.moduleType))
+									stAppConfig.contentRenderers[aNode.xmlAttributes.moduleType] = arrayNew(1);
+								arrayAppend(stAppConfig.contentRenderers[aNode.xmlAttributes.moduleType], aNode.xmlAttributes.path);	
+							}
+						}
+						break;			
+										
+					default:
+						stAppConfig[xmlNode.xmlName] = xmlNode.xmlText;
+				
 				}
 			}
-			
+						
 			return stAppConfig;
 		</cfscript>
 	</cffunction>	
@@ -685,20 +704,16 @@
 		<cfscript>
 			var xmlDoc = 0;
 			var stAppConfig = structNew();
+			var i = 0;
 			
 			// now get current config xml
 			xmlDoc = xmlParse(arguments.configFile);
-			
-			if(structKeyExists(xmlDoc.xmlRoot,"accountsRoot")) stAppConfig["accountsRoot"] = xmlDoc.xmlRoot.accountsRoot.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"defaultAccount")) stAppConfig["defaultAccount"] = xmlDoc.xmlRoot.defaultAccount.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"storageType")) stAppConfig["storageType"] = xmlDoc.xmlRoot.storageType.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"datasource")) stAppConfig["datasource"] = xmlDoc.xmlRoot.datasource.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"username")) stAppConfig["username"] = xmlDoc.xmlRoot.username.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"password")) stAppConfig["password"] = xmlDoc.xmlRoot.password.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"dbType")) stAppConfig["dbType"] = xmlDoc.xmlRoot.dbType.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"newAccountTemplate")) stAppConfig["newAccountTemplate"] = xmlDoc.xmlRoot.newAccountTemplate.xmlText;
-			if(structKeyExists(xmlDoc.xmlRoot,"newPageTemplate")) stAppConfig["newPageTemplate"] = xmlDoc.xmlRoot.newPageTemplate.xmlText;
-			
+
+			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.xmlChildren);i=j+1) {
+				xmlNode = xmlDoc.xmlRoot.xmlChildren[j];
+				stAppConfig[xmlNode.xmlName] = xmlNode.xmlText;
+			}
+						
 			return stAppConfig;
 		</cfscript>
 	</cffunction>	
@@ -750,17 +765,40 @@
 						}
 						break;
 
+					case "contentRenderers":					
+						xmlNode = xmlElemNew(xmlDoc,"contentRenderers");
+						arrayAppend(xmlDoc.xmlRoot.xmlChildren, xmlNode);
+		
+						for(key in arguments.stAppConfig.contentRenderers) {
+							if(isArray(arguments.stAppConfig.contentRenderers[key])) {
+								for(i=1;i lte arrayLen(stAppConfig.contentRenderers[key]);i=i+1) {
+									xmlNode = xmlElemNew(xmlDoc,"contentRenderer");
+									xmlNode.xmlAttributes["moduleType"] = key;
+									xmlNode.xmlAttributes["path"] = arguments.stAppConfig.contentRenderers[key][i];
+									arrayAppend(xmlDoc.xmlRoot.contentRenderers.xmlChildren, xmlNode);
+								}
+							}
+						}
+						break;
+						
 					default:
+						// we need this switch statement to maintain the correct case when writing back to the XML
 						switch(key) {
-							case "appRoot":			keyName = "appRoot"; break;
-							case "resourceLibraryPath":	keyName = "resourceLibraryPath"; break;
-							case "defaultPage":	keyName = "defaultPage"; break;
-							case "pageCacheSize":	keyName = "pageCacheSize"; break;
-							case "pageCacheTTL":	keyName = "pageCacheTTL"; break;
-							case "contentCacheSize":	keyName = "contentCacheSize"; break;
-							case "contentCacheTTL":	keyName = "contentCacheTTL"; break;
-							case "rssCacheSize":	keyName = "rssCacheSize"; break;
-							case "rssCacheTTL":	keyName = "rssCacheTTL"; break;
+							case "homePortalsPath":			keyName = "homePortalsPath"; break;
+							case "resourceLibraryPath":		keyName = "resourceLibraryPath"; break;
+							case "appRoot":					keyName = "appRoot"; break;
+							case "contentRoot":				keyName = "contentRoot"; break;
+							case "defaultPage":				keyName = "defaultPage"; break;
+							case "initialEvent":			keyName = "initialEvent"; break;
+							case "layoutSections":			keyName = "layoutSections"; break;
+							case "pageCacheSize":			keyName = "pageCacheSize"; break;
+							case "pageCacheTTL":			keyName = "pageCacheTTL"; break;
+							case "contentCacheSize":		keyName = "contentCacheSize"; break;
+							case "contentCacheTTL":			keyName = "contentCacheTTL"; break;
+							case "rssCacheSize":			keyName = "rssCacheSize"; break;
+							case "rssCacheTTL":				keyName = "rssCacheTTL"; break;
+							case "pageProviderClass":		keyName = "pageProviderClass"; break;
+							case "baseResourceTypes":		keyName = "baseResourceTypes"; break;
 						}
 						xmlNode = xmlElemNew(xmlDoc, keyName);
 						xmlNode.xmlText = arguments.stAppConfig[key];
