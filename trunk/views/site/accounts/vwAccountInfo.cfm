@@ -15,28 +15,24 @@
 		tmpAppURL = "/index.cfm?account=#accountName#";
 	else
 		tmpAppURL = appRoot & "/index.cfm?account=#accountName#";
-	
-</cfscript>
 
-<!--- calculate account size --->
-<cfset tmpPath = accountsRoot & "/" & accountName>
-<cfdirectory action="list" name="qry" directory="#ExpandPath(tmpPath)#" recurse="true">
-<cfset accountSize = arraySum(listToArray(valueList(qry.size)))>
-<cfset accountSizeKB = accountSize/1024>
+	contentRoot = oContext.getHomePortals().getConfig().getContentRoot();
+	siteHREF = oContext.getAccountSite().getSiteHREF();
+	fullSiteHREF = contentRoot & "/" & siteHREF;
+	fullSiteHREF = reReplace(fullSiteHREF,"//*","/","all");
+</cfscript>
 
 <cfoutput>
 	<div style="margin:10px;">
 		<strong>Name:</strong> 	#accountName#
 	
 		<div style="margin-top:10px;">
-			<strong>Directory:</strong><br>
-			#accountsRoot#/#accountName#/
-			<!--- <a href="?event=ehAccounts.dspFileManager&accountID=#accountID#" style="color:blue !important;">[View Files]</a> --->
+			<strong>Account Path:</strong><br>
+			#fullSiteHREF#
 		</div>
 		
 		<div style="margin-top:10px;">
 			<strong>Pages:</strong> #numPages# <br>
-			<strong>Space Used:</strong> #decimalformat(accountSizeKB)# KB<br>
 		</div>
 		
 		<div style="line-height:24px;margin-top:10px;">

@@ -3,12 +3,19 @@
 <cfparam name="request.requestState.stAccountInfo" default="">
 <cfparam name="request.requestState.qryAccount" default="">
 <cfparam name="request.requestState.accountsRoot" default="">
+<cfparam name="request.requestState.oContext" default="">
 
 <cfscript>
 	accountID = request.requestState.accountID;
 	stAccountInfo = request.requestState.stAccountInfo;
 	qryAccount = request.requestState.qryAccount;
 	accountsRoot = request.requestState.accountsRoot;
+	oContext = request.requestState.oContext;
+	
+	contentRoot = oContext.getHomePortals().getConfig().getContentRoot();
+	siteHREF = oContext.getAccountSite().getSiteHREF();
+	fullSiteHREF = contentRoot & "/" & siteHREF;
+	fullSiteHREF = reReplace(fullSiteHREF,"//*","/","all");
 </cfscript>
 
 <cfoutput>
@@ -24,7 +31,7 @@
 		</tr>
 		<tr>
 			<td>Account Directory:</td>
-			<td><a href="#accountsRoot#/#qryAccount.accountname#" target="_blank">#accountsRoot#/#qryAccount.accountname#</a></td>
+			<td><a href="#fullSiteHREF#" target="_blank">#fullSiteHREF#</a></td>
 		</tr>
 		<tr>
 			<td colspan="2" style="font-size:9px;font-weight:bold;">
