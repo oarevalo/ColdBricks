@@ -199,7 +199,8 @@
 				stAccessMap.settings = getService("permissions").isAllowed("ehSettings.*", oUser.getRole());
 				stAccessMap.users = getService("permissions").isAllowed("ehUsers.*", oUser.getRole());
 				stAccessMap.setup = getService("permissions").isAllowed("ehSetup.*", oUser.getRole());
-				stAccessMap.pages = getService("permissions").isAllowed("ehPage.*", oUser.getRole());
+				stAccessMap.page = getService("permissions").isAllowed("ehPage.*", oUser.getRole());
+				stAccessMap.pages = getService("permissions").isAllowed("ehPages.*", oUser.getRole());
 				stAccessMap.accounts = getService("permissions").isAllowed("ehAccounts.*", oUser.getRole());
 				stAccessMap.resources = getService("permissions").isAllowed("ehResources.*", oUser.getRole());
 				stAccessMap.siteSettings = getService("permissions").isAllowed("ehSiteConfig.*", oUser.getRole());
