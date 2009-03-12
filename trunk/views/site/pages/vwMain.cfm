@@ -86,7 +86,7 @@
 		<td width="200">
 			<!--- Page Info --->
 			<div class="cp_sectionTitle" 
-					style="width:190px;padding:0px;margin:0px;margin-top:10px;">
+					style="width:190px;padding:0px;margin:0px;">
 				<div style="margin:2px;text-align:left;">
 					<img src="images/page.png" align="absmiddle">
 					Page Information

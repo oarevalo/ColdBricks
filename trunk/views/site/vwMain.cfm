@@ -174,8 +174,8 @@
 
 				<cfif stAccessMap.pages>
 					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
-						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
+						<a href="index.cfm?event=ehSite.doLoadHomePage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
+						<a href="index.cfm?event=ehSite.doLoadHomePage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
 					</div>
 					<cfset hasModuleAccess = true>
 				</cfif>

@@ -204,4 +204,62 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="doLoadHomePage">
+		<cfscript>
+			var pageHREF = "";
+			var hp = 0;
+			var qryAccount = 0;
+			var account = "";
+			var oContext = getService("sessionContext").getContext();
+			var oPage = 0;
+			var oSite = 0;
+			
+			try {
+				hp = oContext.getHomePortals();
+				
+				pageHREF = hp.getAppDefaultPage();
+				
+				if(pageHREF eq "")
+					throw("No default page set. You can set a default homepage by either setting the defaultPage property or defaultAccount property on the site config","validation");
+				
+				if(hp.getConfig().getDefaultPage() neq "") {
+					pageHREF = hp.getConfig().getDefaultPage();
+					oPage = hp.getPageProvider().load( pageHREF );
+				}
+				
+				if(hp.getAccountsService().getConfig().getDefaultAccount() neq "") {
+				
+					// get the default account
+					account = hp.getAccountsService().getConfig().getDefaultAccount();
+					
+					// get account info
+					qryAccount = hp.getAccountsService().getAccountByName(account);
+					
+					// load account
+					oContext.setAccountID(qryAccount.accountID);
+					oContext.setAccountName(account);
+					oSite = createObject("component","Home.Components.accounts.site").init(account, hp.getAccountsService() );
+					oContext.setAccountSite( oSite );
+	
+					// load default page in account
+					page = oSite.getDefaultPage();
+	
+					// load page
+					oPage = oSite.getPage(page);
+					pageHREF = oSite.getPageHREF(page);
+				}
+				
+				oContext.setPage( oPage );
+				oContext.setPageHREF( pageHREF );
+			
+				setNextEvent("ehPage.dspMain","account=#account#");
+			
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSite.dspMain");
+			}	
+		</cfscript>
+	</cffunction>
+
 </cfcomponent>
