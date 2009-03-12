@@ -60,6 +60,7 @@
 		<resource id="ehSite.*" roles="*" />
 
 		<!-- allowed to administrator, managers and editors -->
+		<resource id="ehPages.*" roles="admin,mngr,edit" />
 		<resource id="ehAccounts.*" roles="admin,mngr,edit" />
 		<resource id="ehPage.*" roles="admin,mngr,edit" />
 		<resource id="ehResources.*" roles="admin,mngr,edit,cont" />

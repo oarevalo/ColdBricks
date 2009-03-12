@@ -60,7 +60,8 @@
 		function showDBHelp(key) {
 			var helpText = "";
 			if(key=="homepage") helpText = "This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.";
-			if(key=="accounts") helpText = "All pages in a site are grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.";
+			if(key=="pages") helpText = "The pages module lets you manage all pages in a site.";
+			if(key=="accounts") helpText = "Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.";
 			if(key=="resources") helpText = "The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.";
 			if(key=="siteMap") helpText = "The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.";
 			if(key=="settings") helpText = "For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files";
@@ -175,6 +176,14 @@
 					<div class="dsb_secBox">
 						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
 						<a href="index.cfm?event=ehSite.doLoadAccountPage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
+					</div>
+					<cfset hasModuleAccess = true>
+				</cfif>
+
+				<cfif stAccessMap.pages>
+					<div class="dsb_secBox">
+						<a href="index.cfm?event=ehPages.dspMain" onmouseover="showDBHelp('pages')" onmouseout="hideDBHelp()" onfocus="showDBHelp('pages')" onblur="hideDBHelp()"><img src="images/documents_48x48.png" border="0" alt="Pages Management" title="Pages Management"><br>
+						<a href="index.cfm?event=ehPages.dspMain" onmouseover="showDBHelp('pages')" onmouseout="hideDBHelp()" onfocus="showDBHelp('pages')" onblur="hideDBHelp()">Pages</a>
 					</div>
 					<cfset hasModuleAccess = true>
 				</cfif>
