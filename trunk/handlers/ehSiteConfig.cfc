@@ -713,8 +713,8 @@
 			// now get current config xml
 			xmlDoc = xmlParse(arguments.configFile);
 
-			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.xmlChildren);i=j+1) {
-				xmlNode = xmlDoc.xmlRoot.xmlChildren[j];
+			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.xmlChildren);i=i+1) {
+				xmlNode = xmlDoc.xmlRoot.xmlChildren[i];
 				stAppConfig[xmlNode.xmlName] = xmlNode.xmlText;
 			}
 						
