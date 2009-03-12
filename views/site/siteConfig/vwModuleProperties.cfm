@@ -59,6 +59,9 @@
 						</td>
 					</tr>
 				</cfloop>
+				<cfif qryDataBase.recordCount eq 0>
+					<tr><td colspan="5"><em>No properties found</em></td></tr>
+				</cfif>
 			</table>
 			<br><br>
 			
@@ -83,6 +86,9 @@
 						</td>
 					</tr>
 				</cfloop>
+				<cfif qryData.recordCount eq 0>
+					<tr><td colspan="5"><em>No properties found</em></td></tr>
+				</cfif>
 			</table>
 			<br><br>
 			
