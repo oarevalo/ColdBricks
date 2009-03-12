@@ -305,6 +305,7 @@
 			var dbType = getValue("dbType");
 			var newAccountTemplate = getValue("newAccountTemplate");
 			var newPageTemplate = getValue("newPageTemplate");
+			var dataroot = getValue("dataroot");
 
 			try {
 				if(accountsRoot eq "") throw("The accounts root directory is required","validation");
@@ -315,7 +316,7 @@
 
 				switch(storageType) {
 					case "xml":
-						// nothing here
+						if(dataroot eq "") throw("For 'XML File' storage, data root is required","validation");
 						break;
 
 					case "db":
@@ -338,6 +339,7 @@
 				oConfigBean.setDBType(dbType);
 				oConfigBean.setNewAccountTemplate(newAccountTemplate);
 				oConfigBean.setNewPageTemplate(newPageTemplate);
+				oConfigBean.setDataRoot(dataroot);
 			
 				// save changes
 				saveAccountsConfigBean( oConfigBean );
