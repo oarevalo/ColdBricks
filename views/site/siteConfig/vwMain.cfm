@@ -18,6 +18,7 @@
 	contentCacheTTL = oHomePortalsConfigBean.getContentCacheTTL();
 	rssCacheSize = oHomePortalsConfigBean.getRSSCacheSize();
 	rssCacheTTL = oHomePortalsConfigBean.getRSSCacheTTL();
+	contentRoot = oHomePortalsConfigBean.getContentRoot();
 	
 	try{ rt_page = oHomePortalsConfigBean.getRenderTemplate("page"); } catch(any e) { rt_page = ""; }
 	try{ rt_module = oHomePortalsConfigBean.getRenderTemplate("module"); } catch(any e) { rt_module = ""; }
@@ -65,17 +66,17 @@
 					<tr><td colspan="2"><h2>General Settings:</h2></td></tr>
 					<tr>
 						<td width="170">
-							<input type="checkbox" name="appSettings" value="accountsRoot" checked disabled>
+							<input type="checkbox" name="appSettings" value="appRoot" checked disabled>
 							<strong>Application Root:</strong>
 						</td>
 						<td><input type="text" name="appRoot" value="#appRoot#" id="fld_appRoot" size="30" class="formField" disabled></td>
 					</tr>
 					<tr>
 						<td width="170">
-							<input type="checkbox" name="appSettings" value="resourceLibraryPath" <cfif structKeyExists(stAppConfig,"resourceLibraryPath")>checked</cfif> onclick="toggleField(this.checked,'resourceLibraryPath')">
-							<strong>Resource Library Root:</strong>
+							<input type="checkbox" name="appSettings" value="contentRoot" <cfif structKeyExists(stAppConfig,"contentRoot")>checked</cfif> onclick="toggleField(this.checked,'contentRoot')">
+							<strong>Content Root:</strong>
 						</td>
-						<td><input type="text" name="resourceLibraryPath" value="#resourceLibraryPath#" id="fld_resourceLibraryPath" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"resourceLibraryPath")>disabled</cfif>></td>
+						<td><input type="text" name="contentRoot" value="#contentRoot#" id="fld_contentRoot" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"contentRoot")>disabled</cfif>></td>
 					</tr>
 					<tr>
 						<td width="170">
@@ -83,6 +84,13 @@
 							<strong>Default Page:</strong>
 						</td>
 						<td><input type="text" name="defaultPage" value="#defaultPage#" id="fld_defaultPage" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"defaultPage")>disabled</cfif>></td>
+					</tr>
+					<tr>
+						<td width="170">
+							<input type="checkbox" name="appSettings" value="resourceLibraryPath" <cfif structKeyExists(stAppConfig,"resourceLibraryPath")>checked</cfif> onclick="toggleField(this.checked,'resourceLibraryPath')">
+							<strong>Resource Library Root:</strong>
+						</td>
+						<td><input type="text" name="resourceLibraryPath" value="#resourceLibraryPath#" id="fld_resourceLibraryPath" size="30" class="formField" <cfif not structKeyExists(stAppConfig,"resourceLibraryPath")>disabled</cfif>></td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2"><h2>Caching:</h2></td></tr>
