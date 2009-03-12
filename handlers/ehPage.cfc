@@ -3,6 +3,7 @@
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var page = getValue("page");
+			var account = getValue("account");
 			var resType = getValue("resType");
 			var pageHREF = "";
 			var hp = 0;
@@ -13,8 +14,13 @@
 				hp = oContext.getHomePortals();
 			
 				if(page neq "") {
-					oPage = oContext.getAccountSite().getPage(page);
-					pageHREF = oContext.getAccountSite().getPageHREF(page);
+					if(oContext.hasAccountSite() and account neq "") {
+						oPage = oContext.getAccountSite().getPage(page);
+						pageHREF = oContext.getAccountSite().getPageHREF(page);
+					} else {
+						oPage = hp.getPageProvider().load(page);
+						pageHREF = page;
+					}
 					oContext.setPage(oPage);
 					oContext.setPageHREF(pageHREF);
 				}			
@@ -46,7 +52,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehAccounts.dspMain");
+				setNextEvent("ehSite.dspMain");
 			}			
 		</cfscript>
 	</cffunction>

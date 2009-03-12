@@ -39,8 +39,8 @@ function loadPageInfo(page,index) {
 	if(d) d.style.fontWeight="bold";
 }
 
-function openPage(page) {
-	document.location = 'index.cfm?event=ehPage.dspMain&page='+escape(page);
+function openPage(account,page) {
+	document.location = 'index.cfm?event=ehPage.dspMain&page='+escape(page)+'&account='+escape(account);
 }
 
 function deletePage(page) {

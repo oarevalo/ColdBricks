@@ -7,7 +7,7 @@
 	<cfset thisPath = jsStringFormat(path & "/" & qryDir.name)>
 	<cfset newNodeID = createUUID()>
 	<div style="margin-bottom:3px;">
-		<cfif qryDir.type eq "dir">
+		<cfif qryDir.type eq "folder">
 			<a href="javascript:loadTreeNode('#newNodeID#','#thisPath#');selectTreeNode('#thisPath#')"><img src="images/folder.png" border="0" align="absmiddle"></a>	
 			<a href="javascript:loadTreeNode('#newNodeID#','#thisPath#');selectTreeNode('#thisPath#')">#qryDir.name#</a>
 			<div id="#newNodeID#" style="margin-left:10px;"></div>

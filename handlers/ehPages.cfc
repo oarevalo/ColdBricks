@@ -6,9 +6,14 @@
 			
 			try {
 				hp = oContext.getHomePortals();
+				
+				oContext.clearAccountSite();
+				oContext.setAccountName("");
+				oContext.setAccountID("");
+				
 				setValue("contentRoot", hp.getConfig().getContentRoot() );
 				setValue("cbPageTitle", "Pages");
-				setValue("cbPageIcon", "documents_48x48.png");
+				setValue("cbPageIcon", "images/documents_48x48.png");
 				setValue("cbShowSiteMenu", true);
 	
 				setView("site/pages/vwMain");
@@ -23,17 +28,19 @@
 
 	<cffunction name="dspNode">
 		<cfscript>
+			var oContext = getService("sessionContext").getContext();
 			var path = getValue("path");
 			var hp = 0;
-			var validChars = "a-zA-Z0-9_. -!";
-			var pageName = "";
-			var oContext = getService("sessionContext").getContext();
 			
 			try {
 				setLayout("Layout.None");
 
 				hp = oContext.getHomePortals();
-	
+				qryDir = hp.getPageProvider().listFolder(path);
+				path = reReplace(path,"//*","/","all");
+				
+				setValue("qryDir", qryDir);
+				setValue("path", path);
 				setView("site/pages/vwNode");
 
 			} catch(any e) {
@@ -51,16 +58,22 @@
 		<cfset var qryDir = 0>
 
 		<!--- remove duplicate forward slashes --->
-		<cfset path = reReplace(path,"//*","/","all");>
+		<cfset path = reReplace(path,"//*","/","all")>
 
 		<cfif path eq "">
 			<cfset qryDir = QueryNew("name,type")>
 			<cfset queryAddRow(qryDir,1)>
-			<cfset querySetCell(qryDir,"name",appRoot)>
-			<cfset querySetCell(qryDir,"type","Dir")>
+			<cfset querySetCell(qryDir,"name","/")>
+			<cfset querySetCell(qryDir,"type","folder")>
 			<cfset path = "">
 		<cfelse>
-			<cfset qryDir = hp.getPageProvider().list(path)>
+			<cfset qryDir = hp.getPageProvider().listFolder(path)>
+			<cfquery name="qryDir" dbtype="query">
+				SELECT *
+					FROM qryDir
+					WHERE type like 'folder'
+					ORDER BY name
+			</cfquery>	
 		</cfif>
 	
 		<cfset setValue("qryDir", qryDir)>
@@ -68,6 +81,39 @@
 		<cfset setView("site/pages/vwTreeNode")>
 		<cfset setLayout("Layout.none")>
 	</cffunction>
+
+	<cffunction name="dspNodeInfo" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oAccountSite = 0;
+			var oPage = 0;
+			var stPage = structNew();
+			var path = getValue("path");
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				setLayout("Layout.None");	
+
+				hp = oContext.getHomePortals();
+				if(hp.getPageProvider().pageExists(path)) {
+					oPage = hp.getPageProvider().load(path);
+					stPage = hp.getPageProvider().query(path);
+				}
+
+				setValue("pageExists", hp.getPageProvider().pageExists(path));
+				setValue("oPage",oPage);
+				setValue("stPage",stPage);
+				setValue("path", path);
+				setValue("appRoot", hp.getConfig().getAppRoot() );
+				setView("site/pages/vwNodeInfo");
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+		</cfscript>
+	</cffunction>
+
 
 		
 	<cffunction name="doCreateDirectory">

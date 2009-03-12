@@ -42,7 +42,7 @@
 		<br>
 		<cfif pageExists>
 			<div style="line-height:20px;">
-				<img src="images/page_edit.png" align="absmiddle">&nbsp; <a href="index.cfm?event=ehPage.dspMain&page=#stPage.href#" style="color:blue !important;font-weight:bold;">Open page editor</a><br>
+				<img src="images/page_edit.png" align="absmiddle">&nbsp; <a href="index.cfm?event=ehPage.dspMain&page=#stPage.href#&accountName=#accountName#" style="color:blue !important;font-weight:bold;">Open page editor</a><br>
 				<img src="images/page_link.png" align="absmiddle">&nbsp; <a href="#tmpPageURL#" style="color:blue !important;" target="_blank">View Page in Browser</a><br>
 				<img src="images/page_lightning.png" align="absmiddle">&nbsp; <a href="index.cfm?event=ehAccounts.doSetDefaultPage&page=#stPage.href#" style="color:blue !important;">Set as default page</a><br>
 				<img src="images/waste_small.gif" align="absmiddle">&nbsp; <a href="##" onclick="deletePage('#jsstringformat(stPage.href)#')" style="color:blue !important;">Delete Page</a><br>
