@@ -3,6 +3,7 @@
 <cfparam name="request.requestState.accountsRoot" default="">
 <cfparam name="request.requestState.numPages" default="">
 <cfparam name="request.requestState.appRoot" default="">
+<cfparam name="request.requestState.oContext" default="">
 
 <cfscript>
 	accountName = request.requestState.accountName;
@@ -10,6 +11,7 @@
 	accountsRoot = request.requestState.accountsRoot;
 	numPages = request.requestState.numPages;
 	appRoot = request.requestState.appRoot;
+	oContext = request.requestState.oContext;
 	
 	if(appRoot eq "/")
 		tmpAppURL = "/index.cfm?account=#accountName#";
