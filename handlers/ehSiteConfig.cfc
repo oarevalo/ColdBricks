@@ -623,7 +623,11 @@
 	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="Home.Components.modulePropertiesConfigBean">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.Components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
+			var oConfigBean = 0;
+			if(fileExists(expandPath(arguments.configPath)))
+				oConfigBean = createObject("component","Home.Components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
+			else
+				oConfigBean = createObject("component","Home.Components.modulePropertiesConfigBean").init( );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
