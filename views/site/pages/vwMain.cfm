@@ -7,14 +7,7 @@
 		function selectTreeNode(path) {
 			doEvent("ehPages.dspNode","nodePanel",{path: path});
 		}
-		
-		function deleteNode(path) {
-			if(confirm("Delete node?")) {
-				var loc = "index.cfm?event=ehPages.doDeleteNode&path=" + path;
-				document.location = loc;
-			}
-		}
-		
+				
 		function reloadNode(path) {
 			doEvent("ehPages.dspNode","nodePanel",{path: path});
 		}
@@ -40,11 +33,44 @@
 			document.location = 'index.cfm?event=ehPage.dspMain&page='+escape(path);
 		}
 		
-		function deletePage(path) {
+		function deletePage(path,pathToDelete) {
 			if(confirm('Delete page?')) {
-				document.location = '?event=ehPages.doDeletePage&path='+escape(path);
+				doEvent("ehPages.doDeleteNodes","nodePanel",{path: path, pathsToDelete: 'page;'+pathToDelete});
 			}
 		}		
+
+		function deleteFolder(path,pathToDelete) {
+			if(confirm('Delete folder and all of its contents?')) {
+				doEvent("ehPages.doDeleteNodes","nodePanel",{path: path, pathsToDelete: 'folder;'+pathToDelete});
+			}
+		}		
+		
+		function addFolder(path) {
+			var name = prompt("Enter the name of the new folder:");
+			if(name!="") {
+				doEvent("ehPages.doCreateFolder","nodePanel",{path: path, name: name});
+			}
+		}
+		
+		function addPage(path) {
+			name = prompt("Enter the name of the new page:");
+			if(name!="") {
+				doEvent("ehPages.doCreatePage","nodePanel",{path: path, name: name});
+			}
+		}
+
+		function renamePage(parentPath, pagePath) {
+			var name = prompt("Enter the name of the new page:");
+			if(name!="") {
+				doEvent("ehPages.doRenamePage","nodePanel",{parentPath: parentPath, pagePath: pagePath, newName: name});
+			}
+		}
+
+		function copyPage(parentPath, pagePath) {
+			doEvent("ehPages.doCopyPage","nodePanel",{parentPath: parentPath, pagePath: pagePath});
+		}
+		
+		
 	</script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">

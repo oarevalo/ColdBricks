@@ -10,12 +10,12 @@
 
 <!--- sort pages query  --->
 <cfquery name="qryPages" dbtype="query">
-	SELECT *
+	SELECT *,upper(type) as U_Type,upper(name) as U_Name
 		FROM qryDir
 		<cfif searchTerm neq "">
-			 AND upper(name) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
+			 WHERE upper(name) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
 		</cfif>
-		ORDER BY name
+		ORDER BY U_Type,U_Name
 </cfquery>
 
 <cfscript>
@@ -37,7 +37,7 @@
 				<b>Current Path:</b>
 				#path#
 				<cfif path neq "/">
-					(<img src="images/waste_small.gif" align="absmiddle"> <a href="##" onclick="deleteNode('#jsstringformat(path)#')" style="font-size:11px;"><strong>Delete</strong></a>)
+					(<img src="images/waste_small.gif" align="absmiddle"> <a href="##" onclick="deleteFolder('/','#jsstringformat(path)#')" style="font-size:11px;"><strong>Delete</strong></a>)
 				</cfif>
 			</td>
 			<td align="right" nowrap="yes">
@@ -48,16 +48,18 @@
 				</form>
 			</td>
 			<td align="right">
-				<img src="images/add.png" align="absmiddle"> <a href="index.cfm?event=ehPages.dspAddPage"><strong>Add Page</strong></a>
+				<img src="images/add.png" align="absmiddle"> <a href="##" onclick="addPage('#path#')"><strong>Add Page</strong></a>
 				&nbsp;&nbsp;
-				<img src="images/add.png" align="absmiddle"> <a href="index.cfm?event=ehPages.dspAddFolder"><strong>Add Folder</strong></a>
+				<img src="images/add.png" align="absmiddle"> <a href="##" onclick="addFolder('#path#')"><strong>Add Folder</strong></a>
 			</td>
 		</tr>
 	</table>
 	
 	<div style="background-color:##fff;height:399px;border:1px dashed ##ccc;margin-top:3px;overflow:auto;margin-bottom:3px;">
 		<form name="frmDelete" method="post" action="index.cfm" style="padding:0px;margin:0px;">
-			<input type="hidden" name="event" value="ehPages.doDeletePage">
+			<input type="hidden" name="event" value="ehPages.doDeleteNodes">
+			<input type="hidden" name="path" value="#path#">
+			<input type="hidden" name="nextEvent" value="ehPages.dspMain">
 			<table cellpadding="1" cellspacing="0" style="width:100%;border-bottom:0px;" class="browseTable">
 				<tr>
 					<th width="40">No</th>
@@ -66,18 +68,18 @@
 				</tr>
 				<cfloop query="qryPages" startrow="#startRow#" endrow="#endRow#">
 					<cfset index = qryPages.currentRow>
-					<cfset pagePath = path & "/" & qryPages.name>
+					<cfset pagePath = path & "/" & qryPages.name[index]>
 					<tr <cfif index mod 2>class="altRow"</cfif>>
 						<td width="40" align="right">
 							#index#.
-							<input type="checkbox" name="page" value="#pagePath#">
+							<input type="checkbox" name="pathsToDelete" value="#qryPages.type[index]#;#pagePath#">
 						</td>
 						<td>
-							<cfif qryDir.type eq "folder">
+							<cfif qryPages.type[index] eq "folder">
 								<img src="images/folder.png" align="absmiddle">
 								<a onclick="selectTreeNode('#pagePath#')"
 									class="pagesViewItem" id="pagesViewItem_#index#"
-									href="##">#qryPages.name#</a>
+									href="##">#qryPages.name[index]#</a>
 							<cfelse>
 								<img src="images/page.png" align="absmiddle"> 
 								<a onclick="loadNodeInfo('#pagePath#',#index#)"
@@ -85,14 +87,16 @@
 									class="pagesViewItem" id="pagesViewItem_#index#"	
 									alt="Double-click to open in page editor"
 									title="Double-click to open in page editor"
-									href="##">#qryPages.name#</a>
+									href="##">#qryPages.name[index]#</a>
 							</cfif>
 						</td>
 						<td align="center">
-							<cfif qryDir.type eq "page">
+							<cfif qryPages.type[index] eq "folder">
+								<a href="##" onclick="deleteFolder('#jsstringformat(path)#','#jsstringformat(pagePath)#')"><img src="images/waste_small.gif" align="absmiddle" alt="Delete page" title="Delete page" border="0"></a>
+							<cfelse>
 								<a href="##" onclick="openPage('#pagePath#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit page" title="Edit page" border="0"></a>
+								<a href="##" onclick="deletePage('#jsstringformat(path)#','#jsstringformat(pagePath)#')"><img src="images/waste_small.gif" align="absmiddle" alt="Delete page" title="Delete page" border="0"></a>
 							</cfif>
-							<a href="##" onclick="deletePage('#jsstringformat(pagePath)#')"><img src="images/waste_small.gif" align="absmiddle" alt="Delete page" title="Delete page" border="0"></a>
 						</td>
 					</tr>
 				</cfloop>

@@ -251,7 +251,7 @@
 						throw("You are trying to delete a directory that does not exist","coldBricks.validation");
 				
 					deleteFile(expandPath(path));
-					setMessage("info", "File created");
+					setMessage("info", "File deleted");
 				}
 
 			} catch(coldBricks.validation e) {

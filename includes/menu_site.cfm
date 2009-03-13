@@ -120,11 +120,17 @@
 		
 		<cfif oContext.hasPage()>
 			<cfset oPage = oContext.getPage()>
+			<cfif oPage.getTitle() neq "">
+				<cfset tmpTitle = oPage.getTitle()>
+			<cfelse>
+				<cfset tmpTitle = "<em>No Title</em>">
+			</cfif>
+
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.pages>
-				&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#oPage.getTitle()#</a>
+				&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#tmpTitle#</a>
 			<cfelse>
-				&raquo; Page: #oPage.getTitle()#
+				&raquo; Page: #tmpTitle#
 			</cfif>
 		</cfif>
 	</div>
