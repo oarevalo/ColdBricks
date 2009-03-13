@@ -1,2 +1,2 @@
 <!--- call the debug output template --->
-<cfinclude template="/Home/Common/Templates/debug.cfm">
+<cfinclude template="/Home/common/Templates/debug.cfm">

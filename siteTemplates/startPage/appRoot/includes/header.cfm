@@ -14,10 +14,10 @@
 		pageAccess = request.oPage.getAccess();
 		
 		// create site object
-		request.oSite = CreateObject("component", "Home.Components.accounts.site").init(siteOwner, oAccountsService);
+		request.oSite = CreateObject("component", "Home.components.accounts.site").init(siteOwner, oAccountsService);
 
 		// Get information on any currently logged-in user
-		oUserRegistry = createObject("Component","Home.Components.userRegistry").init();
+		oUserRegistry = createObject("Component","Home.components.userRegistry").init();
 		request.userInfo = oUserRegistry.getUserInfo();	// information about the logged-in user
 		bUserLoggedIn = (request.userInfo.userName neq "");
 		bIsOwner = (request.userInfo.userName eq siteOwner); 

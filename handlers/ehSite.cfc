@@ -28,7 +28,7 @@
 					oSiteBean.setNotes( qrySite.notes );
 				
 					// instantiate HomePortals application
-					oHomePortals = createObject("Component","Home.Components.homePortals").init(oSiteBean.getPath());
+					oHomePortals = createObject("Component","Home.components.homePortals").init(oSiteBean.getPath());
 
 					// load the full index of the resource library
 					oHomePortals.getCatalog().index();
@@ -77,7 +77,7 @@
 				oSiteInfo = oContext.getSiteInfo();
 				
 				// get resource types
-				oResourceLibrary = createObject("component","Home.Components.resourceLibrary");
+				oResourceLibrary = createObject("component","Home.components.resourceLibrary");
 				aResourceTypes = oResourceLibrary.getResourceTypes();
 							
 				// create catalog object and instantiate for this page
@@ -96,7 +96,7 @@
 
 				// if there is an account selected, get the account pages
 				if(qlAccount neq "") {
-					oAccountSite = createObject("component","Home.Components.accounts.site").init(qlAccount, hp.getAccountsService() );		
+					oAccountSite = createObject("component","Home.components.accounts.site").init(qlAccount, hp.getAccountsService() );		
 					aPages = oAccountSite.getPages();		
 
 					// sort pages
@@ -183,7 +183,7 @@
 				// load account
 				oContext.setAccountID(qryAccount.accountID);
 				oContext.setAccountName(account);
-				oSite = createObject("component","Home.Components.accounts.site").init(account, hp.getAccountsService() );
+				oSite = createObject("component","Home.components.accounts.site").init(account, hp.getAccountsService() );
 				oContext.setAccountSite( oSite );
 
 				// if no page given, the load default page in account
@@ -238,7 +238,7 @@
 					// load account
 					oContext.setAccountID(qryAccount.accountID);
 					oContext.setAccountName(account);
-					oSite = createObject("component","Home.Components.accounts.site").init(account, hp.getAccountsService() );
+					oSite = createObject("component","Home.components.accounts.site").init(account, hp.getAccountsService() );
 					oContext.setAccountSite( oSite );
 	
 					// load default page in account
