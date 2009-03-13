@@ -1,8 +1,8 @@
 <cfcomponent extends="eventHandler">
 
-	<cfset variables.homePortalsConfigPath = "/Home/Config/homePortals-config.xml">
-	<cfset variables.accountsConfigPath = "/Home/Config/accounts-config.xml.cfm">
-	<cfset variables.modulePropertiesConfigPath = "/Home/Config/module-properties.xml">
+	<cfset variables.homePortalsConfigPath = "/Home/config/homePortals-config.xml">
+	<cfset variables.accountsConfigPath = "/Home/config/accounts-config.xml.cfm">
+	<cfset variables.modulePropertiesConfigPath = "/Home/config/module-properties.xml">
 	
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -17,7 +17,7 @@
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
-				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
+				configFile = expandPath(appRoot & "/config/homePortals-config.xml");
 
 				// get config bean with mix of base and app settings
 				oConfigBean = getHomePortalsConfigBean();
@@ -53,13 +53,13 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/accounts-config.xml.cfm");
+				configFile = expandPath(appRoot & "/config/accounts-config.xml.cfm");
 
 				// get config bean with mix of base and app settings
 				oConfigBean = getAccountsConfigBean();
 				oConfigBean.load(configFile);
 
-				configFile = expandPath(appRoot & "/Config/accounts-config.xml.cfm");
+				configFile = expandPath(appRoot & "/config/accounts-config.xml.cfm");
 
 				// get struct with only settings defined for this application
 				stAppConfig = parseAppAccountsConfigFile(configFile);
@@ -93,7 +93,7 @@
 				appRoot = hp.getConfig().getAppRoot();
 
 				oConfigBeanBase = getModulePropertiesConfigBean();
-				oConfigBean = getModulePropertiesConfigBean(appRoot & "/Config/module-properties.xml");
+				oConfigBean = getModulePropertiesConfigBean(appRoot & "/config/module-properties.xml");
 
 				setView("site/siteConfig/vwModuleProperties");
 				setValue("oModulePropertiesConfigBeanBase", oConfigBeanBase );
@@ -124,9 +124,9 @@
 				appRoot = hp.getConfig().getAppRoot();
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 				
-				arrayAppend(aConfigFiles, "#appRoot#Config/homePortals-config.xml");
-				arrayAppend(aConfigFiles, "#appRoot#Config/accounts-config.xml.cfm");
-				arrayAppend(aConfigFiles, "#appRoot#Config/module-properties.xml");
+				arrayAppend(aConfigFiles, "#appRoot#config/homePortals-config.xml");
+				arrayAppend(aConfigFiles, "#appRoot#config/accounts-config.xml.cfm");
+				arrayAppend(aConfigFiles, "#appRoot#config/module-properties.xml");
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
@@ -201,9 +201,9 @@
 				if(moduleName eq "") throw("The module name is required","validation");
 				if(propertyName eq "") throw("The property name is required","validation");
 
-				oConfigBean = getModulePropertiesConfigBean(appRoot & "/Config/module-properties.xml");
+				oConfigBean = getModulePropertiesConfigBean(appRoot & "/config/module-properties.xml");
 				oConfigBean.setProperty(moduleName, propertyName, propertyValue);
-				saveModulePropertiesConfigBean( appRoot & "/Config/module-properties.xml", oConfigBean );
+				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
 				setNextEvent("ehSiteConfig.dspModuleProperties");
@@ -239,7 +239,7 @@
 				if(propertyName eq "") throw("The property name is required","validation");
 				if(val(index) eq 0) throw("You must select a module property to edit","validation");
 
-				oConfigBean = getModulePropertiesConfigBean(appRoot & "/Config/module-properties.xml");
+				oConfigBean = getModulePropertiesConfigBean(appRoot & "/config/module-properties.xml");
 				
 				// remove old entry
 				oConfigBean.removeProperty(oldModuleName, oldPropertyName);
@@ -248,7 +248,7 @@
 				oConfigBean.setProperty(moduleName, propertyName, propertyValue);
 				
 				// save changes
-				saveModulePropertiesConfigBean( appRoot & "/Config/module-properties.xml", oConfigBean );
+				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
 				setNextEvent("ehSiteConfig.dspModuleProperties");
@@ -276,13 +276,13 @@
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 
-				oConfigBean = getModulePropertiesConfigBean(appRoot & "/Config/module-properties.xml");
+				oConfigBean = getModulePropertiesConfigBean(appRoot & "/config/module-properties.xml");
 				
 				// remove resource
 				oConfigBean.removeProperty(moduleName, propertyName);
 				
 				// save changes
-				saveModulePropertiesConfigBean( appRoot & "/Config/module-properties.xml", oConfigBean );
+				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
 				setNextEvent("ehSiteConfig.dspModuleProperties");
@@ -312,7 +312,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
+				configFile = expandPath(appRoot & "/config/homePortals-config.xml");
 
 				// make sure we have the appRoot defined and that it didnt change
 				if(not listfind(appSettings,"appRoot")) appSettings = listAppend(appSettings,"appRoot");
@@ -386,7 +386,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/accounts-config.xml.cfm");
+				configFile = expandPath(appRoot & "/config/accounts-config.xml.cfm");
 
 				if(listFind(appSettings,"accountsRoot") and accountsRoot eq "") throw("The accounts root directory is required","validation");
 				if(listFind(appSettings,"storageType") and storageType eq "") throw("The storage type is required","validation");
@@ -447,7 +447,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
+				configFile = expandPath(appRoot & "/config/homePortals-config.xml");
 
 				if(type eq "") throw("The base resource type is required","validation");
 				if(href eq "") throw("The base resource value is required","validation");
@@ -500,7 +500,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
+				configFile = expandPath(appRoot & "/config/homePortals-config.xml");
 
 				if(type eq "") throw("The base resource type is required","validation");
 				if(href eq "") throw("The base resource value is required","validation");
@@ -558,7 +558,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
-				configFile = expandPath(appRoot & "/Config/homePortals-config.xml");
+				configFile = expandPath(appRoot & "/config/homePortals-config.xml");
 
 				if(type eq "") throw("The base resource type is required","validation");
 
@@ -606,35 +606,35 @@
 		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
 	</cffunction>
 
-	<cffunction name="getHomePortalsConfigBean" access="private" returntype="Home.Components.homePortalsConfigBean">
+	<cffunction name="getHomePortalsConfigBean" access="private" returntype="Home.components.homePortalsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.Components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
+			var oConfigBean = createObject("component","Home.components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.Components.accounts.accountsConfigBean">
+	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.components.accounts.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.Components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
+			var oConfigBean = createObject("component","Home.components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="Home.Components.modulePropertiesConfigBean">
+	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="Home.components.modulePropertiesConfigBean">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
 		<cfscript>
 			var oConfigBean = 0;
 			if(fileExists(expandPath(arguments.configPath)))
-				oConfigBean = createObject("component","Home.Components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
+				oConfigBean = createObject("component","Home.components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
 			else
-				oConfigBean = createObject("component","Home.Components.modulePropertiesConfigBean").init( );
+				oConfigBean = createObject("component","Home.components.modulePropertiesConfigBean").init( );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
-		<cfargument name="configBean" type="Home.Components.modulePropertiesConfigBean" required="true">
+		<cfargument name="configBean" type="Home.components.modulePropertiesConfigBean" required="true">
 		<cfset writeFile( expandPath(arguments.configPath), toString( arguments.configBean.toXML() ) )>
 	</cffunction>
 		

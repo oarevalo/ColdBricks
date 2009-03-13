@@ -195,10 +195,10 @@
 				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot);
 				
 				// process all files in the config directory for Tokens
-				qryDir = listDir(expandPath(appRoot & "/Config"));
+				qryDir = listDir(expandPath(appRoot & "/config"));
 				for(i=1;i lte qryDir.recordCount;i=i+1) {
 					if(qryDir.type[i] eq "file") {
-						replaceTokens(appRoot & "/Config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot);
+						replaceTokens(appRoot & "/config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot);
 					}
 				}
 
@@ -295,9 +295,9 @@
 				}
 
 				// check that the target directory points to a valid homeportals application
-				if( Not (directoryExists(expandPath(appRoot & "/Config"))
-						and fileExists(expandPath(appRoot & "/Config/homePortals-config.xml"))
-						and fileExists(expandPath(appRoot & "/Config/accounts-config.xml.cfm"))) )
+				if( Not (directoryExists(expandPath(appRoot & "/config"))
+						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml"))
+						and fileExists(expandPath(appRoot & "/config/accounts-config.xml.cfm"))) )
 					throw("The given application directory does not point to a valid HomePortals application. Please check the directory and try again.","coldBricks.validation");
 
 				// create site record for coldbricks

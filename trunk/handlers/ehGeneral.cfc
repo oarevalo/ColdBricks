@@ -152,7 +152,7 @@
 		
 		try {
 			// check existence of homeportals engine
-			oHomePortals = createObject("Component","Home.Components.homePortals").init();
+			oHomePortals = createObject("Component","Home.components.homePortals").init();
 			
 			setValue("hpVersion", oHomePortals.getConfig().getVersion());
 				

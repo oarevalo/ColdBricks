@@ -1,1 +1,1 @@
-<cfinclude template="/Home/Common/Templates/accountPage.cfm">
+<cfinclude template="/Home/common/Templates/accountPage.cfm">

@@ -8,6 +8,6 @@
 	<storageType>xml</storageType>
 	<storageFileHREF>$ACCOUNTS_ROOT$/accounts.xml</storageFileHREF>
 
-	<newPageTemplate>$APP_ROOT$/Config/blankPage.xml</newPageTemplate>
+	<newPageTemplate>$APP_ROOT$/config/blankPage.xml</newPageTemplate>
 	
 </homePortalsAccounts>
