@@ -690,7 +690,7 @@
 					newPageHREF = oSite.getPageHREF(pageName);
 				} else {
 					oPageProvider = oContext.getHomePortals().getPageProvider();
-					newPageHREF = replaceNoCase(originalPageHREF, getFileFromPath(originalPageHREF), pageName & ".xml");
+					newPageHREF = replaceNoCase(originalPageHREF, getFileFromPath(originalPageHREF), pageName);
 					oPageProvider.move(originalPageHREF, newPageHREF);
 				}
 

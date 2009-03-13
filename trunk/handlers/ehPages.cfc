@@ -1,6 +1,6 @@
 <cfcomponent extends="eventHandler">
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var oContext = getService("sessionContext").getContext();
 			
@@ -26,7 +26,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspNode">
+	<cffunction name="dspNode" access="public" returntype="void">
 		<cfscript>
 			var oContext = getService("sessionContext").getContext();
 			var path = getValue("path");
@@ -50,7 +50,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspTreeNode">
+	<cffunction name="dspTreeNode" access="public" returntype="void">
 		<cfset var oContext = getService("sessionContext").getContext()>
 		<cfset var path = getValue("path")>
 		<cfset var hp = oContext.getHomePortals()>
@@ -115,111 +115,28 @@
 	</cffunction>
 
 
-		
-	<cffunction name="doCreateDirectory">
+	<cffunction name="doCreateFolder" access="public" returntype="void">
 		<cfscript>
-			var path = getValue("path");
-			var name = getValue("name");
-			
-			try {
-				if(name eq "") throw("Directory name cannot be empty","coldBricks.validation");
-				
-				if(directoryExists(expandPath(path & "/" & name)))
-					throw("You are trying to create a directory that already exists","coldBricks.validation");
-			
-				createDir(expandPath(path & "/" & name));
-				
-				setMessage("info", "Directory created");
-
-			} catch(coldBricks.validation e) {
-				setMessage("warning",e.message);
-			
-			} catch(any e) {
-				setMessage("error",e.message);
-				getService("bugTracker").notifyService(e.message, e);
-			}
-			setNextEvent("ehSiteMap.dspMain");
-		</cfscript>		
-	</cffunction>	
-				
-	<cffunction name="doSaveFile">
-		<cfscript>
-			var path = getValue("path");
-			var name = getValue("name");
-			var account = getValue("account");
-			var page = getValue("page");
-			var update = getValue("update",false);
-			var type = getValue("type");
-			var crlf = chr(13);
-			var fileContent = "";
-			var fileName = "";
-			var oPageRenderer = 0;
-			var hp = 0;
 			var oContext = getService("sessionContext").getContext();
-
-			try {
-				if(account eq "") throw("Account name cannot be empty","coldBricks.validation");
-				
-				if(update) {
-					fileName = path;
-					
-				} else {
-					if(name eq "") throw("File name cannot be empty");
-
-					fileName = path & "/" & name;
-					
-					if(type eq "dynamic") {
-						if(right(fileName,4) neq ".cfm") fileName = fileName & ".cfm";
-					
-					} else if(type eq "static") {
-						if(right(fileName,4) neq ".htm") fileName = fileName & ".htm";
-					}
-				
-					if(fileExists(expandPath(fileName)))
-						throw("You are trying to create a file that already exists","coldBricks.validation");
-				}
-				
-				// remove .xml from page name
-				page = left(page,len(page)-4);	
-
-				switch(type) {
-					
-					case "dynamic":
-						fileContent = "<!--- generated file mapping --->" & crlf;
-						fileContent = fileContent & "<!--- DO NOT DELETE THESE COMMENTS -- REQUIRED FOR COLDBRICKS SITEMAP TOOL --->" & crlf;
-						fileContent = fileContent & "<!--- $CB_SM_ACCOUNT:[#account#] --->" & crlf;
-						fileContent = fileContent & "<!--- $CB_SM_PAGE:[#page#] --->" & crlf;
-						fileContent = fileContent & "<!--- FINISHED COLDBRICKS COMMENTS --->" & crlf;
-						fileContent = fileContent & "<cfset account=""#account#"">" & crlf;
-						fileContent = fileContent & "<cfset page=""#page#"">" & crlf;
-						fileContent = fileContent & "<cfinclude template=""/Home/common/Templates/page.cfm"">";
-						break;
-				
-					case "static":
-						hp = oContext.getHomePortals();
-						
-						// put a refernce to the homeportals object in the application scope. 
-						// This is needed for the rendering
-						application.homePortals = hp;
-					
-						// load and parse page
-						oPageRenderer = hp.loadPage(account, page);
-					
-						// render page html
-						fileContent = oPageRenderer.renderPage();						
-
-						// remove the hp reference from the app scope
-						structDelete(application,"homePortals");
-						
-						break;
-						
-					default:
-						throw("Invalid page type","coldBricks.validation");
-				}
+			var path = getValue("path");
+			var name = getValue("name");
+			var hp = 0;
+			var pp = 0;
 			
-				writeFile(expandPath(fileName), fileContent);
-				setMessage("info", "File created");
-		
+			try {
+				hp = oContext.getHomePortals();
+				pp = hp.getPageProvider();
+				
+				if(name eq "") 
+					throw("Folder name cannot be empty","coldBricks.validation");
+				
+				if(pp.folderExists(path & "/" & name))
+					throw("You are trying to create a folder that already exists","coldBricks.validation");
+			
+				pp.createFolder(path,name);
+				
+				setMessage("info", "New folder created");
+
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
 			
@@ -227,32 +144,46 @@
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
-			setNextEvent("ehSiteMap.dspNode","account=#account#&path=#path#");
+			setNextEvent("ehPages.dspNode","path=#path#");
 		</cfscript>		
 	</cffunction>	
 				
-	<cffunction name="doDeleteNode">
+	<cffunction name="doCreatePage" access="public" returntype="void">
 		<cfscript>
+			var oContext = getService("sessionContext").getContext();
 			var path = getValue("path");
-			var isFile = false;
+			var name = getValue("name");
+			var hp = 0;
+			var pp = 0;
+			var tmpFirstPart = "";
+			var oPage = 0;
 			
 			try {
-				isFile = right(path,4) eq ".cfm" or right(path,4) eq ".htm";
+				hp = oContext.getHomePortals();
+				pp = hp.getPageProvider();
 				
-				if(not isFile) {
-					if(not directoryExists(expandPath(path)))
-						throw("You are trying to delete a directory that does not exist","coldBricks.validation");
+				if(name eq "") 
+					throw("Page name cannot be empty","coldBricks.validation");
 				
-					deleteDir(expandPath(path));
-					setMessage("info", "Directory deleted");
+				if(pp.pageExists(path & "/" & name))
+					throw("You are trying to create a page that already exists","coldBricks.validation");
+			
+				// if the pageName contains any spaces, then replace them with _
+				name = replace(name," ","_","ALL");
 
-				} else {
-					if(not fileExists(expandPath(path)))
-						throw("You are trying to delete a directory that does not exist","coldBricks.validation");
+				if(right(name,4) eq ".xml") 
+					tmpFirstPart = left(name,len(name)-4);
+				else
+					tmpFirstPart = name;
+					
+				// check that the page name only contains simple characters
+				if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
+					throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+			
+				oPage = createObject("component","Home.components.pageBean").init();
+				pp.save(path & "/" & name, oPage);
 				
-					deleteFile(expandPath(path));
-					setMessage("info", "File created");
-				}
+				setMessage("info", "New page created");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -261,36 +192,111 @@
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
-			setNextEvent("ehSiteMap.dspMain");
+			setNextEvent("ehPages.dspNode","path=#path#");
 		</cfscript>		
-	</cffunction>			
+	</cffunction>	
 		
-	<cffunction name="writeFile" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfargument name="content" type="string" required="true">
-		<cffile action="write" file="#arguments.path#" output="#arguments.content#" >
-	</cffunction>
+	<cffunction name="doDeleteNodes" access="public" returntype="void">
+		<cfscript>
+			var path = getValue("path","");
+			var pathsToDelete = getValue("pathsToDelete","");
+			var oContext = getService("sessionContext").getContext();
+			var nextEvent = getValue("nextEvent","ehPages.dspNode");
+			var pp = 0;
+			var i = 0;
+			var type = "";
+			var name = "";
+			
+			try {
+				pp = oContext.getHomePortals().getPageProvider();
+				
+				for(i=1;i lte listLen(pathsToDelete);i=i+1) {
+					type = listFirst(listGetAt(pathsToDelete,i),";");
+					name = listLast(listGetAt(pathsToDelete,i),";");
+					
+					if(type eq "page") pp.delete(name);
+					if(type eq "folder") pp.deleteFolder(name);
+				}
+				setMessage("info", "#listLen(pathsToDelete)# Items deleted");
 
-	<cffunction name="deleteFile" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cffile action="delete" file="#arguments.path#">
-	</cffunction>
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+			setNextEvent(nextEvent,"path=#path#");
+		</cfscript>
+	</cffunction>		
 
-	<cffunction name="createDir" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfdirectory action="create" directory="#arguments.path#">
-	</cffunction>
+	<cffunction name="doRenamePage" access="public" returntype="void">
+		<cfscript>
+			var parentPath = getValue("parentPath","");
+			var pagePath = getValue("pagePath","");
+			var pageName = getValue("newName","");
+			var oContext = getService("sessionContext").getContext();
+			var nextEvent = getValue("nextEvent","ehPages.dspNode");
+			var pp = 0;
+			var tmpFirstPart = "";
+			
+			try {
+				pp = oContext.getHomePortals().getPageProvider();
 
-	<cffunction name="deleteDir" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfdirectory action="delete" recurse="true" directory="#arguments.path#">
-	</cffunction>
+				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
 
-	<cffunction name="readFile" access="private" returntype="string">
-		<cfargument name="path" type="string" required="true">
-		<cfset var txt = "">
-		<cffile action="read" file="#arguments.path#" variable="txt">
-		<cfreturn txt>
-	</cffunction>
-		
+				// if the pageName contains any spaces, then replace them with _
+				pageName = replace(pageName," ","_","ALL");
+
+				if(right(pageName,4) eq ".xml") {
+					tmpFirstPart = left(pageName,len(pageName)-4);
+			
+					// check that the page name only contains simple characters
+					if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
+						throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+				}
+
+				pp.move(pagePath, parentPath & "/" & pageName);
+
+				setMessage("info", "Page has been renamed");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+			setNextEvent(nextEvent,"path=#parentPath#");
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doCopyPage" access="public" returntype="void">
+		<cfscript>
+			var parentPath = getValue("parentPath","");
+			var pagePath = getValue("pagePath","");
+			var oContext = getService("sessionContext").getContext();
+			var nextEvent = getValue("nextEvent","ehPages.dspNode");
+			var pp = 0;
+			var oPage = 0;
+			var newPath = "";
+			
+			try {
+				pp = oContext.getHomePortals().getPageProvider();
+
+				newPath = parentPath & "/" & getFileFromPath(pagePath) & "_copy";
+
+				oPage = createObject("component","Home.components.pageBean").init();
+				pp.save(newPath, oPage);
+
+				setMessage("info", "Page has been copied");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+			setNextEvent(nextEvent,"path=#parentPath#");
+		</cfscript>
+	</cffunction>	
+				
 </cfcomponent>

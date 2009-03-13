@@ -12,11 +12,13 @@
 
 <cfscript>
 	if(isStruct(stPage)) {
-
 		if(appRoot eq "/")
 			tmpPageURL = "/index.cfm?page=#path#";
 		else
 			tmpPageURL = appRoot & "/index.cfm?page=#path#";
+			
+		parentPath = listDeleteAt(path,listLen(path));
+		if(parentPath eq "") parentPath = "/";	
 	}
 </cfscript>
 
@@ -39,7 +41,9 @@
 			<div style="line-height:20px;">
 				<img src="images/page_edit.png" align="absmiddle">&nbsp; <a href="index.cfm?event=ehPage.dspMain&page=#path#" style="color:blue !important;font-weight:bold;">Open page editor</a><br>
 				<img src="images/page_link.png" align="absmiddle">&nbsp; <a href="#tmpPageURL#" style="color:blue !important;" target="_blank">View Page in Browser</a><br>
-				<img src="images/waste_small.gif" align="absmiddle">&nbsp; <a href="##" onclick="deletePage('#jsstringformat(path)#')" style="color:blue !important;">Delete Page</a><br>
+				<img src="images/page_copy.png" align="absmiddle">&nbsp; <a href="##" onclick="copyPage('#jsstringformat(parentPath)#','#jsstringformat(path)#')" style="color:blue !important;">Make a Copy of this Page</a><br>
+				<img src="images/page_lightning.png" align="absmiddle">&nbsp; <a href="##" onclick="renamePage('#jsstringformat(parentPath)#','#jsstringformat(path)#')" style="color:blue !important;">Rename this Page</a><br>
+				<img src="images/waste_small.gif" align="absmiddle">&nbsp; <a href="##" onclick="deletePage('#jsstringformat(parentPath)#','#jsstringformat(path)#')" style="color:blue !important;">Delete Page</a><br>
 			</div>
 		<cfelse>
 			<div style="color:red">
