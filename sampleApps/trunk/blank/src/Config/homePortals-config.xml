@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<homePortals>
+	<resourceLibraryPath>/sampleApps/blank/src/lib</resourceLibraryPath>
+	<contentRoot>/sampleApps/blank/src/content/</contentRoot>
+	<defaultPage>default</defaultPage>
+</homePortals>
