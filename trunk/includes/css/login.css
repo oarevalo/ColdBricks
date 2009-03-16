@@ -1,7 +1,6 @@
 body {
 	margin:0px;
 	padding:0px;
-	//background-color:#F5F5F5;
 	background-color:#FFF;
 	font-family: "trebuchet MS", Arial, Helvetica, "Sans Serif";
 	color:#333;
@@ -49,6 +48,7 @@ input:hover {
 	height:25px;
 	padding-top:10px;
 	text-align:center;
+	font-size:11px;
 }
 .buttonImage a {
 	text-decoration:none;

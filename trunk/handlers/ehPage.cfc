@@ -248,7 +248,7 @@
 				oPage = oContext.getPage();
 				
 				// get page helper
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oPage, oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage, oContext.getPageHREF() );
 
 				// pass values to view
 				setValue("oPage", oPage );
@@ -462,7 +462,7 @@
 				
 				resBean = oCatalog.getResourceNode(moduleResType, moduleID);
 				
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oPage );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
 				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
@@ -529,7 +529,7 @@
 				// remove prefixes added to avoid mixing with existing page elements
 				layout = replaceList(layout,"ppm_,pps_",",");
 
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oPage );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
 				oPageHelper.setModuleOrder(layout);
 				savePage();
 				
@@ -623,13 +623,13 @@
 
 				oPage = oContext.getPage();
 				
-				resBean = createObject("component","Home.components.resourceBean").init();
+				resBean = createObject("component","homePortals.components.resourceBean").init();
 				resBean.setID("contentModule");
 				resBean.setName("contentModule");
 
 				stAttributes["moduleType"] = "content";
 				
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oPage );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
 				oPageHelper.addModule(resBean, locationName, stAttributes);
 				savePage();
 				
@@ -772,7 +772,7 @@
 				oResourceBean = oCatalog.getResourceNode("pageTemplate", resourceID);
 		
 				// apply template
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oPage, oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage, oContext.getPageHREF() );
 				oPageHelper.applyPageTemplate(oResourceBean, resRoot);
 				savePage();
 				
@@ -814,7 +814,7 @@
 				
 				// validate xml
 				try {
-					oPageCheck =  createObject("component","Home.components.pageBean").init(xmlContent);
+					oPageCheck =  createObject("component","homePortals.components.pageBean").init(xmlContent);
 				} catch(any e) {
 					// assume any error here as a parsing error
 					throw("The XML provided is not a valid xml for a page. #e.message#","coldBricks.validation");
@@ -851,7 +851,7 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
 				// get page helper
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
 				oPageHelper.savePageCSS(cssContent);
 
 				setMessage("info", "Page stylesheet saved.");
@@ -934,7 +934,7 @@
 				pageHREF = oContext.getPageHREF();
 
 				// get the content of the css page
-				oPageHelper = createObject("component","Home.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
 				body = oPageHelper.getPageCSS();
 
 				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
@@ -944,7 +944,7 @@
 				id = replace(name," ","-","ALL");
 
 				// create the bean for the new resource
-				oResourceBean = createObject("component","Home.components.resourceBean").init();	
+				oResourceBean = createObject("component","homePortals.components.resourceBean").init();	
 				oResourceBean.setID(id);
 				oResourceBean.setName(name);
 				oResourceBean.setAccessType("general"); 
@@ -955,7 +955,7 @@
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 
 				/// add the new resource to the library
-				oResourceLibrary = createObject("component","Home.components.resourceLibrary").init(resourceLibraryPath);
+				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resourceLibraryPath);
 				oResourceLibrary.saveResource(oResourceBean, body);
 			
 				// update catalog

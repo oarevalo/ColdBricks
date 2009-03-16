@@ -58,7 +58,7 @@
 			<tr valign="middle">
 				<td colspan="2">
 					<div class="buttonImage" style="float:right;">
-						<a href="##" onclick="frmLogin.submit()">Login</a>
+						<a href="##" onclick="frmLogin.submit();">Login</a>
 					</div>
 				</td>
 			</tr>

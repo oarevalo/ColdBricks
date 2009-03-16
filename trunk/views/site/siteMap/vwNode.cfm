@@ -5,7 +5,7 @@
 <cfparam name="request.requestState.account" default="">
 <cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.pageName" default="">
-<cfparam name="request.requestState.hpRoot" default="/Home">
+<cfparam name="request.requestState.hpRoot" default="/homePortals">
 <cfparam name="request.requestState.path" default="">
 <cfparam name="request.requestState.oUser" default="">
 

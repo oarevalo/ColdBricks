@@ -56,7 +56,7 @@
 
 				// if there is an account selected, get the account pages
 				if(account neq "") {
-					oAccountSite = createObject("component","Home.components.accounts.site").init(account, hp.getAccountsService() );		
+					oAccountSite = createObject("component","homePortals.components.accounts.site").init(account, hp.getAccountsService() );		
 					aPages = oAccountSite.getPages();		
 					setValue("aPages", aPages );
 				}
@@ -192,7 +192,7 @@
 						fileContent = fileContent & "<!--- FINISHED COLDBRICKS COMMENTS --->" & crlf;
 						fileContent = fileContent & "<cfset account=""#account#"">" & crlf;
 						fileContent = fileContent & "<cfset page=""#page#"">" & crlf;
-						fileContent = fileContent & "<cfinclude template=""/Home/common/Templates/page.cfm"">";
+						fileContent = fileContent & "<cfinclude template=""/homePortals/common/Templates/page.cfm"">";
 						break;
 				
 					case "static":

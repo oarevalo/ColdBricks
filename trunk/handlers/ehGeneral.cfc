@@ -152,7 +152,7 @@
 		
 		try {
 			// check existence of homeportals engine
-			oHomePortals = createObject("Component","Home.components.homePortals").init();
+			oHomePortals = createObject("Component","homePortals.components.homePortals").init();
 			
 			setValue("hpVersion", oHomePortals.getConfig().getVersion());
 				
@@ -288,7 +288,7 @@
 	<cfset var pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator")>
 	
 	<!--- check for invalid names --->
-	<cfif listFindNoCase("/,/Home,/ColdBricks",arguments.dataRoot) or arguments.dataRoot eq "">
+	<cfif listFindNoCase("/,/homePortals,/ColdBricks",arguments.dataRoot) or arguments.dataRoot eq "">
 		<cfthrow message="The dataRoot property is invalid." type="ColdBricks.setup.invalidDataRoot">
 	</cfif>
 	

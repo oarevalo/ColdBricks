@@ -10,7 +10,7 @@
 			var oContext = getService("sessionContext").getContext();
 			
 			// get resource types
-			oResourceLibrary = createObject("component","Home.components.resourceLibrary");
+			oResourceLibrary = createObject("component","homePortals.components.resourceLibrary");
 			aResourceTypes = oResourceLibrary.getResourceTypes();
 						
 			// create catalog object and instantiate for this page
@@ -60,7 +60,7 @@
 				qryResources = oCatalog.getResourcesByType(resourceType);
 				if(id neq "") {
 					if(id eq "NEW") {
-						oResourceBean = createObject("component","Home.components.resourceBean").init();
+						oResourceBean = createObject("component","homePortals.components.resourceBean").init();
 						oResourceBean.setType(resourceType); 
 						oResourceBean.setAccessType("general"); 
 						oResourceBean.setPackage(pkg); 
@@ -201,7 +201,7 @@
 			if(sourceSiteID neq "") {
 				qrySourceSite = oSiteDAO.get(sourceSiteID);
 				resRoot = getResourceLibraryPathFromSite(qrySourceSite.path);
-				oResourceLibrary = createObject("component","Home.components.resourceLibrary").init(resRoot);
+				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resRoot);
 				qryResources = oResourceLibrary.getResourcePackagesList();
 				setValue("qryResources", qryResources);
 			}
@@ -246,7 +246,7 @@
 				}
 
 				// create the bean for the new resource
-				oResourceBean = createObject("component","Home.components.resourceBean").init();	
+				oResourceBean = createObject("component","homePortals.components.resourceBean").init();	
 				oResourceBean.setID(id);
 				oResourceBean.setName(name);
 				oResourceBean.setAccessType(access); 
@@ -257,7 +257,7 @@
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 
 				/// add the new resource to the library
-				oResourceLibrary = createObject("component","Home.components.resourceLibrary").init(resourceLibraryPath);
+				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resourceLibraryPath);
 				oResourceLibrary.saveResource(oResourceBean, body);
 			
 				// update catalog
@@ -293,7 +293,7 @@
 				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 
 				/// remove resource from the library
-				oResourceLibrary = createObject("component","Home.components.resourceLibrary").init(resourceLibraryPath);
+				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resourceLibraryPath);
 				oResourceLibrary.deleteResource(id, resourceType, pkg);
 
 				// remove from catalog

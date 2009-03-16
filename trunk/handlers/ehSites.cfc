@@ -126,8 +126,8 @@
 					throw("The given application directory already exists. Please select a different directory","coldBricks.validation");
 				
 				// check that the directory is not a restricted one
-				if(left(appRoot,6) eq "/Home/" 
-					or appRoot eq "/Home"
+				if(left(appRoot,6) eq "/homePortals/" 
+					or appRoot eq "/homePortals"
 					or left(appRoot,11) eq "/ColdBricks") {
 					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
 				}
@@ -158,7 +158,7 @@
 					if(useDefault_rl eq 0 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
 					if(useDefault_ar eq 1) accountsRoot = appRoot & "accounts";
 					if(useDefault_rl eq 1) resourcesRoot = appRoot & "resourceLibrary";
-					if(useDefault_rl eq 2) resourcesRoot = "/Home/resourceLibrary";
+					if(useDefault_rl eq 2) resourcesRoot = "/homePortals/resourceLibrary";
 
 					// check if we need to create the accounts root
 					if(not directoryExists(expandPath(accountsRoot))) {
@@ -236,8 +236,8 @@
 				if(directoryExists( expandPath(qrySite.path))) {
 				
 					if(qrySite.path neq "/" 
-						and left(qrySite.path,6) neq "/Home/"
-						and qrySite.path neq "/Home" 
+						and left(qrySite.path,6) neq "/homePortals/"
+						and qrySite.path neq "/homePortals" 
 						and left(qrySite.path,11) neq "/ColdBricks"
 						and left(qrySite.path,1) eq "/" ) {
 						deleteDir( expandPath(qrySite.path) );
