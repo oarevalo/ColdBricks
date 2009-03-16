@@ -67,12 +67,12 @@
 
 	<!--- HomePortals --->
 
-	<cffunction name="getHomePortals" access="public" returntype="Home.components.homePortals">
+	<cffunction name="getHomePortals" access="public" returntype="homePortals.components.homePortals">
 		<cfreturn variables.instance.HomePortals>
 	</cffunction>
 
 	<cffunction name="setHomePortals" access="public" returntype="void">
-		<cfargument name="data" type="Home.components.homePortals" required="true">
+		<cfargument name="data" type="homePortals.components.homePortals" required="true">
 		<cfset variables.instance.HomePortals = arguments.data>
 	</cffunction>
 
@@ -101,12 +101,12 @@
 		<cfset variables.instance.AccountName = arguments.data>
 	</cffunction>
 
-	<cffunction name="getAccountSite" access="public" returntype="Home.components.accounts.site">
+	<cffunction name="getAccountSite" access="public" returntype="homePortals.components.accounts.site">
 		<cfreturn variables.instance.AccountSite>
 	</cffunction>
 
 	<cffunction name="setAccountSite" access="public" returntype="void">
-		<cfargument name="data" type="Home.components.accounts.site" required="true">
+		<cfargument name="data" type="homePortals.components.accounts.site" required="true">
 		<cfset variables.instance.AccountSite = arguments.data>
 	</cffunction>
 
@@ -132,7 +132,7 @@
 
 	<!--- Page --->
 
-	<cffunction name="getPage" access="public" returntype="Home.components.pageBean">
+	<cffunction name="getPage" access="public" returntype="homePortals.components.pageBean">
 		<cfreturn variables.instance.Page>
 	</cffunction>
 
@@ -141,7 +141,7 @@
 	</cffunction>
 
 	<cffunction name="setPage" access="public" returntype="void">
-		<cfargument name="data" type="Home.components.pageBean" required="true">
+		<cfargument name="data" type="homePortals.components.pageBean" required="true">
 		<cfset variables.instance.Page = arguments.data>
 	</cffunction>
 

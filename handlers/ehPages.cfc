@@ -180,7 +180,7 @@
 				if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
 					throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 			
-				oPage = createObject("component","Home.components.pageBean").init();
+				oPage = createObject("component","homePortals.components.pageBean").init();
 				pp.save(path & "/" & name, oPage);
 				
 				setMessage("info", "New page created");
@@ -275,16 +275,18 @@
 			var oContext = getService("sessionContext").getContext();
 			var nextEvent = getValue("nextEvent","ehPages.dspNode");
 			var pp = 0;
-			var oPage = 0;
+			var oPage_src = 0;
+			var oPage_tgt = 0;
 			var newPath = "";
 			
 			try {
 				pp = oContext.getHomePortals().getPageProvider();
 
-				newPath = parentPath & "/" & getFileFromPath(pagePath) & "_copy";
+				oPage_src = pp.load(pagePath);
 
-				oPage = createObject("component","Home.components.pageBean").init();
-				pp.save(newPath, oPage);
+				newPath = parentPath & "/" & getFileFromPath(pagePath) & "_copy";
+				oPage_tgt = createObject("component","homePortals.components.pageBean").init(oPage_src.toXML());
+				pp.save(newPath, oPage_tgt);
 
 				setMessage("info", "Page has been copied");
 

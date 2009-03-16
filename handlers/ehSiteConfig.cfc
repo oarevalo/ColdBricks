@@ -1,8 +1,8 @@
 <cfcomponent extends="eventHandler">
 
-	<cfset variables.homePortalsConfigPath = "/Home/config/homePortals-config.xml">
-	<cfset variables.accountsConfigPath = "/Home/config/accounts-config.xml.cfm">
-	<cfset variables.modulePropertiesConfigPath = "/Home/config/module-properties.xml">
+	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml">
+	<cfset variables.accountsConfigPath = "/homePortals/config/accounts-config.xml.cfm">
+	<cfset variables.modulePropertiesConfigPath = "/homePortals/config/module-properties.xml">
 	
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -606,35 +606,35 @@
 		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
 	</cffunction>
 
-	<cffunction name="getHomePortalsConfigBean" access="private" returntype="Home.components.homePortalsConfigBean">
+	<cffunction name="getHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
+			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getAccountsConfigBean" access="private" returntype="Home.components.accounts.accountsConfigBean">
+	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortals.components.accounts.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","Home.components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
+			var oConfigBean = createObject("component","homePortals.components.accounts.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="Home.components.modulePropertiesConfigBean">
+	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="homePortals.components.modulePropertiesConfigBean">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
 		<cfscript>
 			var oConfigBean = 0;
 			if(fileExists(expandPath(arguments.configPath)))
-				oConfigBean = createObject("component","Home.components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
+				oConfigBean = createObject("component","homePortals.components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
 			else
-				oConfigBean = createObject("component","Home.components.modulePropertiesConfigBean").init( );
+				oConfigBean = createObject("component","homePortals.components.modulePropertiesConfigBean").init( );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
-		<cfargument name="configBean" type="Home.components.modulePropertiesConfigBean" required="true">
+		<cfargument name="configBean" type="homePortals.components.modulePropertiesConfigBean" required="true">
 		<cfset writeFile( expandPath(arguments.configPath), toString( arguments.configBean.toXML() ) )>
 	</cffunction>
 		

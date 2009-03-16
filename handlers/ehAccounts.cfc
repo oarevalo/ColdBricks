@@ -53,7 +53,7 @@
 				if(accountID neq "") {
 					oContext.setAccountID(accountID);
 					oContext.setAccountName(accountName);
-					oContext.setAccountSite(createObject("component","Home.components.accounts.site").init(accountName, hp.getAccountsService() ));
+					oContext.setAccountSite(createObject("component","homePortals.components.accounts.site").init(accountName, hp.getAccountsService() ));
 				} else {
 					setValue("accountID", oContext.getAccountID());
 					setValue("accountName", oContext.getAccountName());
@@ -610,7 +610,7 @@
 						newPageURL = oSite.addPage(pageTitle);
 						
 						// load new page with updated tokens
-						oPage = createObject("component","Home.components.pageBean").init( newXMLContent );		
+						oPage = createObject("component","homePortals.components.pageBean").init( newXMLContent );		
 						
 						// save page
 						oSite.savePage( getFileFromPath(newPageURL), oPage );

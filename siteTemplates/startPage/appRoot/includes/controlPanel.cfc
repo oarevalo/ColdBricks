@@ -37,7 +37,7 @@
 			variables.accountsRoot = application.homePortals.getAccountsService().getConfig().getAccountsRoot();
 			variables.pageHREF = arguments.pageHREF;
 				
-			variables.oPage = CreateObject("component", "Home.components.pageBean").init(xmlParse(expandPath(variables.pageHREF)));	
+			variables.oPage = CreateObject("component", "homePortals.components.pageBean").init(xmlParse(expandPath(variables.pageHREF)));	
 			
 			variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(variables.pageHREF),".xml","");
 				
@@ -315,7 +315,7 @@
 			var oUserRegistry = 0;
 			var stRet = structNew();
 			
-			oUserRegistry = createObject("Component","Home.components.userRegistry").init();
+			oUserRegistry = createObject("Component","homePortals.components.userRegistry").init();
 			stRet = oUserRegistry.getUserInfo();	// information about the logged-in user		
 			stRet.isOwner = (stRet.username eq variables.oPage.getOwner());
 		</cfscript>
@@ -480,7 +480,7 @@
 	<!---------------------------------------->
 	<!--- getSite			                --->
 	<!---------------------------------------->
-	<cffunction name="getSite" access="private" output="false" returntype="Home.components.accounts.site">
+	<cffunction name="getSite" access="private" output="false" returntype="homePortals.components.accounts.site">
 		<cfscript>
 			var oAccountsService = application.homePortals.getAccountsService();
 			var owner = variables.oPage.getOwner();
@@ -544,7 +544,7 @@
 	                moduleClassName = right(moduleClassName, len(moduleClassName)-1);
 	
 	            // get moduleController
-	            oModuleController = createObject("component", "Home.components.moduleController");
+	            oModuleController = createObject("component", "homePortals.components.moduleController");
 	
 	            stPageSettings = duplicate(variables.oPage.getModule(newModuleID));
 	            stPageSettings["_page"] = structNew();
