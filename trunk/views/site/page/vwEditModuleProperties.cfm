@@ -141,10 +141,10 @@
 						<cfset qryResources_html = oCatalog.getResourcesByType("html")>
 
 						<cfquery name="qryResources_content" dbtype="query">
-							SELECT *, upper(package) as upackage, upper(name) as uname FROM qryResources_content ORDER BY upackage, uname, id
+							SELECT *, upper(package) as upackage, upper(id) as uid FROM qryResources_content ORDER BY upackage, uid, id
 						</cfquery>
 						<cfquery name="qryResources_html" dbtype="query">
-							SELECT *, upper(package) as upackage, upper(name) as uname FROM qryResources_html ORDER BY upackage, uname, id
+							SELECT *, upper(package) as upackage, upper(id) as uid FROM qryResources_html ORDER BY upackage, uid, id
 						</cfquery>
 
 					
@@ -165,11 +165,7 @@
 								<td>
 									<select name="resourceID_content" class="formField" id="resourceID_content" <cfif thisModule.resourceType neq "content">style="display:none;"</cfif>>
 										<cfloop query="qryResources_content">
-											<cfif qryResources_content.name eq "">
-												<cfset tmpName = qryResources_content.id>
-											<cfelse>
-												<cfset tmpName = qryResources_content.name>
-											</cfif>
+											<cfset tmpName = qryResources_content.id>
 											<option value="#qryResources_content.id#"
 													<cfif thisModule.resourceID eq qryResources_content.id>selected</cfif>	
 														>[#qryResources_content.package#] #tmpName#</option>
@@ -178,11 +174,7 @@
 
 									<select name="resourceID_html" class="formField" id="resourceID_html" <cfif thisModule.resourceType neq "html">style="display:none;"</cfif>>
 										<cfloop query="qryResources_html">
-											<cfif qryResources_html.name eq "">
-												<cfset tmpName = qryResources_html.id>
-											<cfelse>
-												<cfset tmpName = qryResources_html.name>
-											</cfif>
+											<cfset tmpName = qryResources_html.name>
 											<option value="#qryResources_html.id#"
 													<cfif thisModule.resourceID eq qryResources_html.id>selected</cfif>	
 														>[#qryResources_html.package#] #tmpName#</option>
@@ -251,9 +243,9 @@
 											<cfif tmpNodeInfo.resourceType neq "">
 												<cfset qryResources = oCatalog.getResourcesByType(tmpNodeInfo.resourceType)>
 												<cfquery name="qryResources" dbtype="query">
-													SELECT *, upper(package) as upackage, upper(name) as uname
+													SELECT *, upper(package) as upackage, upper(id) as uid
 														FROM qryResources
-														ORDER BY upackage, uname, id
+														ORDER BY upackage, uid, id
 												</cfquery>
 											<cfelse>
 												<cfset tmpNodeInfo.type = "text">

@@ -230,12 +230,7 @@
 			
 			try {
 				hp = oContext.getHomePortals();
-				
 				hasAccountsPlugin = hp.getPluginManager().hasPlugin("accounts");
-				pageHREF = hp.getAppDefaultPage();
-				
-				if(pageHREF eq "")
-					throw("No default page set. You can set a default homepage by either setting the defaultPage property or defaultAccount property on the site config","validation");
 				
 				if(hp.getConfig().getDefaultPage() neq "") {
 					pageHREF = hp.getConfig().getDefaultPage();
@@ -267,13 +262,16 @@
 						pageHREF = oSite.getPageHREF(page);
 					}
 				}
+
+				if(pageHREF eq "")
+					throw("No default page set. You can set a default homepage by editing the site settings","validation");
 				
 				oContext.setPage( oPage );
 				oContext.setPageHREF( pageHREF );
 			
 				setNextEvent("ehPage.dspMain","account=#account#");
 			
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("ehSite.dspMain");

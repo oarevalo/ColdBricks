@@ -45,11 +45,7 @@
 			<div style="margin-top:5px;">
 				<b>#qryResources.package#</b><br>
 				<cfoutput>
-					<cfif resType eq "module" or qryResources.name eq "">
-						<cfset tmpResTitle = qryResources.id>
-					<cfelse>
-						<cfset tmpResTitle = qryResources.name>
-					</cfif>
+					<cfset tmpResTitle = qryResources.id>
 					<div style="border-bottom:1px solid ##ebebeb;">
 						<div style="float:right;">
 							<a href="javascript:addResource('#jsstringformat(qryResources.id)#','#resType#');"><img src="images/add.png" align="absmiddle" border="0" alt="Add To Page" title="Add To Page"></a>
