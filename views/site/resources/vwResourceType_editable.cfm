@@ -4,9 +4,9 @@
 <cfparam name="request.requestState.oResourceBean" default="">
 <cfparam name="request.requestState.pkg" default="">
 <cfparam name="request.requestState.resTypeLabel" default="">
-<cfparam name="request.requestState.qryAccounts" default="">
 <cfparam name="request.requestState.resourceTypeInfo" default="">
 <cfparam name="request.requestState.resourcesRoot" default="">
+<cfparam name="request.requestState.resourceTypeConfig" default="">
 
 <cfscript>
 	resourceType = request.requestState.resourceType;
@@ -17,6 +17,7 @@
 	resTypeLabel = request.requestState.resTypeLabel;
 	resourceTypeInfo = request.requestState.resourceTypeInfo;
 	resourcesRoot = request.requestState.resourcesRoot;
+	resourceTypeConfig = request.requestState.resourceTypeConfig;
 </cfscript>
 
 <cfquery name="qryPackages" dbtype="query">
@@ -33,6 +34,10 @@
 			ORDER BY id
 	</cfquery>
 </cfif>
+
+<cfset props = oResourceBean.getProperties()>
+<cfset lstProps = structKeyList(props)>
+<cfset lstProps = listSort(lstProps,"textnocase")>
 
 <!--- <form name="frm_blank" action="index.cfm" method="post" style="margin:0px;padding:0px;">
 </form> --->
@@ -114,6 +119,10 @@
 							#id#
 						</cfif>
 					</div>
+					[ 
+						<img src="images/information.png" align="absmiddle">
+						<a href="javascript:selectPanel('info')" id="panelSelector_info" class="panelSelector">Resource Info</a> 
+					]
 					<cfif resourceType eq "content">
 						[ 
 							<img src="images/magnifier.png" align="absmiddle">
@@ -129,17 +138,13 @@
 						] &nbsp;
 						<cfset defaultPanel = "code">
 					</cfif>
-						[ 
-							<img src="images/information.png" align="absmiddle">
-							<a href="javascript:selectPanel('info')" id="panelSelector_info" class="panelSelector">More Info</a> 
-						]
 				</div>
 
 				<div style="border:1px solid silver;background-color:##50628b;margin-bottom:5px;color:##fff;">
-					<table width="100%">
+					<table width="100%" style="color:##fff;">
 						<tr>
 							<td>
-								<b>ID:</b> <input type="text" name="new_id" value="#id#" style="width:300px;">
+								<b>Resource ID:</b> <input type="text" name="new_id" value="#id#" style="width:300px;">
 							</td>
 							<td align="right">
 								<b>Package:</b> <input type="text" name="pkg" value="#beanPackage#" style="width:100px;font-size:11px;">
@@ -151,20 +156,25 @@
 				
 				<div style="border:1px solid silver;background-color:##fff;margin-bottom:5px;display:none;height:371px;" id="pnl_info">
 					<table style="margin:10px;">
-						<tr valign="top">
-							<td><strong>ID:</strong></td>
-							<td><cfif id eq "">< New ><cfelse>#id#</cfif></td>
+						<tr>
+							<td width="80"><b>HREF:</b></td>
+							<td><input type="text" name="href" value="#contentLocation#" class="formField"></td>
 						</tr>
-						<cfif resourceType eq "feed">
-							<tr>
-								<td width="80"><b>URL:</b></td>
-								<td><input type="text" name="href" value="#contentLocation#" class="formField"></td>
-							</tr>
-						</cfif>
 						<tr valign="top">
 							<td><strong>Description:</strong></td>
 							<td><textarea name="description" class="formField" rows="4">#description#</textarea></td>
 						</tr>
+						<cfif lstProps neq "">
+							<tr><td colspan="2">&nbsp;</td></tr>
+							<tr><td><strong><u>Custom Properties</u></strong></td></tr>
+							<cfloop list="#lstProps#" index="key">
+								<cfset tmpValue = trim(props[key])>
+								<tr>
+									<td width="80"><b>#key#:</b></td>
+									<td><input type="text" name="cp_#key#" value="#tmpValue#" class="formField"></td>
+								</tr>
+							</cfloop>
+						</cfif>
 					</table>
 				</div>
 				

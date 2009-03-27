@@ -28,20 +28,20 @@
 	</div>
 
 	<table style="width:170px;margin:5px;">
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>ID:</td><td>#thisModule.ID#</td></tr>
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Title:</td><td>#thisModule.Title#</td></tr>
+		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>ID:</td><td>#thisModule.ID#</td></tr>
+		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Title:</td><td>#thisModule.Title#</td></tr>
 		<cfif thisModule.moduleType eq "module">
-			<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Type:</td><td>#thisModule.name#</td></tr>
+			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Type:</td><td>#thisModule.name#</td></tr>
 		</cfif>
 		<cfif thisModule.moduleType eq "content">
-			<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Type:</td><td>Content</td></tr>
+			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Type:</td><td>Content</td></tr>
 			<cfif thisModule.resourceID neq "">
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Res. ID:</td><td>#thisModule.resourceID#</td></tr>
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Res. Type:</td><td>#thisModule.resourceType#</td></tr>
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Use Cache?</td><td>#yesNoFormat(thisModule.cache)#</td></tr>
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>Cache TTL:</td><td>#thisModule.cacheTTL# mins</td></tr>
+				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Res. ID:</td><td>#thisModule.resourceID#</td></tr>
+				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Res. Type:</td><td>#thisModule.resourceType#</td></tr>
+				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Use Cache?</td><td>#yesNoFormat(thisModule.cache)#</td></tr>
+				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Cache TTL:</td><td>#thisModule.cacheTTL# mins</td></tr>
 			<cfelse>			
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:right;" nowrap>HREF:</td><td>#thisModule.href#</td></tr>
+				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>HREF:</td><td>#thisModule.href#</td></tr>
 			</cfif>
 		</cfif>
 	</table>

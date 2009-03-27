@@ -49,6 +49,7 @@
 			var oHelpDAO = 0;
 			var qryHelp = 0;
 			var oContext = getService("sessionContext").getContext();
+			var tmp = "";
 			
 			try {
 				setLayout("Layout.None");
@@ -73,6 +74,9 @@
 				qryHelp = oHelpDAO.search(name = "rt_#resourceType#");
 				if(qryHelp.recordCount gt 0) setValue("resourceTypeInfo", qryHelp.description);
 				
+				// get resource types
+				tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
+				setValue("resourceTypeConfig", tmp[resourceType]);
 				
 				// set values
 				setValue("resourceType", resourceType);	
