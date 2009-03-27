@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cffunction name="dspMain">
 		<cfscript>
@@ -6,8 +6,12 @@
 			
 			try {
 				hp = oContext.getHomePortals();
+
+				if(hp.getPluginManager().hasPlugin("accounts")) {
+					setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
+				}
+				
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
 				setValue("cbPageTitle", "SiteMap Tool");
 				setValue("cbPageIcon", "Globe_48x48.png");
@@ -33,12 +37,19 @@
 			var validChars = "a-zA-Z0-9_. -!";
 			var pageName = "";
 			var oContext = getService("sessionContext").getContext();
+			var hasAccountsPlugin = 0;
 			
 			try {
 				setLayout("Layout.None");
 
 				hp = oContext.getHomePortals();
-				oAcc = hp.getAccountsService();
+				hasAccountsPlugin = hp.getPluginManager().hasPlugin("accounts");
+				
+				if(hasAccountsPlugin) {
+					oAcc = getAccountsService();
+					setValue("accountsRoot", oAcc.getConfig().getAccountsRoot() );
+					setValue("qryAccounts", oAcc.search() );
+				}
 	
 				// if this is a .cfm file, then read it and check if it was generated with the sitemap tool
 				if( right(path,4) eq ".cfm" ) {
@@ -55,17 +66,15 @@
 				}
 
 				// if there is an account selected, get the account pages
-				if(account neq "") {
-					oAccountSite = createObject("component","homePortals.components.accounts.site").init(account, hp.getAccountsService() );		
-					aPages = oAccountSite.getPages();		
+				if(hasAccountsPlugin and account neq "") {
+					oAccountSite = oAcc.getSite(account);		
+					aPages = oAccountSite.getPages();
 					setValue("aPages", aPages );
 				}
 	
 				setValue("account", account );
 				setValue("pageName", pageName );
-				setValue("qryAccounts", oAcc.GetAccounts() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath() );
 				setView("site/siteMap/vwNode");
 

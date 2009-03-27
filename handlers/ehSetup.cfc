@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 	
 	<cffunction name="dspMain">
 		<cfset setView("setup/vwMain")>

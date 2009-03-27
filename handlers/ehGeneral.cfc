@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 <cffunction name="onApplicationStart">
 	<!--- setup data directory (if needed for xml data storage) --->

@@ -1,22 +1,21 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cffunction name="dspMain">
 		<cfscript>
 			var oCatalog = 0;
 			var rebuildCatalog = getValue("rebuildCatalog",false);
-			var aResourceTypes = arrayNew(1);
+			var stResourceTypes = structNew();
 			var qryResources = queryNew(""); 
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
 			
-			// get resource types
-			oResourceLibrary = createObject("component","homePortals.components.resourceLibrary");
-			aResourceTypes = oResourceLibrary.getResourceTypes();
-						
 			// create catalog object and instantiate for this page
 			hp = oContext.getHomePortals();
 			oCatalog = hp.getCatalog();
 			
+			// get resource types
+			stResourceTypes = hp.getResourceLibraryManager().getResourceTypesInfo();
+						
 			// rebuild catalog if requested
 			if(rebuildCatalog) {
 				oCatalog.index();
@@ -28,7 +27,7 @@
 								
 			// pass data to the view	
 			setValue("oCatalog", oCatalog);	
-			setValue("aResourceTypes", aResourceTypes);	
+			setValue("stResourceTypes", stResourceTypes);	
 			setValue("qryResources", qryResources);	
 
 			setValue("cbPageTitle", "Site Resources");
@@ -62,13 +61,10 @@
 					if(id eq "NEW") {
 						oResourceBean = createObject("component","homePortals.components.resourceBean").init();
 						oResourceBean.setType(resourceType); 
-						oResourceBean.setAccessType("general"); 
 						oResourceBean.setPackage(pkg); 
 					} else
 						oResourceBean = oCatalog.getResourceNode(resourceType,id);
 
-
-					setValue("qryAccounts", hp.getAccountsService().GetAccounts() );
 					setValue("oResourceBean", oResourceBean);	
 				}
 				
@@ -223,8 +219,6 @@
 			var resourceType = getValue("resourceType","");
 			var id = getValue("id","");
 			var pkg = getValue("pkg","");
-			var name = getValue("name","");
-			var access = getValue("access","");
 			var description = getValue("description","");
 			var href = getValue("href","");
 			var body = getValue("body","");
@@ -248,8 +242,6 @@
 				// create the bean for the new resource
 				oResourceBean = createObject("component","homePortals.components.resourceBean").init();	
 				oResourceBean.setID(id);
-				oResourceBean.setName(name);
-				oResourceBean.setAccessType(access); 
 				oResourceBean.setDescription(description); 
 				oResourceBean.setPackage(pkg); 
 				oResourceBean.setType(resourceType); 

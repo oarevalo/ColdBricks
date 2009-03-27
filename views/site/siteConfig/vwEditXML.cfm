@@ -16,13 +16,16 @@
 	if(configFile neq "") { 
 		if(xmlContent eq "") xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
 	}
+
+	hasAccountsPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("accounts");
+	hasModulesPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("modules");
 </cfscript>
 
 <cfoutput>
 <div>
 	[ <a href="index.cfm?event=ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
 	[ <a href="index.cfm?event=ehSiteConfig.dspEditXML"><strong>Edit Config Files</strong></a> ] &nbsp;&nbsp;
 </div>
 

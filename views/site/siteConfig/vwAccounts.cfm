@@ -14,6 +14,9 @@
 	password = oAccountsConfigBean.getPassword();
 	dbType = oAccountsConfigBean.getDBType();
 	dataroot = oAccountsConfigBean.getDataRoot();
+
+	hasAccountsPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("accounts");
+	hasModulesPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("modules");
 </cfscript>
 
 <script type="text/javascript">
@@ -25,8 +28,8 @@
 <cfoutput>
 <div>
 	[ <a href="index.cfm?event=ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
 	[ <a href="index.cfm?event=ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 

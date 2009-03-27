@@ -14,6 +14,8 @@
 
 <cfset stAccessMap = oUser.getAccessMap()>
 
+<cfset hasAccountsPlugin = oContext.getHomePortals().getPluginManager().hasPlugin("accounts")>
+
 <cfscript>
 	aOptions = arrayNew(1);
 
@@ -44,7 +46,7 @@
 	st.hint = "Site and account management";
 	st.icon = "images/users_24x24.png";
 	st.titleIcon = "images/users_48x48.png";
-	st.hasAccess = stAccessMap.accounts;
+	st.hasAccess = hasAccountsPlugin and stAccessMap.accounts;
 	arrayAppend(aOptions,st);
 
 	st = structNew();
@@ -109,7 +111,7 @@
 	<div class="siteName" style="margin-bottom:15px;">
 		&raquo; Site: <a href="index.cfm?event=ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
 		
-		<cfif oContext.hasAccountSite()>
+		<cfif hasAccountsPlugin and oContext.hasAccountSite()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.accounts>
 				&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>

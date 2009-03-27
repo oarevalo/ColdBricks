@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cffunction name="doLoadSite">
 		<cfscript>
@@ -54,7 +54,7 @@
 	<cffunction name="dspMain">
 		<cfscript>
 			var oResourceLibrary = 0;
-			var aResourceTypes = arrayNew(1);
+			var stResourceTypes = structNew();
 			var hp = 0;
 			var oCatalog = 0;
 			var qryResources = 0;
@@ -69,43 +69,51 @@
 			var stModAccess = structNew();
 			var oUser = getValue("oUser");
 			var oUserPluginDAO = 0;
+			var hasAccountsPlugin = false;
+			var oAccService = 0;
 			
 			try {
 				oContext = getService("sessionContext").getContext();
 				
 				// get site
 				oSiteInfo = oContext.getSiteInfo();
-				
-				// get resource types
-				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary");
-				aResourceTypes = oResourceLibrary.getResourceTypes();
-							
+
 				// create catalog object and instantiate for this page
 				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
 				
+				// get resource types
+				stResourceTypes = hp.getResourceLibraryManager().getResourceTypesInfo();
+
 				// get resources
 				qryResources = oCatalog.getResources();
-				
-				// get accounts
-				qryAccounts = hp.getAccountsService().getAccounts();
-				
+
 				// if this is the hp engine, display a warning
 				if(oSiteInfo.getSiteName() eq "homePortalsEngine")
 					setMessage("warning","This is the runtime engine for the HomePortals framework.");
-
-				// if there is an account selected, get the account pages
-				if(qlAccount neq "") {
-					oAccountSite = createObject("component","homePortals.components.accounts.site").init(qlAccount, hp.getAccountsService() );		
-					aPages = oAccountSite.getPages();		
-
-					// sort pages
-					for(i=1;i lte arrayLen(aPages);i=i+1) {
-						arrayAppend(aPagesSorted, aPages[i].href);
+				
+				// get accounts (if enabled)
+				if(hp.getPluginManager().hasPlugin("accounts")) {
+					hasAccountsPlugin = true;
+					oAccService = getAccountsService();
+					qryAccounts = oAccService.search();
+	
+					// if there is an account selected, get the account pages
+					if(qlAccount neq "") {
+						oAccountSite = oAccService.getSite(qlAccount);		
+						aPages = oAccountSite.getPages();		
+	
+						// sort pages
+						for(i=1;i lte arrayLen(aPages);i=i+1) {
+							arrayAppend(aPagesSorted, aPages[i].href);
+						}
+						arraySort(aPagesSorted,"textnocase","asc");
 					}
-					arraySort(aPagesSorted,"textnocase","asc");
-
+					
+					setValue("defaultAccount", oAccService.getConfig().getDefaultAccount() );
 				}
+				
+
 
 				// get installed site plugins
 				aPlugins = getService("plugins").getPluginsByType("site");
@@ -113,15 +121,15 @@
 				qryUserPlugins = oUserPluginDAO.search(userID = oUser.getID());
 				
 				setValue("oSiteInfo", oSiteInfo);
-				setValue("aResourceTypes", aResourceTypes);	
+				setValue("stResourceTypes", stResourceTypes);	
 				setValue("qryResources", qryResources);	
 				setValue("qryAccounts",  qryAccounts);
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("defaultAccount", hp.getAccountsService().getConfig().getDefaultAccount() );
 				setValue("aPages", aPagesSorted );
 				setValue("aPlugins",aPlugins);
 				setValue("qryUserPlugins",qryUserPlugins);
 				setValue("cbPageTitle", "Site Dashboard");
+				setValue("hasAccountsPlugin", hasAccountsPlugin);
 				setView("site/vwMain");
 			
 			} catch(any e) {
@@ -174,16 +182,20 @@
 			try {
 				hp = oContext.getHomePortals();
 				
+				if(not hp.getPluginManager().hasPlugin("accounts")) {
+					throw("Accounts plugin not found");
+				}
+				
 				// if not account given, then get the default account
-				if(account eq "") account = hp.getAccountsService().getConfig().getDefaultAccount();
+				if(account eq "") account = getAccountsService().getConfig().getDefaultAccount();
 				
 				// get account info
-				qryAccount = hp.getAccountsService().getAccountByName(account);
+				qryAccount = getAccountsService().getAccountByName(account);
 				
 				// load account
 				oContext.setAccountID(qryAccount.accountID);
 				oContext.setAccountName(account);
-				oSite = createObject("component","homePortals.components.accounts.site").init(account, hp.getAccountsService() );
+				oSite = getAccountsService().getSite(account);
 				oContext.setAccountSite( oSite );
 
 				// if no page given, the load default page in account
@@ -213,10 +225,13 @@
 			var oContext = getService("sessionContext").getContext();
 			var oPage = 0;
 			var oSite = 0;
+			var hasAccountsPlugin = false;
+			var oAccService = 0;
 			
 			try {
 				hp = oContext.getHomePortals();
 				
+				hasAccountsPlugin = hp.getPluginManager().hasPlugin("accounts");
 				pageHREF = hp.getAppDefaultPage();
 				
 				if(pageHREF eq "")
@@ -227,26 +242,30 @@
 					oPage = hp.getPageProvider().load( pageHREF );
 				}
 				
-				if(hp.getAccountsService().getConfig().getDefaultAccount() neq "") {
-				
-					// get the default account
-					account = hp.getAccountsService().getConfig().getDefaultAccount();
+				if(hasAccountsPlugin) {
+					oAccService = getAccountsService();
+
+					if(oAccService.getConfig().getDefaultAccount() neq "") {
 					
-					// get account info
-					qryAccount = hp.getAccountsService().getAccountByName(account);
-					
-					// load account
-					oContext.setAccountID(qryAccount.accountID);
-					oContext.setAccountName(account);
-					oSite = createObject("component","homePortals.components.accounts.site").init(account, hp.getAccountsService() );
-					oContext.setAccountSite( oSite );
-	
-					// load default page in account
-					page = oSite.getDefaultPage();
-	
-					// load page
-					oPage = oSite.getPage(page);
-					pageHREF = oSite.getPageHREF(page);
+						// get the default account
+						account = oAccService.getConfig().getDefaultAccount();
+						
+						// get account info
+						qryAccount = oAccService().getAccountByName(account);
+						
+						// load account
+						oContext.setAccountID(qryAccount.accountID);
+						oContext.setAccountName(account);
+						oSite = oAccService.getSite(account);
+						oContext.setAccountSite( oSite );
+		
+						// load default page in account
+						page = oSite.getDefaultPage();
+		
+						// load page
+						oPage = oSite.getPage(page);
+						pageHREF = oSite.getPageHREF(page);
+					}
 				}
 				
 				oContext.setPage( oPage );

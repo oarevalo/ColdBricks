@@ -2,11 +2,13 @@
 <cfparam name="request.requestState.pkg" default="">
 <cfparam name="request.requestState.id" default="">
 <cfparam name="request.requestState.qryResources" default="">
+<cfparam name="request.requestState.stResourceTypes" default="">
 
 <cfset resType = request.requestState.resType>
 <cfset pkg = request.requestState.pkg>
 <cfset id = request.requestState.id>
 <cfset qryResources = request.requestState.qryResources>
+<cfset stResourceTypes = request.requestState.stResourceTypes>
 
 <!--- get resource count by type --->
 <cfquery name="qryResCount" dbtype="query">
@@ -65,27 +67,35 @@
 			<div class="cp_sectionBox" 
 				style="margin:0px;width:150px;padding:0px;height:320px;border-top:0px;">
 				<div style="margin:5px;">
-					<div style="margin-bottom:5px;">
-						<img src="images/brick.png" align="absmiddle"> <a href="##" onclick="selectResourceType('module')" class="resTreeItem" id="resTreeItem_module">Modules</a> (<cfif structKeyExists(stResCount,"module")>#stResCount.module#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/folder_page.png" align="absmiddle"> <a href="##" onclick="selectResourceType('content')" class="resTreeItem" id="resTreeItem_content">Content</a> (<cfif structKeyExists(stResCount,"content")>#stResCount.content#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/feed-icon16x16.gif" align="absmiddle"> <a href="##" onclick="selectResourceType('feed')" class="resTreeItem" id="resTreeItem_feed">Feeds</a> (<cfif structKeyExists(stResCount,"feed")>#stResCount.feed#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/css.png" align="absmiddle"> <a href="##" onclick="selectResourceType('skin')" class="resTreeItem" id="resTreeItem_skin">Skins</a> (<cfif structKeyExists(stResCount,"skin")>#stResCount.skin#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/page.png" align="absmiddle"> <a href="##" onclick="selectResourceType('page')" class="resTreeItem" id="resTreeItem_page">Pages</a> (<cfif structKeyExists(stResCount,"page")>#stResCount.page#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/page_code.png" align="absmiddle"> <a href="##" onclick="selectResourceType('pageTemplate')" class="resTreeItem" id="resTreeItem_pageTemplate"> Page Templates</a> (<cfif structKeyExists(stResCount,"pageTemplate")>#stResCount.pageTemplate#<cfelse>0</cfif>)
-					</div>
-					<div style="margin-bottom:5px;">
-						<img src="images/html.png" align="absmiddle"> <a href="##" onclick="selectResourceType('html')" class="resTreeItem" id="resTreeItem_html">HTML</a> (<cfif structKeyExists(stResCount,"html")>#stResCount.html#<cfelse>0</cfif>)
-					</div>
+				
+					<cfset lstResTypes = structKeyList(stResourceTypes)>
+					<cfset lstResTypes = listSort(lstResTypes,"textnocase","asc")>
+					<cfloop list="#lstResTypes#" index="key">
+						<cfscript>
+							switch(key) {
+								case "module": imgSrc = "images/brick.png"; break;
+								case "content": imgSrc = "images/folder_page.png"; break;
+								case "feed": imgSrc = "images/feed-icon16x16.gif"; break;
+								case "skin": imgSrc = "images/css.png"; break;
+								case "page": imgSrc = "images/page.png"; break;
+								case "pageTemplate": imgSrc = "images/page_code.png"; break;
+								case "html": imgSrc = "images/html.png"; break;
+								default:
+									imgSrc = "images/folder.png";
+							}
+						</cfscript>
+						<div style="margin-bottom:5px;">
+							<img src="#imgSrc#" align="absmiddle"> 
+							<a href="##" 
+								onclick="selectResourceType('#key#')"
+								class="resTreeItem" 
+								id="resTreeItem_#key#">#stResourceTypes[key].folderName#</a> 
+							(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
+						</div>
+					</cfloop>
+					<cfif lstResTypes eq "">
+						<em>No resources found!</em>
+					</cfif>
 				</div>
 			</div>			
 			<!---
