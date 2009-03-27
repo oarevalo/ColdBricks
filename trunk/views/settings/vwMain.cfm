@@ -6,6 +6,8 @@
 	oHomePortalsConfigBean = request.requestState.oHomePortalsConfigBean;
 	baseResourceEditIndex = request.requestState.baseResourceEditIndex;
 	baseResourceEditType = request.requestState.baseResourceEditType;
+	hasAccountsPlugin = request.requestState.hasAccountsPlugin;
+	hasModulesPlugin = request.requestState.hasModulesPlugin;	
 	
 	resourceLibraryPath = oHomePortalsConfigBean.getResourceLibraryPath();
 	defaultPage = oHomePortalsConfigBean.getDefaultPage();
@@ -22,7 +24,6 @@
 	try{ rt_moduleNC = oHomePortalsConfigBean.getRenderTemplate("moduleNoContainer"); } catch(any e) { rt_moduleNC = ""; }
 	
 	lstBaseResourceTypes = oHomePortalsConfigBean.getBaseResourceTypes();
-		
 </cfscript>
 
 <script type="text/javascript">
@@ -41,8 +42,8 @@
 <cfoutput>
 <div>
 	[ <a href="index.cfm?event=ehSettings.dspMain"><strong>General</strong></a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSettings.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSettings.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
 	[ <a href="index.cfm?event=ehSettings.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 

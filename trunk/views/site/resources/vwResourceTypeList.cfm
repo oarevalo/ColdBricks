@@ -22,10 +22,9 @@
 		FROM qryResources
 		<cfif searchTerm neq "">
 			WHERE upper(package) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
-				OR upper(name) LIKE  <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
 				OR upper(id) LIKE  <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
 		</cfif>
-		ORDER BY package,name,id
+		ORDER BY package,id
 </cfquery>
 
 
@@ -75,9 +74,7 @@
 			<tr>
 				<th width="20">No</th>
 				<th style="text-align:left;width:240px;">ID</th>
-				<th style="text-align:left;">Name</th>
-				<th>Access</th>
-				<th>Owner</th>
+				<th style="text-align:left;">Package</th>
 				<th width="70">Action</th>
 			</tr>
 			<cfloop query="qryResources" startrow="#startRow#" endrow="#endRow#">
@@ -91,9 +88,7 @@
 							title="Double-click to open in page editor"
 							href="##">#qryResources.id#</a><br>
 					</td>
-					<td>#qryResources.name#</td>
-					<td align="center">#qryResources.access#</td>
-					<td align="center">#qryResources.owner#</td>
+					<td>#qryResources.package#</td>
 					<td align="center">
 						<cfif resourceType neq "module">
 							<a href="##" onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit resource" title="Edit resource" border="0"></a>

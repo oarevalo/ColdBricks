@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 	
 	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml">
 	<cfset variables.accountsConfigPath = "/homePortals/config/accounts-config.xml.cfm">
@@ -12,6 +12,9 @@
 				setValue("cbPageIcon", "images/configure_48x48.png");
 
 				setValue("oHomePortalsConfigBean", getHomePortalsConfigBean() );
+				
+				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -28,6 +31,8 @@
 				setValue("oAccountsConfigBean", getAccountsConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
+				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -44,6 +49,8 @@
 				setValue("oModulePropertiesConfigBean", getModulePropertiesConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
+				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -62,14 +69,22 @@
 			var qryHelp = 0;
 			
 			try {
+				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
+				
 				arrayAppend(aConfigFiles, "/homePortals/config/homePortals-config.xml");
-				arrayAppend(aConfigFiles, "/homePortals/config/accounts-config.xml.cfm");
-				arrayAppend(aConfigFiles, "/homePortals/config/module-properties.xml");
 				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/module.xml");
 				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/moduleNoContainer.xml");
 				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/page.xml");
-				arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/default.xml");
-				arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/newPage.xml");
+
+				if(getValue("hasAccountsPlugin")) {
+					arrayAppend(aConfigFiles, "/homePortals/config/accounts-config.xml.cfm");
+					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/default.xml");
+					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/newPage.xml");
+				}
+				if(getValue("hasModulesPlugin")) {
+					arrayAppend(aConfigFiles, "/homePortals/config/module-properties.xml");
+				}
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));

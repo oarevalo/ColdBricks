@@ -1,5 +1,5 @@
 <cfparam name="request.requestState.oSiteInfo" default="">
-<cfparam name="request.requestState.aResourceTypes" default="">
+<cfparam name="request.requestState.stResourceTypes" default="">
 <cfparam name="request.requestState.qryResources" default="">
 <cfparam name="request.requestState.qryAccounts" default="">
 <cfparam name="request.requestState.appRoot" default="">
@@ -10,9 +10,11 @@
 <cfparam name="request.requestState.aPlugins" default="">
 <cfparam name="request.requestState.oUser" default="">
 <cfparam name="request.requestState.qryUserPlugins" default="">
+<cfparam name="request.requestState.hasAccountsPlugin" default="false">
+
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
-<cfset aResourceTypes = request.requestState.aResourceTypes>
+<cfset stResourceTypes = request.requestState.stResourceTypes>
 <cfset qryResources = request.requestState.qryResources>
 <cfset qryAccounts = request.requestState.qryAccounts>
 <cfset appRoot = request.requestState.appRoot>
@@ -23,6 +25,7 @@
 <cfset aPlugins = request.requestState.aPlugins>
 <cfset oUser = request.requestState.oUser>
 <cfset qryUserPlugins = request.requestState.qryUserPlugins>
+<cfset hasAccountsPlugin = request.requestState.hasAccountsPlugin>
 
 <cfset siteID = oSiteInfo.getID()>
 <cfset stAccessMap = oUser.getAccessMap()>
@@ -32,11 +35,13 @@
 <cfset showAllModules = (oUser.getRole() eq "admin" or oUser.getRole() eq "mngr")>
 
 <!--- sort accounts --->
-<cfquery name="qryAccounts" dbtype="query">
-	SELECT *, upper(accountName) as u_username
-		FROM qryAccounts
-		ORDER BY u_username
-</cfquery>
+<cfif hasAccountsPlugin>
+	<cfquery name="qryAccounts" dbtype="query">
+		SELECT *, upper(accountName) as u_username
+			FROM qryAccounts
+			ORDER BY u_username
+	</cfquery>
+</cfif>
 
 <!--- get resource count by type --->
 <cfquery name="qryResCount" dbtype="query">
@@ -111,7 +116,7 @@
 				</div>	
 			</div>
 			
-			<cfif stAccessMap.accounts>
+			<cfif hasAccountsPlugin and stAccessMap.accounts>
 				<div id="dsb_siteAccounts" style="margin-top:25px;">
 					<div class="dsb_secTitle">Accounts Summary:</div>
 					<div class="dsb_siteSection">
@@ -126,27 +131,33 @@
 				<div id="dsb_siteResources" style="margin-top:35px;">
 					<div class="dsb_secTitle">Resources Summary:</div>
 					<div class="dsb_siteSection">
-						<div style="margin-bottom:5px;">
-							<img src="images/brick.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=module" class="resTreeItem" id="resTreeItem_module">Modules</a> (<cfif structKeyExists(stResCount,"module")>#stResCount.module#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/folder_page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=content" class="resTreeItem" id="resTreeItem_content">Content</a> (<cfif structKeyExists(stResCount,"content")>#stResCount.content#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/feed-icon16x16.gif" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=feed" class="resTreeItem" id="resTreeItem_feed">Feeds</a> (<cfif structKeyExists(stResCount,"feed")>#stResCount.feed#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/css.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=skin" class="resTreeItem" id="resTreeItem_skin">Skins</a> (<cfif structKeyExists(stResCount,"skin")>#stResCount.skin#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/page.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=page" class="resTreeItem" id="resTreeItem_page">Pages</a> (<cfif structKeyExists(stResCount,"page")>#stResCount.page#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/page_code.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=pageTemplate" class="resTreeItem" id="resTreeItem_pageTemplate"> Page Templates</a> (<cfif structKeyExists(stResCount,"pageTemplate")>#stResCount.pageTemplate#<cfelse>0</cfif>)
-						</div>
-						<div style="margin-bottom:5px;">
-							<img src="images/html.png" align="absmiddle"> <a href="index.cfm?event=ehResources.dspMain&resType=html" class="resTreeItem" id="resTreeItem_html">HTML</a> (<cfif structKeyExists(stResCount,"html")>#stResCount.html#<cfelse>0</cfif>)
-						</div>
+						<cfset lstResTypes = structKeyList(stResourceTypes)>
+						<cfset lstResTypes = listSort(lstResTypes,"textnocase","asc")>
+						<cfloop list="#lstResTypes#" index="key">
+							<cfscript>
+								switch(key) {
+									case "module": imgSrc = "images/brick.png"; break;
+									case "content": imgSrc = "images/folder_page.png"; break;
+									case "feed": imgSrc = "images/feed-icon16x16.gif"; break;
+									case "skin": imgSrc = "images/css.png"; break;
+									case "page": imgSrc = "images/page.png"; break;
+									case "pageTemplate": imgSrc = "images/page_code.png"; break;
+									case "html": imgSrc = "images/html.png"; break;
+									default:
+										imgSrc = "images/folder.png";
+								}
+							</cfscript>
+							<div style="margin-bottom:5px;">
+								<img src="#imgSrc#" align="absmiddle"> 
+								<a href="index.cfm?event=ehResources.dspMain&resType=#key#" 
+									class="resTreeItem" 
+									id="resTreeItem_#key#">#stResourceTypes[key].folderName#</a> 
+								(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
+							</div>
+						</cfloop>
+						<cfif lstResTypes eq "">
+							<em>No resources found!</em>
+						</cfif>
 					</div>
 				</div>
 			</cfif>
@@ -162,7 +173,9 @@
 					clicking on the <img src="images/house.png" align="absmiddle"> <b><u>dashboard</u></b> link.<br><br>
 					To get started, you may want to 
 					<a href="index.cfm?event=ehSite.doLoadAccountPage">Edit your HomePage</a>, 
-					<a href="index.cfm?event=ehAccounts.dspMain">Manage Accounts</a> or
+					<cfif hasAccountsPlugin>
+						<a href="index.cfm?event=ehAccounts.dspMain">Manage Accounts</a> or
+					</cfif>
 					<a href="index.cfm?event=ehResources.dspMain">Add/Import Site Resources</a>
 				</div>
 			</cfif>
@@ -188,7 +201,7 @@
 					<cfset hasModuleAccess = true>
 				</cfif>
 
-				<cfif stAccessMap.accounts>
+				<cfif hasAccountsPlugin and stAccessMap.accounts>
 					<div class="dsb_secBox">
 						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
 						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()">Accounts</a>
@@ -259,7 +272,7 @@
 			</div>
 		</td>
 		<td width="350">
-			<cfif stAccessMap.pages>
+			<cfif hasAccountsPlugin and stAccessMap.pages>
 				<div id="dsb_quickLink" style="width:300px;margin-bottom:30px;">
 					<div class="dsb_secTitle">Quick Links:</div>
 					<div class="dsb_siteSection">

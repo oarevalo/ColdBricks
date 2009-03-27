@@ -15,18 +15,9 @@
 	oResourceBean = request.requestState.oResourceBean;
 	package = request.requestState.package;
 	resTypeLabel = request.requestState.resTypeLabel;
-	qryAccounts = request.requestState.qryAccounts;
 	resourceTypeInfo = request.requestState.resourceTypeInfo;
 	resourcesRoot = request.requestState.resourcesRoot;
 </cfscript>
-
-<cfif id neq "">
-	<cfquery name="qryAccounts" dbtype="query">
-		SELECT *
-			FROM qryAccounts
-			ORDER BY accountName
-	</cfquery>
-</cfif>
 
 <cfquery name="qryPackages" dbtype="query">
 	SELECT DISTINCT package
@@ -86,9 +77,6 @@
 	<cfif id neq "">
 
 	<cfscript>
-		access = oResourceBean.getAccessType();
-		name = oResourceBean.getName();
-		owner = oResourceBean.getOwner();
 		beanPackage = oResourceBean.getPackage();
 		description = oResourceBean.getDescription();
 		content = "";
@@ -151,7 +139,7 @@
 					<table width="100%">
 						<tr>
 							<td>
-								<b>Name / Title:</b> <input type="text" name="name" value="#name#" style="width:300px;">
+								<b>ID:</b> <input type="text" name="new_id" value="#id#" style="width:300px;">
 							</td>
 							<td align="right">
 								<b>Package:</b> <input type="text" name="pkg" value="#beanPackage#" style="width:100px;font-size:11px;">
@@ -176,29 +164,6 @@
 						<tr valign="top">
 							<td><strong>Description:</strong></td>
 							<td><textarea name="description" class="formField" rows="4">#description#</textarea></td>
-						</tr>
-						<tr>
-							<td width="80"><strong>Owner:</strong></td>
-							<td>
-								<cfset ownerFound = false>
-								<select name="owner" style="width:100px;">
-									<option value=""></option>
-									<cfloop query="qryAccounts">
-										<option value="#accountName#" <cfif accountName eq owner>selected <cfset ownerFound = true></cfif>>#accountName#</option>
-									</cfloop>
-									<cfif not ownerFound>
-										<option value="#owner#" selected>#owner#</option>
-									</cfif>
-								</select>
-							</td>
-						</tr>
-						<tr valign="top">
-							<td><strong>Access Type:</strong></td>
-							<td>
-								<input type="radio" name="access" value="general" <cfif access eq "general">checked</cfif>> General <br>
-								<input type="radio" name="access" value="friend" <cfif access eq "friend">checked</cfif>> Friends <br>
-								<input type="radio" name="access" value="owner" <cfif access eq "owner">checked</cfif>> Private
-							</td>
 						</tr>
 					</table>
 				</div>

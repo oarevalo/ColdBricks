@@ -240,7 +240,7 @@
 			<cffile action="read" file="#arguments.path#" variable="txtDoc">
 		</cflock>
 		<cfif txtDoc neq "">
-			<cfset txtDoc = decrypt(txtDoc,k,"AES")>
+			<cfset txtDoc = decrypt(txtDoc,k,"AES","Base64")>
 		</cfif>
 		<cfreturn txtDoc>
 	</cffunction>
@@ -250,7 +250,7 @@
 		<cfargument name="content" type="string" required="true">
 		<cfset var k = "ylm4RzjOBVsK6u1yqlgvkw==">
 		<cfif arguments.content neq "">
-			<cfset arguments.content = encrypt(arguments.content,k,"AES")>
+			<cfset arguments.content = encrypt(arguments.content,k,"AES","Base64")>
 		</cfif>
 		<cflock name="#hash(arguments.path)#" type="exclusive" timeout="10">
 			<cffile action="write" file="#arguments.path#" output="#arguments.content#">

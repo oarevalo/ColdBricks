@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -133,11 +133,14 @@
 				
 				} catch(homePortals.catalog.resourceNotFound e) { 	}
 	
+				if(hp.getPluginManager().hasPlugin("accounts")) {
+					setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
+				}
+	
 				// pass values to view
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
 				setValue("stModule", stModule);
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
 				setValue("missingModuleBean", missingModuleBean);
 				setValue("pageHREF", oContext.getPageHREF());
 

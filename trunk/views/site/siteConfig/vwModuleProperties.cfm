@@ -8,6 +8,9 @@
 	
 	qryData = oModulePropertiesConfigBean.getPropertiesAsQuery();
 	qryDataBase = oModulePropertiesConfigBeanBase.getPropertiesAsQuery();
+	
+	hasAccountsPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("accounts");
+	hasModulesPlugin = request.requestState.oContext.getHomePortals().getPluginManager().hasPlugin("modules");
 </cfscript>
 
 <cfquery name="qryData" dbtype="query">
@@ -28,8 +31,8 @@
 
 <div>
 	[ <a href="index.cfm?event=ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSiteConfig.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;</cfif>
 	[ <a href="index.cfm?event=ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 

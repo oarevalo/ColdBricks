@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -10,7 +10,7 @@
 						
 			try {
 				hp = oContext.getHomePortals();
-				oAcc = hp.getAccountsService();
+				oAcc = getAccountsService();
 				
 				if(showAccount and oContext.getAccountID() neq "" and oContext.getAccountID() neq 0) {
 					setValue("showAccount", true );
@@ -18,8 +18,8 @@
 				}
 				
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("qryAccounts", oAcc.getAccounts() );
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
+				setValue("qryAccounts", oAcc.search() );
+				setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
 				setValue("cbPageTitle", "Accounts");
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
@@ -53,7 +53,7 @@
 				if(accountID neq "") {
 					oContext.setAccountID(accountID);
 					oContext.setAccountName(accountName);
-					oContext.setAccountSite(createObject("component","homePortals.components.accounts.site").init(accountName, hp.getAccountsService() ));
+					oContext.setAccountSite(getAccountsService().getSite(accountName));
 				} else {
 					setValue("accountID", oContext.getAccountID());
 					setValue("accountName", oContext.getAccountName());
@@ -66,7 +66,7 @@
 				oAccountSite = oContext.getAccountSite();
 				aPages = oAccountSite.getPages();
 
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
+				setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("aPages",aPages);
 				setValue("siteTitle",oAccountSite.getSiteTitle());
@@ -100,7 +100,7 @@
 				setValue("accountID", oContext.getAccountID());
 				setValue("accountName", oContext.getAccountName());
 				setValue("oAccountSite", oAccountSite);
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
+				setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
 				setValue("numPages", numPages);
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 	
@@ -177,7 +177,7 @@
 
 				// get accounts info 
 				accountID = oContext.getAccountID();
-				qryAccount = hp.getAccountsService().getAccountByID(accountID);
+				qryAccount = getAccountsService().getAccountByID(accountID);
 
 				// get catalog
 				oCatalog = hp.getCatalog();
@@ -219,7 +219,7 @@
 				oSite = oContext.getAccountSite();
 
 				// search account
-				qryAccount = hp.getAccountsService().getAccountByName( oSite.getOwner() );
+				qryAccount = getAccountsService().getAccountByName( oSite.getOwner() );
 
 				// get source page
 				oPage = oSite.getPage(pageName);
@@ -259,7 +259,7 @@
 				hp = oContext.getHomePortals();
 				
 				// get accounts info 
-				oAccounts = hp.getAccountsService();
+				oAccounts = getAccountsService();
 				stAccountInfo = oAccounts.getConfig();
 	
 				if(accountID eq 0) throw("Please select an account first");
@@ -269,7 +269,7 @@
 				
 				setValue("stAccountInfo", stAccountInfo);
 				setValue("qryAccount", qryAccount);
-				setValue("accountsRoot", hp.getAccountsService().getConfig().getAccountsRoot() );
+				setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
 
 				setValue("cbPageTitle", "Accounts > #qryAccount.accountname# > Account Profile");
 				setValue("cbPageIcon", "images/users_48x48.png");
@@ -313,7 +313,7 @@
 
 			try {
 				hp = oContext.getHomePortals();
-				oAccounts = hp.getAccountsService();
+				oAccounts = getAccountsService();
 
 				if(accountname eq "") throw("Account name cannot be empty.","coldBricks.validation");
 				if(accountID eq "" and password eq "") throw("Password cannot be empty.","coldBricks.validation");
@@ -359,7 +359,7 @@
 				if(accountID eq "") throw("Please indicate the name of the account to delete.","coldBricks.validation");
 				
 				hp = oContext.getHomePortals();
-				oAccounts = hp.getAccountsService();
+				oAccounts = getAccountsService();
 				oAccounts.deleteAccount(accountID);
 				
 				oContext.setAccountID("");
@@ -640,7 +640,7 @@
 				oSite = oContext.getAccountSite();
 
 				// find account
-				qryAccount = oContext.getHomePortals().getAccountsService().getAccountByName( oSite.getOwner() );
+				qryAccount = getAccountsService().getAccountByName( oSite.getOwner() );
 				
 				
 				setValue("aStatus", aStatus);

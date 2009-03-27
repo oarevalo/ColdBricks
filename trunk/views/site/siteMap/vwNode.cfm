@@ -1,7 +1,7 @@
 <cfparam name="request.requestState.appRoot" default="">
 <cfparam name="request.requestState.accountsRoot" default="">
 <cfparam name="request.requestState.resourcesRoot" default="">
-<cfparam name="request.requestState.qryAccounts" default="">
+<cfparam name="request.requestState.qryAccounts" default="#queryNew('accountName')#">
 <cfparam name="request.requestState.account" default="">
 <cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.pageName" default="">

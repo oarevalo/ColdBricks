@@ -3,6 +3,8 @@
 <cfscript>
 	oModulePropertiesConfigBean = request.requestState.oModulePropertiesConfigBean;
 	index = request.requestState.index;
+	hasAccountsPlugin = request.requestState.hasAccountsPlugin;
+	hasModulesPlugin = request.requestState.hasModulesPlugin;	
 	
 	qryData = oModulePropertiesConfigBean.getPropertiesAsQuery();
 </cfscript>
@@ -24,8 +26,8 @@
 <cfoutput>
 <div>
 	[ <a href="index.cfm?event=ehSettings.dspMain">General</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;
-	[ <a href="index.cfm?event=ehSettings.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSettings.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;</cfif>
 	[ <a href="index.cfm?event=ehSettings.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 

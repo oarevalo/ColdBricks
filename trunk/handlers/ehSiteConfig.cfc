@@ -1,4 +1,4 @@
-<cfcomponent extends="eventHandler">
+<cfcomponent extends="ehColdBricks">
 
 	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml">
 	<cfset variables.accountsConfigPath = "/homePortals/config/accounts-config.xml.cfm">
