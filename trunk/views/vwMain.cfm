@@ -31,30 +31,6 @@
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
-		function showDBHelp(key) {
-			var helpText = "";
-			if(key=="sites") helpText = "Access the sites management module, from there you can add, remove, archive and access individual sites";
-			if(key=="users") helpText = "This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.";
-			if(key=="settings") helpText = "For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files";
-			
-			<cfoutput>
-			<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
-				<cfset oPlugin = aPlugins[i]>
-				<cfset tmpID = oPlugin.getID()>
-				<cfset tmpDesc = oPlugin.getDescription()>
-				<cfif tmpDesc eq "">
-					<cfset tmpDesc = "<em>No description available</em>">
-				</cfif>
-				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
-			</cfloop>
-			</cfoutput>
-			
-			$("helpTextDiv").style.display = "block";
-			$("helpTextDiv").innerHTML = "<img src='images/help.png' align='absmiddle'> " + helpText;
-		}
-		function hideDBHelp() {
-			$("helpTextDiv").style.display = "none";
-		}
 		function loadSite(siteID,firstTime) {
 			if(firstTime==null || firstTime==undefined) firstTime = false;
 			overlay();
@@ -107,76 +83,75 @@
 				<br>
 			</cfif>
 
+			<cf_dashboardMenu title="Server Management:" id="dsb_serverManagement">
+			
+				<cf_dashboardMenuItem href="index.cfm?event=ehSites.dspMain" 
+										isAllowed="#stAccessMap.sites#"
+										imgSrc="images/folder_desktop_48x48.png"
+										alt="Sites Management"
+										label="Sites"
+										help="Access the sites management module, from there you can add, remove, archive and access individual sites">
 
-			<div id="dsb_serverManagement">
-				<div class="dsb_secTitle">Server Management:</div>
+				<cf_dashboardMenuItem href="index.cfm?event=ehUsers.dspMain" 
+										isAllowed="#stAccessMap.users#"
+										imgSrc="images/users_48x48.png"
+										alt="ColdBricks Users Management"
+										label="Users"
+										help="This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.">
 
-				<cfif stAccessMap.sites>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()"><img src="images/folder_desktop_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
-						<a href="index.cfm?event=ehSites.dspMain" onmouseover="showDBHelp('sites')" onmouseout="hideDBHelp()" onfocus="showDBHelp('sites')" onblur="hideDBHelp()">Sites</a>
-					</div>
-				</cfif>
-
-				<cfif stAccessMap.users>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
-						<a href="index.cfm?event=ehUsers.dspMain" onmouseover="showDBHelp('users')" onmouseout="hideDBHelp()" onfocus="showDBHelp('users')" onblur="hideDBHelp()">Users</a>
-					</div>
-				</cfif>
-		
-				<cfif stAccessMap.settings>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
-						<a href="index.cfm?event=ehSettings.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
-					</div>
-				</cfif>
+				<cf_dashboardMenuItem href="index.cfm?event=ehSettings.dspMain" 
+										isAllowed="#stAccessMap.settings#"
+										imgSrc="images/configure_48x48.png"
+										alt="Global Settings"
+										label="Settings"
+										help="For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files">
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
 					<cfset oPlugin = aPlugins[i]>
-					<cfset module = oPlugin.getModuleName()>
-					<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
-					<cfset tmpID = oPlugin.getID()>
+					<cfset tmpEvent = oPlugin.getModuleName() & "." & oPlugin.getDefaultEvent()>
 					<cfset tmpName = oPlugin.getName()>
-					<cfif oPlugin.getIconSrc() neq "">
-						<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
-					<cfelse>
+					<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
+					<cfset tmpDesc = oPlugin.getDescription()>
+
+					<cfif oPlugin.getIconSrc() eq "">
 						<cfset tmpImage = "images/cb-blocks.png">
 					</cfif>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
-						<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
-					</div>
+					<cfif tmpDesc eq "">
+						<cfset tmpDesc = "<em>No description available</em>">
+					</cfif>
+
+					<cf_dashboardMenuItem href="index.cfm?event=#tmpEvent#" 
+											isAllowed="true"
+											imgSrc="#tmpImage#"
+											alt="Plugin: #tmpName#"
+											label="#tmpName#"
+											help="#tmpDesc#">
 				</cfloop>
-
-				<br style="clear:both;" />
 				
-				<div style="height:60px;">
-					<div id="helpTextDiv" style="display:none;"></div>
-				</div>
-			</div>
-			
-			<div id="dsb_sites">
-				<div class="dsb_secTitle">Sites Shortcuts:</div>
+			</cf_dashboardMenu>
 
+
+			<cf_dashboardMenu title="Site Shortcuts:" id="dsb_sites">
 				<cfif qryHPSite.recordCount eq 1>
-					<div class="dsb_secBox">
-						<a href="##" onclick="loadSite('#qryHPSite.siteID#')"><img src="images/Globe_48x48.png" border="0" alt="HomePortals Framework runtime engine" title="HomePortals Framework runtime engine"><br>
-						<a href="##" onclick="loadSite('#qryHPSite.siteID#')" style="color:red;" title="HomePortals Framework runtime engine">HomePortals</a>
-					</div>
+					<cf_dashboardMenuItem href="javascript:loadSite('#qryHPSite.siteID#')" 
+											imgSrc="images/Globe_48x48.png"
+											alt="HomePortals Framework runtime engine"
+											label="HomePortals"
+											help="HomePortals Framework runtime engine"
+											labelStyle="color:red;">
 				</cfif>
-
+				
 				<cfloop query="qrySites">
 					<cfif qrySites.siteID neq qryHPSite.SiteID>
-						<div class="dsb_secBox">
-							<a href="##" onclick="loadSite('#qrySites.siteID#')"><img src="images/Globe_48x48.png" border="0" alt="#qrySites.siteName#" title="#qrySites.siteName#"><br>
-							<a href="##" onclick="loadSite('#qrySites.siteID#')">#qrySites.siteName#</a>
-						</div>
+						<cf_dashboardMenuItem href="javascript:loadSite('#qrySites.siteID#')" 
+												imgSrc="images/Globe_48x48.png"
+												alt="#qrySites.siteName#"
+												label="#qrySites.siteName#"
+												help="Load site '#qrySites.siteName#' for management">
 					</cfif>
 				</cfloop>
-		
-				<br style="clear:both;" />
-			</div>
+				
+			</cf_dashboardMenu>
 
 		</td>
 		

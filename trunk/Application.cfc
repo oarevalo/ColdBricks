@@ -24,6 +24,7 @@
 	<cfset this.configDoc = "config.xml">
 	<cfset this.modulesPath = "/ColdBricksPlugins">
 	<cfset this.emailErrors = false>
+	<cfset this.customtagpaths = expandPath("includes")>
 
 	<cffunction name="onRequestStart">
 		<cfparam name="Event" default=""> <!--- use to determine the action to perform --->
