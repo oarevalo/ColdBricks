@@ -57,40 +57,96 @@
 	<cfset stResCount[qryResCount.type] = qryResCount.resCount>
 </cfloop>
 
+<cfscript>
+	aOptions = [
+		{
+			href = "index.cfm?event=ehSite.doLoadHomePage",
+			help = "This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.",
+			imgSrc = "images/homepage_48x48.png",
+			alt = "Edit Site's Home Page",
+			label = "Home Page",
+			isAllowed = stAccessMap.pages
+		},
+		{
+			href = "index.cfm?event=ehPages.dspMain",
+			help = "The pages module lets you manage all pages in a site.",
+			imgSrc = "images/documents_48x48.png",
+			alt = "Manage site pages",
+			label = "Pages",
+			isAllowed = stAccessMap.pages
+		},
+		{
+			href = "index.cfm?event=ehAccounts.dspMain",
+			help = "Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.",
+			imgSrc = "images/users_48x48.png",
+			alt = "Manage accounts",
+			label = "Accounts",
+			isAllowed = hasAccountsPlugin and stAccessMap.accounts
+		},
+		{
+			href = "index.cfm?event=ehResources.dspMain",
+			help = "The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.",
+			imgSrc = "images/folder2_yellow_48x48.png",
+			alt = "Resource Management",
+			label = "Resources",
+			isAllowed = stAccessMap.resources
+		},
+		{
+			href = "index.cfm?event=ehSiteMap.dspMain",
+			help = "The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.",
+			imgSrc = "images/Globe_48x48.png",
+			alt = "Site Map Tool",
+			label = "Site Map",
+			isAllowed = stAccessMap.siteMap
+		},
+		{
+			href = "index.cfm?event=ehSiteConfig.dspMain",
+			help = "For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files",
+			imgSrc = "images/configure_48x48.png",
+			alt = "Site Settings",
+			label = "Settings",
+			isAllowed = stAccessMap.siteSettings
+		},
+		{
+			href = "index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#",
+			help = "Download a zipped version of this site for backup or migration",
+			imgSrc = "images/download_manager_48x48.png",
+			alt = "Download Site",
+			label = "Download",
+			isAllowed = stAccessMap.downloadSite
+		}	
+	];
+	
+	for(i=1;i lte arrayLen(aPlugins);i=i+1) {
+		oPlugin = aPlugins[i];
+		tmpID = oPlugin.getID();
+		
+		if(showAllModules or listFind(lstUserPlugins,tmpID)) {
+			tmpEvent = oPlugin.getModuleName() & "." & oPlugin.getDefaultEvent();
+			tmpName = oPlugin.getName();
+			tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc();
+			tmpDesc = oPlugin.getDescription();
+
+			if(oPlugin.getIconSrc() eq "") tmpImage = "images/cb-blocks.png";
+			if(tmpDesc eq "") tmpDesc = "<em>No description available</em>";
+
+			st = {
+				href = "index.cfm?event=#tmpEvent#",
+				help = tmpDesc,
+				imgSrc = tmpImage,
+				alt = "Plugin: #tmpName#",
+				label = tmpName
+			};
+			
+			arrayAppend(aOptions, duplicate(st));
+		}
+	}
+</cfscript>
+
 
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript">
-		function showDBHelp(key) {
-			var helpText = "";
-			if(key=="homepage") helpText = "This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.";
-			if(key=="pages") helpText = "The pages module lets you manage all pages in a site.";
-			if(key=="accounts") helpText = "Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.";
-			if(key=="resources") helpText = "The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.";
-			if(key=="siteMap") helpText = "The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.";
-			if(key=="settings") helpText = "For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files";
-			if(key=="download") helpText = "Download a zipped version of this site for backup or migration";
-		
-			<cfoutput>
-			<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
-				<cfset oPlugin = aPlugins[i]>
-				<cfset tmpID = oPlugin.getID()>
-				<cfset tmpDesc = oPlugin.getDescription()>
-				<cfif tmpDesc eq "">
-					<cfset tmpDesc = "<em>No description available</em>">
-				</cfif>
-				if(key=="mod_#tmpID#") helpText = "#jsstringFormat(tmpDesc)#";
-			</cfloop>
-			</cfoutput>		
-		
-			$("helpTextDiv").style.display = "block";
-			$("helpTextDiv").innerHTML = "<img src='images/help.png' align='absmiddle'> " + helpText;
-		}
-		function hideDBHelp() {
-			$("helpTextDiv").style.display = "none";
-		}
-	</script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
 
@@ -182,94 +238,12 @@
 			
 			<cfset hasModuleAccess = false>
 			
-			<div id="dsb_siteManagement">
-				<div class="dsb_secTitle">Site Management:</div>
-
-				<cfif stAccessMap.pages>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSite.doLoadHomePage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()"><img src="images/homepage_48x48.png" border="0" alt="Edit Site's Home Page" title="Edit Site's Home Page"><br>
-						<a href="index.cfm?event=ehSite.doLoadHomePage" onmouseover="showDBHelp('homepage')" onmouseout="hideDBHelp()" onfocus="showDBHelp('homepage')" onblur="hideDBHelp()">Home Page</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-
-				<cfif stAccessMap.pages>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehPages.dspMain" onmouseover="showDBHelp('pages')" onmouseout="hideDBHelp()" onfocus="showDBHelp('pages')" onblur="hideDBHelp()"><img src="images/documents_48x48.png" border="0" alt="Pages Management" title="Pages Management"><br>
-						<a href="index.cfm?event=ehPages.dspMain" onmouseover="showDBHelp('pages')" onmouseout="hideDBHelp()" onfocus="showDBHelp('pages')" onblur="hideDBHelp()">Pages</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-
-				<cfif hasAccountsPlugin and stAccessMap.accounts>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()"><img src="images/users_48x48.png" border="0" alt="Accounts Management" title="Accounts Management"><br>
-						<a href="index.cfm?event=ehAccounts.dspMain" onmouseover="showDBHelp('accounts')" onmouseout="hideDBHelp()" onfocus="showDBHelp('accounts')" onblur="hideDBHelp()">Accounts</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-		
-				<cfif stAccessMap.resources>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()"><img src="images/folder2_yellow_48x48.png" border="0" alt="Resource Management" title="Resource Management"><br>
-						<a href="index.cfm?event=ehResources.dspMain" onmouseover="showDBHelp('resources')" onmouseout="hideDBHelp()" onfocus="showDBHelp('resources')" onblur="hideDBHelp()">Resources</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-		
-				<cfif stAccessMap.siteMap>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()"><img src="images/Globe_48x48.png" border="0" alt="Site Map" title="Site Map"><br>
-						<a href="index.cfm?event=ehSiteMap.dspMain" onmouseover="showDBHelp('siteMap')" onmouseout="hideDBHelp()" onfocus="showDBHelp('siteMap')" onblur="hideDBHelp()">Site Map</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-
-				<cfif stAccessMap.siteSettings>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="images/configure_48x48.png" border="0" alt="Site Settings" title="Site Settings"><br>
-						<a href="index.cfm?event=ehSiteConfig.dspMain" onmouseover="showDBHelp('settings')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">Settings</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-
-				<cfif stAccessMap.downloadSite>
-					<div class="dsb_secBox">
-						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()"><img src="images/download_manager_48x48.png" border="0" alt="Download Site" title="Download Site"><br>
-						<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" onmouseover="showDBHelp('download')" onmouseout="hideDBHelp()" onfocus="showDBHelp('download')" onblur="hideDBHelp()">Download</a>
-					</div>
-					<cfset hasModuleAccess = true>
-				</cfif>
-
-				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
-					<cfset oPlugin = aPlugins[i]>
-					<cfset tmpID = oPlugin.getID()>
-					
-					<cfif showAllModules or listFind(lstUserPlugins,tmpID)>
-						<cfset module = oPlugin.getModuleName()>
-						<cfset tmpEvent = module & "." & oPlugin.getDefaultEvent()>
-						<cfset tmpName = oPlugin.getName()>
-						<cfif oPlugin.getIconSrc() neq "">
-							<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
-						<cfelse>
-							<cfset tmpImage = "images/cb-blocks.png">
-						</cfif>
-						<div class="dsb_secBox">
-							<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()"><img src="#tmpImage#" border="0" alt="Plugin: #tmpName#" title="Plugin: #tmpName#"><br>
-							<a href="index.cfm?event=#tmpEvent#" onmouseover="showDBHelp('mod_#tmpID#')" onmouseout="hideDBHelp()" onfocus="showDBHelp('settings')" onblur="hideDBHelp()">#tmpName#</a>
-						</div>
-						<cfset hasModuleAccess = true>
-					</cfif>
+			<cf_dashboardMenu title="Site Management:">
+				<cfloop from="1" to="#arrayLen(aOptions)#" index="i">
+					<cf_dashboardMenuItem attributeCollection="#aOptions[i]#">
 				</cfloop>
-				
-				<cfif not hasModuleAccess>
-					<em>No allowed modules found.</em>
-				</cfif>
-				
-				<br style="clear:both;" />
-				
-				<div id="helpTextDiv" style="display:none;"></div>
-			</div>
+			</cf_dashboardMenu>
+			
 		</td>
 		<td width="350">
 			<cfif hasAccountsPlugin and stAccessMap.pages>
