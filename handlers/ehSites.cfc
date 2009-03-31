@@ -296,9 +296,8 @@
 
 				// check that the target directory points to a valid homeportals application
 				if( Not (directoryExists(expandPath(appRoot & "/config"))
-						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml"))
-						and fileExists(expandPath(appRoot & "/config/accounts-config.xml.cfm"))) )
-					throw("The given application directory does not point to a valid HomePortals application. Please check the directory and try again.","coldBricks.validation");
+						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml"))) )
+					throw("The given application directory does not see,s point to a standard HomePortals application. Please check the directory and try again.","coldBricks.validation");
 
 				// create site record for coldbricks
 				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");

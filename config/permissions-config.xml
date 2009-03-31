@@ -52,30 +52,30 @@
 	
 	<resources>
 		<!-- open to anyone -->
-		<resource id="ehGeneral.*" roles="" />
+		<resource id="public" event="ehGeneral.*" roles="" />
 		
 		<!-- allowed to all users -->
-		<resource id="ehGeneral.dspMain" roles="*" />
-		<resource id="ehSites.dspMain" roles="*" />
-		<resource id="ehSite.*" roles="*" />
+		<resource id="dashboard" event="ehGeneral.dspMain" roles="*" />
+		<resource id="siteDashboard" event="ehSites.dspMain" roles="*" />
+		<resource id="site" event="ehSite.*" roles="*" />
 
 		<!-- allowed to administrator, managers and editors -->
-		<resource id="ehPages.*" roles="admin,mngr,edit" />
-		<resource id="ehAccounts.*" roles="admin,mngr,edit" />
-		<resource id="ehPage.*" roles="admin,mngr,edit" />
-		<resource id="ehResources.*" roles="admin,mngr,edit,cont" />
+		<resource id="pages" event="ehPages.*" roles="admin,mngr,edit" />
+		<resource id="accounts" event="ehAccounts.*" roles="admin,mngr,edit" />
+		<resource id="page" event="ehPage.*" roles="admin,mngr,edit" />
+		<resource id="resources" event="ehResources.*" roles="admin,mngr,edit,cont" />
 
 		<!-- allowed to administrators and managers -->
-		<resource id="ehSiteConfig.*" roles="admin,mngr" />
-		<resource id="ehSiteMap.*" roles="admin,mngr" />
-		<resource id="ehSites.doArchiveSite" roles="admin,mngr" />
-		<resource id="ehSite.doSaveNotes" roles="admin,mngr" />
+		<resource id="siteSettings" event="ehSiteConfig.*" roles="admin,mngr" />
+		<resource id="siteMap" event="ehSiteMap.*" roles="admin,mngr" />
+		<resource id="downloadSite" event="ehSites.doArchiveSite" roles="admin,mngr" />
+		<resource id="saveNotes" event="ehSite.doSaveNotes" roles="admin,mngr" />
 	
 		<!-- allowed only to administrators -->
-		<resource id="ehSites.*" roles="admin" />
-		<resource id="ehSettings.*" roles="admin" />
-		<resource id="ehUsers.*" roles="admin" />
-		<resource id="ehSetup.*" roles="admin" />
+		<resource id="sites" event="ehSites.*" roles="admin" />
+		<resource id="settings" event="ehSettings.*" roles="admin" />
+		<resource id="users" event="ehUsers.*" roles="admin" />
+		<resource id="setup" event="ehSetup.*" roles="admin" />
 	</resources>
 	
 </permissions-config>

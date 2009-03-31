@@ -2,12 +2,14 @@
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
 <cfparam name="request.requestState.aPlugins" default="">
+<cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oUser" default="">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset loadSiteID = request.requestState.loadSiteID>
 <cfset aPlugins = request.requestState.aPlugins>
+<cfset aModules = request.requestState.aModules>
 <cfset oUser = request.requestState.oUser>
 
 <!--- check if there is another site besides the hp engine --->
@@ -84,27 +86,15 @@
 			</cfif>
 
 			<cf_dashboardMenu title="Server Management:" id="dsb_serverManagement">
-			
-				<cf_dashboardMenuItem href="index.cfm?event=ehSites.dspMain" 
-										isAllowed="#stAccessMap.sites#"
-										imgSrc="images/folder_desktop_48x48.png"
-										alt="Sites Management"
-										label="Sites"
-										help="Access the sites management module, from there you can add, remove, archive and access individual sites">
-
-				<cf_dashboardMenuItem href="index.cfm?event=ehUsers.dspMain" 
-										isAllowed="#stAccessMap.users#"
-										imgSrc="images/users_48x48.png"
-										alt="ColdBricks Users Management"
-										label="Users"
-										help="This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.">
-
-				<cf_dashboardMenuItem href="index.cfm?event=ehSettings.dspMain" 
-										isAllowed="#stAccessMap.settings#"
-										imgSrc="images/configure_48x48.png"
-										alt="Global Settings"
-										label="Settings"
-										help="For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files">
+				
+				<cfloop from="1" to="#arrayLen(aModules)#" index="i">
+					<cf_dashboardMenuItem href="#aModules[i].href#" 
+											isAllowed="#stAccessMap[aModules[i].accessMapKey]#"
+											imgSrc="#aModules[i].imgSrc#"
+											alt="#aModules[i].alt#"
+											label="#aModules[i].label#"
+											help="#aModules[i].description#">
+				</cfloop>
 
 				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
 					<cfset oPlugin = aPlugins[i]>

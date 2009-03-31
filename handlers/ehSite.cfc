@@ -1,6 +1,6 @@
 <cfcomponent extends="ehColdBricks">
 
-	<cffunction name="doLoadSite">
+	<cffunction name="doLoadSite" access="public" returntype="void">
 		<cfscript>
 			var siteID = getValue("siteID");
 			var firstTime = getValue("firstTime",false);	// this is to flag a site being opened for the first time after creation
@@ -51,7 +51,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var oResourceLibrary = 0;
 			var stResourceTypes = structNew();
@@ -71,6 +71,7 @@
 			var oUserPluginDAO = 0;
 			var hasAccountsPlugin = false;
 			var oAccService = 0;
+			var aModules = arrayNew(1);
 			
 			try {
 				oContext = getService("sessionContext").getContext();
@@ -113,12 +114,35 @@
 					setValue("defaultAccount", oAccService.getConfig().getDefaultAccount() );
 				}
 				
-
+				// get available modules
+				aModules = getService("UIManager").getSiteModules();
 
 				// get installed site plugins
 				aPlugins = getService("plugins").getPluginsByType("site");
 				oUserPluginDAO = getService("DAOFactory").getDAO("userPlugin");
-				qryUserPlugins = oUserPluginDAO.search(userID = oUser.getID());
+				qryUserPlugins = oUserPluginDAO.search(userID = getValue("oUser").getID());
+				showAllModules = (getValue("oUser").getRole() eq "admin" or getValue("oUser").getRole() eq "mngr");
+
+				for(i=1;i lte arrayLen(aPlugins);i=i+1) {
+					if(showAllModules or listFind( valueList(qryUserPlugins.pluginID), aPlugins[i].getID() )) {
+						tmpImage = aPlugins[i].getPath() & "/" & aPlugins[i].getIconSrc();
+						tmpDesc = aPlugins[i].getDescription();
+			
+						if(aPlugins[i].getIconSrc() eq "") tmpImage = "images/cb-blocks.png";
+						if(tmpDesc eq "") tmpDesc = "<em>No description available</em>";
+			
+						st = {
+							href = "index.cfm?event=" & aPlugins[i].getModuleName() & "." & aPlugins[i].getDefaultEvent(),
+							help = tmpDesc,
+							imgSrc = tmpImage,
+							alt = "Plugin: " & aPlugins[i].getName(),
+							label = aPlugins[i].getName()
+						};
+						
+						arrayAppend(aModules, duplicate(st));
+					}
+				}				
+				
 				
 				setValue("oSiteInfo", oSiteInfo);
 				setValue("stResourceTypes", stResourceTypes);	
@@ -126,8 +150,7 @@
 				setValue("qryAccounts",  qryAccounts);
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("aPages", aPagesSorted );
-				setValue("aPlugins",aPlugins);
-				setValue("qryUserPlugins",qryUserPlugins);
+				setValue("aModules",aModules);
 				setValue("cbPageTitle", "Site Dashboard");
 				setValue("hasAccountsPlugin", hasAccountsPlugin);
 				setView("site/vwMain");
@@ -140,7 +163,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doSaveNotes">
+	<cffunction name="doSaveNotes" access="public" returntype="void">
 		<cfscript>
 			var oSiteDAO = 0;
 			var notes = getValue("notes");
@@ -168,7 +191,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doLoadAccountPage">
+	<cffunction name="doLoadAccountPage" access="public" returntype="void">
 		<cfscript>
 			var account = getValue("account");
 			var page = getValue("page");
@@ -216,7 +239,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doLoadHomePage">
+	<cffunction name="doLoadHomePage" access="public" returntype="void">
 		<cfscript>
 			var pageHREF = "";
 			var hp = 0;
@@ -277,6 +300,11 @@
 				setNextEvent("ehSite.dspMain");
 			}	
 		</cfscript>
+	</cffunction>
+
+	<cffunction name="doArchiveSite" access="public" returntype="void">
+		<cfset var siteID = oContext.getSiteInfo().getID()>
+		<cflocation url="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" addtoken="false">
 	</cffunction>
 
 </cfcomponent>

@@ -7,11 +7,10 @@
 <cfparam name="request.requestState.qlAccount" default="">
 <cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.firstTime" default="false">
-<cfparam name="request.requestState.aPlugins" default="">
 <cfparam name="request.requestState.oUser" default="">
-<cfparam name="request.requestState.qryUserPlugins" default="">
 <cfparam name="request.requestState.hasAccountsPlugin" default="false">
-
+<cfparam name="request.requestState.aModules" default="">
+<cfparam name="request.requestState.oContext" default="">
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset stResourceTypes = request.requestState.stResourceTypes>
@@ -22,18 +21,21 @@
 <cfset qlAccount = request.requestState.qlAccount>
 <cfset aPages = request.requestState.aPages>
 <cfset firstTime = request.requestState.firstTime>
-<cfset aPlugins = request.requestState.aPlugins>
 <cfset oUser = request.requestState.oUser>
-<cfset qryUserPlugins = request.requestState.qryUserPlugins>
 <cfset hasAccountsPlugin = request.requestState.hasAccountsPlugin>
+<cfset aModules = request.requestState.aModules>
+<cfset oContext = request.requestState.oContext>
 
 <cfset siteID = oSiteInfo.getID()>
 <cfset stAccessMap = oUser.getAccessMap()>
 
-<cfset lstUserPlugins = valueList(qryUserPlugins.pluginID)>
-
-<cfset showAllModules = (oUser.getRole() eq "admin" or oUser.getRole() eq "mngr")>
-
+<!--- fix appRoot for sites at root level --->
+<cfif appRoot eq "/">
+	<cfset tmpAppRoot = "">
+<cfelse>
+	<cfset tmpAppRoot = appRoot>
+</cfif>
+					
 <!--- sort accounts --->
 <cfif hasAccountsPlugin>
 	<cfquery name="qryAccounts" dbtype="query">
@@ -57,100 +59,13 @@
 	<cfset stResCount[qryResCount.type] = qryResCount.resCount>
 </cfloop>
 
-<cfscript>
-	aOptions = [
-		{
-			href = "index.cfm?event=ehSite.doLoadHomePage",
-			help = "This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.",
-			imgSrc = "images/homepage_48x48.png",
-			alt = "Edit Site's Home Page",
-			label = "Home Page",
-			isAllowed = stAccessMap.pages
-		},
-		{
-			href = "index.cfm?event=ehPages.dspMain",
-			help = "The pages module lets you manage all pages in a site.",
-			imgSrc = "images/documents_48x48.png",
-			alt = "Manage site pages",
-			label = "Pages",
-			isAllowed = stAccessMap.pages
-		},
-		{
-			href = "index.cfm?event=ehAccounts.dspMain",
-			help = "Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.",
-			imgSrc = "images/users_48x48.png",
-			alt = "Manage accounts",
-			label = "Accounts",
-			isAllowed = hasAccountsPlugin and stAccessMap.accounts
-		},
-		{
-			href = "index.cfm?event=ehResources.dspMain",
-			help = "The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.",
-			imgSrc = "images/folder2_yellow_48x48.png",
-			alt = "Resource Management",
-			label = "Resources",
-			isAllowed = stAccessMap.resources
-		},
-		{
-			href = "index.cfm?event=ehSiteMap.dspMain",
-			help = "The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.",
-			imgSrc = "images/Globe_48x48.png",
-			alt = "Site Map Tool",
-			label = "Site Map",
-			isAllowed = stAccessMap.siteMap
-		},
-		{
-			href = "index.cfm?event=ehSiteConfig.dspMain",
-			help = "For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files",
-			imgSrc = "images/configure_48x48.png",
-			alt = "Site Settings",
-			label = "Settings",
-			isAllowed = stAccessMap.siteSettings
-		},
-		{
-			href = "index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#",
-			help = "Download a zipped version of this site for backup or migration",
-			imgSrc = "images/download_manager_48x48.png",
-			alt = "Download Site",
-			label = "Download",
-			isAllowed = stAccessMap.downloadSite
-		}	
-	];
+<cfoutput>
 	
-	for(i=1;i lte arrayLen(aPlugins);i=i+1) {
-		oPlugin = aPlugins[i];
-		tmpID = oPlugin.getID();
-		
-		if(showAllModules or listFind(lstUserPlugins,tmpID)) {
-			tmpEvent = oPlugin.getModuleName() & "." & oPlugin.getDefaultEvent();
-			tmpName = oPlugin.getName();
-			tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc();
-			tmpDesc = oPlugin.getDescription();
-
-			if(oPlugin.getIconSrc() eq "") tmpImage = "images/cb-blocks.png";
-			if(tmpDesc eq "") tmpDesc = "<em>No description available</em>";
-
-			st = {
-				href = "index.cfm?event=#tmpEvent#",
-				help = tmpDesc,
-				imgSrc = tmpImage,
-				alt = "Plugin: #tmpName#",
-				label = tmpName
-			};
-			
-			arrayAppend(aOptions, duplicate(st));
-		}
-	}
-</cfscript>
-
-
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
-
-<cfoutput>
 		
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
@@ -162,12 +77,6 @@
 
 
 				<div class="buttonImage btnLarge">
-					<!--- fix appRoot for sites at root level --->
-					<cfif appRoot eq "/">
-						<cfset tmpAppRoot = "">
-					<cfelse>
-						<cfset tmpAppRoot = appRoot>
-					</cfif>
 					<a href="#tmpAppRoot#/index.cfm?refreshApp=1" target="_blank" title="Open the site reloading site settings"><img src="images/arrow_refresh.png" border="0" align="absmiddle"> Reset Site</a>
 				</div>	
 			</div>
@@ -239,8 +148,25 @@
 			<cfset hasModuleAccess = false>
 			
 			<cf_dashboardMenu title="Site Management:">
-				<cfloop from="1" to="#arrayLen(aOptions)#" index="i">
-					<cf_dashboardMenuItem attributeCollection="#aOptions[i]#">
+				<cfloop from="1" to="#arrayLen(aModules)#" index="i">
+					<cfset isAllowed = stAccessMap[aModules[i].accessMapKey]
+										and
+										(
+											aModules[i].bindToPlugin eq ""
+											or
+											(
+												aModules[i].bindToPlugin neq ""
+												and
+												oContext.getHomePortals().getPluginManager().hasPlugin( aModules[i].bindToPlugin )
+											)	
+										)>
+
+					<cf_dashboardMenuItem href="#aModules[i].href#" 
+											isAllowed="#isAllowed#"
+											imgSrc="#aModules[i].imgSrc#"
+											alt="#aModules[i].alt#"
+											label="#aModules[i].label#"
+											help="#aModules[i].description#">
 				</cfloop>
 			</cf_dashboardMenu>
 			

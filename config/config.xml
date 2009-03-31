@@ -5,6 +5,7 @@
 		<setting name="applicationTitle" value="ColdBricks"/>
 		<setting name="versionTag" value="1.1.857 Beta" />
 		<setting name="permissionsConfigHREF" value="/ColdBricks/config/permissions-config.xml" />
+		<setting name="interfaceConfigHREF" value="/ColdBricks/config/interface-default.xml" />
 
 		<!-- These settings control the bug reporting features. Use 
 			in conjunction with the appropriate bugtracking service.
@@ -79,6 +80,12 @@
 			<init-param name="contextBeanClass">ColdBricks.components.model.contextBean</init-param>
 			<init-param name="contextName">cbContext</init-param>
 		</service> 		
+
+		<!-- this service is used to customize the user interface -->
+		<service name="UIManager" class="ColdBricks.components.services.UIManager">
+			<init-param name="configHREF" settingName="interfaceConfigHREF" />
+		</service> 		
+
 	</services>
 </config>
 
