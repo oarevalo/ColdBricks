@@ -125,7 +125,7 @@
 			<div class="cp_sectionTitle" id="cp_pd_moduleProperties_Title" 
 					style="width:210px;padding:0px;margin:0px;">
 				<div style="margin:2px;">
-					<img src="images/brick_add.png" align="absmiddle"> Resource Library
+					<img src="images/brick_add.png" align="absmiddle"> Add Page Content
 				</div>
 			</div>
 			<!--- select resource type --->
@@ -417,6 +417,6 @@
 <hr>
 
 <script type="text/javascript">
-	doEvent('ehPage.dspResourceTree','resourceTreePanel',{});
+	doEvent('ehPage.dspContentRenderersTree','resourceTreePanel',{});
 </script>
 
