@@ -3,6 +3,7 @@
 	<!--- this structure is used to store all resources that should be controlled --->
 	<cfset variables.mapResToRoles = structNew()>
 	<cfset variables.mapRoleToRes = structNew()>
+	<cfset variables.mapIDtoEvent = structNew()>
 	<cfset variables.qryRoles = queryNew("name,label,description")>
 	
 	<!--- this is the default action when a resource has not been defined --->
@@ -81,6 +82,18 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="buildAccessMap" access="public" returntype="struct" hint="builds and returns a struct with flags that determine access to each resource defined for the given role">
+		<cfargument name="role" type="string" required="true">
+		<cfset var stRet = structNew()>
+		<cfset var key = "">
+		
+		<cfloop collection="#variables.mapIDtoEvent#" item="key">
+			<cfset stRet[key] = isAllowed(variables.mapIDtoEvent[key], arguments.role)>
+		</cfloop>
+		
+		<cfreturn stRet>
+	</cffunction>
+
 	<cffunction name="loadConfig" access="private" returntype="void" hint="loads and parses the config file">
 		<cfargument name="configPath" type="string" required="false">
 		
@@ -115,7 +128,7 @@
 			for(i=1;i lte arrayLen(xmlDoc.xmlRoot.resources.xmlChildren);i=i+1) {
 				xmlNode = xmlDoc.xmlRoot.resources.xmlChildren[i];
 				if(xmlNode.xmlName eq "resource") {
-					addResource(xmlNode.xmlAttributes.id, xmlNode.xmlAttributes.roles);
+					addResource(xmlNode.xmlAttributes.id, xmlNode.xmlAttributes.event, xmlNode.xmlAttributes.roles);
 				}
 			}	
 		</cfscript>
@@ -141,21 +154,23 @@
 	
 	<cffunction name="addResource" access="public" returntype="void" hint="Adds a resource permission declaration. Takes an ID to identify the resource and the list of roles allowed access to that resource">
 		<cfargument name="id" type="string" required="true">
+		<cfargument name="event" type="string" required="true">
 		<cfargument name="roles" type="string" required="true">
 		<cfscript>
 			var tmpRole = "";
 			var j = 0;
 			
 			// mapping between resources and roles
-			variables.mapResToRoles[arguments.id] = arguments.roles;
+			variables.mapResToRoles[arguments.event] = arguments.roles;
+			variables.mapIDtoEvent[arguments.id] = arguments.event;
 
 			// mapping between a role to its resources
 			for(j=1;j lte listLen(arguments.roles);j=j+1) {
 				tmpRole = listGetAt(arguments.roles,j);
 				if(not structKeyExists(variables.mapRoleToRes, tmpRole))
-					variables.mapRoleToRes[tmpRole] = arguments.id;
+					variables.mapRoleToRes[tmpRole] = arguments.event;
 				else
-					variables.mapRoleToRes[tmpRole] = listAppend(variables.mapRoleToRes[tmpRole], arguments.id);
+					variables.mapRoleToRes[tmpRole] = listAppend(variables.mapRoleToRes[tmpRole], arguments.event);
 			}		
 		</cfscript>
 	</cffunction>
