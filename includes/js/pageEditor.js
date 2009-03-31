@@ -66,6 +66,16 @@ function viewResourceInfo(resID,resType) {
 	doEvent("ehPage.dspResourceInfo","moduleProperties",{resourceID: resID, resType: resType});
 }
 
+function addContentTag(tag) {
+	if(confirm("Add " + tag + "?")) {
+		document.location="?event=ehPage.doAddContentTag&tag="+tag;
+	}
+}
+
+function viewContentTagInfo(tag) {
+	doEvent("ehPage.dspContentRenderersInfo","moduleProperties",{tag: tag});
+}
+
 function getModuleProperties(event) {
 	e = fixEvent(event);
 	var modID = this.id;

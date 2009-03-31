@@ -404,6 +404,57 @@
 		</cfscript>	
 	</cffunction>
 
+	<cffunction name="dspContentRenderersTree" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				setLayout("Layout.None");
+
+				hp = oContext.getHomePortals();
+			
+				setValue("stTags", hp.getConfig().getContentRenderers());
+				setValue("oPage", oContext.getPage());
+				
+				setView("site/page/vwContentRenderersTree");
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+		</cfscript>	
+	</cffunction>
+
+	<cffunction name="dspContentRenderersInfo" access="public" returntype="void">
+		<cfscript>
+			var tag = getValue("tag");
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var tagInfo = "";
+			
+			try {
+				hp = oContext.getHomePortals();
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(tag);
+				obj = createObject("component",objPath);
+				tagInfo = getMetaData(obj);
+
+				// pass values to view
+				setValue("tagInfo", tagInfo);
+				
+				setView("site/page/vwContentTagInfo");
+				setLayout("Layout.None");
+				
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		</cfscript>
+	</cffunction>
+	
 
 	<!-----  Module Actions  ---->			
 	<cffunction name="doAddResource" access="public" returntype="void">
@@ -652,6 +703,47 @@
 			}				
 		</cfscript>
 	</cffunction>
+		
+	<cffunction name="doAddContentTag" access="public" returntype="void">
+		<cfscript>
+			var tag = getValue("tag");
+			var locationName = getValue("locationName","");
+			var oPage = 0;
+			var hp = 0;
+			var	stAttributes = structNew();
+			var oContext = getService("sessionContext").getContext();
+
+			try {
+				hp = oContext.getHomePortals();
+				
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+
+				oPage = oContext.getPage();
+				
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
+				oPageHelper.addContentTag(tag, locationName, stAttributes);
+				savePage();
+				
+				setMessage("info", "Empty content tag added to page");
+				
+				// go to the page editor
+				setNextEvent("ehPage.dspMain");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}				
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="dspContentTagInfo" access="public" returntype="void">
+	</cffunction>	
 		
 		
 	<!-----  Page Level Actions  ---->		
