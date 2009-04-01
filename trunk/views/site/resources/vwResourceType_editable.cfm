@@ -157,6 +157,10 @@
 				<div style="border:1px solid silver;background-color:##fff;margin-bottom:5px;display:none;height:371px;" id="pnl_info">
 					<table style="margin:10px;">
 						<tr>
+							<td width="80"><b>Res Lib:</b></td>
+							<td>#oResourceBean.getResLibPath()#</td>
+						</tr>
+						<tr>
 							<td width="80"><b>HREF:</b></td>
 							<td><input type="text" name="href" value="#contentLocation#" class="formField"></td>
 						</tr>
