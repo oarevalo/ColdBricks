@@ -113,36 +113,18 @@
 				oCatalog = hp.getCatalog();
 
 				stModule = oPage.getModule(moduleID);
-				
-				try {
-					if(stModule.moduleType eq "module")	{
-						oResourceBean = oCatalog.getModuleByName(stModule.name);
-						missingModuleBean = false;
-						setValue("oResourceBean", oResourceBean);
-					}
 
-					if(stModule.moduleType eq "content" 
-							and structKeyExists(stModule,"resourceID") 
-							and structKeyExists(stModule,"resourceType") 
-							and stModule.resourceID neq "" 
-							and stModule.resourceType neq "") {
-						oResourceBean = oCatalog.getResourceNode(stModule.resourceType, stModule.resourceID);
-						missingModuleBean = false;
-						setValue("oResourceBean", oResourceBean);
-					}
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(stModule.moduleType);
+				obj = createObject("component",objPath);
+				tagInfo = getMetaData(obj);
 				
-				} catch(homePortals.catalog.resourceNotFound e) { 	}
-	
-				if(hp.getPluginManager().hasPlugin("accounts")) {
-					setValue("accountsRoot", getAccountsService().getConfig().getAccountsRoot() );
-				}
-	
 				// pass values to view
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
 				setValue("stModule", stModule);
-				setValue("missingModuleBean", missingModuleBean);
+				setValue("tagInfo", tagInfo);
 				setValue("pageHREF", oContext.getPageHREF());
+				setValue("tag", stModule.moduleType);
 
 				if(oContext.hasAccountSite())
 					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Edit Module");

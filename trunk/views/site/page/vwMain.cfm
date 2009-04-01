@@ -309,7 +309,7 @@
 					style="width:190px;padding:0px;margin:0px;">
 				<div style="margin:2px;text-align:left;">
 					<img src="images/brick_edit.png" align="absmiddle">
-					Resource Properties
+					Module Properties
 				</div>
 			</div>
 			<div class="cp_sectionBox" 

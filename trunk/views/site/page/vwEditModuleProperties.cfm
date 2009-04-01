@@ -1,9 +1,7 @@
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.oCatalog" default="">
 <cfparam name="request.requestState.stModule" default="">
-<cfparam name="request.requestState.oResourceBean" default="">
-<cfparam name="request.requestState.accountsRoot" default="">
-<cfparam name="request.requestState.missingModuleBean" default="false">
+<cfparam name="request.requestState.tagInfo" default="">
 <cfparam name="request.requestState.pageHREF" default="">
 
 <cfscript>
@@ -11,19 +9,13 @@
 	oCatalog = request.requestState.oCatalog;
 		
 	thisModule = request.requestState.stModule;
-	oResourceBean = request.requestState.oResourceBean;
-	missingModuleBean = request.requestState.missingModuleBean;
+	tagInfo = request.requestState.tagInfo;
 	thisPageHREF = request.requestState.pageHREF;	
 
 	lstAttribs = "Name,location,id,Title,Container,style,icon,moduleType";
 	lstAllAttribs = structKeyList(thisModule);
 	lstIgnoreAttribs ="output,display,showPrint"; 		// deprecated attributes
 	lstContentAttribs = "resourceID,resourceType,cache,cacheTTL";	// attributes applicable to "content" modules
-	
-	if(not missingModuleBean)
-		aAttrInfo = oResourceBean.getAttributes();
-	else
-		aAttrInfo = arrayNew(1);
 	
 	title = oPage.getTitle();
 </cfscript>
@@ -101,12 +93,8 @@
 
 					<table style="margin:5px;">
 						<tr>
-							<td width="80"><strong>ID:</strong></td>
-							<td><b>#thisModule.ID#</b></td>
-						</tr>
-						<tr>
-							<td><strong>Module Type:</strong></td>
-							<td><b>#thisModule.moduleType#</b></td>
+							<td style="width:100px;font-size:16px;"><strong>ID:</strong></td>
+							<td style="font-size:16px;"><b>#thisModule.ID#</b> (#thisModule.moduleType#)</td>
 						</tr>
 						<tr>
 							<td><strong>Title:</strong></td>
@@ -128,14 +116,125 @@
 							<td colspan="2">
 								<strong>Display Module Container:</strong>
 								<input type="checkbox" name="container" 
-										style="border:0px;width:auto;"
+										style="border:0px;width:15px;"
 										value="true" 
-										<cfif thisModule.container>checked</cfif> style="width:15px;"> 
+										<cfif thisModule.container>checked</cfif>> 
 							</td>
 						</tr>
 					</table>
-					<br><br>
+					<br>
 					
+					<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">Display Properties</div>
+
+					<table style="margin:5px;">
+						<tr>
+							<td style="width:100px;"><strong>CSS Class:</strong></td>
+							<td>
+								<input type="text" name="class" 
+										value="#thisModule.class#" 
+										class="formField">
+							</td>
+						</tr>
+						<tr>
+							<td><strong>CSS Style:</strong></td>
+							<td>
+								<input type="text" name="style" 
+										value="#thisModule.style#" 
+										class="formField">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<strong>Display output:</strong>
+								<input type="checkbox" name="output" 
+										style="border:0px;width:15px;"
+										value="true" 
+										<cfif thisModule.output>checked</cfif>> 
+							</td>
+						</tr>
+					</table>
+					<br>
+
+					<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">Module Properties</div>
+
+					<cfif arrayLen(tagInfo.properties) gt 0>
+						<table style="margin:5px;">
+							<cfloop from="1" to="#arrayLen(tagInfo.properties)#" index="i">
+								<cfset prop = tagInfo.properties[i]>
+								<cfparam name="prop.name" default="property">
+								<cfparam name="prop.hint" default="">
+								<cfparam name="prop.default" default="">
+								<cfparam name="prop.type" default="">
+								<cfparam name="thisModule[prop.name]" default="#prop.default#">
+								<cfset tmpAttrValue = thisModule[prop.name]>
+								<cfset thisAttr = prop.name>
+								<cfset tmpType = prop.type>
+								<cfif listLen(tmpType,":") eq 2 and listfirst(tmpType,":") eq "resource">
+									<cfset tmpType = listfirst(tmpType,":")>
+									<cfset resourceType = listlast(tmpType,":")>
+								</cfif>
+								<tr>
+									<td style="width:100px;"><strong>#thisAttr#:</strong></td>
+									<td>
+										<cfswitch expression="#tmpType#">
+											<cfcase value="list">
+												<cfif structKeyExist(prop,"values")>
+													<cfset lstValues = prop.values>
+												<cfelse>
+													<cfset lstValues = "">
+												</cfif>
+												<cfparam name="prop.values" default="string">
+												<select name="#thisAttr#" class="formField" style="width:150px;">
+													<cfloop list="#lstValues#" index="item">
+														<option value="#item#" <cfif tmpAttrValue eq item>selected</cfif>>#item#</option>
+													</cfloop>
+												</select>
+											</cfcase>
+											<cfcase value="resource">
+												<cfset qryResources = oCatalog.getResourcesByType(resourceType)>
+												<cfquery name="qryResources" dbtype="query">
+													SELECT *, upper(package) as upackage, upper(id) as uid
+														FROM qryResources
+														ORDER BY upackage, uid, id
+												</cfquery>
+												<select name="#thisAttr#" class="formField">
+													<cfloop query="qryResources">
+														<option value="#tmpVal#"
+																<cfif tmpAttrValue eq qryResources.id>selected</cfif>	
+																	>[#qryResources.package#] #qryResources.id#</option>
+													</cfloop>
+												</select>
+											</cfcase>
+											<cfcase value="boolean">
+												<input type="radio" name="#thisAttr#" 
+														style="border:0px;width:15px;"
+														value="true" 
+														<cfif isBoolean(tmpAttrValue) and tmpAttrValue>checked</cfif>> True 
+												<input type="radio" name="#thisAttr#" 
+														style="border:0px;width:15px;"
+														value="false" 
+														<cfif not isBoolean(tmpAttrValue) or not tmpAttrValue>checked</cfif>> False 
+											</cfcase>
+											<cfdefaultcase>
+												<input type="text" 
+														name="#thisAttr#" 
+														value="#tmpAttrValue#" 
+														class="formField">
+											</cfdefaultcase>
+										</cfswitch>
+									</td>
+								</tr>
+								<cfif prop.hint neq "">
+									<tr>
+										<td>&nbsp;</td>
+										<td><div class="formFieldTip">#prop.hint#</div></td>
+									</tr>
+								</cfif>
+							</cfloop>
+						</table>
+					</cfif>
+									
+<!---					
 					<cfif thisModule.moduleType eq "content">
 						<cfset qryResources_content = oCatalog.getResourcesByType("content")>
 						<cfset qryResources_html = oCatalog.getResourcesByType("html")>
@@ -331,56 +430,13 @@
 							<em>This module does not have any additional properties</em>
 						</cfif>
 					</cfif>
+
+---->
 				</td>
 				<td style="width:10px;">&nbsp;</td>
 				
-					<td style="border:1px solid ##ccc;background-color:##ebebeb;width:250px;">
-						<div style="margin:5px;">
-							<cfif not missingModuleBean>
-								<b>Module:</b><br>	#oResourceBean.getName()#
-								<br><br>
-								<b>Package:</b><br>	#oResourceBean.getPackage()#
-								<br><br>
-								<b>Owner:</b>	#oResourceBean.getOwner()#<br>
-								<b>Access:</b>	#oResourceBean.getAccessType()#<br>
-								<br>
-								<b>Description:</b><br>
-									
-								<cfif oResourceBean.getDescription() neq "">
-									#oResourceBean.getDescription()#
-								<cfelse>
-									N/A
-								</cfif>
-								<br><br>
-								<b>Author:</b><br>
-								<cfif oResourceBean.getAuthorName() neq "">
-									#oResourceBean.getAuthorName()#<br>
-								<cfelse>
-									N/A<br>
-								</cfif>
-								<cfif oResourceBean.getAuthorEmail() neq "">
-									<cfset tmpHREF = oResourceBean.getAuthorEmail()>
-									<a href="mailto:#tmpHREF#" style="white-space:normal">#tmpHREF#<br>
-								</cfif>
-								<cfif oResourceBean.getAuthorURL() neq "">
-									<cfset tmpHREF = oResourceBean.getAuthorURL()>
-									<div style="white-space:normal;width:200px;overflow:hidden;">
-										<a href="#tmpHREF#" target="_blank" style="white-space:normal">#tmpHREF#<br>
-									</div>
-								</cfif>
-							<cfelse>
-								<div style="line-height:20px;">
-									<cfif thisModule.moduleType eq "content" and thisModule.href neq "">
-										No information available.
-									<cfelse>
-										<img src="images/error.png" align="absmiddle"> <b>Error!</b><br>
-										Module resource information not found on the resource library for this module. 
-										The module may not have been installed or if it has already been intalled on 
-										this library please try installing it again. 
-									</cfif>
-								</div>
-							</cfif>
-						</div>
+					<td style="border:1px solid ##ccc;background-color:##ebebeb;width:250px;font-size:14px;line-height:18px;">
+						<cfinclude template="vwContentTagInfo.cfm">
 					</td>
 				
 			</tr>
