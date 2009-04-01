@@ -69,7 +69,8 @@
 					imgSrc = "images/Globe_48x48.png"
 					alt = "Site Map Tool"
 					label = "Site Map"
-					accessMapKey = "siteMap">
+					accessMapKey = "siteMap"
+					bindToPlugin = "accounts">
 				The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.
 			</module>
 
