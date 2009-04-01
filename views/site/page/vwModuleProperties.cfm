@@ -1,8 +1,12 @@
 <cfsetting showdebugoutput="false">
 <cfparam name="request.requestState.stModule" default="">
+<cfparam name="request.requestState.tagInfo" default="">
 
-<cfset lstBaseAttribs = "id,moduleType,title,container">
 <cfset thisModule = request.requestState.stModule>
+<cfset tagInfo = request.requestState.tagInfo>
+
+
+<cfset lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output">
 <cfparam name="thisModule.ID" default="">
 <cfparam name="thisModule.title" default="">
 <cfparam name="thisModule.container" default="true">
@@ -22,16 +26,33 @@
 		--->
 	</div>
 
-	<table style="width:170px;margin:5px;">
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>ID:</td><td>#thisModule.ID#</td></tr>
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Type:</td><td>#thisModule.moduleType#</td></tr>
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Title:</td><td>#thisModule.Title#</td></tr>
-		<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>Container:</td><td>#yesNoFormat(thisModule.container)#</td></tr>
-		<cfloop list="#lstAttribs#" index="attr">
-			<cfif not listFindNoCase(lstBaseAttribs,attr)>
-				<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;" nowrap>#attr#:</td><td>#thisModule[attr]#</td></tr>
-			</cfif>
+	<table class="tblProperties" border="1">
+		<tr><td colspan="2" style="color:black;"><b>General Properties</b></td></tr>
+		<tr valign="top"><th style="text-align:left;">ID:</th><td>#thisModule.ID#</td></tr>
+		<tr valign="top"><th style="text-align:left;">Type:</th><td>#thisModule.moduleType#</td></tr>
+		<tr valign="top"><th style="text-align:left;">Title:</th><td>#thisModule.Title#</td></tr>
+		<tr valign="top"><th style="text-align:left;">Container:</th><td>#yesNoFormat(thisModule.container)#</td></tr>
+		<!--- <tr valign="top"><th style="text-align:left;">Icon URL:</th><td>#thisModule.icon#</td></tr> --->
+
+	<!--- 	<tr><td colspan="2" style="color:black;"><b>Display Properties</b></td></tr>
+		<tr valign="top"><th style="text-align:left;">CSS Class:</th><td>#thisModule.class#</td></tr>
+		<tr valign="top"><th style="text-align:left;">CSS Style:</th><td>#thisModule.style#</td></tr>
+		<tr valign="top"><th style="text-align:left;">Output:</th><td>#yesNoFormat(thisModule.output)#</td></tr>
+ --->
+		
+		<tr><td colspan="2" style="color:black;padding-top:5px;"><b>Module Properties</b></td></tr>
+		<cfloop from="1" to="#arrayLen(tagInfo.properties)#" index="i">
+			<cfset prop = duplicate(tagInfo.properties[i])>
+			<cfparam name="prop.name" default="property">
+			<cfparam name="thisModule[prop.name]" default="">
+			<tr valign="top"><th style="text-align:left;">#prop.name#:</th><td>#thisModule[prop.name]#</td></tr>
 		</cfloop>
+		
+		<!--- <cfloop list="#lstAttribs#" index="attr">
+			<cfif not listFindNoCase(lstBaseAttribs,attr)>
+				<tr valign="top"><th style="text-align:left;">#attr#:</th><td>#thisModule[attr]#</td></tr>
+			</cfif>
+		</cfloop> --->
 	</table>
 </cfoutput>
 

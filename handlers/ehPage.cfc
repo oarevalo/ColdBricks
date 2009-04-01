@@ -72,8 +72,13 @@
 				oPage = oContext.getPage();
 				
 				stModule = oPage.getModule(moduleID);
-				
+
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(stModule.moduleType);
+				obj = createObject("component",objPath);
+				tagInfo = getMetaData(obj);
+
 				setValue("stModule", stModule);
+				setValue("tagInfo", tagInfo);
 				setView("site/page/vwModuleProperties");
 				setLayout("Layout.None");
 
@@ -598,30 +603,21 @@
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
-		
-				// create a structure with the module attributes
-				lstAllAttribs = form["_allAttribs"];
-				for(i=1;i lte listLen(lstAllAttribs);i=i+1) {
-					fld = listGetAt(lstAllAttribs,i);
-					if(structKeyExists(form,fld)) stAttribs[fld] = form[fld];
+				
+				lstAttribs = getValue("_baseAttribs");
+				for(i=1;i lte listLen(lstAttribs);i=i+1) {
+					fld = listGetAt(lstAttribs,i);
+					stAttribs[fld] = getValue(fld);
 				}
-		
-				if(not StructKeyExists(form,"container")) stAttribs.container = false;
 
-				if(getValue("moduleType") eq "content") {
-					if(not StructKeyExists(form,"cache")) stAttribs["cache"] = false;
-					if(getValue("resourceType") eq "content") stAttribs["resourceID"] = getValue("resourceID_content");
-					if(getValue("resourceType") eq "html") stAttribs["resourceID"] = getValue("resourceID_html");
-					if(getValue("resourceType") neq "") stAttribs["href"] = "";
-					if(getValue("resourceType") eq "") structDelete(stAttribs,"resourceType");
-					structDelete(stAttribs,"resourceID_content");
-					structDelete(stAttribs,"resourceID_html");
-					structDelete(stAttribs,"name");
-					if(getValue("cacheTTL") neq "")
-						stAttribs["cacheTTL"] = getValue("cacheTTL");
+				lstAttribs = getValue("_customAttribs");
+				for(i=1;i lte listLen(lstAttribs);i=i+1) {
+					fld = listGetAt(lstAttribs,i);
+					if(getValue(fld) neq getValue(fld & "_default") 
+						and getValue(fld) neq "_NOVALUE_") stAttribs[fld] = getValue(fld);
 				}
-		
-				oPage.setModule(moduleID, stAttribs);
+				
+				oPage.setModule(moduleID, getValue("location"), stAttribs);
 				savePage();
 				
 				setMessage("info", "Module attributes saved");

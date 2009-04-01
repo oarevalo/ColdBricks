@@ -12,53 +12,12 @@
 	tagInfo = request.requestState.tagInfo;
 	thisPageHREF = request.requestState.pageHREF;	
 
-	lstAttribs = "Name,location,id,Title,Container,style,icon,moduleType";
+	lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output";
 	lstAllAttribs = structKeyList(thisModule);
-	lstIgnoreAttribs ="output,display,showPrint"; 		// deprecated attributes
-	lstContentAttribs = "resourceID,resourceType,cache,cacheTTL";	// attributes applicable to "content" modules
+	lstCustomAttribs = "";
 	
 	title = oPage.getTitle();
 </cfscript>
-
-<cfparam name="thisModule.Name" default="">
-<cfparam name="thisModule.Location" default="">
-<cfparam name="thisModule.ID" default="">
-<cfparam name="thisModule.title" default="">
-<cfparam name="thisModule.container" default="true">
-<cfparam name="thisModule.style" default="">
-<cfparam name="thisModule.icon" default="">
-
-<cfif thisModule.moduleType eq "content">
-	<cfparam name="thisModule.resourceID" default="">
-	<cfparam name="thisModule.resourceType" default="">
-	<cfparam name="thisModule.cache" default="">
-	<cfparam name="thisModule.cacheTTL" default="">
-	<cfparam name="thisModule.href" default="">
-	<cfif not isBoolean(thisModule.cache)>
-		<cfset thisModule.cache = true>
-	</cfif>
-</cfif>
-
-
-<script type="text/javascript">
-	function toggleResourceType(resType) {
-		if(resType=="") {
-			document.getElementById("resourceID_content").style.display="none";
-			document.getElementById("resourceID_html").style.display="none";
-			document.getElementById("resourceID_none").style.display="block";
-		}
-		if(resType=="content") {
-			document.getElementById("resourceID_content").style.display="block";
-			document.getElementById("resourceID_html").style.display="none";
-			document.getElementById("resourceID_none").style.display="none";
-		}
-		if(resType=="html") {
-			document.getElementById("resourceID_content").style.display="none";
-			document.getElementById("resourceID_html").style.display="block";
-			document.getElementById("resourceID_none").style.display="none";
-		}
-	}
-</script>
 
 <cfoutput>
 	<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="8" cellspacing="0">
@@ -76,13 +35,10 @@
 	<form name="frmModule" action="index.cfm?event=ehPage.doSaveModule" method="post" style="margin:0px;padding:0px;">
 		<input type="hidden" name="event" value="ehPage.doSaveModule" />
 
-		<input type="hidden" name="name" value="#thisModule.name#" />
 		<input type="hidden" name="location" value="#thisModule.location#" />
-		<input type="hidden" name="style" value="#thisModule.style#" />
 		<input type="hidden" name="id" value="#thisModule.ID#">
 		<input type="hidden" name="moduleType" value="#thisModule.moduleType#">
-		<input type="hidden" name="_baseAttribs" id="_baseAttribs" value="#lstAttribs#">
-		<input type="hidden" name="_allAttribs" id="_allAttribs" value="#lstAllAttribs#">
+		<input type="hidden" name="_baseAttribs" id="_baseAttribs" value="#lstBaseAttribs#">
 
 		<br>
 
@@ -113,12 +69,16 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
-								<strong>Display Module Container:</strong>
-								<input type="checkbox" name="container" 
+							<td><strong>Module Container:</strong></td>
+							<td>
+								<input type="radio" name="container" 
 										style="border:0px;width:15px;"
 										value="true" 
-										<cfif thisModule.container>checked</cfif>> 
+										<cfif thisModule.container>checked</cfif>> Yes 
+								<input type="radio" name="container" 
+										style="border:0px;width:15px;"
+										value="false" 
+										<cfif not thisModule.container>checked</cfif>> No 
 							</td>
 						</tr>
 					</table>
@@ -144,12 +104,16 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
-								<strong>Display output:</strong>
-								<input type="checkbox" name="output" 
+							<td><strong>Display output:</strong></td>
+							<td>	
+								<input type="radio" name="output" 
 										style="border:0px;width:15px;"
 										value="true" 
-										<cfif thisModule.output>checked</cfif>> 
+										<cfif thisModule.output>checked</cfif>> Yes 
+								<input type="radio" name="output" 
+										style="border:0px;width:15px;"
+										value="false" 
+										<cfif not thisModule.output>checked</cfif>> No 
 							</td>
 						</tr>
 					</table>
@@ -160,21 +124,28 @@
 					<cfif arrayLen(tagInfo.properties) gt 0>
 						<table style="margin:5px;">
 							<cfloop from="1" to="#arrayLen(tagInfo.properties)#" index="i">
-								<cfset prop = tagInfo.properties[i]>
+								<cfset prop = duplicate(tagInfo.properties[i])>
 								<cfparam name="prop.name" default="property">
 								<cfparam name="prop.hint" default="">
 								<cfparam name="prop.default" default="">
 								<cfparam name="prop.type" default="">
+								<cfparam name="prop.required" default="false">
+								<cfparam name="prop.displayName" default="#prop.name#">
+								
 								<cfparam name="thisModule[prop.name]" default="#prop.default#">
+								
 								<cfset tmpAttrValue = thisModule[prop.name]>
 								<cfset thisAttr = prop.name>
-								<cfset tmpType = prop.type>
-								<cfif listLen(tmpType,":") eq 2 and listfirst(tmpType,":") eq "resource">
-									<cfset tmpType = listfirst(tmpType,":")>
-									<cfset resourceType = listlast(tmpType,":")>
+								<cfif listLen(prop.type,":") eq 2 and listfirst(prop.type,":") eq "resource">
+									<cfset tmpType = listfirst(prop.type,":")>
+									<cfset resourceType = listlast(prop.type,":")>
+								<cfelse>
+									<cfset tmpType = prop.type>
 								</cfif>
+								<cfset lstCustomAttribs = listAppend(lstCustomAttribs, prop.name)>
+								
 								<tr>
-									<td style="width:100px;"><strong>#thisAttr#:</strong></td>
+									<td style="width:100px;"><strong>#prop.displayName#:</strong></td>
 									<td>
 										<cfswitch expression="#tmpType#">
 											<cfcase value="list">
@@ -185,11 +156,14 @@
 												</cfif>
 												<cfparam name="prop.values" default="string">
 												<select name="#thisAttr#" class="formField" style="width:150px;">
+													<cfif not prop.required><option value="_NOVALUE_"></option></cfif>
 													<cfloop list="#lstValues#" index="item">
 														<option value="#item#" <cfif tmpAttrValue eq item>selected</cfif>>#item#</option>
 													</cfloop>
 												</select>
+												<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
 											</cfcase>
+											
 											<cfcase value="resource">
 												<cfset qryResources = oCatalog.getResourcesByType(resourceType)>
 												<cfquery name="qryResources" dbtype="query">
@@ -198,30 +172,45 @@
 														ORDER BY upackage, uid, id
 												</cfquery>
 												<select name="#thisAttr#" class="formField">
+													<cfif not prop.required><option value="_NOVALUE_"></option></cfif>
 													<cfloop query="qryResources">
-														<option value="#tmpVal#"
+														<option value="#qryResources.id#"
 																<cfif tmpAttrValue eq qryResources.id>selected</cfif>	
 																	>[#qryResources.package#] #qryResources.id#</option>
 													</cfloop>
 												</select>
+												<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
 											</cfcase>
+											
 											<cfcase value="boolean">
+												<cfif prop.required>
+													<cfset isTrueChecked = (isBoolean(tmpAttrValue) and tmpAttrValue)>
+													<cfset isFalseChecked = (isBoolean(tmpAttrValue) and not tmpAttrValue) or (tmpAttrValue eq "")>
+												<cfelse>
+													<cfset isTrueChecked = (isBoolean(tmpAttrValue) and tmpAttrValue)>
+													<cfset isFalseChecked = (isBoolean(tmpAttrValue) and not tmpAttrValue)>
+												</cfif>
+												
 												<input type="radio" name="#thisAttr#" 
 														style="border:0px;width:15px;"
 														value="true" 
-														<cfif isBoolean(tmpAttrValue) and tmpAttrValue>checked</cfif>> True 
+														<cfif isTrueChecked>checked</cfif>> True 
 												<input type="radio" name="#thisAttr#" 
 														style="border:0px;width:15px;"
 														value="false" 
-														<cfif not isBoolean(tmpAttrValue) or not tmpAttrValue>checked</cfif>> False 
+														<cfif isFalseChecked>checked</cfif>> False 
+												<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
 											</cfcase>
+											
 											<cfdefaultcase>
 												<input type="text" 
 														name="#thisAttr#" 
 														value="#tmpAttrValue#" 
 														class="formField">
+												<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
 											</cfdefaultcase>
 										</cfswitch>
+										<input type="hidden" name="#thisAttr#_default" value="#prop.default#">
 									</td>
 								</tr>
 								<cfif prop.hint neq "">
@@ -442,6 +431,7 @@
 			</tr>
 		</table>
 		<p>
+			<input type="hidden" name="_customAttribs" id="_customAttribs" value="#lstCustomAttribs#">	
 			<input type="button" 
 					name="btnCancel" 
 					value="Return To Page Editor" 

@@ -60,9 +60,9 @@
 	aStyles = oPage.getStylesheets();
 	
 	if(appRoot eq "/")
-		tmpPageURL = "/index.cfm?page=#fileName#";
+		tmpPageURL = "/index.cfm?page=#thisPageHREF#";
 	else
-		tmpPageURL = appRoot & "/index.cfm?page=#fileName#";
+		tmpPageURL = appRoot & "/index.cfm?page=#thisPageHREF#";
 		
 	if(accountName neq "") tmpPageURL & "&account=" & accountName;
 </cfscript>
@@ -277,7 +277,7 @@
 				 style="padding:0px;margin-left:10px;margin-right:10px;margin-top:10px;">
 				<div style="margin:4px;text-align:left;">
 					
-					<div style="float:right;">
+					<!--- <div style="float:right;">
 						<strong>Apply Template:</strong>
 						<select name="pageTemplate" style="width:160px;font-size:10px;" onchange="applyPageTemplate(this.value)">
 							<option value="" selected="yes">-- Select layout template --</option>
@@ -287,7 +287,7 @@
 							<option value="_NEW">-- New Template --</option>
 							<option value="_IMPORT">-- Import Templates --</option>
 						</select>					
-					</div>
+					</div> --->
 					
 					<strong>Page Layout:</strong>
 					&nbsp;&nbsp;&nbsp;

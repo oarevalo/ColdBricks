@@ -407,5 +407,17 @@ ul.layoutPreviewList li div {
      text-align:center;
 }
 
-
+.tblProperties {
+	width:100%;
+	border-collapse:collapse !important;
+}
+.tblProperties th {
+	font-size:10px;
+	color:#999;
+	text-align:left !important;
+	width:40px;
+}
+.tblProperties td, .tblProperties th {
+	border:1px solid #ebebeb;
+}
 
