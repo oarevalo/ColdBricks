@@ -134,18 +134,26 @@
 			var hp = 0;
 			var oCatalog = 0;
 			var resourceType = getValue("resourceType","");
+			var resLibIndex = val(getValue("resLibIndex",""));
 			var oHelpDAO = 0;
 			var qryHelp = 0;
+			var qryResources = queryNew("");
 			var oContext = getService("sessionContext").getContext();
+			var aResLibs = arrayNew(1);
 			
 			try {
 				setLayout("Layout.None");
 
 				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
+				oResLibManager = hp.getResourceLibraryManager();
 
 				// get resources
-				qryResources = oCatalog.getResourcesByType(resourceType);
+				aResLibs = oResLibManager.getResourceLibraries();
+				if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
+				if(resLibIndex gt 0) {
+					qryResources = oCatalog.getResourcesByType(resourceType, aResLibs[resLibIndex].getPath());
+				}
 				
 				// get info on resource type
 				oHelpDAO = getService("DAOFactory").getDAO("help");
@@ -166,6 +174,8 @@
 				setValue("resourceType", resourceType);	
 				setValue("qryResources", qryResources);	
 				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath());
+				setValue("aResLibs", aResLibs);	
+				setValue("resLibIndex", resLibIndex);	
 				
 				setView("site/resources/vwResourceTypeList");
 				setValue("resTypeLabel", resTypeLabel );

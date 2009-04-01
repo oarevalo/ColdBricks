@@ -13,10 +13,11 @@ tinyMCE.init({
 	relative_urls : false
 });
 
-function selectResourceType(resType,id,pkg) {
+function selectResourceType(resType,id,pkg,resLibIndex) {
 	if(id==null || id==undefined) id="";
 	if(pkg==null || pkg==undefined) pkg="";
-	doEvent("ehResources.dspResourceTypeList","nodePanel",{resourceType: resType,id: id,pkg: pkg});
+	if(resLibIndex==null || resLibIndex==undefined) resLibIndex="";
+	doEvent("ehResources.dspResourceTypeList","nodePanel",{resourceType: resType,id: id,pkg: pkg,resLibIndex: resLibIndex});
 
 	d = $$(".resTreeItem");
 	for(var i=0;i < d.length;i++) {
@@ -28,10 +29,11 @@ function selectResourceType(resType,id,pkg) {
 	if(d) d.style.fontWeight="bold";
 }
 
-function selectResource(resType,id,pkg) {
+function selectResource(resType,id,pkg,resLibIndex) {
 	if(id==null || id==undefined) id="";
 	if(pkg==null || pkg==undefined) pkg="";
-	doEvent("ehResources.dspResourceType","nodePanel",{resourceType: resType,id: id,pkg: pkg});
+	if(resLibIndex==null || resLibIndex==undefined) resLibIndex="";
+	doEvent("ehResources.dspResourceType","nodePanel",{resourceType: resType,id: id,pkg: pkg,resLibIndex: resLibIndex});
 
 	d = $$(".resTreeItem");
 	for(var i=0;i < d.length;i++) {

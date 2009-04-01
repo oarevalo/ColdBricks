@@ -6,6 +6,9 @@
 <cfparam name="request.requestState.resourceTypeInfo" default="">
 <cfparam name="request.requestState.startRow" default="1">
 <cfparam name="request.requestState.searchTerm" default="">
+<cfparam name="request.requestState.resViewType" default="resources">
+<cfparam name="request.requestState.aResLibs">
+<cfparam name="request.requestState.resLibIndex">
 
 <cfset resourceType = request.requestState.resourceType>
 <cfset qryResources = request.requestState.qryResources>
@@ -15,6 +18,9 @@
 <cfset resourceTypeInfo = request.requestState.resourceTypeInfo>
 <cfset startRow = request.requestState.startRow>
 <cfset searchTerm = request.requestState.searchTerm>
+<cfset resViewType = request.requestState.resViewType>
+<cfset aResLibs = request.requestState.aResLibs>
+<cfset resLibIndex = request.requestState.resLibIndex>
 
 <!--- sort/filter resources  --->
 <cfquery name="qryResources" dbtype="query">
@@ -68,8 +74,27 @@
 			</td>
 		</tr>
 	</table>
+
+	<table style="width:100%;border:1px solid silver;background-color:##ccc;margin-top:3px;" cellpadding="0" cellspacing="0">
+		<tr>
+			<td nowrap="yes" style="width:200px;">
+				<div style="margin:3px;">
+					<a href="##" <cfif resViewType eq "resources">style="font-weight:bold;"</cfif>>Resources View</a> |
+					<a href="##" <cfif resViewType eq "files">style="font-weight:bold;"</cfif>>Files View</a>
+				</div>
+			</td>
+			<td align="right" style="padding-right:10px;width:150px;">
+				Lib:
+				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)">
+					<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
+						<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
+					</cfloop>
+				</select>
+			</td>
+		</tr>
+	</table>
 	
-	<div style="background-color:##fff;height:395px;border:1px dashed ##ccc;margin-top:5px;overflow:auto;margin-bottom:5px;">
+	<div style="background-color:##fff;height:375px;border:1px dashed ##ccc;margin-top:5px;overflow:auto;margin-bottom:5px;">
 		<table cellpadding="1" cellspacing="0" style="width:100%;border-bottom:0px;" class="browseTable">
 			<tr>
 				<th width="20">No</th>
@@ -84,8 +109,8 @@
 					<td>
 						<a onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#')"
 							class="pagesViewItem" id="pagesViewItem_#index#"	
-							alt="Double-click to open in page editor"
-							title="Double-click to open in page editor"
+							alt="Click to open in page editor"
+							title="Click to open in page editor"
 							href="##">#qryResources.id#</a><br>
 					</td>
 					<td>#qryResources.package#</td>
