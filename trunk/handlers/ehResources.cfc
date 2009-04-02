@@ -209,7 +209,7 @@
 				setValue("resTypeLabel", resTypeLabel );
 				setValue("resTypeIcon", resTypeIcon );
 
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
