@@ -1,9 +1,10 @@
 <cfcomponent extends="ehColdBricks">
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
-			var oCatalog = 0;
 			var rebuildCatalog = getValue("rebuildCatalog",false);
+			var resType = getValue("resType");
+			var oCatalog = 0;
 			var stResourceTypes = structNew();
 			var qryResources = queryNew(""); 
 			var oResourceLibrary = 0;
@@ -25,10 +26,16 @@
 			// get resources
 			qryResources = oCatalog.getResources();
 								
+			// check if we have a saved resource type
+			if(resType eq "" and oContext.getResourceType() neq "") {
+				resType = oContext.getResourceType();
+			}					
+								
 			// pass data to the view	
 			setValue("oCatalog", oCatalog);	
 			setValue("stResourceTypes", stResourceTypes);	
 			setValue("qryResources", qryResources);	
+			setValue("resType", resType);	
 
 			setValue("cbPageTitle", "Site Resources");
 			setValue("cbPageIcon", "folder2_yellow_48x48.png");
@@ -38,7 +45,7 @@
 		</cfscript>		
 	</cffunction>
 	
-	<cffunction name="dspResourceType">
+	<cffunction name="dspResourceType" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oCatalog = 0;
@@ -129,7 +136,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="dspResourceTypeList">
+	<cffunction name="dspResourceTypeList" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oCatalog = 0;
@@ -149,11 +156,24 @@
 				oCatalog = hp.getCatalog();
 				oResLibManager = hp.getResourceLibraryManager();
 
+				// check if we have a saved context
+				if(resourceType eq "" and oContext.getResourceType() neq "")  resourceType = oContext.getResourceType();
+				if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
+				if(package eq "" and oContext.getPackage() neq "" and package neq "__ALL__")  package = oContext.getPackage();
+
+				if(package eq "__ALL__") package = "";
+
+				// if we are changing to a different res type, then clear the package
+				if(resourceType neq oContext.getResourceType()) {
+					package = "";
+				}
+
 				// get resources
 				aResLibs = oResLibManager.getResourceLibraries();
 				if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
 				if(resLibIndex gt 0) {
 					qryResources = oCatalog.getResourcesByType(resourceType, aResLibs[resLibIndex].getPath());
+					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
 				}
 				
 				// get info on resource type
@@ -171,6 +191,11 @@
 					case "html":  		resTypeLabel="HTML"; resTypeIcon="html.png"; break;
 				}
 				
+				// store selection on context
+				oContext.setResourceType(resourceType);
+				oContext.setPackage(package);
+				oContext.setResLibIndex(resLibIndex);
+				
 				// set values
 				setValue("resourceType", resourceType);	
 				setValue("qryResources", qryResources);	
@@ -178,7 +203,8 @@
 				setValue("aResLibs", aResLibs);	
 				setValue("resLibIndex", resLibIndex);	
 				setValue("package", package);	
-				
+				setValue("qryPackages", qryPackages);	
+
 				setView("site/resources/vwResourceTypeList");
 				setValue("resTypeLabel", resTypeLabel );
 				setValue("resTypeIcon", resTypeIcon );
@@ -190,7 +216,68 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="dspImport">
+	<cffunction name="dspResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var resourceType = getValue("resourceType","");
+			var resLibIndex = val(getValue("resLibIndex",""));
+			var package = getValue("pkg","");
+			var id = getValue("id","");
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				setLayout("Layout.None");
+
+				hp = oContext.getHomePortals();
+				oCatalog = hp.getCatalog();
+				
+				// check if we have a saved context
+				if(resourceType eq "" and oContext.getResourceType() neq "")  resourceType = oContext.getResourceType();
+				if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
+				if(package eq "" and oContext.getPackage() neq "")  package = oContext.getPackage();
+
+				// if we are changing to a different res type, then clear the package
+				if(resourceType neq oContext.getResourceType()) {
+					package = "";
+				}
+				
+
+				// get resource
+				if(id eq "NEW") id = "";
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+				if(id neq "")
+					oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				else
+					oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
+				
+				tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
+				
+				
+				// store selection on context
+				oContext.setResourceType(resourceType);
+				oContext.setPackage(package);
+				oContext.setResLibIndex(resLibIndex);
+				
+				setValue("resourceType", resourceType);	
+				setValue("resLibIndex", resLibIndex);	
+				setValue("package", package);	
+				setValue("id", id);	
+				setValue("qryPackages", qryPackages);	
+				setValue("oResourceBean", oResourceBean);	
+				setValue("resourceTypeConfig", tmp[resourceType]);
+				
+				setView("site/resources/vwResource");
+							
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}						
+		</cfscript>	
+	</cffunction>
+	
+	<cffunction name="dspImport" access="public" returntype="void">
 		<cfscript>
 			var oUser = getValue("oUser");
 			var sourceSiteID = getValue("sourceSiteID");
@@ -228,7 +315,69 @@
 	</cffunction>
 
 
-	<cffunction name="doSaveResource">
+	<cffunction name="doSaveResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var resourceType = "";
+			var resLibIndex = 0;
+			var package = getValue("package");
+			var packageNew = getValue("package_new");
+			var id = getValue("id","");
+			var description = getValue("description","");
+			var href = getValue("href","");
+			var oResourceBean = 0;
+			var resourceLibraryPath = "";
+			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
+
+			try {		
+				hp = oContext.getHomePortals();
+
+				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
+				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				
+				if(package eq "") package = packageNew;
+
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				// create the bean for the new resource
+				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
+				oResourceBean.setID(id);
+				oResourceBean.setDescription(description); 
+				oResourceBean.setPackage(package); 
+				oResourceBean.setHREF(href);
+
+				props = oResourceBean.getProperties();
+				for(key in props) {
+					oResourceBean.setProperty(key, getValue("cp_#key#"));
+				}
+
+				/// add the new resource to the library
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+			
+				// update catalog
+				hp.getCatalog().reloadPackage(resourceType,package);
+
+				setMessage("info","Resource saved");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(lock e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		
+			setNextEvent("ehResources.dspMain");
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doSaveResource_old" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oCatalog = 0;
@@ -285,31 +434,32 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="doDeleteResource">
+	<cffunction name="doDeleteResource" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oCatalog = 0;
-			var resourceType = getValue("resourceType","");
+			var resourceType = "";
 			var id = getValue("id","");
 			var pkg = getValue("pkg","");
-			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
 
 			try {		
 				hp = oContext.getHomePortals();
-				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
 
-				/// remove resource from the library
-				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resourceLibraryPath);
-				oResourceLibrary.deleteResource(id, resourceType, pkg);
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				aResLibs[resLibIndex].deleteResource(id, resourceType, pkg);
 
 				// remove from catalog
 				hp.getCatalog().deleteResourceNode(resourceType, id);
 
 				setMessage("info","Resource deleted");
 
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
@@ -318,7 +468,7 @@
 		</cfscript>	
 	</cffunction>
 	
-	<cffunction name="doImport">
+	<cffunction name="doImport" access="public" returntype="void">
 		<cfscript>
 			var oUser = getValue("oUser");
 			var sourceSiteID = getValue("sourceSiteID");
@@ -365,6 +515,25 @@
 		</cfscript>	
 	</cffunction>
 	
+	<cffunction name="doCreatePackage" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var resourceType = getValue("resourceType","");
+			var resLibIndex = getValue("resLibIndex","");
+			var name = getValue("name","");
+
+			try {		
+				setMessage("warning","not implemented");
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		
+			setNextEvent("ehResources.dspMain");
+		</cfscript>		
+	</cffunction>
+	
 	
 	<cffunction name="getResourceLibraryPathFromSite" returntype="string" access="private">
 		<cfargument name="path" type="string" required="true">
@@ -383,7 +552,7 @@
 		<cfreturn resRoot>
 	</cffunction>
 	
-	<cffunction name="directoryCopy" output="true">
+	<cffunction name="directoryCopy" output="true" access="private" returntype="void">
 		<cfargument name="source" required="true" type="string">
 		<cfargument name="destination" required="true" type="string">
 		<cfargument name="nameconflict" required="true" default="overwrite">

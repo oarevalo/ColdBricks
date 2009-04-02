@@ -16,6 +16,10 @@
 	<cfset variables.instance.pageHREF = "">
 	<cfset variables.instance.pageResourceTypeView = "">
 	
+	<cfset variables.instance.resourceType = "">
+	<cfset variables.instance.package = "">
+	<cfset variables.instance.resLibIndex = 0>
+	<cfset variables.instance.resourceViewMode = "">
 	
 	<cffunction name="init" access="public" returntype="contextBean">
 		<cfreturn this>
@@ -163,5 +167,42 @@
 		<cfset variables.instance.pageResourceTypeView = arguments.data>
 	</cffunction>
 
+
+	<!--- Resources --->
+	<cffunction name="getResourceType" access="public" returntype="string">
+		<cfreturn variables.instance.ResourceType>
+	</cffunction>
+
+	<cffunction name="setResourceType" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.ResourceType = arguments.data>
+	</cffunction>
+ 
+	<cffunction name="getPackage" access="public" returntype="string">
+		<cfreturn variables.instance.Package>
+	</cffunction>
+
+	<cffunction name="setPackage" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.Package = arguments.data>
+	</cffunction>
+
+	<cffunction name="getResLibIndex" access="public" returntype="numeric">
+		<cfreturn variables.instance.ResLibIndex>
+	</cffunction>
+
+	<cffunction name="setResLibIndex" access="public" returntype="void">
+		<cfargument name="data" type="numeric" required="true">
+		<cfset variables.instance.ResLibIndex = arguments.data>
+	</cffunction>
+
+	<cffunction name="getResourceViewMode" access="public" returntype="string">
+		<cfreturn variables.instance.ResourceViewMode>
+	</cffunction>
+
+	<cffunction name="setResourceViewMode" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.ResourceViewMode = arguments.data>
+	</cffunction>
 
 </cfcomponent>
