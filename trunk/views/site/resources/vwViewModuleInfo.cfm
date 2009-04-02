@@ -4,35 +4,6 @@
 <cfset oResourceBean = request.requestState.oResourceBean>
 <cfset id = request.requestState.id>
 
-<style type="text/css">
-h2.title {
-	margin-top:30px;
-	background-color:#edf2f2;
-	border-top:1px solid #dddddd;
-	border-bottom:1px solid #dddddd;
-	line-height:30px;
-	font-size:14px;
-	color:#666666;
-	padding-left:5px;
-}
-.tblGrid {
-	width:100%;
-	border-collapse:collapse;
-}
-.tblGrid td {
-	font-size:11px;
-	border:1px solid silver;
-	padding:2px;
-}
-.tblGrid th {
-	font-size:12px;
-	border-bottom:2px solid #666666;
-	background-color:#dddddd;
-	border-top:1px solid white;
-	color:black;
-}
-</style>
-
 <cfoutput>
 <div style="border:1px dashed ##ccc;height:440px;overflow:auto;">	
 <table width="98%" style="margin-top:0px;margin-bottom:0px;">
@@ -41,7 +12,7 @@ h2.title {
 			<h1 style="margin-top:0px;">#oResourceBean.getid()#</h1>
 		</td>
 		<td align="right" style="font-size:10px;">
-			<strong>Name:</strong> #oResourceBean.getname()#<br>
+			<strong>Name:</strong> #oResourceBean.getpackage()#/#oResourceBean.getid()#<br>
 			<strong>Access:</strong> #oResourceBean.getaccesstype()#<br>
 			<strong>Package:</strong> #oResourceBean.getpackage()#
 		</td>
@@ -65,7 +36,7 @@ h2.title {
 <cfset aAttributes = oResourceBean.getAttributes()>
 	<cfif arrayLen(aAttributes) gt 0>
 	<h2 class="title">Attributes:</h2>
-	<table class="tblGrid">
+	<table class="tblGrid tblModProps" align="center">
 		<tr>
 			<th width="10">&nbsp;</th>
 			<th>Name</th>
@@ -106,7 +77,7 @@ h2.title {
 <cfset aListeners = oResourceBean.getEventListeners()>
 	<cfif arrayLen(aListeners) gt 0>
 	<h2 class="title">Event Listeners:</h2>
-	<table class="tblGrid">
+	<table class="tblGrid tblModProps" align="center">
 		<tr>
 			<th width="10">&nbsp;</th>
 			<th>Object Name</th>
@@ -134,7 +105,7 @@ h2.title {
 
 <cfif arrayLen(aMethods) gt 0 or arrayLen(aEvents) gt 0>
 	<h2 class="title">API:</h2>
-	<table class="tblGrid">
+	<table class="tblGrid tblModProps" align="center">
 		<tr>
 			<th width="10">&nbsp;</th>
 			<th>Name</th>

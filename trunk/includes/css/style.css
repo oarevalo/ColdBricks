@@ -421,3 +421,28 @@ ul.layoutPreviewList li div {
 	border:1px solid #ebebeb;
 }
 
+.tblModProps {
+	width:98%;
+}
+.tblModProps td {
+	border:1px solid silver;
+	padding:2px;
+}
+.tblModProps th {
+	font-size:12px;
+	border-bottom:2px solid #666666;
+	background-color:#dddddd;
+	border-top:1px solid white;
+	color:black;
+}
+
+h2.title {
+	margin-top:30px;
+	background-color:#edf2f2;
+	border-top:1px solid #dddddd;
+	border-bottom:1px solid #dddddd;
+	line-height:30px;
+	font-size:14px;
+	color:#666666;
+	padding-left:5px;
+}
