@@ -66,7 +66,7 @@
 	st.hint = "SiteMap tool";
 	st.icon = "images/Globe_22x22.png";
 	st.titleicon = "images/Globe_48x48.png";
-	st.hasAccess = stAccessMap.siteMap;
+	st.hasAccess = hasAccountsPlugin and stAccessMap.siteMap;
 	arrayAppend(aOptions,st);
 
 	st = structNew();

@@ -33,7 +33,7 @@ function selectResource(resType,id,pkg,resLibIndex) {
 	if(id==null || id==undefined) id="";
 	if(pkg==null || pkg==undefined) pkg="";
 	if(resLibIndex==null || resLibIndex==undefined) resLibIndex="";
-	doEvent("ehResources.dspResourceType","nodePanel",{resourceType: resType,id: id,pkg: pkg,resLibIndex: resLibIndex});
+	doEvent("ehResources.dspResource","nodePanel",{resourceType: resType,id: id,pkg: pkg,resLibIndex: resLibIndex});
 
 	d = $$(".resTreeItem");
 	for(var i=0;i < d.length;i++) {
@@ -97,18 +97,29 @@ function saveContent(frm) {
 
 function saveResource(frm) {
 	var strErrors = "";
-	if(frm.name.value=='') strErrors = strErrors + "\n - Resource name cannot be empty.";
-	if(frm.pkg.value=='') strErrors = strErrors + "\n - Package name cannot be empty.";
-	if(frm.resourceType.value == 'feed' && frm.href.value=='') strErrors = strErrors + "\n - Feed URL cannot be empty.";
+
+	if(frm.id.value=='') strErrors = strErrors + "\n - Resource ID cannot be empty.";
+	if(frm.package.value=='' && frm.package_new.value=='') strErrors = strErrors + "\n - Package name cannot be empty.";
 
 	if(strErrors!="") {
 		alert("Please correct the following:\n" + strErrors);
 		return;		
 	}
-	
-	if(frm.resourceType.value == 'content')
-		saveContent(frm);
-	else	
-		frm.submit();
+
+	frm.submit();
 }
 
+function createPackage(resType,resLibIndex) {
+	pkgName = prompt("Enter the name of the new package");
+	if(pkgName!="") {
+		document.location = "index.cfm?event=ehResources.doCreatePackage&resourceType="+resType+"&resLibIndex="+resLibIndex+"&name="+pkgName;
+	}
+
+}
+
+function togglePackage(selVal) {
+	if(selVal=='') 
+		document.getElementById('newPkgDiv').style.display='block' 
+	else 
+		document.getElementById('newPkgDiv').style.display='none'
+}

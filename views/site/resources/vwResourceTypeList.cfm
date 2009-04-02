@@ -10,6 +10,7 @@
 <cfparam name="request.requestState.aResLibs">
 <cfparam name="request.requestState.resLibIndex">
 <cfparam name="request.requestState.package" default="">
+<cfparam name="request.requestState.qryPackages" default="">
 
 <cfset resourceType = request.requestState.resourceType>
 <cfset qryResources = request.requestState.qryResources>
@@ -23,16 +24,11 @@
 <cfset aResLibs = request.requestState.aResLibs>
 <cfset resLibIndex = request.requestState.resLibIndex>
 <cfset package = request.requestState.package>
+<cfset qryPackages = request.requestState.qryPackages>
 
 <cfset currentLibPath = aResLibs[resLibIndex].getPath()>
 
 
-<!--- get package list --->
-<cfquery name="qryPackages" dbtype="query">
-	SELECT DISTINCT package, UPPER(package) as u_package
-		FROM qryResources
-		ORDER BY u_package
-</cfquery>
 
 <!--- sort/filter resources  --->
 <cfquery name="qryResources" dbtype="query">
@@ -88,13 +84,18 @@
 					<input type="button" value="Search" style="width:auto;" onclick="doFormEvent('ehResources.dspResourceTypeList','nodePanel',this.form)">
 				</form>
 			</td>
-			<td align="right" style="padding-right:10px;width:150px;">
+			<td align="right" style="padding-right:10px;width:120px;">
 				<cfif resourceType neq "module">
 					<div class="buttonImage btnLarge" style="margin:0px;">
 						<a href="##" onclick="selectResource('#resourceType#','NEW','')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
 					</div>	
 				</cfif>
 			</td>
+			<!--- <td align="right" style="padding-right:10px;width:120px;">
+				<div class="buttonImage btnLarge" style="margin:0px;">
+					<a href="##" onclick="createPackage('#resourceType#',#resLibIndex#)"><img src="images/add.png" align="absmiddle" border="0"> Create Package</a>
+				</div>	
+			</td> --->
 		</tr>
 	</table>
 
@@ -118,9 +119,9 @@
 				Pkg:
 				<select name="package" onchange="selectResourceType('#resourceType#','',this.value,#resLibIndex#)" style="font-size:11px;width:100px;">
 					<cfset tmpPKG = package>
-					<option value="">-- All --</option>
+					<option value="__ALL__">-- All --</option>
 					<cfloop query="qryPackages">
-						<option value="#qryPackages.package#" <cfif qryPackages.package eq tmpPKG>selected</cfif>>#qryPackages.package#</option>
+						<option value="#qryPackages.name#" <cfif qryPackages.name eq tmpPKG>selected</cfif>>#qryPackages.name#</option>
 					</cfloop>
 				</select>
 			</td>
