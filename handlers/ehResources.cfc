@@ -135,6 +135,7 @@
 			var oCatalog = 0;
 			var resourceType = getValue("resourceType","");
 			var resLibIndex = val(getValue("resLibIndex",""));
+			var package = getValue("pkg","");
 			var oHelpDAO = 0;
 			var qryHelp = 0;
 			var qryResources = queryNew("");
@@ -176,6 +177,7 @@
 				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath());
 				setValue("aResLibs", aResLibs);	
 				setValue("resLibIndex", resLibIndex);	
+				setValue("package", package);	
 				
 				setView("site/resources/vwResourceTypeList");
 				setValue("resTypeLabel", resTypeLabel );

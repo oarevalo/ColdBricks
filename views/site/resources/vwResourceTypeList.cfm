@@ -9,6 +9,7 @@
 <cfparam name="request.requestState.resViewType" default="resources">
 <cfparam name="request.requestState.aResLibs">
 <cfparam name="request.requestState.resLibIndex">
+<cfparam name="request.requestState.package" default="">
 
 <cfset resourceType = request.requestState.resourceType>
 <cfset qryResources = request.requestState.qryResources>
@@ -21,6 +22,17 @@
 <cfset resViewType = request.requestState.resViewType>
 <cfset aResLibs = request.requestState.aResLibs>
 <cfset resLibIndex = request.requestState.resLibIndex>
+<cfset package = request.requestState.package>
+
+<cfset currentLibPath = aResLibs[resLibIndex].getPath()>
+
+
+<!--- get package list --->
+<cfquery name="qryPackages" dbtype="query">
+	SELECT DISTINCT package, UPPER(package) as u_package
+		FROM qryResources
+		ORDER BY u_package
+</cfquery>
 
 <!--- sort/filter resources  --->
 <cfquery name="qryResources" dbtype="query">
@@ -32,6 +44,17 @@
 		</cfif>
 		ORDER BY package,id
 </cfquery>
+
+<!--- filter by package --->
+<cfquery name="qryResources" dbtype="query">
+	SELECT *
+		FROM qryResources
+		<cfif package neq "">
+			WHERE upper(package) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="#ucase(package)#">
+		</cfif>
+		ORDER BY package,id
+</cfquery>
+
 
 
 <cfscript>
@@ -55,7 +78,7 @@
 					<cfif resTypeIcon neq "">
 						<img src="images/#resTypeIcon#" align="absmiddle">
 					</cfif>
-					<b>#resTypeLabel# (#qryResources.recordCount#)</b>
+					<b>#resTypeLabel# (#qryResources.recordCount#)</b> 
 				</div>
 			</td>
 			<td align="center" nowrap="yes">
@@ -83,11 +106,21 @@
 					<a href="##" <cfif resViewType eq "files">style="font-weight:bold;"</cfif>>Files View</a>
 				</div>
 			</td>
-			<td align="right" style="padding-right:10px;width:150px;">
+			<td align="right" style="padding-right:10px;width:300px;">
 				Lib:
-				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)">
+				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)" style="font-size:11px;width:150px;">
 					<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
 						<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
+					</cfloop>
+				</select>
+				&nbsp;&nbsp;
+				
+				Pkg:
+				<select name="package" onchange="selectResourceType('#resourceType#','',this.value,#resLibIndex#)" style="font-size:11px;width:100px;">
+					<cfset tmpPKG = package>
+					<option value="">-- All --</option>
+					<cfloop query="qryPackages">
+						<option value="#qryPackages.package#" <cfif qryPackages.package eq tmpPKG>selected</cfif>>#qryPackages.package#</option>
 					</cfloop>
 				</select>
 			</td>
