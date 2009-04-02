@@ -101,15 +101,15 @@
 
 	<table style="width:100%;border:1px solid silver;background-color:##ccc;margin-top:3px;" cellpadding="0" cellspacing="0">
 		<tr>
-			<td nowrap="yes" style="width:200px;">
+			<!--- <td nowrap="yes" style="width:200px;">
 				<div style="margin:3px;">
 					<a href="##" <cfif resViewType eq "resources">style="font-weight:bold;"</cfif>>Resources View</a> |
 					<a href="##" <cfif resViewType eq "files">style="font-weight:bold;"</cfif>>Files View</a>
 				</div>
-			</td>
-			<td align="right" style="padding-right:10px;width:300px;">
+			</td> --->
+			<td align="right" style="padding-right:10px;width:350px;">
 				Lib:
-				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)" style="font-size:11px;width:150px;">
+				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)" style="font-size:11px;width:190px;">
 					<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
 						<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
 					</cfloop>
