@@ -1,15 +1,16 @@
 <cfparam name="request.requestState.oHomePortalsConfigBean" default="">
 <cfparam name="request.requestState.baseResourceEditIndex" default="">
 <cfparam name="request.requestState.baseResourceEditType" default="">
+<cfparam name="request.requestState.resLibPathEditIndex" default="">
 
 <cfscript>
 	oHomePortalsConfigBean = request.requestState.oHomePortalsConfigBean;
 	baseResourceEditIndex = request.requestState.baseResourceEditIndex;
 	baseResourceEditType = request.requestState.baseResourceEditType;
+	resLibPathEditIndex = request.requestState.resLibPathEditIndex;
 	hasAccountsPlugin = request.requestState.hasAccountsPlugin;
 	hasModulesPlugin = request.requestState.hasModulesPlugin;	
 	
-	resourceLibraryPath = oHomePortalsConfigBean.getResourceLibraryPath();
 	defaultPage = oHomePortalsConfigBean.getDefaultPage();
 	contentRoot = oHomePortalsConfigBean.getContentRoot();
 	pageCacheSize = oHomePortalsConfigBean.getPageCacheSize();
@@ -30,6 +31,12 @@
 	function confirmDeleteBaseResource(type, index) {
 		if(confirm("Delete base resource?")) {
 			document.location = "index.cfm?event=ehSettings.doDeleteBaseResource&type=" + type + "&index=" + index;
+		}
+	}
+
+	function confirmDeleteResLibPath(index) {
+		if(confirm("Delete resource library path?")) {
+			document.location = "index.cfm?event=ehSettings.doDeleteResLibPath&index=" + index;
 		}
 	}
 	
@@ -66,11 +73,6 @@
 						<td width="150"><strong>Default Page:</strong></td>
 						<td><input type="text" name="defaultPage" value="#defaultPage#" id="fld_defaultPage" size="30" class="formField"></td>
 					</tr>
-					<tr>
-						<td width="150"><strong>Resource Library Root:</strong></td>
-						<td><input type="text" name="resourceLibraryPath" value="#resourceLibraryPath#" size="30" class="formField"></td>
-					</tr>
-					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr><td colspan="2"><h2>Caching:</h2></td></tr>
 					<tr>
 						<td width="150">
@@ -109,6 +111,76 @@
 						</td>
 					</tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
+					
+					<tr><td colspan="2"><h2>Resource Libraries:</h2></td></tr>
+					<tr>
+						<td colspan="2">
+						
+							<table style="width:100%;border:1px solid silver;">
+								<tr>
+									<th style="background-color:##ccc;width:50px;">No.</th>
+									<th style="background-color:##ccc;">Path</th>
+									<th style="background-color:##ccc;width:100px;">Action</th>
+								</tr>
+								<cfset aResLibs = oHomePortalsConfigBean.getResourceLibraryPaths()>
+								<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
+									<tr <cfif i mod 2>class="altRow"</cfif>>
+										<td style="width:50px;" align="right"><strong>#i#.</strong></td>
+										<td><a href="index.cfm?event=ehSettings.dspMain&resLibPathEditIndex=#i#">#aResLibs[i]#</a></td>
+										<td align="center">
+											<a href="index.cfm?event=ehSettings.dspMain&resLibPathEditIndex=#i#"><img src="images/page_edit.png" border="0" alt="Edit resource library path" title="Edit resource library path"></a>
+											<a href="##" onclick="confirmDeleteResLibPath(#i#)"><img src="images/page_delete.png" border="0" alt="Delete resource library path" title="Delete resource library path"></a>
+										</td>
+									</tr>
+								</cfloop>
+							</table>
+							<cfif resLibPathEditIndex eq 0>
+								<form name="frmAddResLibPath" action="index.cfm" method="post">
+									<table style="width:100%;border:1px solid silver;margin-top:5px;">
+										<tr>
+											<td style="width:50px;" align="center"><strong>New:</strong></td>
+											<td>
+												<input type="text" name="path" value="" style="width:340px;font-size:11px;">
+											</td>
+											<td style="width:100px;" align="center">
+												<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doAddResLibPath')">
+												<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=ehSettings.dspMain'">
+											</td>
+										</tr>
+									</table>
+								</form>
+							<cfelseif resLibPathEditIndex gt 0>
+								<cftry>
+									<cfset aResLibs = oHomePortalsConfigBean.getResourceLibraryPaths()>
+									<cfset resLibPath = aResLibs[resLibPathEditIndex]>
+									<cfcatch type="any">
+										<cfset resLibPath = "">
+									</cfcatch>
+								</cftry>
+								<form name="frmEditResLibPath" action="index.cfm" method="post">
+									<input type="hidden" name="index" value="#resLibPathEditIndex#">
+
+									<table style="width:100%;border:1px solid silver;margin-top:5px;">
+										<tr>
+											<td style="width:50px;" align="center"><strong>Edit:</strong></td>
+											<td>
+												<input type="text" name="path" value="#resLibPath#" style="width:340px;font-size:11px;">
+											</td>
+											<td style="width:100px;" align="center">
+												<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSaveResLibPath')">
+												<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=ehSettings.dspMain'">
+											</td>
+										</tr>
+									</table>
+								</form>
+							<cfelse>
+								<br>
+								<a href="index.cfm?event=ehSettings.dspMain&resLibPathEditIndex=0">Click Here</a> to add a resource library path
+							</cfif>
+						</td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					
 					<tr><td colspan="2"><h2>Base Resources:</h2></td></tr>
 					<tr>
 						<td colspan="2">
