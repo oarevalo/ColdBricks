@@ -189,6 +189,9 @@
 					case "pageTemplate":  resTypeLabel="Page Templates"; resTypeIcon="page_code.png"; break;
 					case "skin":  		resTypeLabel="Skins"; resTypeIcon="css.png"; break;
 					case "html":  		resTypeLabel="HTML"; resTypeIcon="html.png"; break;
+					default:
+						resTypeLabel = resourceType;
+						resTypeIcon = "folder.png";
 				}
 				
 				// store selection on context

@@ -19,10 +19,13 @@
 	props = oResourceBean.getProperties();
 	lstProps = structKeyList(props);
 	lstProps = listSort(lstProps,"textnocase");	
+	
+	tmpHREF = oResourceBean.getHREF();
+	tmpDescription = oResourceBean.getDescription();
 </cfscript>
 
 <cfoutput>
-	<div style="border:1px solid silver;background-color:##fff;margin-bottom:5px;height:470px;" id="pnl_info">
+	<div style="border:1px solid silver;background-color:##fff;margin-bottom:5px;height:470px;overflow:auto;" id="pnl_info">
 		<form name="frm" action="index.cfm" method="post" style="margin:0px;padding:0px;">
 			<input type="hidden" name="event" value="ehResources.doSaveResource">
 
@@ -71,11 +74,11 @@
 				
 				<tr>
 					<td width="80"><b>HREF:</b></td>
-					<td><input type="text" name="href" value="#oResourceBean.getHREF()#" class="formField"></td>
+					<td><input type="text" name="href" value="#tmpHREF#" class="formField"></td>
 				</tr>
 				<tr valign="top">
 					<td><strong>Description:</strong></td>
-					<td><textarea name="description" class="formField" rows="4">#oResourceBean.getDescription()#</textarea></td>
+					<td><textarea name="description" class="formField" rows="4">#trim(tmpDescription)#</textarea></td>
 				</tr>
 				<cfif lstProps neq "">
 					<tr><td colspan="2">&nbsp;</td></tr>
@@ -89,8 +92,8 @@
 					</cfloop>
 				</cfif>
 			</table>
-			<br /><br />
-			<div style="margin:10px;">
+
+			<div style="margin:20px;">
 				<input type="button" name="btnSave" value="Apply Changes" onclick="saveResource(this.form)">
 				<cfif id neq "">
 					&nbsp;&nbsp;&nbsp;
@@ -99,6 +102,7 @@
 				&nbsp;&nbsp;&nbsp;
 				<input type="button" name="btnCancel" value="Cancel" onclick="selectResourceType('#resourceType#')">
 			</div>
+			<br />
 		</form>		
 	</div>
 
