@@ -7,7 +7,13 @@
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			try {
+				panel = getValue("panel");
+				if(panel eq "" and structKeyExists(session,"panel")) panel = session.panel;
+				if(panel eq "") panel = "general";
+				session.panel = panel;
+				
 				setView("settings/vwMain");
+				setValue("panel", panel);
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
 
@@ -203,6 +209,9 @@
 
 		</cfscript>
 	</cffunction>	
+
+
+	<!--- Base Resources --->
 		
 	<cffunction name="doAddBaseResource" access="public" returntype="void">
 		<cfscript>
@@ -310,6 +319,9 @@
 		</cfscript>	
 	</cffunction>	
 
+
+	<!--- Resource Libraries --->
+
 	<cffunction name="doAddResLibPath" access="public" returntype="void">
 		<cfscript>
 			var path = getValue("path");
@@ -411,6 +423,137 @@
 	</cffunction>	
 
 
+	<!--- Content Renderers --->
+
+	<cffunction name="doSaveContentRenderer" access="public" returntype="void">
+		<cfscript>
+			var path = getValue("path");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The content renderer name is required","validation");
+				if(path eq "") throw("The content renderer path is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setContentRenderer(name, path);
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeleteContentRenderer" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("name");
+			var oConfigBean = 0;
+			var aResLibs = arrayNew(1);
+			
+			try {
+				if(name eq "") throw("You must select a content renderer to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeContentRenderer(name);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
+	<!--- Plugins --->
+
+	<cffunction name="doSavePlugin" access="public" returntype="void">
+		<cfscript>
+			var path = getValue("path");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The plugin name is required","validation");
+				if(path eq "") throw("The plugin path is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setPlugin(name, path);
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeletePlugin" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("name");
+			var oConfigBean = 0;
+			var aResLibs = arrayNew(1);
+			
+			try {
+				if(name eq "") throw("You must select a plugin to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removePlugin(name);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
+
+	<!--- Accounts Plugin Config --->
+
 	<cffunction name="doSaveAccounts" access="public" returntype="void">
 		<cfscript>
 			var accountsRoot = getValue("accountsRoot");
@@ -475,6 +618,9 @@
 			}
 		</cfscript>
 	</cffunction>
+
+
+	<!--- Module Properties Plugin Config --->
 
 	<cffunction name="doAddModuleProperty" access="public" returntype="void">
 		<cfscript>
@@ -576,6 +722,9 @@
 			}
 		</cfscript>	
 	</cffunction>	
+		
+	
+	<!--- Private Methods ---->	
 		
 	<cffunction name="writeFile" access="private" returntype="void">
 		<cfargument name="path" type="string" required="true">

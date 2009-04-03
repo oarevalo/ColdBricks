@@ -1,8 +1,6 @@
 <cfparam name="request.requestState.oAccountsConfigBean" default="">
 <cfscript>
 	oAccountsConfigBean = request.requestState.oAccountsConfigBean;
-	hasAccountsPlugin = request.requestState.hasAccountsPlugin;
-	hasModulesPlugin = request.requestState.hasModulesPlugin;	
 	
 	accountsRoot = oAccountsConfigBean.getAccountsRoot();
 	defaultAccount = oAccountsConfigBean.getDefaultAccount();
@@ -18,12 +16,7 @@
 
 
 <cfoutput>
-<div>
-	[ <a href="index.cfm?event=ehSettings.dspMain">General</a> ] &nbsp;&nbsp;
-	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSettings.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;</cfif>
-	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSettings.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
-	[ <a href="index.cfm?event=ehSettings.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
-</div>
+<cfinclude template="includes/nav.cfm">
 
 <br>
 
