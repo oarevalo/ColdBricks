@@ -12,8 +12,6 @@
 	xmlDoc = request.requestState.xmlDoc;
 	xmlContent = request.requestState.xmlContent;
 	qryHelp = request.requestState.qryHelp;
-	hasAccountsPlugin = request.requestState.hasAccountsPlugin;
-	hasModulesPlugin = request.requestState.hasModulesPlugin;	
 	
 	if(configFile neq "") { 
 		if(xmlContent eq "") xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
@@ -21,12 +19,7 @@
 </cfscript>
 
 <cfoutput>
-<div>
-	[ <a href="index.cfm?event=ehSettings.dspMain">General</a> ] &nbsp;&nbsp;
-	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=ehSettings.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
-	<cfif hasModulesPlugin>[ <a href="index.cfm?event=ehSettings.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
-	[ <a href="index.cfm?event=ehSettings.dspEditXML"><strong>Edit Config Files</strong></a> ] &nbsp;&nbsp;
-</div>
+<cfinclude template="includes/nav.cfm">
 
 <br><br>
 

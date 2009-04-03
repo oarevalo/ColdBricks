@@ -111,7 +111,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="dspEditXML">
+	<cffunction name="dspEditXML" access="public" returntype="void">
 		<cfscript>
 			var aConfigFiles = arrayNew(1);
 			var configFile = getValue("configFile");
@@ -123,10 +123,18 @@
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
-				
+
+				setValue("hasAccountsPlugin", structKeyExists(hp.getConfig().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(hp.getConfig().getPlugins(),"modules") );
+					
 				arrayAppend(aConfigFiles, "#appRoot#config/homePortals-config.xml");
-				arrayAppend(aConfigFiles, "#appRoot#config/accounts-config.xml.cfm");
-				arrayAppend(aConfigFiles, "#appRoot#config/module-properties.xml");
+			
+				if(getValue("hasAccountsPlugin")) {
+					arrayAppend(aConfigFiles, "#appRoot#config/accounts-config.xml.cfm");
+				}
+				if(getValue("hasModulesPlugin")) {
+					arrayAppend(aConfigFiles, "#appRoot#config/module-properties.xml");
+				}
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
