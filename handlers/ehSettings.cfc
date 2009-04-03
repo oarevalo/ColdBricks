@@ -310,6 +310,107 @@
 		</cfscript>	
 	</cffunction>	
 
+	<cffunction name="doAddResLibPath" access="public" returntype="void">
+		<cfscript>
+			var path = getValue("path");
+			var oConfigBean = 0;
+			
+			try {
+				if(path eq "") throw("The resource library path is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.addResourceLibraryPath(path);
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain","resLibPathEditIndex=0");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doSaveResLibPath" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("index");
+			var path = getValue("path");
+			var oConfigBean = 0;
+			var aResLibs = arrayNew(1);
+			
+			try {
+				if(val(index) eq 0) throw("You must select a resource library to edit","validation");
+				if(path eq "") throw("The resource library path is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove resource lib
+				aResLibs = oConfigBean.getResourceLibraryPaths();
+				if(index lte arrayLen(aResLibs))
+					oConfigBean.removeResourceLibraryPath(aResLibs[index]);
+				
+				// add new values for resource
+				oConfigBean.addResourceLibraryPath(path);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain","resLibPathEditIndex=#index#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>		
+	</cffunction>	
+
+	<cffunction name="doDeleteResLibPath" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("index");
+			var oConfigBean = 0;
+			var aResLibs = arrayNew(1);
+			
+			try {
+				if(val(index) eq 0) throw("You must select a resource library to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove resource lib
+				aResLibs = oConfigBean.getResourceLibraryPaths();
+				if(index lte arrayLen(aResLibs))
+					oConfigBean.removeResourceLibraryPath(aResLibs[index]);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
 	<cffunction name="doSaveAccounts" access="public" returntype="void">
 		<cfscript>
 			var accountsRoot = getValue("accountsRoot");
