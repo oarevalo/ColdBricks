@@ -45,54 +45,9 @@ function selectResource(resType,id,pkg,resLibIndex) {
 	if(d) d.style.fontWeight="bold";
 }
 
-
-function selectPanel(pnl, createEditorControl) {
-	var id = "body";
-	var pEditor = $("pnl_editor");
-	var pInfo = $("pnl_info");
-	
-	if(pnl=='info') {
-		if(pEditor) pEditor.style.display = "none";
-		if(pInfo) pInfo.style.display = "block";
-	
-	} else if(pnl=='code') {
-		if(pInfo) pInfo.style.display = "none";
-		if(pEditor) pEditor.style.display = "block";
-	
-	} else if(pnl=='preview') {
-		if(pInfo) pInfo.style.display = "none";
-		if(pEditor) pEditor.style.display = "block";
-		if(createEditorControl) {
-			tinyMCE.idCounter=0;
-			tinyMCE.execCommand('mceAddControl', false, id);
-		}
-	}
-
-	d = $$(".panelSelector");
-	for(var i=0;i < d.length;i++) {
-		d[i].style.fontWeight="normal";
-	}	
-	
-	// highlight selected account
-	d = $("panelSelector_"+pnl);
-	if(d) d.style.fontWeight="bold";
-
-}
-
 function setResourceTypeInfo(lbl,info) {
 	var d = $("resInfo");
 	if(d) d.innerHTML = "<h3 style='border-bottom:1px solid black;margin-bottom:3px;'>" + lbl + "</h3>" + info;	
-}
-
-function saveContent(frm) {
-	var myMCE = tinyMCE.getInstanceById('body');
-	tinyMCE.selectedInstance = myMCE;
-
-	var ta = $('body');
-	ta.value = tinyMCE.getContent();
-
-	frm.submit();
-
 }
 
 function saveResource(frm) {
@@ -109,17 +64,51 @@ function saveResource(frm) {
 	frm.submit();
 }
 
-function createPackage(resType,resLibIndex) {
-	pkgName = prompt("Enter the name of the new package");
-	if(pkgName!="") {
-		document.location = "index.cfm?event=ehResources.doCreatePackage&resourceType="+resType+"&resLibIndex="+resLibIndex+"&name="+pkgName;
-	}
-
-}
-
 function togglePackage(selVal) {
 	if(selVal=='') 
 		document.getElementById('newPkgDiv').style.display='block' 
 	else 
 		document.getElementById('newPkgDiv').style.display='none'
+}
+
+function showUploadFile() {
+	document.getElementById('uploadDiv').style.display='block' 
+}
+function hideUploadFile() {
+	document.getElementById('uploadDiv').style.display='none' 
+}
+
+function uploadFile(frm) {
+	frm.event.value = "ehResources.doUploadFile";
+	frm.submit();
+}
+
+function confirmDeleteFile(id) {
+	if(confirm("Delete target for resource '" + id + "' ?")) {
+		document.location='index.cfm?event=ehResources.doDeleteResourceFile&id='+id
+	}
+}
+
+function loadResourceEditor(id,type) {
+	doEvent("ehResources.dspResourceEditor","nodePanel",{id: id,type: type});
+}
+
+function saveResourceFile(frm) {
+	// check that there is a file name
+	if(frm.fileName.value == '') {
+		var ext = (frm.type.value=="richtext") ? "htm" : "txt";
+		frm.fileName.value = prompt("Enter a name for this file",frm.id.value + "." + ext)
+	}
+	if(frm.fileName.value == '') {
+		alert("Filename cannot be empty");
+		return;
+	}
+	if(frm.type.value=="richtext") {
+		var myMCE = tinyMCE.getInstanceById('body');
+		tinyMCE.selectedInstance = myMCE;
+	
+		var ta = $('body');
+		ta.value = tinyMCE.getContent();
+	}
+	frm.submit();
 }
