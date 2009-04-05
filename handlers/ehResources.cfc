@@ -44,98 +44,7 @@
 			setView("site/resources/vwMain");
 		</cfscript>		
 	</cffunction>
-	
-	<cffunction name="dspResourceType" access="public" returntype="void">
-		<cfscript>
-			var hp = 0;
-			var oCatalog = 0;
-			var resourceType = getValue("resourceType","");
-			var id = getValue("id","NEW");
-			var pkg = getValue("pkg","");
-			var oResourceBean = 0;
-			var oHelpDAO = 0;
-			var qryHelp = 0;
-			var oContext = getService("sessionContext").getContext();
-			var tmp = "";
-			
-			try {
-				setLayout("Layout.None");
-
-				hp = oContext.getHomePortals();
-				oCatalog = hp.getCatalog();
-
-				qryResources = oCatalog.getResourcesByType(resourceType);
-				if(id neq "") {
-					if(id eq "NEW") {
-						oResourceBean = createObject("component","homePortals.components.resourceBean").init();
-						oResourceBean.setType(resourceType); 
-						oResourceBean.setPackage(pkg); 
-					} else
-						oResourceBean = oCatalog.getResourceNode(resourceType,id);
-
-					setValue("oResourceBean", oResourceBean);	
-				}
-				
-				// get info on resource type
-				oHelpDAO = getService("DAOFactory").getDAO("help");
-				qryHelp = oHelpDAO.search(name = "rt_#resourceType#");
-				if(qryHelp.recordCount gt 0) setValue("resourceTypeInfo", qryHelp.description);
-				
-				// get resource types
-				tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
-				setValue("resourceTypeConfig", tmp[resourceType]);
-				
-				// set values
-				setValue("resourceType", resourceType);	
-				setValue("qryResources", qryResources);	
-				setValue("package", pkg);	
-				setValue("resourcesRoot", hp.getConfig().getResourceLibraryPath());
-				
-				switch(resourceType) {
-					case "module":
-						setView("site/resources/vwResourceType_module");
-						break;
-
-					case "feed":
-						setValue("resTypeLabel","Feeds");
-						setView("site/resources/vwResourceType_editable");
-						break;
-
-					case "content":
-						setValue("resTypeLabel","Content");
-						setView("site/resources/vwResourceType_editable");
-						break;
-						
-					case "page":
-						setValue("resTypeLabel","Pages");
-						setView("site/resources/vwResourceType_editable");
-						break;
-
-					case "pageTemplate":
-						setValue("resTypeLabel","Page Templates");
-						setView("site/resources/vwResourceType_editable");
-						break;
-
-					case "skin":
-						setValue("resTypeLabel","Skins");
-						setView("site/resources/vwResourceType_editable");
-						break;
-
-					case "html":
-						setValue("resTypeLabel","HTML");
-						setView("site/resources/vwResourceType_editable");
-						break;
-
-				}
-				
-							
-			} catch(any e) {
-				setMessage("error",e.message);
-				getService("bugTracker").notifyService(e.message, e);
-			}
-		</cfscript>
-	</cffunction>
-	
+		
 	<cffunction name="dspResourceTypeList" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
@@ -257,12 +166,12 @@
 				
 				tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
 				
-				
 				// store selection on context
 				oContext.setResourceType(resourceType);
 				oContext.setPackage(package);
 				oContext.setResLibIndex(resLibIndex);
 				
+				setValue("oCatalog", hp.getCatalog() );
 				setValue("resourceType", resourceType);	
 				setValue("resLibIndex", resLibIndex);	
 				setValue("package", package);	
@@ -315,6 +224,62 @@
 
 			setView("site/resources/vwImport");	
 		</cfscript>
+	</cffunction>
+
+	<cffunction name="dspResourceEditor" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var oResourceBean = 0;
+			var id = getValue("id");
+			var type = getValue("type","plain");
+			var oContext = getService("sessionContext").getContext();
+			var fileContent = "";
+			var href = "";
+			var	fullhref = "";
+			
+			try {
+				setLayout("Layout.None");
+
+				hp = oContext.getHomePortals();
+				oCatalog = hp.getCatalog();
+
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+				package = oContext.getPackage();
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				if(id eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
+				
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				
+				// read fo;e
+				href = oResourceBean.getHREF();
+				fullhref = aResLibs[resLibIndex].getPath() & href;
+				if(href neq "" and fileExists(expandPath(fullhref))) {
+					fileContent = fileRead(expandPath(fullhref));
+					setValue("fullhref", fullhref);	
+				}
+				
+				// set values
+				setValue("id", id);	
+				setValue("resourceType", resourceType);	
+				setValue("package", package);	
+				setValue("type", type);	
+				setValue("fileContent", fileContent);	
+				setValue("oResourceBean", oResourceBean);	
+				
+				setView("site/resources/vwResourceEditor");
+				
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+							
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		</cfscript>
+	
 	</cffunction>
 
 
@@ -371,7 +336,7 @@
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
 
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
@@ -380,16 +345,13 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doSaveResource_old" access="public" returntype="void">
+	<cffunction name="doSaveResourceFile" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
 			var oCatalog = 0;
-			var resourceType = getValue("resourceType","");
 			var id = getValue("id","");
-			var pkg = getValue("pkg","");
-			var description = getValue("description","");
-			var href = getValue("href","");
 			var body = getValue("body","");
+			var fileName = getValue("fileName","");
 			var oResourceBean = 0;
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
@@ -398,32 +360,33 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(name eq "") throw("The resource name cannot be empty","coldBricks.validation"); 
-				if(body eq "" and resourceType neq "feed") throw("The resource body cannot be empty","coldBricks.validation"); 
-				if(id eq "") id = createUUID();
+				if(id eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
 
-				// if we have a name then use that for the ID
-				if(name neq "") {
-					id = replace(name," ","-","ALL");
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+				package = oContext.getPackage();
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
+
+				// check if we have an existing file
+				fileHREF = oResourceBean.getHREF();
+				
+				if(fileHREF eq "") {
+					fileHREF = oResourceType.getFolderName() & "/" & package & "/" & fileName;
 				}
 
-				// create the bean for the new resource
-				oResourceBean = createObject("component","homePortals.components.resourceBean").init();	
-				oResourceBean.setID(id);
-				oResourceBean.setDescription(description); 
-				oResourceBean.setPackage(pkg); 
-				oResourceBean.setType(resourceType); 
-				oResourceBean.setHREF(href);
-				resourceLibraryPath = hp.getConfig().getResourceLibraryPath();
+				filePath = aResLibs[resLibIndex].getPath() & fileHREF;
+				fileWrite(filePath, body, "utf-8");
 
-				/// add the new resource to the library
-				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resourceLibraryPath);
-				oResourceLibrary.saveResource(oResourceBean, body);
-			
+				// update the bean 
+				oResourceBean.setHREF(fileHREF);
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+		
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,pkg);
+				hp.getCatalog().reloadPackage(resourceType,package);
 
-				setMessage("info","Resource saved");
+				setMessage("info","Resource target saved");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -443,8 +406,8 @@
 			var oCatalog = 0;
 			var resourceType = "";
 			var id = getValue("id","");
-			var pkg = getValue("pkg","");
 			var oResourceLibrary = 0;
+			var fileHREF = "";
 			var oContext = getService("sessionContext").getContext();
 
 			try {		
@@ -453,9 +416,19 @@
 				// check if we have a saved context
 				resourceType = oContext.getResourceType();
 				resLibIndex = oContext.getResLibIndex();
+				package = oContext.getPackage();
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
-				aResLibs[resLibIndex].deleteResource(id, resourceType, pkg);
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				fileHREF = oResourceBean.getHREF();
+
+				// delete resource
+				aResLibs[resLibIndex].deleteResource(id, resourceType, package);
+
+				// delete target file
+				if(fileHREF neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & fileHREF))) {
+					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & fileHREF));
+				}
 
 				// remove from catalog
 				hp.getCatalog().deleteResourceNode(resourceType, id);
@@ -518,15 +491,55 @@
 		</cfscript>	
 	</cffunction>
 	
-	<cffunction name="doCreatePackage" access="public" returntype="void">
+	<cffunction name="doUploadFile" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
-			var resourceType = getValue("resourceType","");
-			var resLibIndex = getValue("resLibIndex","");
-			var name = getValue("name","");
+			var oCatalog = 0;
+			var resourceType = "";
+			var resLibIndex = 0;
+			var package = getValue("package");
+			var id = getValue("id","");
+			var resFile = getValue("resFile");
+			var oResourceBean = 0;
+			var resourceLibraryPath = "";
+			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
 
 			try {		
-				setMessage("warning","not implemented");
+				hp = oContext.getHomePortals();
+
+				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
+				if(package eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
+				
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
+
+				// upload file
+				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				stFileInfo = fileUpload(resFile, path);
+				if(not stFileInfo.fileWasSaved) {
+					throw("File upload failed","coldBricks.validation");
+				}
+
+				// create the bean for the new resource
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
+
+				/// update resource in library
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+			
+				// update catalog
+				hp.getCatalog().reloadPackage(resourceType,package);
+
+				setMessage("info","Resource target uploaded");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
 
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -534,9 +547,62 @@
 			}
 		
 			setNextEvent("ehResources.dspMain");
-		</cfscript>		
+		</cfscript>
 	</cffunction>
-	
+		
+	<cffunction name="doDeleteResourceFile" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var resourceType = "";
+			var resLibIndex = 0;
+			var package = "";
+			var id = getValue("id","");
+			var oResourceBean = 0;
+			var resourceLibraryPath = "";
+			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
+
+			try {		
+				hp = oContext.getHomePortals();
+
+				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
+				
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+				package = oContext.getPackage();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				// create the bean for the new resource
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				href = oResourceBean.getHREF();
+				if(href neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & href))) {
+					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & href));
+				}
+				oResourceBean.setHREF( "" );
+
+				/// update resource in library
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+			
+				// update catalog
+				hp.getCatalog().reloadPackage(resourceType,package);
+
+				setMessage("info","Resource target deleted");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		
+			setNextEvent("ehResources.dspMain");
+		</cfscript>	
+	</cffunction>	
+		
 	
 	<cffunction name="getResourceLibraryPathFromSite" returntype="string" access="private">
 		<cfargument name="path" type="string" required="true">
@@ -591,5 +657,19 @@
 		</cfloop>
 	</cffunction>
 	
-	
+	<cffunction name="fileUpload" access="private" returntype="struct">
+		<cfargument name="fieldName" type="string" required="true">
+		<cfargument name="destPath" type="string" required="true">
+		
+		<cfset var stFile = structNew()>
+		
+		<cffile action="upload"
+				filefield="#arguments.fieldName#" 
+				nameconflict="makeunique"  
+				result="stFile"
+				destination="#expandPath(arguments.destPath)#">
+		
+		<cfreturn stFile>
+	</cffunction>	
+		
 </cfcomponent>

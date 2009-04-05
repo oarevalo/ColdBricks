@@ -108,15 +108,15 @@
 				</div>
 			</td> --->
 			<td align="right" style="padding-right:10px;width:350px;">
-				Lib:
+				Resource Library:
 				<select name="resLibIndex" onchange="selectResourceType('#resourceType#','','',this.value)" style="font-size:11px;width:190px;">
 					<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
 						<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
 					</cfloop>
 				</select>
-				&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				Pkg:
+				Package:
 				<select name="package" onchange="selectResourceType('#resourceType#','',this.value,#resLibIndex#)" style="font-size:11px;width:100px;">
 					<cfset tmpPKG = package>
 					<option value="__ALL__">-- All --</option>
