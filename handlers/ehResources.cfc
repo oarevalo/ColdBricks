@@ -341,7 +341,7 @@
 				getService("bugTracker").notifyService(e.message, e);
 			}
 		
-			setNextEvent("ehResources.dspMain");
+			setNextEvent("ehResources.dspMain","id=#id#");
 		</cfscript>
 	</cffunction>
 
@@ -546,7 +546,7 @@
 				getService("bugTracker").notifyService(e.message, e);
 			}
 		
-			setNextEvent("ehResources.dspMain");
+			setNextEvent("ehResources.dspMain","id=#id#");
 		</cfscript>
 	</cffunction>
 		
@@ -599,7 +599,7 @@
 				getService("bugTracker").notifyService(e.message, e);
 			}
 		
-			setNextEvent("ehResources.dspMain");
+			setNextEvent("ehResources.dspMain","id=#id#");
 		</cfscript>	
 	</cffunction>	
 		
