@@ -9,6 +9,7 @@
 			var hp = 0;
 			var oContext = getService("sessionContext").getContext();
 			var oPage = 0;
+			var cbPageTitle = "";
 			
 			try {
 				hp = oContext.getHomePortals();
@@ -28,6 +29,17 @@
 				// get default resource type
 				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
 				if(resType neq "") oContext.setPageResourceTypeView(resType);
+
+				if(oContext.hasAccountSite())
+					cbPageTitle = "Accounts > #oContext.getAccountName()# > ";
+				else
+					cbPageTitle = "Pages > ";
+
+				if(oContext.getPage().getTitle() neq "")
+					cbPageTitle = cbPageTitle & oContext.getPage().getTitle();
+				else
+					cbPageTitle = cbPageTitle & getFileFromPath(oContext.getPageHREF());
+
 				
 				setValue("pageTitle", oContext.getPage().getTitle() );
 				setValue("accountName", oContext.getAccountName());
@@ -39,11 +51,7 @@
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 
-				if(oContext.hasAccountSite())
-					setValue("cbPageTitle", "Accounts > #oContext.getAccountName()# > #oContext.getPage().getTitle()#");
-				else
-					setValue("cbPageTitle", "Pages > #oContext.getPage().getTitle()#");
-
+				setValue("cbPageTitle", cbPageTitle);
 				setValue("cbPageIcon", "images/users_48x48.png");
 				setValue("cbShowSiteMenu", true);
 				

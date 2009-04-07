@@ -240,7 +240,7 @@
 			try {
 				pp = oContext.getHomePortals().getPageProvider();
 
-				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
+				if(pageName eq "" or pageName eq "null") throw("The page name cannot be blank.","coldBricks.validation");
 
 				// if the pageName contains any spaces, then replace them with _
 				pageName = replace(pageName," ","_","ALL");

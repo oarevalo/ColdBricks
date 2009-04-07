@@ -127,7 +127,7 @@ function deleteEventHandler(index) {
 }
 
 function doRenamePage() {
-	var oldName = $("selCurrentPage").value;
+	var oldName = $("page").value;
 	var newName = prompt("Enter the new name for this page:",oldName);
 
 	if(newName && newName!=oldName) {

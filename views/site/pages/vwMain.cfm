@@ -61,7 +61,7 @@
 
 		function renamePage(parentPath, pagePath) {
 			var name = prompt("Enter the name of the new page:");
-			if(name!="") {
+			if(name!="" && name!=null) {
 				doEvent("ehPages.doRenamePage","nodePanel",{parentPath: parentPath, pagePath: pagePath, newName: name});
 			}
 		}

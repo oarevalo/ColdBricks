@@ -166,109 +166,8 @@
 
 			<!--- layout preview --->
 			<div style="text-align:left;font-size:11px;margin:5px;margin-left:10px;margin-top:10px;"><b>Layout Preview:</b></div>
-			
 			<div style="background-color:##ebebeb;height:320px;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;">
-			
-			<table id="tblLayoutPreview" border="1" align="center" style="margin:0px;margin-top:30px;">
-				
-				<!--- display headers --->
-				<cfif structKeyExists(stLocationsByType,"header")>
-					<cfset aSections = stLocationsByType["header"]>
-					
-					<cfloop from="1" to="#arrayLen(aSections)#" index="i">
-						<cfset name = aSections[i].name>
-						<cfset aModules = stModulesByRegion[ name ]>
-						<tr valign="top">
-							<td colspan="#numColumns#" style="height:17px;">
-								<div class="layoutSectionLabel" style="display:none;" id="#name#_title">
-									<table style="width:100%;" border="0">
-										<td style="border:0px !important;" align="left">
-											<a href="javascript:document.location='?event=ehPage.dspMain&editLayoutSection=#name#'">#name#</a>
-										</td>
-										<td align="right" style="border:0px !important;">
-											<a href="javascript:document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#name#'"><img src="images/cross.png" align="absmiddle" border="0"></a>
-										</td>
-									</table>
-								</div>
-								<ul id="pps_#name#" class="layoutPreviewList">
-								<cfloop from="1" to="#ArrayLen(aModules)#" index="j">
-									<cfset tmpModuleID = aModules[j].id>
-									<li id="ppm_#tmpModuleID#" class="layoutListItem"><div>#tmpModuleID#</div></li>
-								</cfloop>
-								</ul>
-							</td>	
-						</tr>
-					</cfloop>
-				</cfif>
-				
-				<!--- display columns --->
-				<cfif structKeyExists(stLocationsByType,"column")>
-					<cfset aSections = stLocationsByType["column"]>
-
-					<tr valign="top">
-						<cfloop from="1" to="#arrayLen(aSections)#" index="i">
-							<cfset name = aSections[i].name>
-							<cfset aModules = stModulesByRegion[ name ]>
-							<td style="width:#colWidth#px;">
-								<div class="layoutSectionLabel" style="display:none;" id="#name#_title">
-									<table style="width:100%;" border="0">
-										<td style="border:0px !important;" align="left">
-											<a href="javascript:document.location='?event=ehPage.dspMain&editLayoutSection=#name#'">#name#</a>
-										</td>
-										<td align="right" style="border:0px !important;">
-											<a href="javascript:document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#name#'"><img src="images/cross.png" align="absmiddle" border="0"></a>
-										</td>
-									</table>
-								</div>
-								<ul id="pps_#name#" class="layoutPreviewList">
-								<cfloop from="1" to="#ArrayLen(aModules)#" index="j">
-									<cfset tmpModuleID = aModules[j].id>
-									<li id="ppm_#tmpModuleID#" class="layoutListItem"><div>#tmpModuleID#</div></li>
-								</cfloop>
-								</ul>
-							</td>
-						</cfloop>
-					</tr>
-				</cfif>
-				
-				<!--- display footers --->
-				<cfif structKeyExists(stLocationsByType,"footer")>
-					<cfset aSections = stLocationsByType["footer"]>
-	
-					<cfloop from="1" to="#arrayLen(aSections)#" index="i">
-						<cfset name = aSections[i].name>
-						<cfset aModules = stModulesByRegion[ name ]>
-						<tr valign="top">
-							<td colspan="#numColumns#" style="height:17px;">
-								<div class="layoutSectionLabel" style="display:none;" id="#name#_title">
-									<table style="width:100%;" border="0">
-										<td style="border:0px !important;" align="left">
-											<a href="javascript:document.location='?event=ehPage.dspMain&editLayoutSection=#name#'">#name#</a>
-										</td>
-										<td align="right" style="border:0px !important;">
-											<a href="javascript:document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#name#'"><img src="images/cross.png" align="absmiddle" border="0"></a>
-										</td>
-									</table>
-								</div>
-								<ul id="pps_#name#" class="layoutPreviewList">	
-								<cfloop from="1" to="#ArrayLen(aModules)#" index="j">
-									<cfset tmpModuleID = aModules[j].id>
-									<li id="ppm_#tmpModuleID#" class="layoutListItem"><div>#tmpModuleID#</div></li>
-								</cfloop>
-								</ul>
-							</td>	
-						</tr>
-					</cfloop>
-				</cfif>
-			</table>
-			<div id="moduleOrderButtons" style="display:none;margin-top:5px;">
-				<input type="button" name="btnUpdateModuleOrder"
-						onclick="updateModuleOrder()"
-						value="Apply Changes">
-				<input type="button" name="btnUndoModuleOrder"
-						onclick="document.location='index.cfm?event=ehPage.dspMain'"
-						value="Undo">
-			</div>
+				 <cfinclude template="includes/showPagePreview.cfm"> 
 			</div>
 			
 			<p align="center" style="font-size:9px;">Double-click on module to view/edit properties.</p>
@@ -288,17 +187,23 @@
 							<option value="_IMPORT">-- Import Templates --</option>
 						</select>					
 					</div> --->
-					
+
 					<strong>Page Layout:</strong>
 					&nbsp;&nbsp;&nbsp;
-					<img src="images/layout_header.png" align="Absmiddle">
-					<a href="?event=ehPage.doAddLayoutLocation&locationType=header" style="font-weight:normal;">Add Header</a>	
-					&nbsp;&nbsp;&nbsp;
-					<img src="images/layout_sidebar.png" align="Absmiddle">
-					<a href="?event=ehPage.doAddLayoutLocation&locationType=column" style="font-weight:normal;">Add Column</a>			
-					&nbsp;&nbsp;&nbsp;
-					<img src="images/page.png" align="Absmiddle">
-					<a href="?event=ehPage.doAddLayoutLocation&locationType=footer" style="font-weight:normal;">Add Footer</a>			
+					<cfloop from="1" to="#arrayLen(aLayoutSectionTypes)#" index="i">
+						<cfscript>
+							switch(aLayoutSectionTypes[i]) {
+								case "header": imgSrc = "images/layout_header.png"; break;
+								case "column": imgSrc = "images/layout_sidebar.png"; break;
+								case "footer": imgSrc = "images/page.png"; break;
+								default:
+									imgSrc = "images/layout_header.png";
+							}
+						</cfscript>
+						<img src="#imgSrc#" align="Absmiddle">
+						<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1)#</a>	
+						&nbsp;&nbsp;&nbsp;
+					</cfloop>
 				</div>
 			</div>
 
@@ -331,84 +236,8 @@
 				</div>
 			</div>
 			<div class="cp_sectionBox" 
-				style="margin-top:0px;width:190px;padding:0px;height:200px;margin-top:0px;margin-right:0px;border-top:0px;text-align:left;">
-				
-				<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;font-size:11px;">
-					<input type="checkbox" name="chkShowLayoutSectionTitles" 
-							onclick="showLayoutSectionTitles(this.checked)" value="1">
-					Show Section Titles
-				</div>
-
-				<div id="layoutSections" style="margin:5px;margin-top:10px;text-align:left;">
-					<cfparam name="editLayoutSection" default="">
-
-					<div style="margin:2px;">
-						<strong>Section:</strong> &nbsp;&nbsp;
-						<select name="layoutSection" 
-								style="width:100px;"
-								onchange="document.location='?event=ehPage.dspMain&editLayoutSection='+this.value">
-							<option value=""></option>
-							<cfloop from="1" to="#arrayLen(aLayoutRegions)#" index="i">
-								<option value="#aLayoutRegions[i].name#"
-										<cfif aLayoutRegions[i].name eq editLayoutSection>selected</cfif>
-										>#aLayoutRegions[i].name#</option>
-							</cfloop>
-						</select>
-					</div>
-					
-					<cfif editLayoutSection neq "">
-						<cfloop from="1" to="#arrayLen(aLayoutRegions)#" index="i">
-							<cfif aLayoutRegions[i].name eq editLayoutSection>
-								<cfset thisLocation = aLayoutRegions[i]>
-							</cfif>
-						</cfloop>
-
-						<div style="margin-top:5px;border-top:1px solid silver;">
-							<div style="margin:2px;">
-								<form name="frmEditLayoutSection" method="post" action="index.cfm">
-									<table>
-										<tr>
-											<td style="font-size:10px;color:##999;text-align:right;width:50px;">Name:</td>
-											<td><input type="text" name="locationNewName" value="#thisLocation.name#" style="width:90px;padding:2px;"></td>
-										</tr>
-										<tr>
-											<td style="font-size:10px;color:##999;text-align:right;width:50px;">Type:</td>
-											<td>
-												<select name="locationType" style="width:90px;padding:2px;">
-													<cfloop from="1" to="#arrayLen(aLayoutSectionTypes)#" index="i">
-														<option value="#aLayoutSectionTypes[i]#"
-																<cfif aLayoutSectionTypes[i] eq thisLocation.type>selected</cfif>
-																>#aLayoutSectionTypes[i]#</option>
-													</cfloop>
-												</select>
-										</tr>
-										<tr>
-											<td style="font-size:10px;color:##999;text-align:right;width:50px;">CSS Class:</td>
-											<td><input type="text" name="locationClass" value="#thisLocation.class#" style="width:90px;padding:2px;"></td>
-										</tr>
-									</table>
-									<p align="center">
-										<input type="hidden" name="event" value="ehPage.doSaveLayoutLocation">
-										<input type="hidden" name="locationOriginalName" value="#thisLocation.name#">
-										<input type="submit" name="btnSave" value="Save">
-										<input type="button" name="btnDelete" value="Delete" onclick="document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#thisLocation.name#'">
-										<input type="button" name="btnCancel" value="Cancel" onclick="document.location='?event=ehPage.dspMain'">
-									</p>
-								</form>
-							</div>
-						</div>
-					<cfelse>
-						<p>Select from the drop-down box a layout section to customize its properties</p>
-						<!---
-						<p align="center"><br>
-							&bull; <a href="##">Save current layout as template</a>
-						</p>
-						---->
-					</cfif>
-
-					<table>
-					</table>
-				</div>
+					style="margin-top:0px;width:190px;padding:0px;height:200px;margin-top:0px;margin-right:0px;border-top:0px;text-align:left;">
+				<cfinclude template="includes/editPageLayout.cfm">
 			</div>
 		</td>
 	</tr>
