@@ -1,6 +1,6 @@
 <cfcomponent extends="ehColdBricks">
 
-	<cffunction name="dspMain">
+	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var oSiteDAO = 0;
 			var oUserDAO = 0;
@@ -33,7 +33,7 @@
 		</cfscript>	
 	</cffunction>
 
-	<cffunction name="dspCreate">
+	<cffunction name="dspCreate" access="public" returntype="void">
 		<cfset var siteTemplatesRoot = getSetting("siteTemplatesRoot")>
 		<cfset var qrySiteTemplates = 0>
 		
@@ -54,7 +54,7 @@
 		<cfset setView("sites/vwCreate")>	
 	</cffunction>
 
-	<cffunction name="dspDelete">
+	<cffunction name="dspDelete" access="public" returntype="void">
 		<cfscript>
 			var siteID = getValue("siteID");
 			var oSiteDAO = 0;
@@ -85,13 +85,13 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="dspRegister">
+	<cffunction name="dspRegister" access="public" returntype="void">
 		<cfset setValue("cbPageTitle", "Site Management > Register Existing Site")>
 		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
 		<cfset setView("sites/vwRegister")>
 	</cffunction>
 
-	<cffunction name="doCreate">
+	<cffunction name="doCreate" access="public" returntype="void">
 		<cfscript>
 			var appRoot = getValue("appRoot");
 			var accountsRoot = getValue("accountsRoot");
@@ -221,9 +221,10 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doDelete">
+	<cffunction name="doDelete" access="public" returntype="void">
 		<cfscript>
 			var siteID = getValue("siteID");
+			var deleteFiles = getValue("deleteFiles", false);
 			var oSiteDAO = 0;
 			var qrySite = 0;
 			
@@ -233,24 +234,25 @@
 				qrySite = oSiteDAO.get(siteID);
 
 				// make sure we are deleting something safe (if directory exists at all)
-				if(directoryExists( expandPath(qrySite.path))) {
-				
-					if(qrySite.path neq "/" 
-						and left(qrySite.path,6) neq "/homePortals/"
-						and qrySite.path neq "/homePortals" 
-						and left(qrySite.path,11) neq "/ColdBricks"
-						and left(qrySite.path,1) eq "/" ) {
-						deleteDir( expandPath(qrySite.path) );
-					} else {
-						throw("You are trying to delete a restricted directory","coldBricks.validation");
-					}
-				
+				if(qrySite.path neq "/" 
+					and left(qrySite.path,6) neq "/homePortals/"
+					and qrySite.path neq "/homePortals" 
+					and left(qrySite.path,11) neq "/ColdBricks"
+					and left(qrySite.path,1) eq "/" ) {
+				} else {
+					throw("You are trying to delete a restricted directory","coldBricks.validation");
+				}
+
+				// delete files (if requested and directory exists)
+				if(isBoolean(deleteFiles) and deleteFiles and directoryExists( expandPath(qrySite.path))) {
+					deleteDir( expandPath(qrySite.path) );
 				}
 				
 				// delete from local datastore
 				oSiteDAO.delete(siteID);
 				
 				setMessage("info", "Site deleted");
+				setNextEvent("ehSites.dspMain");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -261,11 +263,10 @@
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("ehSites.dspDelete");
 			}
-				setNextEvent("ehSites.dspMain");
 		</cfscript>	
 	</cffunction>
 	
-	<cffunction name="doRegister">
+	<cffunction name="doRegister" access="public" returntype="void">
 		<cfscript>
 			var appRoot = getValue("appRoot");
 			var name = getValue("name");
@@ -320,7 +321,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="doArchiveSite">
+	<cffunction name="doArchiveSite" access="public" returntype="void">
 		<cfset var siteID = getValue("siteID")>
 		<cfset var oSiteDAO = 0>
 		<cfset var qrySite = 0>
