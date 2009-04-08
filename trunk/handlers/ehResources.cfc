@@ -4,6 +4,11 @@
 		<cfscript>
 			var rebuildCatalog = getValue("rebuildCatalog",false);
 			var resType = getValue("resType");
+			var libpath = getValue("libpath"); 
+			var resLibIndex = val(getValue("resLibIndex",""));
+			var package = getValue("pkg"); 
+			var id = getValue("id"); 
+
 			var oCatalog = 0;
 			var stResourceTypes = structNew();
 			var qryResources = queryNew(""); 
@@ -26,16 +31,32 @@
 			// get resources
 			qryResources = oCatalog.getResources();
 								
-			// check if we have a saved resource type
-			if(resType eq "" and oContext.getResourceType() neq "") {
-				resType = oContext.getResourceType();
+			if(id neq "" and resType neq "" and libPath eq "auto") {
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResource = oCatalog.getResourceNode(resType, id);
+				for(i=1;i lte arrayLen(aResLibs);i++) {
+					if(aResLibs[i].getPath() eq oResource.getResLibPath()) {
+						resLibIndex = i;
+						package = oResource.getPackage();
+						break;
+					}
+				}
 			}					
+								
+			// check if we have a saved resource context
+			if(resType eq "" and oContext.getResourceType() neq "")  resType = oContext.getResourceType();
+			if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
+			if(package eq "" and oContext.getPackage() neq "" and package neq "__ALL__")  package = oContext.getPackage();					
+								
 								
 			// pass data to the view	
 			setValue("oCatalog", oCatalog);	
 			setValue("stResourceTypes", stResourceTypes);	
 			setValue("qryResources", qryResources);	
 			setValue("resType", resType);	
+			setValue("resLibIndex", resLibIndex);	
+			setValue("id", id);	
+			setValue("pkg", package);	
 
 			setValue("cbPageTitle", "Site Resources");
 			setValue("cbPageIcon", "folder2_yellow_48x48.png");
@@ -148,12 +169,7 @@
 				if(resourceType eq "" and oContext.getResourceType() neq "")  resourceType = oContext.getResourceType();
 				if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
 				if(package eq "" and oContext.getPackage() neq "")  package = oContext.getPackage();
-
-				// if we are changing to a different res type, then clear the package
-				if(resourceType neq oContext.getResourceType()) {
-					package = "";
-				}
-				
+			
 
 				// get resource
 				if(id eq "NEW") id = "";

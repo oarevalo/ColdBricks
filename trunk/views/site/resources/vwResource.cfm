@@ -144,7 +144,7 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td>
-							<div id="newPkgDiv" <cfif package neq "">style="display:none;"</cfif>>
+							<div id="newPkgDiv" <cfif package neq "" and package neq "__ALL__">style="display:none;"</cfif>>
 								New package name:
 								<input type="text" name="package_new" value="" class="formField" style="width:250px;">
 							</div>
