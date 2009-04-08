@@ -1,0 +1,12 @@
+
+Bulgarian (bg)
+Catalan (ca)
+Hebrew (he)
+Icelandic (is)
+Korean (ko)
+Romainian (ro)
+Slovenian (sl)
+Turkish (tr)
+Ukranian (uk)
+
+Any and all other language translations are welcome!

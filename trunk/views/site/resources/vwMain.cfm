@@ -53,6 +53,8 @@
 			margin:0 auto;
 		}
 	</style>
+	<link type="text/css" rel="stylesheet" href="includes/floatbox/floatbox.css" />
+	<script type="text/javascript" src="includes/floatbox/floatbox.js"></script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
 <cfoutput>
