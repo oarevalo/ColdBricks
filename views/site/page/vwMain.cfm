@@ -105,9 +105,9 @@
 				<option value="_IMPORT">-- Import Skins --</option>
 			</select>
 			<cfif skinID neq "">
-				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=#skinID#">Edit</a>
+				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=#skinID#&libpath=auto">Edit</a>
 			<cfelse>
-				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=NEW">New</a>
+				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=NEW&pkg=__ALL__">New</a>
 			</cfif>
 		</td>
 		<td align="right" nowrap="yes">

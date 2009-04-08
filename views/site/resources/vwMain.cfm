@@ -1,12 +1,14 @@
 <cfparam name="request.requestState.resType" default="">
 <cfparam name="request.requestState.pkg" default="">
 <cfparam name="request.requestState.id" default="">
+<cfparam name="request.requestState.resLibIndex" default="">
 <cfparam name="request.requestState.qryResources" default="">
 <cfparam name="request.requestState.stResourceTypes" default="">
 
 <cfset resType = request.requestState.resType>
 <cfset pkg = request.requestState.pkg>
 <cfset id = request.requestState.id>
+<cfset resLibIndex = request.requestState.resLibIndex>
 <cfset qryResources = request.requestState.qryResources>
 <cfset stResourceTypes = request.requestState.stResourceTypes>
 
@@ -180,7 +182,7 @@
 <cfif resType neq "">
 	<script>
 		<cfif id neq "">
-			selectResource('#resType#','#id#','#pkg#')
+			selectResource('#resType#','#id#','#pkg#','#resLibIndex#')
 		<cfelse>
 			selectResourceType('#resType#','','')
 		</cfif>
