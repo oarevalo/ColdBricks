@@ -31,23 +31,11 @@
 			// get resources
 			qryResources = oCatalog.getResources();
 								
-			if(id neq "" and resType neq "" and libPath eq "auto") {
-				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
-				oResource = oCatalog.getResourceNode(resType, id);
-				for(i=1;i lte arrayLen(aResLibs);i++) {
-					if(aResLibs[i].getPath() eq oResource.getResLibPath()) {
-						resLibIndex = i;
-						package = oResource.getPackage();
-						break;
-					}
-				}
-			}					
-								
-			// check if we have a saved resource context
-			if(resType eq "" and oContext.getResourceType() neq "")  resType = oContext.getResourceType();
-			if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
-			if(package eq "" and oContext.getPackage() neq "" and package neq "__ALL__")  package = oContext.getPackage();					
-								
+			setResourceContext();
+			resourceType = getValue("resourceType");
+			resLibIndex = getValue("resLibIndex");
+			package = getValue("pkg");
+				
 								
 			// pass data to the view	
 			setValue("oCatalog", oCatalog);	
@@ -76,6 +64,7 @@
 			var oHelpDAO = 0;
 			var qryHelp = 0;
 			var qryResources = queryNew("");
+			var qryPackages = queryNew("");
 			var oContext = getService("sessionContext").getContext();
 			var aResLibs = arrayNew(1);
 			
@@ -86,24 +75,26 @@
 				oCatalog = hp.getCatalog();
 				oResLibManager = hp.getResourceLibraryManager();
 
-				// check if we have a saved context
-				if(resourceType eq "" and oContext.getResourceType() neq "")  resourceType = oContext.getResourceType();
-				if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
-				if(package eq "" and oContext.getPackage() neq "" and package neq "__ALL__")  package = oContext.getPackage();
-
-				if(package eq "__ALL__") package = "";
+				setResourceContext();
+				resourceType = getValue("resourceType");
+				resLibIndex = getValue("resLibIndex");
+				package = getValue("pkg");
 
 				// if we are changing to a different res type, then clear the package
 				if(resourceType neq oContext.getResourceType()) {
 					package = "";
+					resLibIndex = -1;
 				}
 
 				// get resources
 				aResLibs = oResLibManager.getResourceLibraries();
-				if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
+				//if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
 				if(resLibIndex gt 0) {
 					qryResources = oCatalog.getResourcesByType(resourceType, aResLibs[resLibIndex].getPath());
 					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+				} else {
+					qryResources = oCatalog.getResourcesByType(resourceType);
+				
 				}
 				
 				// get info on resource type
@@ -166,10 +157,12 @@
 				oCatalog = hp.getCatalog();
 				
 				// check if we have a saved context
-				if(resourceType eq "" and oContext.getResourceType() neq "")  resourceType = oContext.getResourceType();
-				if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
-				if(package eq "" and oContext.getPackage() neq "")  package = oContext.getPackage();
+				setResourceContext();
+				resourceType = getValue("resourceType");
+				resLibIndex = getValue("resLibIndex");
+				package = getValue("pkg");
 			
+				if(reslibindex lte 0) throw("Please select a resource library. [#reslibindex#]");
 
 				// get resource
 				if(id eq "NEW") id = "";
@@ -687,5 +680,45 @@
 		
 		<cfreturn stFile>
 	</cffunction>	
+		
+	<cffunction name="setResourceContext" access="private">
+		<cfscript>
+			var resType = getValue("resourceType", getValue("resType"));
+			var libpath = getValue("libpath"); 
+			var resLibIndex = val(getValue("resLibIndex",""));
+			var package = getValue("pkg"); 
+			var id = getValue("id"); 
+			
+			var oContext = getService("sessionContext").getContext();
+			var hp = oContext.getHomePortals();
+			var aResLibs = 0;
+			var oResource = 0;
+			var i = 0;
+
+			if(id neq "" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResource = hp.getCatalog().getResourceNode(resType, id);
+				for(i=1;i lte arrayLen(aResLibs);i++) {
+					if(aResLibs[i].getPath() eq oResource.getResLibPath()) {
+						resLibIndex = i;
+						package = oResource.getPackage();
+						break;
+					}
+				}
+			}					
+								
+			// check if we have a saved resource context
+			if(resType eq "" and oContext.getResourceType() neq "")  resType = oContext.getResourceType();
+			if(resLibIndex eq 0 and oContext.getResLibIndex() gt 0)  resLibIndex = oContext.getResLibIndex();
+			if(package eq "" and oContext.getPackage() neq "")  package = oContext.getPackage();					
+			
+			//if(resLibIndex eq -1) resLibIndex = 0;					
+			if(package eq "__ALL__") package = "";					
+			
+			setValue("resType", resType);
+			setValue("resLibIndex", resLibIndex);
+			setValue("pkg", package);
+		</cfscript>
+	</cffunction>
 		
 </cfcomponent>

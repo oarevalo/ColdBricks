@@ -89,7 +89,7 @@
 						<div style="margin-bottom:5px;">
 							<img src="#imgSrc#" align="absmiddle"> 
 							<a href="##" 
-								onclick="selectResourceType('#key#')"
+								onclick="selectResourceType('#key#','','','#reslibindex#')"
 								class="resTreeItem" 
 								id="resTreeItem_#key#">#stResourceTypes[key].getFolderName()#</a> 
 							(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
