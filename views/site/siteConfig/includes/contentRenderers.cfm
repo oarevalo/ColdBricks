@@ -73,7 +73,7 @@
 								<input type="text" name="path" value="" style="width:340px;font-size:11px;">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSaveContentRenderer')">
+								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSiteConfig.doSaveContentRenderer')">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=#dspEvent#'">
 							</td>
 						</tr>
@@ -101,7 +101,7 @@
 								<input type="text" name="path" value="#path#" style="width:340px;font-size:11px;">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSaveContentRenderer')">
+								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSiteConfig.doSaveContentRenderer')">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=#dspEvent#'">
 							</td>
 						</tr>
