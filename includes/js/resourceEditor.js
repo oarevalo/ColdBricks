@@ -112,3 +112,16 @@ function saveResourceFile(frm) {
 	}
 	frm.submit();
 }
+
+function uploadResource(resType,pkg,resLibIndex) {
+	if(pkg==null || pkg==undefined) pkg="";
+	if(resLibIndex==null || resLibIndex==undefined) resLibIndex="";
+
+	var href = "index.cfm"
+				+ "?event=ehResources.dspUploadResource" 
+				+ "&resourceType=" + resType
+				+ "&pkg=" + pkg
+				+ "&resLibIndex=" + resLibIndex
+
+	fb.loadAnchor(href,"width:400 height:300");
+}

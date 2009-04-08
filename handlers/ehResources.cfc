@@ -85,6 +85,9 @@
 					package = "";
 					resLibIndex = -1;
 				}
+				if(resLibIndex neq oContext.getResLibIndex()) {
+					package = "";
+				}
 
 				// get resources
 				aResLibs = oResLibManager.getResourceLibraries();
@@ -133,7 +136,7 @@
 				setValue("resTypeLabel", resTypeLabel );
 				setValue("resTypeIcon", resTypeIcon );
 
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
@@ -162,7 +165,7 @@
 				resLibIndex = getValue("resLibIndex");
 				package = getValue("pkg");
 			
-				if(reslibindex lte 0) throw("Please select a resource library. [#reslibindex#]");
+				if(reslibindex lte 0) throw("Please select a resource library first","coldbricks.validation");
 
 				// get resource
 				if(id eq "NEW") id = "";
@@ -191,9 +194,14 @@
 				
 				setView("site/resources/vwResource");
 							
+			} catch(coldbricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehResources.dspResourceTypeList","resourceType=#resourceType#");
+
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehResources.dspResourceTypeList","resourceType=#resourceType#");
 			}						
 		</cfscript>	
 	</cffunction>
@@ -291,6 +299,75 @@
 	
 	</cffunction>
 
+	<cffunction name="dspUploadResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var fileContent = "";
+			var href = "";
+			var	fullhref = "";
+			
+			try {
+				setLayout("Layout.Clean");
+
+				hp = oContext.getHomePortals();
+
+				setResourceContext();
+				resourceType = getValue("resourceType");
+				resLibIndex = getValue("resLibIndex");
+				package = getValue("pkg");
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				if(resLibIndex gt 0) {
+					oContext.setResLibIndex(resLibIndex);
+					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+					setValue("qryPackages", qryPackages);	
+				}
+
+				// set values
+				setValue("resourceType", resourceType);	
+				setValue("package", package);	
+				setValue("resLibIndex", resLibIndex);	
+				setValue("aResLibs", aResLibs);	
+				
+				setView("site/resources/vwUploadResource");
+				
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="dspSelectResourceLibrary" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var fileContent = "";
+			var href = "";
+			var	fullhref = "";
+			
+			try {
+				setLayout("Layout.Clean");
+
+				hp = oContext.getHomePortals();
+
+				resourceType = oContext.getResourceType();
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				// set values
+				setValue("resourceType", resourceType);	
+				setValue("aResLibs", aResLibs);	
+				
+				setView("site/resources/vwSelectResourceLibrary");
+				
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		</cfscript>
+	</cffunction>
 
 	<cffunction name="doSaveResource" access="public" returntype="void">
 		<cfscript>
@@ -612,6 +689,65 @@
 		</cfscript>	
 	</cffunction>	
 		
+	<cffunction name="doUploadResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var resourceType = "";
+			var resLibIndex = 0;
+			var package = getValue("package");
+			var id = getValue("id","");
+			var resFile = getValue("resFile");
+			var oResourceBean = 0;
+			var resourceLibraryPath = "";
+			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
+
+			try {		
+				hp = oContext.getHomePortals();
+
+				if(package eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
+				
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+				resLibIndex = oContext.getResLibIndex();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
+
+				// upload file
+				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				stFileInfo = fileUpload(resFile, path);
+				if(not stFileInfo.fileWasSaved) {
+					throw("File upload failed","coldBricks.validation");
+				}
+
+				// create the bean for the new resource
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
+
+				/// update resource in library
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+			
+				// update catalog
+				hp.getCatalog().reloadPackage(resourceType,package);
+
+				setMessage("info","Resource target uploaded");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		
+			setNextEvent("ehResources.dspMain","id=#id#");
+		</cfscript>
+	</cffunction>
+	
+	
 	
 	<cffunction name="getResourceLibraryPathFromSite" returntype="string" access="private">
 		<cfargument name="path" type="string" required="true">
@@ -672,8 +808,8 @@
 		
 		<cfset var stFile = structNew()>
 		
-		<cffile action="upload"
-				filefield="#arguments.fieldName#" 
+		<cffile action="upload" 
+				filefield="resFile" 
 				nameconflict="makeunique"  
 				result="stFile"
 				destination="#expandPath(arguments.destPath)#">

@@ -10,6 +10,7 @@
 <cfparam name="request.requestState.aResLibs">
 <cfparam name="request.requestState.resLibIndex">
 <cfparam name="request.requestState.package" default="">
+<cfparam name="request.requestState.id" default="">
 <cfparam name="request.requestState.qryPackages" default="">
 
 <cfset resourceType = request.requestState.resourceType>
@@ -24,6 +25,7 @@
 <cfset aResLibs = request.requestState.aResLibs>
 <cfset resLibIndex = request.requestState.resLibIndex>
 <cfset package = request.requestState.package>
+<cfset id = request.requestState.id>
 <cfset qryPackages = request.requestState.qryPackages>
 
 <cfif resLibIndex gt 0>
@@ -69,7 +71,7 @@
 
 
 <cfoutput>
-	<!--- [resLibIndex:#resLibIndex#][id:#id#][resourceType:#resourceType#][pkg:#package#] --->
+	<!--- [resLibIndex:#resLibIndex#][id:#id#][resourceType:#resourceType#][pkg:#package#]  --->
 	<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="0" cellspacing="0">
 		<tr>
 			<td nowrap="yes" style="width:200px;">
@@ -94,11 +96,11 @@
 					</div>	
 				</cfif>
 			</td>
-			<!--- <td align="right" style="padding-right:10px;width:120px;">
+			<td align="right" style="padding-right:10px;width:120px;">
 				<div class="buttonImage btnLarge" style="margin:0px;">
-					<a href="##" onclick="createPackage('#resourceType#',#resLibIndex#)"><img src="images/add.png" align="absmiddle" border="0"> Create Package</a>
+					<a href="##" onclick="uploadResource('#resourceType#','#package#','#resLibIndex#')"><img src="images/add.png" align="absmiddle" border="0"> Upload #resourceType#</a>
 				</div>	
-			</td> --->
+			</td>
 		</tr>
 	</table>
 

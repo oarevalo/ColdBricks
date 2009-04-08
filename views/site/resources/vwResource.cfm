@@ -55,12 +55,12 @@
 					<div style="text-align:center;margin:10px;">
 						<cfif tmpHREF neq "">
 							<!--- for known image types, show the image --->
-							<cfif isImageFile(expandPath(tmpFullHREF))>
+							<cfif fileExists(expandPath(tmpFullHREF)) and isImageFile(expandPath(tmpFullHREF))>
 								<cfimage action="resize"
 										    width="100" height="" 
-										    source="#tmpFullHREF#"
+										    source="#expandPath(tmpFullHREF)#"
 										    name="resImage">
-								<a href="#tmpFullHREF#" target="_blank"><cfimage action="writeToBrowser" source="#resImage#"></a>
+								<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
 							<cfelse>
 								<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
 							</cfif>
