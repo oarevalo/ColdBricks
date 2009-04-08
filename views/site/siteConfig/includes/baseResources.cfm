@@ -7,8 +7,10 @@
 	oHomePortalsConfigBean = request.requestState.oHomePortalsConfigBean;
 	baseResourceEditIndex = request.requestState.baseResourceEditIndex;
 	baseResourceEditType = request.requestState.baseResourceEditType;
-	lstBaseResourceTypes = oHomePortalsConfigBean.getBaseResourceTypes();
 	oAppConfigBean = request.requestState.oAppConfigBean;
+
+	lstBaseResourceTypes = oAppConfigBean.getBaseResourceTypes();
+	if(lstBaseResourceTypes eq "") lstBaseResourceTypes = oHomePortalsConfigBean.getBaseResourceTypes();
 </cfscript>
 
 <script type="text/javascript">
@@ -18,7 +20,6 @@
 		}
 	}
 </script>
-
 
 <cfoutput>
 	<tr><td colspan="2"><h2>Base Resources:</h2></td></tr>
