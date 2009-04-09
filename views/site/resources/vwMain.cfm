@@ -69,7 +69,7 @@
 				</div>
 			</div>
 			<div class="cp_sectionBox" 
-				style="margin:0px;width:150px;padding:0px;height:320px;border-top:0px;">
+				style="margin:0px;width:150px;padding:0px;height:448px;border-top:0px;">
 				<div style="margin:5px;">
 				
 					<cfset lstResTypes = structKeyList(stResourceTypes)>
@@ -121,7 +121,6 @@
 					</div>
 				</div>
 			</div>		
-			--->			
 			<div class="cp_sectionTitle" id="cp_pd_moduleProperties_Title" 
 					style="width:150px;padding:0px;margin:0px;margin-top:10px;">
 				<div style="margin:2px;">
@@ -137,6 +136,7 @@
 					</div>	
 				</div>
 			</div>			
+			--->			
 		</td>
 		<td>
 			<div style="margin-left:5px;margin-right:5px;">
