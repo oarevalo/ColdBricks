@@ -158,6 +158,7 @@
 
 				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
+				if(id neq "NEW" and reslibindex lte 0) setValue("reslibindex", -1);
 				
 				// check if we have a saved context
 				setResourceContext();
@@ -831,7 +832,7 @@
 			var oResource = 0;
 			var i = 0;
 
-			if(id neq "" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
+			if(id neq "" and id neq "NEW" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResource = hp.getCatalog().getResourceNode(resType, id);
 				for(i=1;i lte arrayLen(aResLibs);i++) {
