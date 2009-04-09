@@ -216,6 +216,11 @@
 			var qrySourceSite = 0;
 			var qrySites = 0;
 			
+			////
+			// this feature is currently disabled, redirect to resources homepage
+			setNextEvent("ehResources.dspMain");
+			///
+			
 			oSiteDAO = getService("DAOFactory").getDAO("site");
 
 			if(oUser.getIsAdministrator()) {
@@ -771,7 +776,7 @@
 		
 		<cfif fileExists(expandPath(configFile))>
 			<cfset xmlDoc = xmlParse(expandPath(configFile))>
-			<cfset resRoot = xmlDoc.xmlRoot.resourceLibraryPath.xmlText>
+			<cfset resRoot = xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren[1].xmlText>
 		<cfelse>
 			<cfthrow message="Invalid site" type="coldBricks.validation">
 		</cfif>

@@ -102,7 +102,7 @@
 					<option value="#qrySkins.id#" <cfif qrySkins.id eq skinID>selected</cfif>>#qrySkins.id#</option>
 				</cfloop>
 				<option value="_NEW">-- New Skin --</option>
-				<option value="_IMPORT">-- Import Skins --</option>
+				<!--- <option value="_IMPORT">-- Import Skins --</option> --->
 			</select>
 			<cfif skinID neq "">
 				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=#skinID#&libpath=auto">Edit</a>
