@@ -123,5 +123,5 @@ function uploadResource(resType,pkg,resLibIndex) {
 				+ "&pkg=" + pkg
 				+ "&resLibIndex=" + resLibIndex
 
-	fb.loadAnchor(href,"width:400 height:300");
+	fb.loadAnchor(href,"width:440 height:300 loadPageOnClose:self");
 }

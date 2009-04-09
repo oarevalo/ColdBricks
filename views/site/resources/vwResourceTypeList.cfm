@@ -59,7 +59,7 @@
 
 <cfscript>
 	// page for when viewing in details mode
-	rowsPerPage = 16;
+	rowsPerPage = 15;
 	if(startRow lt 0) startRow = 1;
 	endRow = startRow + rowsPerPage - 1;
 	numPages = ceiling(qryResources.recordCount / rowsPerPage);
