@@ -254,10 +254,14 @@
 			try {
 				hp = oContext.getHomePortals();
 				hasAccountsPlugin = hp.getPluginManager().hasPlugin("accounts");
-				
+
 				if(hp.getConfig().getDefaultPage() neq "") {
 					pageHREF = hp.getConfig().getDefaultPage();
-					oPage = hp.getPageProvider().load( pageHREF );
+					try {
+						oPage = hp.getPageProvider().load( pageHREF );
+					
+					} catch(pageProvider.pageNotFound e) {
+					}
 				}
 				
 				if(hasAccountsPlugin) {
@@ -269,7 +273,7 @@
 						account = oAccService.getConfig().getDefaultAccount();
 						
 						// get account info
-						qryAccount = oAccService().getAccountByName(account);
+						qryAccount = oAccService.getAccountByName(account);
 						
 						// load account
 						oContext.setAccountID(qryAccount.accountID);
@@ -294,7 +298,7 @@
 			
 				setNextEvent("ehPage.dspMain","account=#account#");
 			
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("ehSite.dspMain");
