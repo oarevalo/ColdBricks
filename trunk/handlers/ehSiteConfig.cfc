@@ -822,7 +822,7 @@
 
 	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortalsAccounts.components.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","homePortalsAccounts.components.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
+			var oConfigBean = createObject("component","homePortalsAccounts.components.accountsConfigBean").init( expandPath("/homePortalsAccounts" & variables.accountsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
