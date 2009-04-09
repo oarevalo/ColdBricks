@@ -1,11 +1,11 @@
-<cfparam name="request.requestState.resType" default="">
+<cfparam name="request.requestState.resourceType" default="">
 <cfparam name="request.requestState.pkg" default="">
 <cfparam name="request.requestState.id" default="">
 <cfparam name="request.requestState.resLibIndex" default="">
 <cfparam name="request.requestState.qryResources" default="">
 <cfparam name="request.requestState.stResourceTypes" default="">
 
-<cfset resType = request.requestState.resType>
+<cfset resType = request.requestState.resourceType>
 <cfset pkg = request.requestState.pkg>
 <cfset id = request.requestState.id>
 <cfset resLibIndex = request.requestState.resLibIndex>

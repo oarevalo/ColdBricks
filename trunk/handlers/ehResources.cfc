@@ -3,11 +3,11 @@
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			var rebuildCatalog = getValue("rebuildCatalog",false);
-			var resType = getValue("resType");
-			var libpath = getValue("libpath"); 
-			var resLibIndex = val(getValue("resLibIndex",""));
-			var package = getValue("pkg"); 
-			var id = getValue("id"); 
+			var resourceType = "";
+			var libpath = ""; 
+			var resLibIndex = -1;
+			var package = ""; 
+			var id = ""; 
 
 			var oCatalog = 0;
 			var stResourceTypes = structNew();
@@ -41,7 +41,7 @@
 			setValue("oCatalog", oCatalog);	
 			setValue("stResourceTypes", stResourceTypes);	
 			setValue("qryResources", qryResources);	
-			setValue("resType", resType);	
+			setValue("resourceType", resourceType);	
 			setValue("resLibIndex", resLibIndex);	
 			setValue("id", id);	
 			setValue("pkg", package);	
@@ -307,6 +307,7 @@
 			var fileContent = "";
 			var href = "";
 			var	fullhref = "";
+			var	done = getValue("done",false);
 			
 			try {
 				setLayout("Layout.Clean");
@@ -331,6 +332,7 @@
 				setValue("package", package);	
 				setValue("resLibIndex", resLibIndex);	
 				setValue("aResLibs", aResLibs);	
+				setValue("done", done);
 				
 				setView("site/resources/vwUploadResource");
 				
@@ -500,10 +502,15 @@
 			try {		
 				hp = oContext.getHomePortals();
 
+				if(getValue("resLibIndex") lte 0) setValue("resLibIndex",-1);
+
 				// check if we have a saved context
-				resourceType = oContext.getResourceType();
-				resLibIndex = oContext.getResLibIndex();
-				package = oContext.getPackage();
+				setResourceContext();
+				resourceType = getValue("resourceType");
+				resLibIndex = getValue("resLibIndex");
+				package = getValue("pkg");
+
+				if(reslibindex lte 0) throw("Please select a resource library first","coldbricks.validation");
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
@@ -522,7 +529,7 @@
 
 				setMessage("info","Resource deleted");
 
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
@@ -695,7 +702,7 @@
 			var hp = 0;
 			var oCatalog = 0;
 			var resourceType = "";
-			var resLibIndex = 0;
+			var resLibIndex = getValue("resLibIndex");
 			var package = getValue("package");
 			var id = getValue("id","");
 			var resFile = getValue("resFile");
@@ -707,12 +714,12 @@
 			try {		
 				hp = oContext.getHomePortals();
 
+				if(resLibIndex lte 0) throw("Please select a resource library","coldBricks.validation"); 
 				if(package eq "") throw("Package name cannot be empty","coldBricks.validation"); 
 				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
 				
 				// check if we have a saved context
 				resourceType = oContext.getResourceType();
-				resLibIndex = oContext.getResLibIndex();
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
@@ -723,28 +730,33 @@
 				if(not stFileInfo.fileWasSaved) {
 					throw("File upload failed","coldBricks.validation");
 				}
+				id = getFileFromPath(stFileInfo.serverFile);
+				if(listLen(id,".") gt 1) id = listDeleteAt(id,listLen(id,"."),".");
 
 				// create the bean for the new resource
-				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
+				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
+				oResourceBean.setID( id );
+				oResourceBean.setPackage(package); 
 				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
 
-				/// update resource in library
+				/// add the new resource to the library
 				aResLibs[resLibIndex].saveResource(oResourceBean);
-			
+
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
 
 				setMessage("info","Resource target uploaded");
+				setNextEvent("ehResources.dspUploadResource","done=true");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
+				setNextEvent("ehResources.dspUploadResource");
 
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehResources.dspUploadResource");
 			}
-		
-			setNextEvent("ehResources.dspMain","id=#id#");
 		</cfscript>
 	</cffunction>
 	
@@ -820,7 +832,7 @@
 		
 	<cffunction name="setResourceContext" access="private">
 		<cfscript>
-			var resType = getValue("resourceType", getValue("resType"));
+			var resType = getValue("resourceType");
 			var libpath = getValue("libpath"); 
 			var resLibIndex = val(getValue("resLibIndex",""));
 			var package = getValue("pkg"); 
@@ -831,7 +843,7 @@
 			var aResLibs = 0;
 			var oResource = 0;
 			var i = 0;
-
+			
 			if(id neq "" and id neq "NEW" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResource = hp.getCatalog().getResourceNode(resType, id);
@@ -852,7 +864,7 @@
 			//if(resLibIndex eq -1) resLibIndex = 0;					
 			if(package eq "__ALL__") package = "";					
 			
-			setValue("resType", resType);
+			setValue("resourceType", resType);
 			setValue("resLibIndex", resLibIndex);
 			setValue("pkg", package);
 		</cfscript>
