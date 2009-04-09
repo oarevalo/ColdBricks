@@ -58,10 +58,11 @@
 					Use filename as resource ID
 				</td>
 			</tr>
+			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr>
 				<td><strong>Res Lib:</strong></td>
 				<td>
-					<select name="resLibIndex" class="formField" onchange="uploadResource('#resourceType#','#package#',this.value)">
+					<select name="resLibIndex" class="formField" onchange="uploadResource('#resourceType#','#package#',this.value)" style="width:250px;">
 						<option value="">-- Select One --</option>
 						<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
 							<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
@@ -73,7 +74,7 @@
 				<tr>
 					<td width="80"><b>Package:</b></td>
 					<td>
-						<select name="package" class="formField" onchange="togglePackage(this.value)">
+						<select name="package" class="formField" onchange="togglePackage(this.value)" style="width:250px;">
 							<option value="">[CREATE NEW]</option>
 							<cfloop query="qryPackages">
 								<option value="#qryPackages.name#" <cfif qryPackages.name eq package>selected</cfif>>#qryPackages.name#</option>

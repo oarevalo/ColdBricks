@@ -1,4 +1,4 @@
-<cfcomponent displayname="Controller">
+<cfcomponent displayname="Controller" output="false">
 	
 	<!---
 		Generate an (almost) unique name for the application in case there are multiple instances of the app
@@ -26,7 +26,7 @@
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
 
-	<cffunction name="onRequestStart">
+	<cffunction name="onRequestStart" output="false">
 		<cfparam name="Event" default=""> <!--- use to determine the action to perform --->
 		<cfparam name="resetApp" default="false"> <!--- use to reset the application state --->
  		<cfscript>
@@ -70,7 +70,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="onRequest">
+	<cffunction name="onRequest" output="true">
 		<cfargument name="targetPage" type="String" required="true" />
 		<cfif request.requestState.layout neq "">
 			<cfinclude template="layouts/#request.requestState.layout#.cfm">
