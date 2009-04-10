@@ -25,7 +25,7 @@
 				</tr>
 				<cfset aResLibs = oHomePortalsConfigBean.getResourceLibraryPaths()>
 				<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
-					<tr <cfif i mod 2>class="altRow"</cfif>>
+					<tr <cfif i mod 2>class="altRow"</cfif> <cfif resLibPathEditIndex eq i>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#i#.</strong></td>
 						<td><a href="index.cfm?event=ehSettings.dspMain&resLibPathEditIndex=#i#">#aResLibs[i]#</a></td>
 						<td align="center">
@@ -37,14 +37,15 @@
 			</table>
 			<cfif resLibPathEditIndex eq 0>
 				<form name="frmAddResLibPath" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="ehSettings.doAddResLibPath">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
 							<td>
-								<input type="text" name="path" value="" style="width:340px;font-size:11px;">
+								<input type="text" name="path" value="" style="width:340px;" class="formField">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doAddResLibPath')">
+								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=ehSettings.dspMain'">
 							</td>
 						</tr>
@@ -59,16 +60,17 @@
 					</cfcatch>
 				</cftry>
 				<form name="frmEditResLibPath" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="ehSettings.doSaveResLibPath">
 					<input type="hidden" name="index" value="#resLibPathEditIndex#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>Edit:</strong></td>
 							<td>
-								<input type="text" name="path" value="#resLibPath#" style="width:340px;font-size:11px;">
+								<input type="text" name="path" value="#resLibPath#" style="width:340px;" class="formField">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSaveResLibPath')">
+								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=ehSettings.dspMain'">
 							</td>
 						</tr>

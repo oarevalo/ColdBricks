@@ -10,7 +10,7 @@
 		<tr>
 			<td>
 				<div style="line-height:20px;font-weight:bold;">
-					<a href="index.cfm" style="color:##ff9900;text-decoration:none;font-size:20px;"><img src="images/coldbricks_logo.gif" border="0"></a>
+					<a href="index.cfm" style="color:##ff9900;text-decoration:none;font-size:20px;"><img src="images/coldbricks_logo.gif" border="0" width="190" height="60"></a>
 				</div>
 			</td> 
 			<td align="right" style="padding-right:10px;">

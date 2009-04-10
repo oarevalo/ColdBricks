@@ -32,9 +32,9 @@
 				</tr>
 				<cfset index = 1>
 				<cfloop collection="#stPlugins#" item="key">
-					<tr <cfif index mod 2>class="altRow"</cfif>>
+					<tr <cfif index mod 2>class="altRow"</cfif> <cfif pluginEditKey eq key>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-						<td style="width:100px;" align="center">#key#</td>
+						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#">#key#</a></td>
 						<td>#stPlugins[key]#</td>
 						<td align="center">
 							<a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit plugin" title="Edit plugin"></a>
@@ -46,19 +46,20 @@
 			</table>
 			<cfif pluginEditKey eq "__NEW__">
 				<form name="frmAddPlugin" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="ehSettings.doSavePlugin">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
 							<td style="width:100px;">
 								<strong>Name:</strong><br />
-								<input type="text" name="name" value="" style="width:100px;font-size:11px;">
+								<input type="text" name="name" value="" style="width:100px;" class="formField">
 							</td>
 							<td>
 								<strong>Path:</strong><br />
-								<input type="text" name="path" value="" style="width:340px;font-size:11px;">
+								<input type="text" name="path" value="" style="width:340px;" class="formField">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSavePlugin')">
+								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=#dspEvent#'">
 							</td>
 						</tr>
@@ -72,6 +73,7 @@
 					</cfcatch>
 				</cftry>
 				<form name="frmEditPlugin" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="ehSettings.doSavePlugin">
 					<input type="hidden" name="name" value="#pluginEditKey#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
@@ -83,10 +85,10 @@
 							</td>
 							<td>
 								<strong>Path:</strong><br />
-								<input type="text" name="path" value="#path#" style="width:340px;font-size:11px;">
+								<input type="text" name="path" value="#path#" style="width:340px;" class="formField">
 							</td>
 							<td style="width:100px;" align="center">
-								<input type="button" name="btnSave" value="Apply" style="font-size:11px;" onclick="submitForm('ehSettings.doSavePlugin')">
+								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
 								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=#dspEvent#'">
 							</td>
 						</tr>

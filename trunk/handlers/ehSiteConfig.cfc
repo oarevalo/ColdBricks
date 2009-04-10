@@ -597,6 +597,145 @@
 		</cfscript>	
 	</cffunction>	
 
+
+	<!--- Resource Types --->
+
+	<cffunction name="doSaveResourceType" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The resource type name is required","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setResourceType(name = name,
+											folderName = getValue("folderName"),
+											description = getValue("description"),
+											resBeanPath = getValue("resBeanPath"),
+											fileTypes = getValue("fileTypes"));
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceType" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a resource type to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceType(name);
+				
+				// save changes
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain");
+			}
+		</cfscript>	
+	</cffunction>
+
+	<cffunction name="doSaveResourceTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resTypeEditKey = getValue("resTypeEditKey");
+			var resTypePropEditKey = getValue("resTypePropEditKey");
+			var name = getValue("name");
+			var type = getValue("type");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The resource type property name is required","validation");
+				if(resTypeEditKey eq "") throw("The resource type name is required","validation");
+
+				if(type eq "resource") type = "resource:" & getValue("resourceType");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setResourceTypeProperty(resType = resTypeEditKey,
+													name = name,
+													description = getValue("description"),
+													type = type,
+													values = getValue("values"),
+													required = getValue("required"),
+													default = getValue("default"),
+													label = getValue("label"));
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resTypeEditKey = getValue("resTypeEditKey");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a resource type to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceTypeProperty(resTypeEditKey, name);
+				
+				// save changes
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+			}
+		</cfscript>	
+	</cffunction>
+
+
+
 	
 	<!--- Module Properties Plugin Config --->
 	
