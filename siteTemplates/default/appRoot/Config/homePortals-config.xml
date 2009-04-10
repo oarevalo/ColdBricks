@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<homePortals version="3.0">
+<homePortals>
 
-	<!-- base path for the current application -->
 	<appRoot>$APP_ROOT$</appRoot>
 	<contentRoot>$CONTENT_ROOT$</contentRoot>
 	<resourceLibraryPaths>

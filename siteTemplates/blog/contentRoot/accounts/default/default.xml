@@ -11,10 +11,10 @@
 	</layout>
 	<eventListeners />
 	<modules>
-		<module CONTAINER="false" resourceID="Site---Header" id="contentBox1" location="header1" name="contentBox/contentBox" title="contentBox1" />
-		<module CONTAINER="false" id="blog1" location="column1" name="Blog/blog" title="blog1" url="" />
-		<module CONTAINER="false" id="FlickrFeed1" location="column2" 
-				name="flickrFeed/flickrFeed" onClickGotoFlickr="true" 
+		<content resourceID="Site---Header" id="contentBox1" location="header1" container="false" title="contentBox1" />
+		<module container="false" id="blog1" location="column1" name="Blog/blog" title="blog1" url="" />
+		<module container="false" id="FlickrFeed1" location="column2" 
+				name="flickrFeed/FlickrFeed" onClickGotoFlickr="true" 
 				showheader="false" tags="colors" title="FlickrFeed1" maxItems="10" />
 		<module container="false" id="login1" location="column2" name="login/login" title="Account Login" />
 	</modules>
