@@ -11,7 +11,8 @@
 				{ id = "resLibs", label = "Resource Libraries" },
 				{ id = "baseResources", label = "Base Resources" },
 				{ id = "contentRenderers", label = "Content Renderers" },
-				{ id = "plugins", label = "Plugins" }
+				{ id = "plugins", label = "Plugins" },
+				{ id = "resourceTypes", label = "Resource Types" }
 			]>
 			
 <script type="text/javascript">
@@ -44,14 +45,17 @@
 					<table class="dataFormTable" width="90%">
 						<cfswitch expression="#panel#">
 							<cfcase value="general">
-								<cfinclude template="includes/general.cfm">
-								<cfinclude template="includes/caching.cfm">
-								<cfinclude template="includes/renderTemplates.cfm">
-								<tr>
-									<td colspan="2" align="center" style="padding-top:5px;">
-										<input type="button" name="btnSave" value="Apply Changes" onclick="submitForm('ehSiteConfig.doSaveGeneral')">
-									</td>
-								</tr>
+								<form name="frm" method="post" action="index.cfm">
+									<input type="hidden" name="event" value="ehSiteConfig.doSaveGeneral">
+									<cfinclude template="includes/general.cfm">
+									<cfinclude template="includes/caching.cfm">
+									<cfinclude template="includes/renderTemplates.cfm">
+									<tr>
+										<td colspan="2" align="center" style="padding-top:5px;">
+											<input type="submit" name="btnSave" value="Apply Changes">
+										</td>
+									</tr>
+								</form>
 							</cfcase>
 							<cfcase value="resLibs">
 								<cfinclude template="includes/resLibs.cfm">
