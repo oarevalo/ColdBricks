@@ -618,12 +618,25 @@
 					stAttribs[fld] = getValue(fld);
 				}
 
-				lstAttribs = getValue("_customAttribs");
+				lstAttribs = getValue("_moduleAttribs");
 				for(i=1;i lte listLen(lstAttribs);i=i+1) {
 					fld = listGetAt(lstAttribs,i);
 					if(getValue(fld) neq getValue(fld & "_default") 
 						and getValue(fld) neq "_NOVALUE_") stAttribs[fld] = getValue(fld);
 				}
+
+				lstAttribs = getValue("_customAttribs");
+				for(i=1;i lte listLen(lstAttribs);i=i+1) {
+					fld = listGetAt(lstAttribs,i);
+					if(not getValue(fld & "_delete",false)) {
+						stAttribs[fld] = getValue(fld);
+					}
+				}
+
+				if(getValue("newCustomProp_name") neq "") {
+					stAttribs[ getValue("newCustomProp_name") ] = getValue("newCustomProp_value");
+				}
+				
 				
 				oPage.setModule(moduleID, getValue("location"), stAttribs);
 				savePage();
