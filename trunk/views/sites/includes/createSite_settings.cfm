@@ -38,7 +38,7 @@
 				&nbsp; <span style="color:red;font-weight:bold;">required</span>
 			</td>
 		</tr>
-		<cfif siteTemplate eq "default">
+		<cfif siteTemplate eq "">
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr>
 				<td colspan="2">
