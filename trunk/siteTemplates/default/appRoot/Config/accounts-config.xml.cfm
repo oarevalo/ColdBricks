@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<homePortalsAccounts version="1.0">
+<homePortalsAccounts>
 
-	<!-- Root directory for account directories -->
-	<accountsRoot>$ACCOUNTS_ROOT$</accountsRoot>
-
-	<!-- storage type -->
+	<accountsRoot>accounts</accountsRoot>
+	<defaultAccount>default</defaultAccount>
 	<storageType>xml</storageType>
-	<storageFileHREF>$ACCOUNTS_ROOT$/accounts.xml</storageFileHREF>
+	<dataRoot>$CONTENT_ROOT$</dataRoot>
 
 </homePortalsAccounts>

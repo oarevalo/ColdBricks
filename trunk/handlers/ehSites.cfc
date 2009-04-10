@@ -93,13 +93,15 @@
 
 	<cffunction name="doCreate" access="public" returntype="void">
 		<cfscript>
-			var appRoot = getValue("appRoot");
-			var accountsRoot = getValue("accountsRoot");
-			var resourcesRoot = getValue("resourcesRoot");
 			var name = getValue("name");
-			var useDefault_ar = getValue("useDefault_ar",0);
+			var appRoot = getValue("appRoot");
+			var contentRoot = getValue("contentRoot");
+			var resourcesRoot = getValue("resourcesRoot");
+			var accountsRoot = getValue("accountsRoot");
 			var useDefault_rl = getValue("useDefault_rl",0);
 			var siteTemplate = getValue("siteTemplate");
+			var pluginAccounts = getValue("pluginAccounts",false);
+			var pluginModules = getValue("pluginModules",false);
 			var defaultAccount = "default";
 			var oUser = getValue("oUser");
 			
@@ -144,61 +146,49 @@
 
 				if(siteTemplate neq "") {
 					// create template-based site
-					accountsRoot = appRoot & "accounts/";
 					resourcesRoot = appRoot & "resourceLibrary/";
+					contentRoot = appRoot & "content/";
+					
+					srcAppRoot = siteTemplatePath & "/" & siteTemplate & "/appRoot";
+					srcResRoot = siteTemplatePath & "/" & siteTemplate & "/resourcesRoot";
+					srcContentRoot = siteTemplatePath & "/" & siteTemplate & "/contentRoot";
 
 					// copy application skeletons
-					directoryCopy(expandPath(siteTemplatePath & "/" & siteTemplate & "/appRoot"), expandPath(appRoot));
-					directoryCopy(expandPath(siteTemplatePath & "/" & siteTemplate & "/accountsRoot"), expandPath(accountsRoot));
-					directoryCopy(expandPath(siteTemplatePath & "/" & siteTemplate & "/resourcesRoot"), expandPath(resourcesRoot));
+					directoryCopy(expandPath(srcAppRoot), expandPath(appRoot));
+
+					if(directoryExists(expandPath(srcResRoot))) {
+						directoryCopy(expandPath(srcResRoot), expandPath(resourcesRoot));
+					}
+					if(directoryExists(expandPath(srcContentRoot))) {
+						directoryCopy(expandPath(srcContentRoot), expandPath(contentRoot));
+					}
 					
 				} else {
 					// create custom site
-					if(useDefault_ar eq 0 and accountsRoot eq "") throw("Accounts root cannot be empty","coldBricks.validation");
-					if(useDefault_rl eq 0 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
-					if(useDefault_ar eq 1) accountsRoot = appRoot & "accounts";
-					if(useDefault_rl eq 1) resourcesRoot = appRoot & "resourceLibrary";
-					if(useDefault_rl eq 2) resourcesRoot = "/homePortals/resourceLibrary";
+					if(contentRoot eq "") throw("Content root cannot be empty","coldBricks.validation");
+					if(reFind("[^A-Za-z0-9_/\-]",contentRoot)) throw("The content root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+					if(useDefault_rl eq 1 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
+					if(useDefault_rl eq 0) resourcesRoot = "";
 
-					// check if we need to create the accounts root
-					if(not directoryExists(expandPath(accountsRoot))) {
-						bCreateAccountDir = true;
-					}
-		
 					// check if we need to create the resources root
-					if(not directoryExists(expandPath(resourcesRoot))) {
+					if(useDefault_rl eq 1 and not directoryExists(expandPath(resourcesRoot))) {
 						bCreateResourceDir = true;
 					}
 
-					// make sure all paths start and end with / for consistency and to avoid problems later
-					if(left(accountsRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
-					if(left(resourcesRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
-					if(right(accountsRoot,1) neq "/") accountsRoot = accountsRoot & "/";
-					if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
-
-					// copy application skeleton
-					directoryCopy(expandPath(siteTemplatePath & "/default/appRoot"), expandPath(appRoot));
-
-					if(bCreateAccountDir) {
-						// copy accounts skeleton
-						directoryCopy(expandPath(siteTemplatePath & "/default/accountsRoot"), expandPath(accountsRoot));
+					if(useDefault_rl eq 1) {
+						if(left(resourcesRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+						if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
 					}
-	
-					if(bCreateResourceDir) {
-						// copy res library skeleton
-						directoryCopy(expandPath(siteTemplatePath & "/default/resourcesRoot"), expandPath(resourcesRoot));
-					}
-
 				}		
 				
 				// replace tokens on copied files
-				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot);
+				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot, contentRoot);
 				
 				// process all files in the config directory for Tokens
 				qryDir = listDir(expandPath(appRoot & "/config"));
 				for(i=1;i lte qryDir.recordCount;i=i+1) {
 					if(qryDir.type[i] eq "file") {
-						replaceTokens(appRoot & "/config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot);
+						replaceTokens(appRoot & "/config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot, contentRoot);
 					}
 				}
 
@@ -377,12 +367,16 @@
 		<cfset setNextEvent("ehSites.dspMain")>
 	</cffunction>
 
+	
+	<!--- Private Methods --->
+
 	<cffunction name="replaceTokens" access="private" returntype="void">
 		<cfargument name="path" type="string" required="true">
 		<cfargument name="name" type="string" required="true">
 		<cfargument name="appRoot" type="string" required="true">
 		<cfargument name="accountsRoot" type="string" required="true">
 		<cfargument name="resourcesRoot" type="string" required="true">
+		<cfargument name="contentRoot" type="string" required="true">
 		<cfscript>
 			var txtDoc = "";
 			
@@ -391,6 +385,7 @@
 			txtDoc = replace(txtDoc, "$APP_ROOT$", arguments.appRoot, "ALL");
 			txtDoc = replace(txtDoc, "$ACCOUNTS_ROOT$", arguments.accountsRoot, "ALL");
 			txtDoc = replace(txtDoc, "$RESOURCES_ROOT$", arguments.resourcesRoot, "ALL");
+			txtDoc = replace(txtDoc, "$CONTENT_ROOT$", arguments.contentRoot, "ALL");
 			writeFile(expandPath(arguments.path), txtDoc);
 		
 		</cfscript>
