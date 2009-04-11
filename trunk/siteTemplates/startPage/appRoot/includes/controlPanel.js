@@ -196,13 +196,23 @@ function controlPanelClient() {
 	
 	function rename(txtID,title,type) {
 		var fldID = "sb_" + type + "Name";
-		var func = "controlPanel.rename" + type + "(\"" + fldID + "\",\"" + txtID + "\")";
+		var func = "controlPanel.rename" + type + "(\"" + fldID + "\",\"" + txtID + "\",\"" + type + "\")";
 		var d = $(txtID);
-		d.innerHTML = "<input type='text' id='" + fldID + "' value='" + title + "' class='inlineTextbox'>&nbsp;";
-		d.innerHTML = d.innerHTML + "<input type='button' onclick='" + func + "' style='font-size:10px;width:30px;' value='Go'>&nbsp;";
+		var l = txtID+"_label";
+
+		$(l).style.display = 'none';
+
+		var tmpHTML = "<span id='rename_" + type + "'>"
+					+ "<input type='text' id='" + fldID + "' value='" + title + "' class='inlineTextbox'>&nbsp;"
+					+ "<input type='button' onclick='" + func + "' style='font-size:10px;width:30px;' value='Go'>&nbsp;";
+	
 		if(type!='Site')
-			d.innerHTML = d.innerHTML + "<a href='#' onclick='navCmdDeletePage()'><img src='images/omit-page-orange.gif' border='0' align='absmiddle' alt='Click to delete page' title='click to delete page'></a>"
-		d.innerHTML = d.innerHTML + "<a href='#' onclick='$(\""+txtID+"\").innerHTML=\"" + title + "\"'><img src='images/closePanel.gif' border='0' align='absmiddle' alt='Close' title='Close' style='margin-left:2px;'></a>"
+			tmpHTML = tmpHTML + "<a href='#' onclick='navCmdDeletePage()'><img src='images/omit-page-orange.gif' border='0' align='absmiddle' alt='Click to delete page' title='click to delete page'></a>"
+
+		tmpHTML = tmpHTML + "<a href='#' onclick='new Element.remove(\"rename_"+type+"\");$(\""+l+"\").style.display = \"inline\";'><img src='images/closePanel.gif' border='0' align='absmiddle' alt='Close' title='Close' style='margin-left:2px;'></a></span>";
+
+		new Insertion.Top(d, tmpHTML);	
+		
 		$(fldID).focus();
 	}
 

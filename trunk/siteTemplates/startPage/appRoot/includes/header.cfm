@@ -75,7 +75,9 @@
 				</form>
 			</cfif>
 		</div>
-		<span id="siteMapTitle" <cfif bIsOwner>onclick="controlPanel.rename('siteMapTitle','#siteTitle#','Site')"</cfif> title="Click to rename site">#siteTitle#</span>
+		<span id="siteMapTitle">
+			<span id="siteMapTitle_label" <cfif bIsOwner>onclick="controlPanel.rename('siteMapTitle','#siteTitle#','Site')"</cfif> title="Click to rename site">#siteTitle#</span>
+		</span>
 	</div>
 	<div id="navMenuTitles">
 		<cfif pageAccess eq "owner">
@@ -93,9 +95,9 @@
 			<cfset thisPageHREF = replace(thisPageHREF, "//", "/", "ALL")> <!--- get rid of duplicate forward slash (will cause problems for sites at webroot)--->
 			&nbsp;&nbsp;
 			<cfif aPages[i].href eq getFileFromPath(currentPage)>
-				<span id="pageTitle" 
-						<cfif bIsOwner>onclick="controlPanel.rename('pageTitle','#pageTitle#','Page')"</cfif> 
-						title="Click to rename or delete page">#pageTitle#</span>
+				<span id="pageTitle" title="Click to rename or delete page">
+					<span id="pageTitle_label" <cfif bIsOwner>onclick="controlPanel.rename('pageTitle','#pageTitle#','Page')"</cfif>>#pageTitle#</span>
+				</span>
 			<cfelse>
 				<a href="#thisPageHREF#" class="pageTitle">#aPages[i].title#</a>
 			</cfif>

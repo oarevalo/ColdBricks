@@ -135,6 +135,14 @@
 			<cfscript>
 				validateOwner();
 				newPageURL = getSite().addPage(arguments.pageName, arguments.pageHREF);
+				
+				myNewPage = application.homePortals.getPageProvider().load(newPageURL);
+				myNewPage.setTitle( getFileFromPath(newPageURL) );
+				getSite().updatePageTitle( getFileFromPath(newPageURL), getFileFromPath(newPageURL) );
+
+				oPageProvider = application.homePortals.getPageProvider();
+				oPageProvider.save(newPageURL, myNewPage);
+				
 				newPageURL = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(newPageURL),".xml","");
 			</cfscript>
 			<script>
@@ -197,23 +205,18 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				if(pageName eq "") throw("The page title cannot be blank.");
-		
-				// get the original location of the page
-				originalPageHREF = variables.oPage.getHREF();
+				if(arguments.pageName eq "") throw("The page title cannot be blank.");
 		
 				// rename the actual page 
-				variables.oPage.setPageTitle(arguments.pageName);
-				variables.oPage.renamePage(arguments.pageName);
-				newPageHREF = variables.oPage.getHREF();
+				variables.oPage.setTitle(arguments.pageName);
+				savePage();
+
+				getSite().renamePage(getFileFromPath(variables.pageHREF), arguments.pageName);
+
+				newPageHREF = arguments.pageName;
 				
 				// set the new reload location
 				variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(newPageHREF),".xml","") & "&#RandRange(1,100)#";
-				
-				// update the site definition
-				getSite().setPageHREF(originalPageHREF, newPageHREF);	
-				
-				savePage();		
 			</cfscript>
 			
 			<script>
