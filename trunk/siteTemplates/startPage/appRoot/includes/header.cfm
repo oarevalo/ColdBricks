@@ -2,7 +2,7 @@
 <cfsilent>
 	<cfscript>
 		oHP = application.homePortals;
-		oAccountsService = oHP.getAccountsService();
+		oAccountsService = oHP.getPluginManager().getPlugin("accounts").getAccountsService();
 		
 		currentPage = request.oPageRenderer.getPageHREF();
 
@@ -14,7 +14,7 @@
 		pageAccess = request.oPage.getAccess();
 		
 		// create site object
-		request.oSite = CreateObject("component", "homePortals.components.accounts.site").init(siteOwner, oAccountsService);
+		request.oSite = oAccountsService.getSite(siteOwner);
 
 		// Get information on any currently logged-in user
 		oUserRegistry = createObject("Component","homePortals.components.userRegistry").init();

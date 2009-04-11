@@ -34,10 +34,11 @@
 	<cffunction name="init" access="public" returntype="controlPanel" hint="Initializes component.">
 		<cfargument name="pageHREF" type="string" required="true" hint="the address of the current page">
 		<cfscript>
-			variables.accountsRoot = application.homePortals.getAccountsService().getConfig().getAccountsRoot();
+			variables.accountsService = application.homePortals.getPluginManager().getPlugin("accounts").getAccountsService();
+			variables.accountsRoot = variables.accountsService.getConfig().getAccountsRoot();
 			variables.pageHREF = arguments.pageHREF;
 				
-			variables.oPage = CreateObject("component", "homePortals.components.pageBean").init(xmlParse(expandPath(variables.pageHREF)));	
+			variables.oPage = application.homePortals.getPageProvider().load(variables.pageHREF);
 			
 			variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(variables.pageHREF),".xml","");
 				
@@ -107,8 +108,7 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				variables.oPage.removeModule(arguments.moduleID);
-				savePage();
+				variables.oPage.deleteModule(arguments.moduleID);
 			</cfscript>
 			<script>
 				controlPanel.removeModuleFromLayout('#arguments.moduleID#');
@@ -173,7 +173,7 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				variables.oPage.setTitle(arguments.title);
+				variables.oPage.setPageTitle(arguments.title);
 			</cfscript>
 			<script>
 				controlPanel.setStatusMessage("Title changed.");
@@ -198,7 +198,7 @@
 				originalPageHREF = variables.oPage.getHREF();
 		
 				// rename the actual page 
-				variables.oPage.setTitle(arguments.pageName);
+				variables.oPage.setPageTitle(arguments.pageName);
 				variables.oPage.renamePage(arguments.pageName);
 				newPageHREF = variables.oPage.getHREF();
 				
@@ -315,7 +315,7 @@
 			var oUserRegistry = 0;
 			var stRet = structNew();
 			
-			oUserRegistry = createObject("Component","homePortals.components.userRegistry").init();
+			oUserRegistry = createObject("Component","homePortals.Components.userRegistry").init();
 			stRet = oUserRegistry.getUserInfo();	// information about the logged-in user		
 			stRet.isOwner = (stRet.username eq variables.oPage.getOwner());
 		</cfscript>
@@ -378,7 +378,11 @@
 	<!--- savePage                         --->
 	<!---------------------------------------->
 	<cffunction name="savePage" access="private" hint="Stores a HomePortals page">
-		<cfset getSite().savePage( getFileFromPath(variables.pageHREF), variables.oPage );>
+		<cfargument name="pageURL" type="string" hint="Path for the page as a relative URL">
+		<cfargument name="pageContent" type="string" hint="page content">
+
+		<!--- store page --->
+		<cffile action="write" file="#expandpath(arguments.pageURL)#" output="#arguments.pageContent#">
 	</cffunction>
 	
 	<!---------------------------------------->
@@ -431,7 +435,7 @@
 			var oHP = application.homePortals;
 			var owner = variables.oPage.getOwner();
 		
-			var oFriendsService = oHP.getAccountsService().getFriendsService();
+			var oFriendsService = variables.accountsService.getFriendsService();
 			var qryFriends = oFriendsService.getFriends(owner);
 			var lstFriends = valueList(qryFriends.userName);
 			
@@ -480,11 +484,10 @@
 	<!---------------------------------------->
 	<!--- getSite			                --->
 	<!---------------------------------------->
-	<cffunction name="getSite" access="private" output="false" returntype="homePortals.components.accounts.site">
+	<cffunction name="getSite" access="private" output="false" returntype="homePortalsAccounts.Components.site">
 		<cfscript>
-			var oAccountsService = application.homePortals.getAccountsService();
 			var owner = variables.oPage.getOwner();
-			return oAccountsService.getSite( owner );
+			return createObject("component","homePortalsAccounts.Components.site").init(owner, variables.accountsService);
 		</cfscript>
 	</cffunction>
 		
@@ -544,7 +547,7 @@
 	                moduleClassName = right(moduleClassName, len(moduleClassName)-1);
 	
 	            // get moduleController
-	            oModuleController = createObject("component", "homePortals.components.moduleController");
+	            oModuleController = createObject("component", "homePortals.Components.moduleController");
 	
 	            stPageSettings = duplicate(variables.oPage.getModule(newModuleID));
 	            stPageSettings["_page"] = structNew();

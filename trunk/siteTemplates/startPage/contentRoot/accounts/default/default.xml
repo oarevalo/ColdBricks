@@ -12,12 +12,12 @@
 	<!-- Define Modules -->
 	<modules>
 		<module id="FlickrFeed1" location="left" 
-				name="flickrFeed/flickrFeed" onClickGotoFlickr="true" 
+				name="flickrFeed/FlickrFeed" onClickGotoFlickr="true" 
 				showheader="false" tags="colors" title="FlickrFeed1" maxItems="10" />
-		<module id="rssReader1" location="middle" name="RSSReader/RSSReader"
+		<module id="rssReader1" location="middle" name="RSSReader/rssReader"
 				rss="http://feeds.feedburner.com/Techcrunch" title="TechCrunch"
 				displayMode="short" maxItems="10" />
-		<module id="rssReader2" location="right" name="RSSReader/RSSReader"
+		<module id="rssReader2" location="right" name="RSSReader/rssReader"
 				 rss="http://digg.com/rss/index.xml" title="Digg"
 				displayMode="short"  maxItems="10" />	
 	</modules>

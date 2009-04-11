@@ -14,7 +14,7 @@ This template checks the login information
 							& "ambito en que se odian dos colores. ">
 
 <cftry>
-	<cfset oAccountsService = application.homePortals.getAccountsService()>
+	<cfset oAccountsService = application.homePortals.getPluginManager().getPlugin("accounts").getAccountsService()>
 
 	<!--- check login --->
 	<cfset qryAccount = oAccountsService.loginUser(username, password)>
@@ -30,7 +30,7 @@ This template checks the login information
 	<cfcatch type="homePortals.accounts.invalidLogin">
 		<cflocation url="../index.cfm?_statusMessage=Invalid%20Login">
 	</cfcatch>		
-	<cfcatch type="any">
+	<cfcatch type="lock">
 		<cflocation url="../index.cfm?_statusMessage=#cfcatch.message#">
 	</cfcatch>
 </cftry>

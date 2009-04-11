@@ -1,7 +1,7 @@
 <cfoutput>
 	<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">Module Properties</div>
-
-	<cfif arrayLen(tagInfo.properties) gt 0>
+	
+	<cfif structKeyExists(tagInfo,"properties") and arrayLen(tagInfo.properties) gt 0>
 		<table style="margin:5px;">
 			<cfloop from="1" to="#arrayLen(tagInfo.properties)#" index="i">
 				<cfset prop = duplicate(tagInfo.properties[i])>
