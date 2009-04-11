@@ -40,7 +40,11 @@
 				
 			variables.oPage = application.homePortals.getPageProvider().load(variables.pageHREF);
 			
-			variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(variables.pageHREF),".xml","");
+			variables.reloadPageHREF = "index.cfm?account=" 
+										& variables.oPage.getOwner() 
+										& "&page=" 
+										& replaceNoCase(getFileFromPath(variables.pageHREF),".xml","")
+										& "&ts=" & gettickcount();
 				
 			return this;
 		</cfscript>
@@ -84,10 +88,9 @@
 	<cffunction name="addModule" access="public" output="true">
 		<cfargument name="moduleID" type="string" required="yes">
 		<cfargument name="locationID" type="string" required="no" default="">
-		
-        <cfset var stRet = structNew()>
 		<cftry>
-			<cfset stRet = addModuleToPage(arguments.moduleID, arguments.locationID, false)>
+			<cfset addModuleToPage(arguments.moduleID, arguments.locationID)>
+			<cfset savePage()>
 			
             <script>
                 controlPanel.closePanel();
@@ -108,7 +111,8 @@
 		<cftry>
 			<cfscript>
 				validateOwner();
-				variables.oPage.deleteModule(arguments.moduleID);
+				variables.oPage.removeModule(arguments.moduleID);
+				savePage();
 			</cfscript>
 			<script>
 				controlPanel.removeModuleFromLayout('#arguments.moduleID#');
@@ -174,6 +178,7 @@
 			<cfscript>
 				validateOwner();
 				variables.oPage.setPageTitle(arguments.title);
+				savePage();
 			</cfscript>
 			<script>
 				controlPanel.setStatusMessage("Title changed.");
@@ -206,7 +211,9 @@
 				variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(newPageHREF),".xml","") & "&#RandRange(1,100)#";
 				
 				// update the site definition
-				getSite().setPageHREF(originalPageHREF, newPageHREF);			
+				getSite().setPageHREF(originalPageHREF, newPageHREF);	
+				
+				savePage();		
 			</cfscript>
 			
 			<script>
@@ -225,6 +232,7 @@
 	<!---------------------------------------->	
 	<cffunction name="updateModuleOrder" access="public" output="true">
 		<cfargument name="layout" type="string" required="true" hint="New layout in serialized form">
+		<cfset var oPageHelper = 0>
 		<cftry>
 			<cfscript>
 				validateOwner();
@@ -234,7 +242,10 @@
 				// to the modules on the layout preview )
 				arguments.layout = replace(arguments.layout,"_lp","","ALL");
 				
-				variables.oPage.setModuleOrder(arguments.layout);
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init(variables.oPage);
+				oPageHelper.setModuleOrder(arguments.layout);
+				
+				savePage();
 			</cfscript>
 			<script>
 				controlPanel.setStatusMessage("Layout changed.");
@@ -287,12 +298,14 @@
 					stAttributes["title"] = arguments.feedTitle;
 				stAttributes["maxItems"] = 10;
 
-				stRet = addModuleToPage("rssReader", "", false, stAttributes);
+				addModuleToPage("rssReader", "", stAttributes);
+				
+				savePage();
             </cfscript>
             
             <script>
-              	controlPanel.closePanel();
 				window.location.replace("#variables.reloadPageHREF#");
+              	controlPanel.closePanel();
             </script>
 
 			<cfcatch type="any">
@@ -352,6 +365,14 @@
 	</cffunction>
 	
 	<!---------------------------------------->
+	<!--- savePage                         --->
+	<!---------------------------------------->
+	<cffunction name="savePage" access="private" hint="Stores a HomePortals page">
+		<cfset oPageProvider = application.homePortals.getPageProvider()>
+		<cfset oPageProvider.save(variables.pageHREF, variables.oPage)>
+	</cffunction>	
+	
+	<!---------------------------------------->
 	<!--- throw                            --->
 	<!---------------------------------------->
 	<cffunction name="throw" access="private">
@@ -372,26 +393,6 @@
 	<cffunction name="dump" access="private">
 		<cfargument name="data" type="any" required="yes">
 		<cfdump var="#arguments.data#">
-	</cffunction>	
-
-	<!---------------------------------------->
-	<!--- savePage                         --->
-	<!---------------------------------------->
-	<cffunction name="savePage" access="private" hint="Stores a HomePortals page">
-		<cfargument name="pageURL" type="string" hint="Path for the page as a relative URL">
-		<cfargument name="pageContent" type="string" hint="page content">
-
-		<!--- store page --->
-		<cffile action="write" file="#expandpath(arguments.pageURL)#" output="#arguments.pageContent#">
-	</cffunction>
-	
-	<!---------------------------------------->
-	<!--- removeFile                       --->
-	<!---------------------------------------->
-	<cffunction name="removeFile" access="private" hint="deletes a file">
-		<cfargument name="href" type="string" hint="relative path to page">
-
-		<cffile action="delete" file="#expandpath(arguments.href)#">
 	</cffunction>	
 
 	<!---------------------------------------->
@@ -437,15 +438,16 @@
 		
 			var oFriendsService = variables.accountsService.getFriendsService();
 			var qryFriends = oFriendsService.getFriends(owner);
-			var lstFriends = valueList(qryFriends.userName);
+			var lstFriends = valueList(qryFriends.accountName);
 			
 			var qryResources = oHP.getCatalog().getResourcesByType(arguments.resourceType);
 			
 			for(j=1;j lte qryResources.recordCount;j=j+1) {
-				aAccess[j] = qryResources.access[j] eq "general"
+				aAccess[j] = 1;
+				/*aAccess[j] = qryResources.access[j] eq "general"
 							or qryResources.access[j] eq ""
 							or qryResources.owner[j] eq owner
-							or (qryResources.access[j] eq "friend" and listFindNoCase(lstFriends, qryResources.owner[j]));
+							or (qryResources.access[j] eq "friend" and listFindNoCase(lstFriends, qryResources.owner[j]));*/
 			}
 			queryAddColumn(qryResources, "hasAccess", aAccess);
 		</cfscript>
@@ -457,14 +459,6 @@
 		</cfquery>
 
 		<cfreturn qryResources>
-	</cffunction>
-
-	<!---------------------------------------->
-	<!--- createDir				           --->
-	<!---------------------------------------->
-	<cffunction name="createDir" access="private" returnttye="void">
-		<cfargument name="path" type="string" required="true">
-		<cfdirectory action="create" directory="#ExpandPath(arguments.path)#">
 	</cffunction>
 
 	<!---------------------------------------->
@@ -487,87 +481,33 @@
 	<cffunction name="getSite" access="private" output="false" returntype="homePortalsAccounts.Components.site">
 		<cfscript>
 			var owner = variables.oPage.getOwner();
-			return createObject("component","homePortalsAccounts.Components.site").init(owner, variables.accountsService);
+			return variables.accountsService.getSite(owner);
 		</cfscript>
 	</cffunction>
 		
 	<!-------------------------------------->
 	<!--- addModuleToPage                --->
 	<!-------------------------------------->
-	<cffunction name="addModuleToPage" access="private" returntype="struct">
+	<cffunction name="addModuleToPage" access="private" returntype="string">
 		<cfargument name="moduleID" type="string" required="yes">
 		<cfargument name="locationID" type="string" required="yes">
-		<cfargument name="initializeModule" type="boolean" required="no" default="false">
 		<cfargument name="moduleAttributes" type="struct" required="no" default="#structNew()#">
-		
 		<cfscript>
-	        var oModuleController = 0;
-	        var tmpCFCPath = "";
 	        var oHP = 0;
 	        var oResourceBean = 0;
-	        var moduleClassName = "";
 	        var newModuleID = ""; 
-			var oCatalog = 0;
-			var moduleLibraryPath = "";
-			var stRet = structNew();
+			var oPageHelper = 0;
 			
-			// prepare return struct
-			stRet.locationID = "";
-			stRet.moduleID = "";
-	
 			oHP = application.homePortals;
-			oCatalog = oHP.getCatalog();
-			moduleLibraryPath = oHP.getConfig().getResourceLibraryPath() & "/modules/";
 
             // get info for new module
-            oResourceBean = oCatalog.getResourceNode("module", arguments.moduleID);
+            oResourceBean = oHP.getCatalog().getResourceNode("module", arguments.moduleID);
 			
-         	// get location info
-         	if(arguments.locationID neq "") {
-				qryLocation = variables.oPage.getLocationByName(arguments.locationID);
-				if(qryLocation.recordCount eq 0)
-					throw("The selected location does not exist on the page");
-         	} else {
-               	// get location info
-               	qryLocation = variables.oPage.getLocations();
-               	arguments.locationID = qryLocation.name;         	
-         	}
-
 			// add the module to the page
-			newModuleID = variables.oPage.addModule(oResourceBean, arguments.locationID, arguments.moduleAttributes);
+			oPageHelper = createObject("component","homePortals.components.pageHelper").init(variables.oPage);
+			newModuleID = oPageHelper.addModule(oResourceBean, arguments.locationID, arguments.moduleAttributes);
 
-	
-			// initialize module if requested (this does not work very well!!)
-			if(arguments.initializeModule) {
-			
-	            // build module class name
-	            moduleClassName = moduleLibraryPath & oResourceBean.getName();
-	            moduleClassName = replace(moduleClassName,"/",".","ALL");
-	            if(left(moduleClassName,1) eq ".")
-	                moduleClassName = right(moduleClassName, len(moduleClassName)-1);
-	
-	            // get moduleController
-	            oModuleController = createObject("component", "homePortals.Components.moduleController");
-	
-	            stPageSettings = duplicate(variables.oPage.getModule(newModuleID));
-	            stPageSettings["_page"] = structNew();
-				stPageSettings["_page"].owner = variables.oPage.getOwner();
-				stPageSettings["_page"].href = variables.oPage.getHREF();                
-	            
-	            // initialize new module
-	            oModuleController.init(newModuleID,
-	                                    moduleClassName,
-	                                    stPageSettings,
-	                                    true,
-	                                    "local",
-	                                    oHP.getConfig());
-			}
-	
-			// prepare return struct
-			stRet.locationID = qryLocation.id;
-			stRet.moduleID = newModuleID;
-			
-			return stRet;
+			return newModuleID;
 		</cfscript>
 	</cffunction>
 		

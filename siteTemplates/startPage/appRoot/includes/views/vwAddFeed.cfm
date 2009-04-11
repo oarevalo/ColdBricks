@@ -9,17 +9,15 @@
 		<cfif searchTerm neq "">
 			WHERE  upper(id) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
 					OR upper(package) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">  
-					OR upper(name) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">  
 		</cfif>
-		ORDER BY package, name
+		ORDER BY package, id
 </cfquery>
 
 <div style="font-size:10px;font-weight:bold;border-bottom:1px solid #666;padding-bottom:4px;margin-bottom:4px;">
 	Add Custom Feed:
 	<form name="frm" action="#" method="post" style="margin:0px;padding:0px;">
 		<input type="hidden" name="addToMyFeeds" value="1">
-		<input type="text" name="xmlUrl" value="http://" style="width:200px;font-size:10px;"
-				onclick="if(this.value=='http://') this.value=''">
+		<input type="text" name="xmlUrl" value="http://" style="width:200px;font-size:10px;">
 		<input type="button" name="btnSave" value="Add" style="font-size:10px;width:30px;" 
 				onclick="controlPanel.addFeed(this.form.xmlUrl.value)"><br />
 	</form>
@@ -39,11 +37,7 @@
 
 	<div style="display:none;margin-left:10px;margin-bottom:8px;" id="cp_feedGroup#qryResources.currentRow#"> 
 		<cfoutput>
-			<cfif qryResources.name eq "">
-				<cfset tmpName = qryResources.id>
-			<cfelse>
-				<cfset tmpName = qryResources.name>
-			</cfif>
+			<cfset tmpName = qryResources.id>
 			<a href="##" 
 				onclick="controlPanel.addFeed('#jsstringFormat(qryResources.href)#')" 
 				style="color:##333;margin-bottom:5px;font-size:10px;line-height:11px;white-space:nowrap;">#tmpName#</a><br>

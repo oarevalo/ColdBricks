@@ -136,9 +136,14 @@ function controlPanelClient() {
 		var s2 = $("siteMapStatusBar");
 
 		if(s1) s1.innerHTML = msg;
-		if(s2) s2.innerHTML = msg;
+		if(s2) {
+			s2.style.backgroundColor="#fefcd8";
+			s2.style.color="red";
+			s2.style.fontWeight="bold";
+			s2.innerHTML = "&nbsp;" + msg + "&nbsp;";
+		}
 	
-		if(!timeout || timeout==null) timeout=2000;
+		if(!timeout || timeout==null) timeout=4000;
 		setTimeout('controlPanel.clearStatusMessage()',timeout);
 	}
 

@@ -9,9 +9,8 @@
 		<cfif searchTerm neq "">
 			WHERE  upper(id) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">
 					OR upper(package) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">  
-					OR upper(name) LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#ucase(searchTerm)#%">  
 		</cfif>
-		ORDER BY package, name
+		ORDER BY package, id
 </cfquery>
 
 

@@ -1,4 +1,5 @@
-<cfparam name="_statusMessage" default="">
+<cfparam name="url._statusMessage" default="">
+
 <cfsilent>
 	<cfscript>
 		oHP = application.homePortals;
@@ -102,8 +103,11 @@
 	</div>
 
 	
-	<cfif _statusMessage neq "">
-		<script>controlPanel.setStatusMessage("#jsstringformat(_statusMessage)#");</script>
+	<cfif url._statusMessage neq "">
+		<script>
+			controlPanel.setStatusMessage("#jsstringformat(url._statusMessage)#");
+			alert("#jsstringformat(url._statusMessage)#");
+		</script>
 	</cfif>
 	
 </cfoutput>
