@@ -13,15 +13,6 @@
 	oHelpDAO.save(id="", name="page.xml", description="This file provides the template of the HTML used by the HomePortals engine when rendering a page. The following tokens are available: $PAGE_TITLE$, $PAGE_HTMLHEAD$, $PAGE_ONLOAD$, $PAGE_LAYOUTSECTION[sec][tag]$, $PAGE_CUSTOMSECTION[sec]$");
 	oHelpDAO.save(id="", name="default.xml", description="This file is used as a template when creating a new account. The contents of this file are used as the body of the initial page of the new account. Uses $USERNAME$ as token for the new user's username");
 	oHelpDAO.save(id="", name="newPage.xml", description="A template used when adding new pages to an account.  Uses $USERNAME$ as token for the new user's username");
-
-	// resource types --->
-	oHelpDAO.save(id="", name="rt_module", description="Modules are reusable components that allow you page to perform particular tasks. Modules act as mini applications that can do things like displaying calendars, blogs, rss feed contents, etc.");
-	oHelpDAO.save(id="", name="rt_content", description="Content resources are blocks of formatted text that can be reused across a site");
-	oHelpDAO.save(id="", name="rt_feed", description="Feeds are either RSS or Atom feeds from external sources that you can use with feed-enabled modules to display their contents on your site");
-	oHelpDAO.save(id="", name="rt_skin", description="Skins are a way to customize the look and feel of a page. Skins dictate things like colors, fonts, margins and other visual attributes of the page");
-	oHelpDAO.save(id="", name="rt_page", description="Page resources are complete pages that you can import to your site");
-	oHelpDAO.save(id="", name="rt_pageTemplate", description="A Page Template is a template or pre-defined layout for a page, applying a page template to an existing page can override the layout or section ordering of the page without affecting its contents");
-	oHelpDAO.save(id="", name="rt_html", description="HTML resources are blocks of HTML code that can be incorporated into a page. These resources are ideal for adding external widgets into a page.");
 	
 	// misc data
 	oMiscDAO.save(id="", name="fr", value="1-2-3456");

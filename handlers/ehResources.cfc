@@ -61,12 +61,11 @@
 			var resourceType = getValue("resourceType","");
 			var resLibIndex = val(getValue("resLibIndex",""));
 			var package = getValue("pkg","");
-			var oHelpDAO = 0;
-			var qryHelp = 0;
 			var qryResources = queryNew("");
 			var qryPackages = queryNew("");
 			var oContext = getService("sessionContext").getContext();
 			var aResLibs = arrayNew(1);
+			var oResType = 0;
 			
 			try {
 				setLayout("Layout.None");
@@ -101,20 +100,19 @@
 				}
 				
 				// get info on resource type
-				oHelpDAO = getService("DAOFactory").getDAO("help");
-				qryHelp = oHelpDAO.search(name = "rt_#resourceType#");
-				if(qryHelp.recordCount gt 0) setValue("resourceTypeInfo", qryHelp.description);
-				
+				oResType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
+				setValue("resourceTypeInfo", oResType.getDescription());
+				resTypeLabel = oResType.getFolderName();
+								
 				switch(resourceType) {
-					case "module":  	resTypeLabel="Modules"; resTypeIcon="brick.png"; break;
-					case "feed":  		resTypeLabel="Feeds"; resTypeIcon="feed-icon16x16.gif"; break;
-					case "content":  	resTypeLabel="Content"; resTypeIcon="folder_page.png"; break;
-					case "page":  		resTypeLabel="Page"; resTypeIcon="page.png"; break;
-					case "pageTemplate":  resTypeLabel="Page Templates"; resTypeIcon="page_code.png"; break;
-					case "skin":  		resTypeLabel="Skins"; resTypeIcon="css.png"; break;
-					case "html":  		resTypeLabel="HTML"; resTypeIcon="html.png"; break;
+					case "module":  	resTypeIcon="brick.png"; break;
+					case "feed":  		resTypeIcon="feed-icon16x16.gif"; break;
+					case "content":  	resTypeIcon="folder_page.png"; break;
+					case "page":  		resTypeIcon="page.png"; break;
+					case "pageTemplate":  resTypeIcon="page_code.png"; break;
+					case "skin":  		resTypeIcon="css.png"; break;
+					case "html":  		resTypeIcon="html.png"; break;
 					default:
-						resTypeLabel = resourceType;
 						resTypeIcon = "folder.png";
 				}
 				
