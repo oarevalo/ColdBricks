@@ -188,9 +188,6 @@
 						throw("You are trying to create a file that already exists","coldBricks.validation");
 				}
 				
-				// remove .xml from page name
-				page = left(page,len(page)-4);	
-
 				switch(type) {
 					
 					case "dynamic":
@@ -201,7 +198,7 @@
 						fileContent = fileContent & "<!--- FINISHED COLDBRICKS COMMENTS --->" & crlf;
 						fileContent = fileContent & "<cfset account=""#account#"">" & crlf;
 						fileContent = fileContent & "<cfset page=""#page#"">" & crlf;
-						fileContent = fileContent & "<cfinclude template=""/homePortals/common/Templates/page.cfm"">";
+						fileContent = fileContent & "<cfinclude template=""/homePortalsAccounts/common/Templates/page.cfm"">";
 						break;
 				
 					case "static":

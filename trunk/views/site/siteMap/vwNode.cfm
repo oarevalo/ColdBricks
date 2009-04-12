@@ -158,7 +158,7 @@
 							<cfif not isRestricted>
 								<cfif account neq "">
 									<select name="page" class="formField" style="width:350px;"
-											onchange="this.form.name.value=this.value.substr(0,this.value.length-4)">
+											onchange="this.form.name.value=this.value">
 										<option value=""></option>
 										<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
 											<option value="#aPagesSorted[i]#">#aPagesSorted[i]#</option>
@@ -260,7 +260,7 @@
 						<td><b>Name:</b></td>
 						<td><input type="text" name="name" value="#getFileFromPath(path)#" size="50" style="width:270px;" class="formField" disabled>
 							<cfif allowedToEditPages>
-								<a href="index.cfm?event=ehSite.doLoadAccountPage&account=#account#&page=#pageName#.xml"><img src="images/page_edit.png" align="absmiddle" border="0"> Edit Page</a>
+								<a href="index.cfm?event=ehSite.doLoadAccountPage&account=#account#&page=#pageName#"><img src="images/page_edit.png" align="absmiddle" border="0"> Edit Page</a>
 							</cfif>
 						</td>
 					</tr>
