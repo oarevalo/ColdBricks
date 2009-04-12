@@ -1243,9 +1243,9 @@
 				aListeners = oPage.getEventListeners();
 				
 				if(index lte arrayLen(aListeners)) {
-					oPage.removeEventListener(aListeners[i].objectName,
-												aListeners[i].eventName,
-												aListeners[i].eventHandler);
+					oPage.removeEventListener(aListeners[index].objectName,
+												aListeners[index].eventName,
+												aListeners[index].eventHandler);
 					savePage();
 				}
 				

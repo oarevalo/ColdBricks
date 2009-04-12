@@ -22,7 +22,7 @@
 	for(i=1;i lte arrayLen(aModules);i=i+1) {
 		try {
 			if(aModules[i].moduleType eq "module") {
-				oModuleBean= oCatalog.getModuleByName(aModules[i].name);
+				oModuleBean= oCatalog.getResourceNode("module", listLast(aModules[i].name,"/"));
 	
 				// create list of possible events on this page	
 				aEvents = oModuleBean.getEvents();
