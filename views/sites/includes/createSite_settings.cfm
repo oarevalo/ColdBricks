@@ -1,11 +1,21 @@
+<cfparam name="request.requestState.name" default="">
+<cfparam name="request.requestState.appRoot" default="">
+<cfparam name="request.requestState.siteTemplate" default="">
+
+<cfset name = request.requestState.name>
+<cfset appRoot = request.requestState.appRoot>
+<cfset siteTemplate = request.requestState.siteTemplate>
+
 <cfoutput>
 	<table cellspacing="5">
-		<tr>
-			<td width="60">
-				<strong>Site Template:</strong><br>
-			</td>
-			<td style="color:##999;font-weight:bold;font-size:12px;" id="siteTemplate2">#siteTemplate#</td>
-		</tr>
+		<cfif siteTemplate neq "">
+			<tr>
+				<td width="60">
+					<strong>Site Template:</strong><br>
+				</td>
+				<td style="color:##999;font-weight:bold;font-size:12px;" id="siteTemplate2">#siteTemplate#</td>
+			</tr>
+		</cfif>
 		<tr>
 			<td colspan="2">
 				<strong>Site Name:</strong>
@@ -17,7 +27,7 @@
 		<tr valign="top">
 			<td width="100">&nbsp;</td>
 			<td>
-				<input type="text" id="name" name="name" value="" size="50" class="formField" onblur="onChangeSiteName(this.value)"> 
+				<input type="text" id="name" name="name" value="#name#" size="50" class="formField" onblur="onChangeSiteName(this.value)"> 
 				&nbsp; <span style="color:red;font-weight:bold;">required</span>
 			</td>
 		</tr>
@@ -27,15 +37,17 @@
 				<strong>Application Root:</strong>
 				<div style="color:##666;line-height:18px;width:600px;">
 					Enter the URL path to where the new site will be deployed. Paths are always relative
-					to the web root. To deploy the site to the webroot enter "/".
+					to the web root. 
 				</div>
 			</td>
 		</tr>
 		<tr valign="top">
 			<td>&nbsp;</td>
 			<td>
-				<input type="text" id="appRoot" name="appRoot" value="" size="50" class="formField"> 
-				&nbsp; <span style="color:red;font-weight:bold;">required</span>
+				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField"> 
+				&nbsp; <span style="color:red;font-weight:bold;">required</span><br />
+				<input type="checkbox" name="deployToWebRoot" value="1" onclick="$('appRoot').disabled=this.checked"> 
+				<span style="color:##666;line-height:18px;">Deploy site to web root?</span>
 			</td>
 		</tr>
 		<cfif siteTemplate eq "">
@@ -114,6 +126,6 @@
 	<br>
 	<p>
 		<input type="button" name="btnBack" value="<< Back" onclick="document.location='index.cfm?event=ehSites.dspCreate'">&nbsp;
-		<input type="submit" name="btn" value="Create Site">
+		<input type="submit" name="btn" value="Create Site" style="font-weight:bold;">
 	</p>
 </cfoutput>

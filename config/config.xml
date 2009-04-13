@@ -35,7 +35,7 @@
 		<!-- This is the location of directory where ColdBricks will look for
 			installed plugins. If this is changed to other than the default value
 			then it must also be changed on the Application.cfc file.
-			You can use an ColdFusion mapping for this. -->
+			You can use a ColdFusion mapping for this. -->
 		<Setting name="pluginsRoot" value="/ColdBricksPlugins" />
 	
 	</settings>
@@ -85,6 +85,11 @@
 		<service name="UIManager" class="ColdBricks.components.services.UIManager">
 			<init-param name="configHREF" settingName="interfaceConfigHREF" />
 		</service> 		
+
+		<!-- this service handles site templates -->
+		<service name="siteTemplates" class="ColdBricks.components.services.siteTemplateService">
+			<init-param name="siteTemplatesRoot" settingName="siteTemplatesRoot" />
+		</service> 
 
 	</services>
 </config>

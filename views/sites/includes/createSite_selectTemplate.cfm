@@ -1,10 +1,32 @@
+<cfparam name="request.requestState.aSites" default="">
+<cfset aSites = request.requestState.aSites>
+
 <cfoutput>
+	
 	<b>Select a site template by clicking on one of the icons below.</b><br><br>
 
-	<cfloop query="qrySiteTemplates">
-		<div class="dsb_secBox">
-			<a href="javascript:selectSiteTemplate('#qrySiteTemplates.name#')"><img src="images/Globe_48x48.png" border="0" alt="#qrySiteTemplates.name#" title="#qrySiteTemplates.name#"><br>
-			<a href="javascript:selectSiteTemplate('#qrySiteTemplates.name#')">#qrySiteTemplates.name#</a>
-		</div>
-	</cfloop>
+	<cf_dashboardMenu id="dsb_selectTemplate">
+		
+		<cfloop from="1" to="#arrayLen(aSites)#" index="i">
+			<cfif aSites[i].description eq "">
+				<cfset tmpDesc = "Create a site using the '#asites[i].name#' template.">
+			<cfelse>
+				<cfset tmpDesc = aSites[i].description>
+			</cfif>
+		
+			<cf_dashboardMenuItem href="javascript:selectSiteTemplate('#aSites[i].name#')" 
+									imgSrc="#aSites[i].thumbHREF#"
+									alt="#aSites[i].name#"
+									label="#aSites[i].name#"
+									help="#tmpDesc#">
+		</cfloop>
+<!--- 
+		<cf_dashboardMenuItem href="index.cfm?event=ehSites.dspCreateCustom" 
+								imgSrc="/ColdBricks/images/Globe_48x48.png"
+								alt="Create custom site"
+								label="Custom..."
+								help="Create a customized site in which you can modify detailed settings"> --->
+		
+	</cf_dashboardMenu>
+
 </cfoutput>

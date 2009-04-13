@@ -8,16 +8,6 @@
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
-		function toggleSiteTemplate(opt) {
-			var d = document.getElementById("tblCustom");
-			if(opt=="")
-				d.style.display = "block";
-			else
-				d.style.display = "none";
-		}
-		function selectSiteTemplate(st) {
-			document.location = "index.cfm?event=ehSites.dspCreate&siteTemplate="+st;
-		}
 		function onChangeSiteName(newName) {
 			f1 = $("appRoot");
 			f2 = $("contentRoot");
@@ -38,19 +28,8 @@
 		<td>
 			<div style="margin-top:10px;">
 				<form name="frm" method="post" action="index.cfm" style="margin:15px;" >
-					<input type="hidden" name="event" value="ehSites.doCreate">
-					<input type="hidden" name="siteTemplate" value="#siteTemplate#" id="siteTemplate">
-	
-					<cfif siteTemplate eq "">
-						<div id="step1Panel">
-							<cfinclude template="includes/createSite_selectTemplate.cfm">
-						</div>
-						<br style="clear:both;" />
-					<cfelse>
-						<div id="step2Panel">
-							<cfinclude template="includes/createSite_settings.cfm">
-						</div>
-					</cfif>
+					<input type="hidden" name="event" value="ehSites.doCreateCustom">
+					<cfinclude template="includes/createSite_settings.cfm">
 				</form>			
 			</div>	
 		</td>
@@ -58,7 +37,7 @@
 		<td width="200">
 			<div class="cp_sectionBox helpBox"  style="margin:10px;margin-right:0px;margin-bottom:0px;height:400px;line-height:18px;">
 				<div style="margin:10px;">
-					<h2>Creating a Site</h2>
+					<h2>Creating a Custom Site</h2>
 					<p>
 						From this screen you can create a new site that can be managed with ColdBricks. 
 					</p>

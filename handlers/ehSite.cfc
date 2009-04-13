@@ -90,8 +90,9 @@
 				qryResources = oCatalog.getResources();
 
 				// if this is the hp engine, display a warning
-				if(oSiteInfo.getSiteName() eq "homePortalsEngine")
-					setMessage("warning","This is the runtime engine for the HomePortals framework.");
+				if(oSiteInfo.getSiteName() eq "homePortalsEngine") {
+					setValue("isHomePortalsEngine",true);
+				}
 				
 				// get accounts (if enabled)
 				if(hp.getPluginManager().hasPlugin("accounts")) {

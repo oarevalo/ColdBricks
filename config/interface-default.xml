@@ -21,8 +21,8 @@
 	
 			<module href="index.cfm?event=ehSettings.dspMain" 
 					imgSrc="images/configure_48x48.png"
-					alt="Global Settings"
-					label="Settings"
+					alt="Server Settings"
+					label="Server Settings"
 					accessMapKey="settings">
 				For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files
 			</module>
@@ -77,7 +77,7 @@
 			<module href = "index.cfm?event=ehSiteConfig.dspMain"
 					imgSrc = "images/configure_48x48.png"
 					alt = "Site Settings"
-					label = "Settings"
+					label = "Site Settings"
 					accessMapKey = "siteSettings">
 				For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files.
 			</module>

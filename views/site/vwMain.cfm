@@ -11,6 +11,7 @@
 <cfparam name="request.requestState.hasAccountsPlugin" default="false">
 <cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oContext" default="">
+<cfparam name="request.requestState.isHomePortalsEngine" default="false">
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset stResourceTypes = request.requestState.stResourceTypes>
@@ -25,6 +26,7 @@
 <cfset hasAccountsPlugin = request.requestState.hasAccountsPlugin>
 <cfset aModules = request.requestState.aModules>
 <cfset oContext = request.requestState.oContext>
+<cfset isHomePortalsEngine = request.requestState.isHomePortalsEngine>
 
 <cfset siteID = oSiteInfo.getID()>
 <cfset stAccessMap = oUser.getAccessMap()>
@@ -144,6 +146,15 @@
 					<a href="index.cfm?event=ehResources.dspMain">Add/Import Site Resources</a>
 				</div>
 			</cfif>
+			
+			<cfif isHomePortalsEngine>
+				<div class="helpBox" style="padding:15px;font-size:11px;line-height:16px;border:1px solid silver;margin-bottom:20px;margin-right:20px;">
+					<img src="images/wmsg.gif" align="absmiddle">
+					<span style="color:red;font-weight:bold;">This is the runtime engine for the HomePortals framework.</span> 
+					Changes made to this site will affect all HomePortals-based sites and applications on this server.
+				</div>
+			</cfif>
+			
 			
 			<cfset hasModuleAccess = false>
 			
