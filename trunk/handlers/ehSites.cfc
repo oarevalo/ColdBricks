@@ -35,23 +35,48 @@
 
 	<cffunction name="dspCreate" access="public" returntype="void">
 		<cfset var siteTemplatesRoot = getSetting("siteTemplatesRoot")>
-		<cfset var qrySiteTemplates = 0>
+		<cfset var siteTemplate = getValue("siteTemplate")>
+		<cfset var name = getValue("name")>
+		<cfset var appRoot = getValue("appRoot")>
 		
-		<cfdirectory action="list" directory="#expandPath(siteTemplatesRoot)#" name="qrySiteTemplates">
-		<cfquery name="qrySiteTemplates" dbtype="query">
-			SELECT *
-				FROM qrySiteTemplates
-				WHERE type like 'Dir'
-					and name not like '%.svn'
-				ORDER BY name
-		</cfquery>
+		<cfscript>
+			// get registered site templates
+			aSites = getService("siteTemplates").getSiteTemplates();
 			
-		<cfset setValue("siteTemplatesRoot", siteTemplatesRoot)>
-		<cfset setValue("qrySiteTemplates", qrySiteTemplates)>
-		<cfset setValue("cbPageTitle", "Site Management > Create New Site")>
-		<cfset setValue("cbPageIcon", "images/folder_desktop_48x48.png")>
-		
-		<cfset setView("sites/vwCreate")>	
+			// get default values for site name and path
+			if(siteTemplate neq "" and name eq "") {
+				keepLooping = true;
+				index = 1;
+				name = replaceNoCase(siteTemplate," ","","ALL");
+				oSiteDAO = getService("DAOFactory").getDAO("site");
+				checkName = name;
+				
+				while(keepLooping and index lt 100) {
+					qry = oSiteDAO.search(siteName = checkName);
+					keepLooping = (qry.recordCount gt 0); 
+					if(keepLooping) checkName = name & index;
+					index = index + 1; 
+				}
+				name = checkName;
+				appRoot = "/" & checkName;
+			}
+			
+			setValue("aSites", aSites);
+			setValue("name", name);
+			setValue("appRoot", appRoot);
+			setValue("siteTemplatesRoot", siteTemplatesRoot);
+			setValue("cbPageTitle", "Site Management > Create New Site");
+			setValue("cbPageIcon", "images/folder_desktop_48x48.png");
+			setView("sites/vwCreate");
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="dspCreateCustom" access="public" returntype="void">
+		<cfscript>
+			setValue("cbPageTitle", "Site Management > Create Custom Site");
+			setValue("cbPageIcon", "images/folder_desktop_48x48.png");
+			setView("sites/vwCreateCustom");
+		</cfscript>
 	</cffunction>
 
 	<cffunction name="dspDelete" access="public" returntype="void">
@@ -97,27 +122,21 @@
 			var appRoot = getValue("appRoot");
 			var contentRoot = getValue("contentRoot");
 			var resourcesRoot = getValue("resourcesRoot");
-			var accountsRoot = getValue("accountsRoot");
-			var useDefault_rl = getValue("useDefault_rl",0);
-			var siteTemplate = getValue("siteTemplate");
-			var pluginAccounts = getValue("pluginAccounts",false);
-			var pluginModules = getValue("pluginModules",false);
-			var defaultAccount = "default";
 			var oUser = getValue("oUser");
+			var deployToWebRoot = getValue("deployToWebRoot",false);
+			var siteTemplate = getValue("siteTemplate");
 			
 			var siteTemplatePath = getSetting("siteTemplatesRoot");
-			
-			var bCreateAccountDir = false;
-			var bCreateResourceDir = false;
 			
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
 			var siteID = 0;
 			
 			try {
+				if(isBoolean(deployToWebRoot) and deployToWebRoot) appRoot = "/";
 				if(name eq "") throw("Site name cannot be empty","coldBricks.validation");
 				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
-				if(siteTemplate eq 0) throw("Select a site template or select ''Custom...'' to customize site structure","coldBricks.validation");
+				if(siteTemplate eq "") throw("Please select a site template","coldBricks.validation");
 
 				// check that application root and name only contains valid characters
 				if(reFind("[^A-Za-z0-9_\ ]",name)) throw("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
@@ -133,6 +152,10 @@
 					or left(appRoot,11) eq "/ColdBricks") {
 					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
 				}
+
+				// make sure application root path start and end with / for consistency and to avoid problems later
+				if(left(appRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 				
 				// check if site is already registered in coldbricks
 				oSiteDAO = getService("DAOFactory").getDAO("site");
@@ -140,46 +163,27 @@
 				if(qrySiteCheck.recordCount gt 0) 
 					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
 
-				// make sure application root path start and end with / for consistency and to avoid problems later
-				if(left(appRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
-				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
+				// check if there is another site pointing to this path
+				qrySiteCheck = oSiteDAO.search(path = appRoot);
+				if(qrySiteCheck.recordCount gt 0) 
+					throw("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
 
-				if(siteTemplate neq "") {
-					// create template-based site
-					resourcesRoot = appRoot & "resourceLibrary/";
-					contentRoot = appRoot & "content/";
-					
-					srcAppRoot = siteTemplatePath & "/" & siteTemplate & "/appRoot";
-					srcResRoot = siteTemplatePath & "/" & siteTemplate & "/resourcesRoot";
-					srcContentRoot = siteTemplatePath & "/" & siteTemplate & "/contentRoot";
+				resourcesRoot = appRoot & "resourceLibrary/";
+				contentRoot = appRoot & "content/";
+				
+				srcAppRoot = siteTemplatePath & "/" & siteTemplate & "/appRoot";
+				srcResRoot = siteTemplatePath & "/" & siteTemplate & "/resourcesRoot";
+				srcContentRoot = siteTemplatePath & "/" & siteTemplate & "/contentRoot";
 
-					// copy application skeletons
-					directoryCopy(expandPath(srcAppRoot), expandPath(appRoot));
+				// copy application skeletons
+				directoryCopy(expandPath(srcAppRoot), expandPath(appRoot));
 
-					if(directoryExists(expandPath(srcResRoot))) {
-						directoryCopy(expandPath(srcResRoot), expandPath(resourcesRoot));
-					}
-					if(directoryExists(expandPath(srcContentRoot))) {
-						directoryCopy(expandPath(srcContentRoot), expandPath(contentRoot));
-					}
-					
-				} else {
-					// create custom site
-					if(contentRoot eq "") throw("Content root cannot be empty","coldBricks.validation");
-					if(reFind("[^A-Za-z0-9_/\-]",contentRoot)) throw("The content root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
-					if(useDefault_rl eq 1 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
-					if(useDefault_rl eq 0) resourcesRoot = "";
-
-					// check if we need to create the resources root
-					if(useDefault_rl eq 1 and not directoryExists(expandPath(resourcesRoot))) {
-						bCreateResourceDir = true;
-					}
-
-					if(useDefault_rl eq 1) {
-						if(left(resourcesRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
-						if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
-					}
-				}		
+				if(directoryExists(expandPath(srcResRoot))) {
+					directoryCopy(expandPath(srcResRoot), expandPath(resourcesRoot));
+				}
+				if(directoryExists(expandPath(srcContentRoot))) {
+					directoryCopy(expandPath(srcContentRoot), expandPath(contentRoot));
+				}
 				
 				// replace tokens on copied files
 				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot, contentRoot);
@@ -201,15 +205,119 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehSites.dspCreate","appRoot=#appRoot#&name=#name#");
+				setNextEvent("ehSites.dspCreate","appRoot=#appRoot#&name=#name#&siteTemplate=#siteTemplate#");
 			
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSites.dspCreate");
+				setNextEvent("ehSites.dspCreate","appRoot=#appRoot#&name=#name#&siteTemplate=#siteTemplate#");
 			}
 		</cfscript>
 	</cffunction>
+
+	<cffunction name="doCreateCustom" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var appRoot = getValue("appRoot");
+			var contentRoot = getValue("contentRoot");
+			var resourcesRoot = getValue("resourcesRoot");
+			var accountsRoot = getValue("accountsRoot");
+			var useDefault_rl = getValue("useDefault_rl",0);
+			var pluginAccounts = getValue("pluginAccounts",false);
+			var pluginModules = getValue("pluginModules",false);
+			var defaultAccount = "default";
+			var oUser = getValue("oUser");
+			var deployToWebRoot = getValue("deployToWebRoot",false);
+			
+			var bCreateAccountDir = false;
+			var bCreateResourceDir = false;
+			
+			var oSiteDAO = 0;
+			var qrySiteCheck = 0;
+			var siteID = 0;
+			
+			try {
+				if(isBoolean(deployToWebRoot) and deployToWebRoot) appRoot = "/";
+				if(name eq "") throw("Site name cannot be empty","coldBricks.validation");
+				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
+	
+				// check that application root and name only contains valid characters
+				if(reFind("[^A-Za-z0-9_\ ]",name)) throw("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
+				if(reFind("[^A-Za-z0-9_/\-]",appRoot)) throw("The application root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+
+				// make sure the approot doesnt exist already
+				if(appRoot neq "/" and directoryExists(expandPath(appRoot))) 
+					throw("The given application directory already exists. Please select a different directory","coldBricks.validation");
+				
+				// check that the directory is not a restricted one
+				if(left(appRoot,6) eq "/homePortals/" 
+					or appRoot eq "/homePortals"
+					or left(appRoot,11) eq "/ColdBricks") {
+					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
+				}
+
+				// make sure application root path start and end with / for consistency and to avoid problems later
+				if(left(appRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
+				
+				// check if site is already registered in coldbricks
+				oSiteDAO = getService("DAOFactory").getDAO("site");
+				qrySiteCheck = oSiteDAO.search(siteName = name);
+				if(qrySiteCheck.recordCount gt 0) 
+					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
+
+				// check if there is another site pointing to this path
+				qrySiteCheck = oSiteDAO.search(path = appRoot);
+				if(qrySiteCheck.recordCount gt 0) 
+					throw("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
+
+
+				// create custom site
+				if(contentRoot eq "") throw("Content root cannot be empty","coldBricks.validation");
+				if(reFind("[^A-Za-z0-9_/\-]",contentRoot)) throw("The content root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+				if(useDefault_rl eq 1 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
+				if(useDefault_rl eq 0) resourcesRoot = "";
+
+				// check if we need to create the resources root
+				if(useDefault_rl eq 1 and not directoryExists(expandPath(resourcesRoot))) {
+					bCreateResourceDir = true;
+				}
+
+				if(useDefault_rl eq 1) {
+					if(left(resourcesRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+					if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
+				}
+				
+				// replace tokens on copied files
+				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot, contentRoot);
+				
+				// process all files in the config directory for Tokens
+				qryDir = listDir(expandPath(appRoot & "/config"));
+				for(i=1;i lte qryDir.recordCount;i=i+1) {
+					if(qryDir.type[i] eq "file") {
+						replaceTokens(appRoot & "/config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot, contentRoot);
+					}
+				}
+
+				// create site record for coldbricks
+				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
+
+				setMessage("info", "The new site has been created.");
+
+				setNextEvent("ehGeneral.dspMain","loadSiteID=#siteID#");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSites.dspCreateCustom","appRoot=#appRoot#&name=#name#");
+			
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSites.dspCreateCustom","appRoot=#appRoot#&name=#name#");
+			}
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction name="doDelete" access="public" returntype="void">
 		<cfscript>
