@@ -125,6 +125,7 @@
 			var oUser = getValue("oUser");
 			var deployToWebRoot = getValue("deployToWebRoot",false);
 			var siteTemplate = getValue("siteTemplate");
+			var accountsRoot = "accounts";
 			
 			var siteTemplatePath = getSetting("siteTemplatesRoot");
 			
