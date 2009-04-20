@@ -274,12 +274,10 @@
 				
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
 				
-				// read fo;e
-				href = oResourceBean.getHREF();
-				fullhref = aResLibs[resLibIndex].getPath() & href;
-				if(href neq "" and fileExists(expandPath(fullhref))) {
-					fileContent = fileRead(expandPath(fullhref));
-					setValue("fullhref", fullhref);	
+				// read file
+				if(oResourceBean.targetFileExists()) {
+					fileContent = oResourceBean.readFile();
+					setValue("fullhref", oResourceBean.getFullHREF());	
 				}
 				
 				// set values
@@ -289,6 +287,7 @@
 				setValue("type", type);	
 				setValue("fileContent", fileContent);	
 				setValue("oResourceBean", oResourceBean);	
+				setValue("resLibIndex", resLibIndex);	
 				
 				setView("site/resources/vwResourceEditor");
 				
@@ -851,7 +850,7 @@
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResource = hp.getCatalog().getResourceNode(resType, id);
 				for(i=1;i lte arrayLen(aResLibs);i++) {
-					if(aResLibs[i].getPath() eq oResource.getResLibPath()) {
+					if(aResLibs[i].getPath() eq oResource.getResourceLibrary().getPath()) {
 						resLibIndex = i;
 						package = oResource.getPackage();
 						break;

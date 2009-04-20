@@ -153,7 +153,7 @@
 				</cfif>
 				<tr>
 					<td width="80"><b>Res Lib:</b></td>
-					<td>#oResourceBean.getResLibPath()#</td>
+					<td>#oResourceBean.getResourceLibrary().getPath()#</td>
 				</tr>
 				<tr valign="top">
 					<td><strong>Description:</strong></td>

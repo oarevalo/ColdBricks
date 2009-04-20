@@ -5,6 +5,7 @@
 <cfparam name="request.requestState.fileContent" default="">
 <cfparam name="request.requestState.type" default="">
 <cfparam name="request.requestState.fullhref" default="">
+<cfparam name="request.requestState.resLibIndex" default="">
 
 <cfscript>
 	resourceType = request.requestState.resourceType;
@@ -14,6 +15,7 @@
 	fileContent = request.requestState.fileContent;
 	type = request.requestState.type;
 	fullhref = request.requestState.fullhref;
+	resLibIndex = request.requestState.resLibIndex;
 	fileName = "";
 
 	if(fullhref neq "") {
@@ -49,7 +51,7 @@
 				</div>
 				<input type="button" name="btnSave" value="Apply Changes" onclick="saveResourceFile(this.form)">
 				&nbsp;&nbsp;&nbsp;
-				<input type="button" name="btnCancel" value="Cancel" onclick="selectResource('','#jsStringFormat(id)#','',0)">
+				<input type="button" name="btnCancel" value="Cancel" onclick="selectResource('#jsStringFormat(resourceType)#','#jsStringFormat(id)#','#jsStringFormat(package)#','#resLibIndex#')">
 			</div>
 
 		</div>
