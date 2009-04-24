@@ -7,24 +7,18 @@
 	
 	pageCacheSize = oAppConfigBean.getPageCacheSize();
 	pageCacheTTL = oAppConfigBean.getPageCacheTTL();
-	contentCacheSize = oAppConfigBean.getContentCacheSize();
-	contentCacheTTL = oAppConfigBean.getContentCacheTTL();
-	rssCacheSize = oAppConfigBean.getRSSCacheSize();
-	rssCacheTTL = oAppConfigBean.getRSSCacheTTL();
+	catalogCacheSize = oAppConfigBean.getCatalogCacheSize();
+	catalogCacheTTL = oAppConfigBean.getCatalogCacheTTL();
 
 	hasPageCacheSize = true;
 	hasPageCacheTTL = true;
-	hasContentCacheSize = true;
-	hasContentCacheTTL = true;
-	hasRSSCacheSize = true;
-	hasRSSCacheTTL = true;
+	hasCatalogCacheSize = true;
+	hasCatalogCacheTTL = true;
 	
 	if(val(pageCacheSize) eq 0) {pageCacheSize = oHomePortalsConfigBean.getPageCacheSize(); hasPageCacheSize = false;}
 	if(val(pageCacheTTL) eq 0) {pageCacheTTL = oHomePortalsConfigBean.getPageCacheTTL(); hasPageCacheTTL = false;}
-	if(val(contentCacheSize) eq 0) {contentCacheSize = oHomePortalsConfigBean.getContentCacheSize(); hasContentCacheSize = false;}
-	if(val(contentCacheTTL) eq 0) {contentCacheTTL = oHomePortalsConfigBean.getContentCacheTTL(); hasContentCacheTTL = false;}
-	if(val(rssCacheSize) eq 0) {rssCacheSize = oHomePortalsConfigBean.getRSSCacheSize(); hasRSSCacheSize = false;}
-	if(val(rssCacheTTL) eq 0) {rssCacheTTL = oHomePortalsConfigBean.getRSSCacheTTL(); hasRSSCacheTTL = false;}
+	if(val(catalogCacheSize) eq 0) {catalogCacheSize = oHomePortalsConfigBean.getCatalogCacheSize(); hasCatalogCacheSize = false;}
+	if(val(catalogCacheTTL) eq 0) {catalogCacheTTL = oHomePortalsConfigBean.getCatalogCacheTTL(); hasCatalogCacheTTL = false;}
 </cfscript>
 
 <cfoutput>
@@ -45,30 +39,16 @@
 	</tr>
 	<tr>
 		<td width="170">
-			<strong>Content:</strong>
+			<strong>Resources:</strong>
 		</td>
 		<td>
-			<input type="checkbox" name="appSettings" value="contentCacheSize" <cfif hasContentCacheSize>checked</cfif> onclick="toggleField(this.checked,'contentCacheSize')">
+			<input type="checkbox" name="appSettings" value="catalogCacheSize" <cfif hasCatalogCacheSize>checked</cfif> onclick="toggleField(this.checked,'catalogCacheSize')">
 			<strong>Max Size:</strong>
-			<input type="text" name="contentCacheSize" value="#contentCacheSize#" id="fld_contentCacheSize" size="5" style="width:50px;" class="formField" <cfif not hasContentCacheSize>disabled</cfif>>
+			<input type="text" name="catalogCacheSize" value="#catalogCacheSize#" id="fld_catalogCacheSize" size="5" style="width:50px;" class="formField" <cfif not hasCatalogCacheSize>disabled</cfif>>
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="checkbox" name="appSettings" value="contentCacheTTL" <cfif hasContentCacheTTL>checked</cfif> onclick="toggleField(this.checked,'contentCacheTTL')">
+			<input type="checkbox" name="appSettings" value="catalogCacheTTL" <cfif hasCatalogCacheTTL>checked</cfif> onclick="toggleField(this.checked,'catalogCacheTTL')">
 			<strong>TTL (min):</strong>
-			<input type="text" name="contentCacheTTL" value="#contentCacheTTL#" id="fld_contentCacheTTL" size="5" style="width:50px;" class="formField" <cfif not hasContentCacheTTL>disabled</cfif>>
-		</td>
-	</tr>
-	<tr>
-		<td width="170">
-			<strong>RSS Feeds:</strong>
-		</td>
-		<td>
-			<input type="checkbox" name="appSettings" value="rssCacheSize" <cfif hasRSSCacheSize>checked</cfif> onclick="toggleField(this.checked,'rssCacheSize')">
-			<strong>Max Size:</strong>
-			<input type="text" name="rssCacheSize" value="#rssCacheSize#" id="fld_rssCacheSize" size="5" style="width:50px;" class="formField" <cfif not hasRSSCacheSize>disabled</cfif>>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="checkbox" name="appSettings" value="rssCacheTTL" <cfif hasRSSCacheTTL>checked</cfif> onclick="toggleField(this.checked,'rssCacheTTL')">
-			<strong>TTL (min):</strong>
-			<input type="text" name="rssCacheTTL" value="#rssCacheTTL#" id="fld_rssCacheTTL" size="5" style="width:50px;" class="formField" <cfif not hasRSSCacheTTL>disabled</cfif>>
+			<input type="text" name="catalogCacheTTL" value="#catalogCacheTTL#" id="fld_CatalogCacheTTL" size="5" style="width:50px;" class="formField" <cfif not hasCatalogCacheTTL>disabled</cfif>>
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
