@@ -154,10 +154,8 @@
 			var defaultPage = getValue("defaultPage");
 			var pageCacheSize = getValue("pageCacheSize");
 			var pageCacheTTL = getValue("pageCacheTTL");
-			var contentCacheSize = getValue("contentCacheSize");
-			var contentCacheTTL = getValue("contentCacheTTL");
-			var rssCacheSize = getValue("rssCacheSize");
-			var rssCacheTTL = getValue("rssCacheTTL");
+			var catalogCacheSize = getValue("catalogCacheSize");
+			var catalogCacheTTL = getValue("catalogCacheTTL");
 			var resourceLibraryPath = getValue("resourceLibraryPath");
 			var rt_page = getValue("rt_page");
 			var rt_module = getValue("rt_module");
@@ -166,10 +164,8 @@
 			try {
 				if(val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
-				if(val(contentCacheSize) eq 0) throw("You must enter a valid number for the content cache maximum size","validation");
-				if(val(contentCacheTTL) eq 0) throw("You must enter a valid number for the content cache TTL","validation");
-				if(val(rssCacheSize) eq 0) throw("You must enter a valid number for the RSS cache maximum size","validation");
-				if(val(rssCacheTTL) eq 0) throw("You must enter a valid number for the RSS cache TTL","validation");
+				if(val(catalogCacheSize) eq 0) throw("You must enter a valid number for the resources cache maximum size","validation");
+				if(val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
 				if(resourceLibraryPath eq "") throw("The resources library directory is required","validation");
 				if(rt_page eq "") throw("The location of the 'page' render template is required","validation");
 				if(rt_module eq "") throw("The location of the 'module' render template is required","validation");
@@ -180,10 +176,8 @@
 				oConfigBean.setDefaultPage(defaultPage);
 				oConfigBean.setPageCacheSize(pageCacheSize);
 				oConfigBean.setPageCacheTTL(pageCacheTTL);
-				oConfigBean.setContentCacheSize(contentCacheSize);
-				oConfigBean.setContentCacheTTL(contentCacheTTL);
-				oConfigBean.setRSSCacheSize(rssCacheSize);
-				oConfigBean.setRSSCacheTTL(rssCacheTTL);
+				oConfigBean.setCatalogCacheSize(catalogCacheSize);
+				oConfigBean.setCatalogCacheTTL(catalogCacheTTL);
 				oConfigBean.setResourceLibraryPath(resourceLibraryPath);
 				oConfigBean.setContentRoot(contentRoot);
 			

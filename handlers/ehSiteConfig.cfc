@@ -208,10 +208,8 @@
 				if(listFind(appSettings,"defaultPage") and defaultPage eq "") throw("The default page is required","validation");
 				if(listFind(appSettings,"pageCacheSize") and val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(listFind(appSettings,"pageCacheTTL") and val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
-				if(listFind(appSettings,"contentCacheSize") and val(contentCacheSize) eq 0) throw("You must enter a valid number for the content cache maximum size","validation");
-				if(listFind(appSettings,"contentCacheTTL") and val(contentCacheTTL) eq 0) throw("You must enter a valid number for the content cache TTL","validation");
-				if(listFind(appSettings,"rssCacheSize") and val(rssCacheSize) eq 0) throw("You must enter a valid number for the content RSS maximum size","validation");
-				if(listFind(appSettings,"rssCacheTTL") and val(rssCacheTTL) eq 0) throw("You must enter a valid number for the content RSS TTL","validation");
+				if(listFind(appSettings,"catalogCacheSize") and val(catalogCacheSize) eq 0) throw("You must enter a valid number for the resources cache maximum size","validation");
+				if(listFind(appSettings,"catalogCacheTTL") and val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
 				if(listFind(appSettings,"resourceLibraryPath") and resourceLibraryPath eq "") throw("The resources library directory is required","validation");
 				if(listFind(appSettings,"rt_page") and rt_page eq "") throw("The location of the 'page' render template is required","validation");
 				if(listFind(appSettings,"rt_module") and rt_module eq "") throw("The location of the 'module' render template is required","validation");
@@ -225,10 +223,8 @@
 				if(listFind(appSettings,"contentRoot")) oAppConfigBean.setContentRoot( getValue("contentRoot") );
 				if(listFind(appSettings,"pageCacheSize")) oAppConfigBean.setpageCacheSize( getValue("pageCacheSize") );
 				if(listFind(appSettings,"pageCacheTTL")) oAppConfigBean.setpageCacheTTL( getValue("pageCacheTTL") );
-				if(listFind(appSettings,"contentCacheSize")) oAppConfigBean.setcontentCacheSize( getValue("contentCacheSize") );
-				if(listFind(appSettings,"contentCacheTTL")) oAppConfigBean.setcontentCacheTTL( getValue("contentCacheTTL") );
-				if(listFind(appSettings,"rssCacheSize")) oAppConfigBean.setrssCacheSize( getValue("rssCacheSize") );
-				if(listFind(appSettings,"rssCacheTTL")) oAppConfigBean.setrssCacheTTL( getValue("rssCacheTTL") );
+				if(listFind(appSettings,"catalogCacheSize")) oAppConfigBean.setCatalogCacheSize( getValue("catalogCacheSize") );
+				if(listFind(appSettings,"catalogCacheTTL")) oAppConfigBean.setCatalogCacheTTL( getValue("catalogCacheTTL") );
 				if(listFind(appSettings,"rt_page")) oAppConfigBean.setRenderTemplate( "page", getValue("rt_page") );
 				if(listFind(appSettings,"rt_module")) oAppConfigBean.setRenderTemplate( "module", getValue("rt_module") );
 				if(listFind(appSettings,"rt_moduleNC")) oAppConfigBean.setRenderTemplate( "moduleNoContainer", getValue("rt_moduleNC") );
@@ -241,10 +237,8 @@
 				if(not listFind(appSettings,"contentRoot")) structDelete(xmlDoc.xmlRoot,"contentRoot");
 				if(not listFind(appSettings,"pageCacheSize")) structDelete(xmlDoc.xmlRoot,"pageCacheSize");
 				if(not listFind(appSettings,"pageCacheTTL")) structDelete(xmlDoc.xmlRoot,"pageCacheTTL");
-				if(not listFind(appSettings,"contentCacheSize")) structDelete(xmlDoc.xmlRoot,"contentCacheSize");
-				if(not listFind(appSettings,"contentCacheTTL")) structDelete(xmlDoc.xmlRoot,"contentCacheTTL");
-				if(not listFind(appSettings,"rssCacheSize")) structDelete(xmlDoc.xmlRoot,"rssCacheSize");
-				if(not listFind(appSettings,"rssCacheTTL")) structDelete(xmlDoc.xmlRoot,"rssCacheTTL");
+				if(not listFind(appSettings,"catalogCacheSize")) structDelete(xmlDoc.xmlRoot,"catalogCacheSize");
+				if(not listFind(appSettings,"catalogCacheTTL")) structDelete(xmlDoc.xmlRoot,"catalogCacheTTL");
 				
 				// write file
 				saveAppHomePortalsConfigDoc(xmlDoc, true);
@@ -1048,10 +1042,8 @@
 				if(arguments.xmlDoc.xmlRoot.contentRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentRoot");
 				if(arguments.xmlDoc.xmlRoot.pageCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheSize");
 				if(arguments.xmlDoc.xmlRoot.pageCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheTTL");
-				if(arguments.xmlDoc.xmlRoot.contentCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentCacheSize");
-				if(arguments.xmlDoc.xmlRoot.contentCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentCacheTTL");
-				if(arguments.xmlDoc.xmlRoot.rssCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "rssCacheSize");
-				if(arguments.xmlDoc.xmlRoot.rssCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "rssCacheTTL");
+				if(arguments.xmlDoc.xmlRoot.catalogCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheSize");
+				if(arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
 			}
 			
 			if(arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
