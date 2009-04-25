@@ -41,31 +41,37 @@
 				<cfif id neq "">
 					<cfif tmpHREF neq "">
 						<cfscript>
-							fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
 							stInfo = structNew();
-							stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
-							stInfo.size = fileObj.length();
-							stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
-							stInfo.createdOn = stInfo.lastModified;
-							stInfo.path = fileObj.getAbsolutePath();
-							stInfo.exists = fileObj.exists();
+							stInfo.exists = false;
+
+							if(not oResourceBean.isExternalTarget()) {
+								fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
+								stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
+								stInfo.size = fileObj.length();
+								stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
+								stInfo.createdOn = stInfo.lastModified;
+								stInfo.path = fileObj.getAbsolutePath();
+								stInfo.exists = fileObj.exists();
+							}
 						</cfscript>
 					</cfif>
 					
 					<div style="text-align:center;margin:10px;">
 						<cfif tmpHREF neq "">
-							<!--- for known image types, show the image --->
-							<cfif fileExists(expandPath(tmpFullHREF)) and isImageFile(expandPath(tmpFullHREF))>
-								<cfimage action="resize"
-										    width="100" height="" 
-										    source="#expandPath(tmpFullHREF)#"
-										    name="resImage">
-								<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
-							<cfelse>
-								<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
+							<cfif Not oResourceBean.isExternalTarget()>
+								<!--- for known image types, show the image --->
+								<cfif fileExists(expandPath(tmpFullHREF)) and isImageFile(expandPath(tmpFullHREF))>
+									<cfimage action="resize"
+											    width="100" height="" 
+											    source="#expandPath(tmpFullHREF)#"
+											    name="resImage">
+									<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
+								<cfelse>
+									<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
+								</cfif>
+								<br />#getFileFromPath(tmpHREF)#
+								<cfif not stInfo.exists><br />(not found)</cfif>
 							</cfif>
-							<br />#getFileFromPath(tmpHREF)#
-							<cfif not stInfo.exists><br />(not found)</cfif>
 						<cfelse>
 							<em>No target assigned</em>
 						</cfif>
@@ -108,7 +114,9 @@
 					<p>You must first create the resource before assigning a target to it.</p>
 				</cfif>
 			</div>
-			<input type="hidden" name="href" value="#tmpHREF#">
+			<cfif not oResourceBean.isExternalTarget()>
+				<input type="hidden" name="href" value="#tmpHREF#">
+			</cfif>
 		</div>
 		<div style="border:1px solid silver;height:440px;overflow:auto;">
 
@@ -155,6 +163,12 @@
 					<td width="80"><b>Res Lib:</b></td>
 					<td>#oResourceBean.getResourceLibrary().getPath()#</td>
 				</tr>
+				<cfif oResourceBean.isExternalTarget()>
+					<tr>
+						<td width="80"><b>HREF:</b></td>
+						<td><input type="text" name="href" value="#tmpHREF#" class="formField"></td>
+					</tr>
+				</cfif>
 				<tr valign="top">
 					<td><strong>Description:</strong></td>
 					<td><textarea name="description" class="formField" rows="4">#trim(tmpDescription)#</textarea></td>
