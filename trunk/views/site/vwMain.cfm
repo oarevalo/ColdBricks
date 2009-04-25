@@ -116,7 +116,7 @@
 							</cfscript>
 							<div style="margin-bottom:5px;">
 								<img src="#imgSrc#" align="absmiddle"> 
-								<a href="index.cfm?event=ehResources.dspMain&resType=#key#" 
+								<a href="index.cfm?event=ehResources.dspMain&resourceType=#key#" 
 									class="resTreeItem" 
 									id="resTreeItem_#key#">#stResourceTypes[key].getFolderName()#</a> 
 								(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
