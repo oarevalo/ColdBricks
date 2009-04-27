@@ -19,14 +19,14 @@
 		function loadNodeInfo(path,index) {
 			doEvent("ehPages.dspNodeInfo","nodeInfoPanel",{path: path}, doEventComplete);
 		
-			d = $$(".pagesViewItem");
-			for(var i=0;i < d.length;i++) {
-				d[i].style.fontWeight="normal";
+			var d1 = $$(".pagesViewItem");
+			for(var i=0;i < d1.length;i++) {
+				d1[i].style.fontWeight="normal";
 			}	
 			
 			// highlight selected account
-			d = $("pagesViewItem_"+index);
-			if(d) d.style.fontWeight="bold";
+			var d2 = $("pagesViewItem_"+index);
+			if(d2) d2.style.fontWeight="bold";
 		}
 		
 		function openPage(path) {
@@ -47,14 +47,14 @@
 		
 		function addFolder(path) {
 			var name = prompt("Enter the name of the new folder:");
-			if(name!="") {
+			if(name!="" && name!=null) {
 				doEvent("ehPages.doCreateFolder","nodePanel",{path: path, name: name});
 			}
 		}
 		
 		function addPage(path) {
-			name = prompt("Enter the name of the new page:");
-			if(name!="") {
+			var name = prompt("Enter the name of the new page:");
+			if(name!="" && name!=null) {
 				doEvent("ehPages.doCreatePage","nodePanel",{path: path, name: name});
 			}
 		}

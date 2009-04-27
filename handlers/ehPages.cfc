@@ -278,6 +278,8 @@
 			var oPage_src = 0;
 			var oPage_tgt = 0;
 			var newPath = "";
+			var bFound = true;
+			var currIndex = 1;
 			
 			try {
 				pp = oContext.getHomePortals().getPageProvider();
@@ -286,6 +288,14 @@
 
 				newPath = parentPath & "/" & getFileFromPath(pagePath) & "_copy";
 				oPage_tgt = createObject("component","homePortals.components.pageBean").init(oPage_src.toXML());
+	
+				// make sure the page has a unique name within the account
+				while(bFound) {
+					newPath = parentPath & "/" & getFileFromPath(pagePath) & currIndex;
+					bFound = pp.pageExists(newPath);
+					currIndex = currIndex + 1;
+				}	
+	
 				pp.save(newPath, oPage_tgt);
 
 				setMessage("info", "Page has been copied");

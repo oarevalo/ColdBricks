@@ -56,7 +56,7 @@
 				value="Return To Page Editor" 
 				onClick="document.location='?event=ehPage.dspMain'">
 		&nbsp;&nbsp;
-		<input type="submit" name="btnSave" value="Apply Changes">
+		<input type="submit" name="btnSave" value="Apply Changes" style="font-weight:bold;">
 	</p>
 </form>
 </cfoutput>

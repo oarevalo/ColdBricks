@@ -64,6 +64,7 @@
 	else
 		tmpPageURL = appRoot & "/index.cfm?page=#thisPageHREF#";
 		
+	tmpPageURL = reReplace(tmpPageURL,"//*","/","all");	
 	if(accountName neq "") tmpPageURL & "&account=" & accountName;
 </cfscript>
 
