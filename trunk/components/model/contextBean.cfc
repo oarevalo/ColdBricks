@@ -151,7 +151,7 @@
 
 	<cffunction name="setPageHREF" access="public" returntype="void">
 		<cfargument name="data" type="string" required="true">
-		<cfset variables.instance.PageHREF = arguments.data>
+		<cfset variables.instance.PageHREF = reReplace(arguments.data,"//*","/","all")>
 	</cffunction>
 
 	<cffunction name="hasPage" access="public" returntype="boolean">

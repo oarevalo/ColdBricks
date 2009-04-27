@@ -239,6 +239,8 @@
 			var oPage = 0;
 			var oContext = getService("sessionContext").getContext();
 			var oPageHelper = 0;
+			var contentRoot = oContext.getHomePortals().getConfig().getContentRoot();
+			var css = "";
 			
 			try {
 				// check if we have a page loaded 
@@ -246,12 +248,15 @@
 				oPage = oContext.getPage();
 				
 				// get page helper
-				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage, oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage, contentRoot & oContext.getPageHREF() );
+
+				css = oPageHelper.getPageCSS();
+				if(css eq "") css = getDefaultCSSContent();
 
 				// pass values to view
 				setValue("oPage", oPage );
 				setValue("pageHREF", oContext.getPageHREF() );
-				setValue("pageCSSContent", oPageHelper.getPageCSS() );
+				setValue("pageCSSContent", css );
 
 				if(oContext.hasAccountSite())
 					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Stylesheet");
@@ -939,19 +944,21 @@
 			var cssContent = getValue("cssContent","");
 			var oContext = getService("sessionContext").getContext();
 			var oPageHelper = 0;
+			var contentRoot = oContext.getHomePortals().getConfig().getContentRoot();
 			
 			try {
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 
 				// get page helper
-				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
+				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), contentRoot & oContext.getPageHREF() );
 				oPageHelper.savePageCSS(cssContent);
+				savePage();
 
 				setMessage("info", "Page stylesheet saved.");
 				
 				// go to the page editor
-				setNextEvent("ehPage.dspEditCSS");
+				setNextEvent("ehPage.dspMain");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -1359,4 +1366,47 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="getDefaultCSSContent" access="private" returntype="string">
+		<cfset var oPage = getService("sessionContext").getContext().getPage()>
+		<cfset var pageHREF = getService("sessionContext").getContext().getPageHREF()>
+		<cfset var css = "">
+		<cfset var crlf = chr(13) & chr(10)>
+		
+		<cfset css = "/* CSS Stylesheet for page: '#pageHREF#' */" & crlf>
+		<cfset css = css & "/* NOTE: Rules on this stylesheet only apply to the current page */" & crlf & crlf>	
+
+		<cfset css = css & "/* Main body selector */" & crlf>	
+		<cfset css = css & "body { }" & crlf & crlf>
+		
+		<cfset css = css & "/* Default module container selectors */" & crlf>	
+		<cfset css = css & ".Section { }" & crlf>
+		<cfset css = css & ".SectionTitle { }" & crlf>
+		<cfset css = css & ".SectionBody { }" & crlf & crlf>
+
+		<cfset css = css & "/* Page layout regions */" & crlf>
+		<cfset tmp = oPage.getLayoutRegions()>
+		<cfloop from="1" to="#arrayLen(tmp)#" index="i">
+			<cfif tmp[i].id neq "">
+				<cfset css = css & "###tmp[i].id# { }" & crlf>
+			</cfif>
+			<cfif tmp[i].class neq "">
+				<cfset css = css & ".#tmp[i].class# { }" & crlf>
+			</cfif>
+		</cfloop>
+		<cfset css = css & crlf> 
+
+		<cfset css = css & "/* Page modules selectors */" & crlf>
+		<cfset tmp = oPage.getModules()>
+		<cfloop from="1" to="#arrayLen(tmp)#" index="i">
+			<cfset css = css & "###tmp[i].id# { }" & crlf>
+			<!---
+			<cfset css = css & "###tmp[i].id#_Head { }" & crlf>
+			<cfset css = css & "###tmp[i].id#_Body { }" & crlf>
+			<cfset css = css & crlf> 
+			--->
+		</cfloop>
+		<cfset css = css & crlf> 
+
+		<cfreturn css>
+	</cffunction>
 </cfcomponent>

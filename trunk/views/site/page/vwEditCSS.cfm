@@ -64,7 +64,6 @@
 						
 						<p>
 							<div style="font-weight:bold;font-size:12px;border-bottom:2px solid black;">Special Classes / IDs</div>
-							&bull; <strong style="color:##50628b;">##h_body_main:</strong> Container for the entire page<br />
 							&bull; <strong style="color:##50628b;">.Section:</strong> Class applied to all modules that have a container.<br />
 							&bull; <strong style="color:##50628b;">.SectionTitle:</strong> Class applied to the module title bar (only when the module container is displayed)<br />
 							&bull; <strong style="color:##50628b;">.SectionBody:</strong> Class applied to the module contents (only when the module container is displayed)<br />
@@ -91,12 +90,14 @@
 						value="Return To Page Editor" 
 						onClick="document.location='?event=ehPage.dspMain'">
 				&nbsp;&nbsp;
-				<input type="submit" name="btnSave" value="Apply Changes">
+				<input type="submit" name="btnSave" value="Apply Changes" style="font-weight:bold;">
+				<!---
 				&nbsp;&nbsp;|&nbsp;&nbsp;
 				<input type="button" 
 						name="btnSkin" 
 						value="Convert To Skin" 
 						onClick="saveAsSkin()">
+				--->
 			</td>
 		</tr>
 	</table>
