@@ -11,8 +11,8 @@
 		request.oPage = request.oPageRenderer.getPage();
 
 		// get page owner
-		siteOwner = request.oPage.getOwner();
-		pageAccess = request.oPage.getAccess();
+		siteOwner = request.oPage.getProperty("owner");
+		pageAccess = request.oPage.getProperty("access");
 		
 		// create site object
 		request.oSite = oAccountsService.getSite(siteOwner);

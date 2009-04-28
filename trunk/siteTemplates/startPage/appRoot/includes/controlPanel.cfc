@@ -41,7 +41,7 @@
 			variables.oPage = application.homePortals.getPageProvider().load(variables.pageHREF);
 			
 			variables.reloadPageHREF = "index.cfm?account=" 
-										& variables.oPage.getOwner() 
+										& variables.oPage.getProperty("owner") 
 										& "&page=" 
 										& replaceNoCase(getFileFromPath(variables.pageHREF),".xml","")
 										& "&ts=" & gettickcount();
@@ -143,7 +143,7 @@
 				oPageProvider = application.homePortals.getPageProvider();
 				oPageProvider.save(newPageURL, myNewPage);
 				
-				newPageURL = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(newPageURL),".xml","");
+				newPageURL = "index.cfm?account=" & variables.oPage.getProperty("owner") & "&page=" & replaceNoCase(getFileFromPath(newPageURL),".xml","");
 			</cfscript>
 			<script>
 				controlPanel.closePanel();
@@ -164,7 +164,7 @@
 			<cfscript>
 				validateOwner();
 				getSite().deletePage(arguments.pageHREF);
-				redirHREF = "index.cfm?account=" & variables.oPage.getOwner();
+				redirHREF = "index.cfm?account=" & variables.oPage.getProperty("owner");
 			</cfscript>
 			<script>
 				controlPanel.setStatusMessage("Removing workspace...");
@@ -216,7 +216,7 @@
 				newPageHREF = arguments.pageName;
 				
 				// set the new reload location
-				variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getOwner() & "&page=" & replaceNoCase(getFileFromPath(newPageHREF),".xml","") & "&#RandRange(1,100)#";
+				variables.reloadPageHREF = "index.cfm?account=" & variables.oPage.getProperty("owner") & "&page=" & replaceNoCase(getFileFromPath(newPageHREF),".xml","") & "&#RandRange(1,100)#";
 			</cfscript>
 			
 			<script>
@@ -333,7 +333,7 @@
 			
 			oUserRegistry = createObject("Component","homePortals.Components.userRegistry").init();
 			stRet = oUserRegistry.getUserInfo();	// information about the logged-in user		
-			stRet.isOwner = (stRet.username eq variables.oPage.getOwner());
+			stRet.isOwner = (stRet.username eq variables.oPage.getProperty("owner"));
 		</cfscript>
 
 		<cfreturn stRet>
@@ -437,7 +437,7 @@
 			var aAccess = arrayNew(1);
 			var j = 1;
 			var oHP = application.homePortals;
-			var owner = variables.oPage.getOwner();
+			var owner = variables.oPage.getProperty("owner");
 		
 			var oFriendsService = variables.accountsService.getFriendsService();
 			var qryFriends = oFriendsService.getFriends(owner);
@@ -483,7 +483,7 @@
 	<!---------------------------------------->
 	<cffunction name="getSite" access="private" output="false" returntype="homePortalsAccounts.Components.site">
 		<cfscript>
-			var owner = variables.oPage.getOwner();
+			var owner = variables.oPage.getProperty("owner");
 			return variables.accountsService.getSite(owner);
 		</cfscript>
 	</cffunction>
