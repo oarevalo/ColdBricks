@@ -4,8 +4,6 @@
 <cfparam name="request.requestState.xmlContent" default="">
 <cfparam name="request.requestState.qryHelp" default="">
 
-<cfinclude template="../../includes/udf.cfm">
-
 <cfscript>
 	aConfigFiles = request.requestState.aConfigFiles;
 	configFile = request.requestState.configFile;
@@ -14,7 +12,7 @@
 	qryHelp = request.requestState.qryHelp;
 	
 	if(configFile neq "") { 
-		if(xmlContent eq "") xmlContent = xmlPrettyPrint(xmlDoc.xmlRoot);
+		if(xmlContent eq "") xmlContent = xmlDoc;
 	}
 </cfscript>
 

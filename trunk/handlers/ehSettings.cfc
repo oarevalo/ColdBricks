@@ -72,29 +72,29 @@
 			var configFile = getValue("configFile");
 			var oHelpDAO = 0;
 			var xmlDoc = 0;
+			var xmlDocStr = "";
 			var qryHelp = 0;
+			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
 			
 			try {
 				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
 				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
 				
-				arrayAppend(aConfigFiles, "/homePortals/config/homePortals-config.xml");
-				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/module.xml");
-				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/moduleNoContainer.xml");
-				arrayAppend(aConfigFiles, "/homePortals/common/Templates/Render/page.xml");
+				arrayAppend(aConfigFiles, variables.homePortalsConfigPath);
 
 				if(getValue("hasAccountsPlugin")) {
-					arrayAppend(aConfigFiles, "/homePortals/config/accounts-config.xml.cfm");
+					arrayAppend(aConfigFiles, variables.accountsConfigPath);
 					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/default.xml");
 					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/newPage.xml");
 				}
 				if(getValue("hasModulesPlugin")) {
-					arrayAppend(aConfigFiles, "/homePortals/config/module-properties.xml");
+					arrayAppend(aConfigFiles, variables.modulePropertiesConfigPath);
 				}
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
-					setValue("xmlDoc", xmlDoc);
+					xmlDocStr = oFormatter.makePretty(xmlDoc.xmlRoot);
+					setValue("xmlDoc", xmlDocStr);
 
 					// get help on selected file
 					oHelpDAO = getService("DAOFactory").getDAO("help");
@@ -111,7 +111,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehGeneral.dspMain");			
+				setNextEvent("ehSettings.dspMain");			
 			}
 		</cfscript>
 	</cffunction>
@@ -156,20 +156,12 @@
 			var pageCacheTTL = getValue("pageCacheTTL");
 			var catalogCacheSize = getValue("catalogCacheSize");
 			var catalogCacheTTL = getValue("catalogCacheTTL");
-			var resourceLibraryPath = getValue("resourceLibraryPath");
-			var rt_page = getValue("rt_page");
-			var rt_module = getValue("rt_module");
-			var rt_moduleNC = getValue("rt_moduleNC");
 
 			try {
 				if(val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
 				if(val(catalogCacheSize) eq 0) throw("You must enter a valid number for the resources cache maximum size","validation");
 				if(val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
-				if(resourceLibraryPath eq "") throw("The resources library directory is required","validation");
-				if(rt_page eq "") throw("The location of the 'page' render template is required","validation");
-				if(rt_module eq "") throw("The location of the 'module' render template is required","validation");
-				if(rt_moduleNC eq "") throw("The location of the 'module no container' render template is required","validation");
 				
 				// set new values
 				oConfigBean = getHomePortalsConfigBean();
@@ -178,12 +170,7 @@
 				oConfigBean.setPageCacheTTL(pageCacheTTL);
 				oConfigBean.setCatalogCacheSize(catalogCacheSize);
 				oConfigBean.setCatalogCacheTTL(catalogCacheTTL);
-				oConfigBean.setResourceLibraryPath(resourceLibraryPath);
 				oConfigBean.setContentRoot(contentRoot);
-			
-				oConfigBean.setRenderTemplate("page", rt_page);
-				oConfigBean.setRenderTemplate("module", rt_module);
-				oConfigBean.setRenderTemplate("moduleNoContainer", rt_moduleNC);
 			
 				// save changes
 				saveHomePortalsConfigBean( oConfigBean );
@@ -681,6 +668,73 @@
 	</cffunction>
 
 
+	<!--- Render Templates --->
+
+	<cffunction name="doSaveRenderTemplate" access="public" returntype="void">
+		<cfscript>
+			var href = getValue("href");
+			var name = getValue("name");
+			var type = getValue("type");
+			var isDefault = getValue("isDefault",false);
+			var description = getValue("description");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The render template name is required","validation");
+				if(href eq "") throw("The render template path is required","validation");
+				if(type eq "") throw("The render template type is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeleteRenderTemplate" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a render template to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove render template
+				oConfigBean.removeRenderTemplate(name);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
 	<!--- Accounts Plugin Config --->
 
 	<cffunction name="doSaveAccounts" access="public" returntype="void">
@@ -870,7 +924,8 @@
 
 	<cffunction name="saveHomePortalsConfigBean" access="private" returntype="void">
 		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
-		<cfset writeFile( expandPath(variables.homePortalsConfigPath), toString( arguments.configBean.toXML() ) )>
+		<cfset var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init()>
+		<cfset writeFile( expandPath(variables.homePortalsConfigPath), oFormatter.makePretty( arguments.configBean.toXML().xmlRoot ) )>
 	</cffunction>
 
 	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortalsAccounts.components.accountsConfigBean">

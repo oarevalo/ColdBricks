@@ -120,7 +120,9 @@
 			var configFile = getValue("configFile");
 			var hp = 0;
 			var appRoot = 0;
+			var xmlDocStr = "";
 			var oContext = getService("sessionContext").getContext();
+			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
 			
 			try {
 				hp = oContext.getHomePortals();
@@ -141,7 +143,8 @@
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
-					setValue("xmlDoc", xmlDoc);
+					xmlDocStr = oFormatter.makePretty(xmlDoc.xmlRoot);
+					setValue("xmlDoc", xmlDocStr);
 					
 					// get help on selected file
 					oHelpDAO = getService("DAOFactory").getDAO("help");
@@ -206,14 +209,11 @@
 			try {
 				// only validate the settings that will be overriden
 				if(listFind(appSettings,"defaultPage") and defaultPage eq "") throw("The default page is required","validation");
+				if(listFind(appSettings,"contentRoot") and contentRoot eq "") throw("The content root path is required","validation");
 				if(listFind(appSettings,"pageCacheSize") and val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
 				if(listFind(appSettings,"pageCacheTTL") and val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
 				if(listFind(appSettings,"catalogCacheSize") and val(catalogCacheSize) eq 0) throw("You must enter a valid number for the resources cache maximum size","validation");
 				if(listFind(appSettings,"catalogCacheTTL") and val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
-				if(listFind(appSettings,"resourceLibraryPath") and resourceLibraryPath eq "") throw("The resources library directory is required","validation");
-				if(listFind(appSettings,"rt_page") and rt_page eq "") throw("The location of the 'page' render template is required","validation");
-				if(listFind(appSettings,"rt_module") and rt_module eq "") throw("The location of the 'module' render template is required","validation");
-				if(listFind(appSettings,"rt_moduleNC") and rt_moduleNC eq "") throw("The location of the 'module no container' render template is required","validation");
 				
 				// get saved config
 				oAppConfigBean = getAppHomePortalsConfigBean();
@@ -225,9 +225,6 @@
 				if(listFind(appSettings,"pageCacheTTL")) oAppConfigBean.setpageCacheTTL( getValue("pageCacheTTL") );
 				if(listFind(appSettings,"catalogCacheSize")) oAppConfigBean.setCatalogCacheSize( getValue("catalogCacheSize") );
 				if(listFind(appSettings,"catalogCacheTTL")) oAppConfigBean.setCatalogCacheTTL( getValue("catalogCacheTTL") );
-				if(listFind(appSettings,"rt_page")) oAppConfigBean.setRenderTemplate( "page", getValue("rt_page") );
-				if(listFind(appSettings,"rt_module")) oAppConfigBean.setRenderTemplate( "module", getValue("rt_module") );
-				if(listFind(appSettings,"rt_moduleNC")) oAppConfigBean.setRenderTemplate( "moduleNoContainer", getValue("rt_moduleNC") );
 				
 				// convert to xml
 				xmlDoc = oAppConfigBean.toXML();
@@ -729,6 +726,72 @@
 	</cffunction>
 
 
+	<!--- Render Templates --->
+
+	<cffunction name="doSaveRenderTemplate" access="public" returntype="void">
+		<cfscript>
+			var href = getValue("href");
+			var name = getValue("name");
+			var type = getValue("type");
+			var isDefault = getValue("isDefault",false);
+			var description = getValue("description");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The render template name is required","validation");
+				if(href eq "") throw("The render template path is required","validation");
+				if(type eq "") throw("The render template type is required","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeleteRenderTemplate" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a render template to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				
+				// remove render template
+				oConfigBean.removeRenderTemplate(name);
+				
+				// save changes
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehSiteConfig.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
 
 	
 	<!--- Module Properties Plugin Config --->
@@ -1026,11 +1089,11 @@
 		
 		<cfscript>
 			var filePath = arguments.appRoot & variables.homePortalsConfigPath;
+			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
 			
 			structDelete(arguments.xmlDoc.xmlRoot.xmlAttributes, "version");
 			if(arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
 			if(arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
-			if(arguments.xmlDoc.xmlRoot.layoutSections.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "layoutSections");
 			if(arguments.xmlDoc.xmlRoot.homePortalsPath.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "homePortalsPath");
 			if(arguments.xmlDoc.xmlRoot.appRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "appRoot");
 			if(arguments.xmlDoc.xmlRoot.bodyOnLoad.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "bodyOnLoad");
@@ -1053,7 +1116,7 @@
 			if(arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
 			if(arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
 	
-			fileWrite(expandPath(filePath), toString(arguments.xmlDoc), "utf-8");
+			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
 		</cfscript>
 	</cffunction>	
 		

@@ -79,7 +79,7 @@
 
 
 				<div class="buttonImage btnLarge">
-					<a href="#tmpAppRoot#/index.cfm?refreshApp=1" target="_blank" title="Open the site reloading site settings"><img src="images/arrow_refresh.png" border="0" align="absmiddle"> Reset Site</a>
+					<a href="#tmpAppRoot#/index.cfm?resetApp=1" target="_blank" title="Open the site reloading site settings"><img src="images/arrow_refresh.png" border="0" align="absmiddle"> Reset Site</a>
 				</div>	
 			</div>
 			

@@ -8,6 +8,7 @@
 				{ id = "general", label = "General Settings" },
 				{ id = "resLibs", label = "Resource Libraries" },
 				{ id = "baseResources", label = "Base Resources" },
+				{ id = "renderTemplates", label = "Render Templates" },
 				{ id = "contentRenderers", label = "Content Renderers" },
 				{ id = "plugins", label = "Plugins" },
 				{ id = "resourceTypes", label = "Resource Types" }
@@ -40,7 +41,6 @@
 								<input type="hidden" name="event" value="ehSettings.doSaveGeneral">
 								<cfinclude template="includes/general.cfm">
 								<cfinclude template="includes/caching.cfm">
-								<cfinclude template="includes/renderTemplates.cfm">
 								<tr>
 									<td colspan="2" align="center" style="padding-top:5px;">
 										<input type="submit" name="btnSave" value="Apply Changes">
@@ -62,6 +62,9 @@
 						</cfcase>
 						<cfcase value="resourceTypes">
 							<cfinclude template="includes/resourceTypes.cfm">
+						</cfcase>
+						<cfcase value="renderTemplates">
+							<cfinclude template="includes/renderTemplates.cfm">
 						</cfcase>
 					</cfswitch>
 				</table>

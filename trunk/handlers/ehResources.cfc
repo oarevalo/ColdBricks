@@ -465,13 +465,13 @@
 				
 				if(fileHREF eq "") {
 					fileHREF = oResourceType.getFolderName() & "/" & package & "/" & fileName;
+					oResourceBean.setHREF(fileHREF);
 				}
 
-				filePath = aResLibs[resLibIndex].getPath() & fileHREF;
-				fileWrite(filePath, body, "utf-8");
+				filePath = oResourceBean.getFullHREF();
+				fileWrite(expandPath(filePath), body, "utf-8");
 
 				// update the bean 
-				oResourceBean.setHREF(fileHREF);
 				aResLibs[resLibIndex].saveResource(oResourceBean);
 		
 				// update catalog
