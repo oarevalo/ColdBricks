@@ -45,7 +45,7 @@
 				setValue("accountName", oContext.getAccountName());
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("resType", oContext.getPageResourceTypeView);
-				setValue("aLayoutSectionTypes", listToArray(hp.getConfig().getLayoutSections()));
+				setValue("aLayoutSectionTypes", listToArray(hp.getTemplateManager().getLayoutSections(oContext.getPage().getPageTemplate())));
 				setValue("pageHREF", oContext.getPageHREF());
 				
 				setValue("oPage", oContext.getPage());
