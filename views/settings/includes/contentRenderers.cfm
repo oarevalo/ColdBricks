@@ -22,6 +22,10 @@
 	<tr><td colspan="2"><h2>Content Renderers:</h2></td></tr>
 	<tr>
 		<td colspan="2">
+			<div class="formFieldTip">
+				Content Renderers are used to describe how content elements on a page will be handled. These are the 
+				different types of elements that a page can contain.
+			</div>
 		
 			<table style="width:100%;border:1px solid silver;">
 				<tr>

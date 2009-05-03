@@ -22,6 +22,9 @@
 	<tr><td colspan="2"><h2>Plugins:</h2></td></tr>
 	<tr>
 		<td colspan="2">
+			<div class="formFieldTip">
+				Plugins are a mechanism used to extend the functionality or features of an application.
+			</div>
 		
 			<table style="width:100%;border:1px solid silver;">
 				<tr>

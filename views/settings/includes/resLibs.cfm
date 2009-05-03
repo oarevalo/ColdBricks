@@ -16,7 +16,10 @@
 	<tr><td colspan="2"><h2>Resource Libraries:</h2></td></tr>
 	<tr>
 		<td colspan="2">
-		
+			<div class="formFieldTip">
+				Resource Libraries are lists of directories that are used to store 'Resources'. Resources are reusable
+				content elements that can be used throughout the site.
+			</div>
 			<table style="width:100%;border:1px solid silver;">
 				<tr>
 					<th style="background-color:##ccc;width:50px;">No.</th>

@@ -22,7 +22,11 @@
 	<tr><td colspan="2"><h2>Content Renderers:</h2></td></tr>
 	<tr>
 		<td colspan="2">
-		
+			<div class="formFieldTip">
+				Content Renderers are used to describe how content elements on a page will be handled. These are the 
+				different types of elements that a page can contain.
+			</div>
+				
 			<table style="width:100%;border:1px solid silver;">
 				<tr>
 					<th style="background-color:##ccc;width:50px;">No.</th>
@@ -44,7 +48,6 @@
 					<cfset index++>
 				</cfloop>
 
-				<cfset index = 1>
 				<cfset stContRenders = oAppConfigBean.getContentRenderers()>
 				<cfloop collection="#stContRenders#" item="key">
 					<tr <cfif index mod 2>class="altRow"</cfif> <cfif contentRendererEditKey eq key>style="font-weight:bold;"</cfif>>

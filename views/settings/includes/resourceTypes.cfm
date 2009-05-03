@@ -46,6 +46,11 @@
 	<tr><td colspan="2"><h2>Resource Types:</h2></td></tr>
 	<tr>
 		<td colspan="2">
+			<div class="formFieldTip">
+				Resource Types are different types of resources that can be used on a page. Resources are individual content
+				elements stored on Resource Libraries. Each resource type has its own set of properties and can be customized
+				to represent things that are meaningful to the application.
+			</div>
 		
 			<table style="width:100%;border:1px solid silver;">
 				<tr>

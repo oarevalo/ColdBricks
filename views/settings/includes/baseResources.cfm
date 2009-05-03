@@ -22,6 +22,11 @@
 	<tr><td colspan="2"><h2>Base Resources:</h2></td></tr>
 	<tr>
 		<td colspan="2">
+			<div class="formFieldTip">
+				Base Resources are static resources that are included on every page by the rendering template. Base 
+				Resources can include JavaScript files, CSS stylesheets, and ColdFusion templates included at different
+				locations within the rendering template.
+			</div>
 		
 			<table style="width:100%;border:1px solid silver;">
 				<tr>
