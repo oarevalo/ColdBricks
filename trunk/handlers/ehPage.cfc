@@ -47,6 +47,7 @@
 				setValue("resType", oContext.getPageResourceTypeView);
 				setValue("aLayoutSectionTypes", listToArray(hp.getTemplateManager().getLayoutSections(oContext.getPage().getPageTemplate())));
 				setValue("pageHREF", oContext.getPageHREF());
+				setValue("stPageTemplates", hp.getTemplateManager().getTemplates("page"));
 				
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
@@ -138,6 +139,7 @@
 				setValue("tagInfo", tagInfo);
 				setValue("pageHREF", oContext.getPageHREF());
 				setValue("tag", stModule.moduleType);
+				setValue("stModuleTemplates", hp.getTemplateManager().getTemplates("module"));
 
 				if(oContext.hasAccountSite())
 					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Edit Module");
@@ -1076,6 +1078,40 @@
 			setNextEvent("ehPage.dspEditCSS");
 		</cfscript>	
 	</cffunction>
+
+	<cffunction name="doSetPageTemplate" access="public" returntype="void">
+		<cfscript>
+			var templateName = getValue("templateName","");
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+		
+				if(templateName eq 0) 
+					setNextEvent("ehPage.dspMain");
+		
+				oPage.setPageTemplate(templateName);
+				savePage();
+				
+				setMessage("info", "Page Template Applied");
+				
+				// go to the page editor
+				setNextEvent("ehPage.dspMain");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}			
+		</cfscript>
+	</cffunction>		
 
 
 	<!----  Page Layout Actions  ---->

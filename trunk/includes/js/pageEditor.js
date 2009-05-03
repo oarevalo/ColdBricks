@@ -152,6 +152,12 @@ function changeSkin(skinID) {
 		document.location='?event=ehPage.doApplySkin&skinID=' + skinID;
 }
 
+function changePageTemplate(pageTemplateName) {
+	if(pageTemplateName!="0") {
+		document.location='?event=ehPage.doSetPageTemplate&templateName=' + pageTemplateName;
+	}
+}
+
 function applyPageTemplate(resID) {
 	if(resID=="_NEW")
 		document.location='?event=ehResources.dspMain&resType=pagetemplate&id=NEW';

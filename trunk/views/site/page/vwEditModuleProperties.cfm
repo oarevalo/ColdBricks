@@ -3,6 +3,7 @@
 <cfparam name="request.requestState.stModule" default="">
 <cfparam name="request.requestState.tagInfo" default="">
 <cfparam name="request.requestState.pageHREF" default="">
+<cfparam name="request.requestState.stModuleTemplates" default="">
 
 <cfscript>
 	oPage = request.requestState.oPage;
@@ -11,8 +12,9 @@
 	thisModule = request.requestState.stModule;
 	tagInfo = request.requestState.tagInfo;
 	thisPageHREF = request.requestState.pageHREF;	
+	stModuleTemplates = request.requestState.stModuleTemplates;	
 
-	lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output";
+	lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output,moduleTemplate";
 	lstAllAttribs = structKeyList(thisModule);
 	lstCustomAttribs = "";
 	lstModuleAttribs = "";
