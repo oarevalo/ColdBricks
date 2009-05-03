@@ -64,7 +64,7 @@
 
 			<div class="dsb_siteSection" style="width:150px;padding:0px;">
 				<div style="margin:10px;" id="hpInfoPanel">
-					Checking HomePortals Framework...
+					Checking <a href="/homePortals">HomePortals</a> Framework...
 				</div>
 			</div>
 

@@ -8,6 +8,7 @@
 <cfparam name="request.requestState.oCatalog" default="">
 
 <cfparam name="request.requestState.accountName" default="">
+<cfparam name="request.requestState.stPageTemplates" default="">
 
 <cfscript>
 	pageTitle = request.requestState.pageTitle;
@@ -15,6 +16,7 @@
 	resType = request.requestState.resType;
 	appRoot = request.requestState.appRoot;
 	aLayoutSectionTypes = request.requestState.aLayoutSectionTypes;
+	stPageTemplates = request.requestState.stPageTemplates;
 	
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;	
@@ -23,6 +25,7 @@
 	
 	title = oPage.getTitle();
 	skinID = oPage.getSkinID();
+	pageTemplateName = oPage.getPageTemplate();
 	
 	stLocationsByType = structNew();
 	for(i=1;i lte ArrayLen(aLayoutSectionTypes);i=i+1) {
@@ -83,9 +86,9 @@
 
 
 <cfoutput>
-<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="8" cellspacing="0">
+<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="8" cellspacing="0" border="0">
 	<tr>
-		<td nowrap="yes">
+		<td nowrap="yes" style="width:320px;">
 			<form name="frm" method="post" action="index.cfm" style="padding:0px;margin:0px;">
 				<strong>Title:</strong> 
 				<input type="hidden" name="event" value="ehPage.doSetTitle">
@@ -94,9 +97,9 @@
 			</form>
 		</td>
 
-		<td align="center" nowrap="yes">
+		<td align="left" nowrap="yes" style="width:180px;">
 			<strong>Skin:</strong>
-			<select name="skin" style="width:150px;font-size:11px;" class="formField"  onchange="changeSkin(this.value)">
+			<select name="skin" style="width:110px;font-size:11px;" class="formField"  onchange="changeSkin(this.value)">
 				<option value="0">-- Select Skin --</option>
 				<option value="NONE">-- None --</option>
 				<cfloop query="qrySkins">
@@ -111,9 +114,21 @@
 				<a href="index.cfm?event=ehResources.dspMain&resType=skin&id=NEW&pkg=__ALL__">New</a>
 			</cfif>
 		</td>
-		<td align="right" nowrap="yes">
+
+		<td align="left" nowrap="yes" style="width:210px;">
+			<strong>Template:</strong>
+			<select name="pageTemplate" style="width:130px;font-size:11px;" class="formField"  onchange="changePageTemplate(this.value)">
+				<option value="0">-- Select Template --</option>
+				<option value="" <cfif pageTemplateName eq "">selected</cfif>>(default)</option>
+				<cfloop collection="#stPageTemplates#" item="key">
+					<option value="#stPageTemplates[key].name#" 
+							<cfif stPageTemplates[key].name eq pageTemplateName>selected</cfif>>#stPageTemplates[key].name#</option>
+				</cfloop>
+			</select>
+		</td>
+
+		<td align="left" nowrap="yes">
 			<cfmodule template="../../../includes/sitePageSelector.cfm">
-			<a href="##" onclick="doRenamePage()">Rename</a>
 		</td>
 	</tr>
 </table>
