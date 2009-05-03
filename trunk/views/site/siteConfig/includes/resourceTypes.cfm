@@ -45,7 +45,12 @@
 	<tr><td colspan="2"><h2>Resource Types:</h2></td></tr>
 	<tr>
 		<td colspan="2">
-		
+			<div class="formFieldTip">
+				Resource Types are different types of resources that can be used on a page. Resources are individual content
+				elements stored on Resource Libraries. Each resource type has its own set of properties and can be customized
+				to represent things that are meaningful to the application.
+			</div>
+				
 			<table style="width:100%;border:1px solid silver;">
 				<tr>
 					<th style="background-color:##ccc;width:50px;">No.</th>
@@ -74,7 +79,6 @@
 				</cfloop>
 				
 				<cfset stResTypes = oAppConfigBean.getResourceTypes()>
-				<cfset index = 1>
 				<cfloop collection="#stResTypes#" item="key">
 					<tr <cfif index mod 2>class="altRow"</cfif> <cfif resTypeEditKey eq key>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
