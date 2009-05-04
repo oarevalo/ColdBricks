@@ -12,9 +12,9 @@
 
 
 <script type="text/javascript">
-	function confirmDeleteTemplate(name) {
+	function confirmDeleteTemplate(name,type) {
 		if(confirm("Delete template?")) {
-			document.location = "index.cfm?event=ehSettings.doDeleteRenderTemplate&name=" + name;
+			document.location = "index.cfm?event=ehSettings.doDeleteRenderTemplate&name=" + name + "&type=" + type;
 		}
 	}
 </script>
@@ -40,25 +40,28 @@
 					<th style="background-color:##ccc;width:100px;">Action</th>
 				</tr>
 				<cfset index = 1>
-				<cfloop collection="#stTemplates#" item="key">
-					<tr <cfif index mod 2>class="altRow"</cfif> <cfif templateEditKey eq key>style="font-weight:bold;"</cfif>>
-						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&templateEditKey=#key#">#key#</a></td>
-						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&templateEditKey=#key#">#stTemplates[key].type#</a></td>
-						<td>#stTemplates[key].href#</td>
-						<td align="center"><cfif isBoolean(stTemplates[key].isDefault) and stTemplates[key].isDefault>Yes</cfif></td>
-						<td align="center">
-							<a href="index.cfm?event=#dspEvent#&templateEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit render template" title="Edit render template"></a>
-							<a href="##" onclick="confirmDeleteTemplate('#key#')"><img src="images/page_delete.png" border="0" alt="Delete render template" title="Delete render template"></a>
-						</td>
-					</tr>
-					<cfset index++>
+				<cfloop collection="#stTemplates#" item="type">
+					<cfloop collection="#stTemplates[type]#" item="key">
+						<cfset editKey = "#key#;#type#">
+						<tr <cfif index mod 2>class="altRow"</cfif> <cfif templateEditKey eq key>style="font-weight:bold;"</cfif>>
+							<td style="width:50px;" align="right"><strong>#index#.</strong></td>
+							<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&templateEditKey=#editKey#">#key#</a></td>
+							<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&templateEditKey=#editKey#">#type#</a></td>
+							<td>#stTemplates[type][key].href#</td>
+							<td align="center"><cfif isBoolean(stTemplates[type][key].isDefault) and stTemplates[type][key].isDefault>Yes</cfif></td>
+							<td align="center">
+								<a href="index.cfm?event=#dspEvent#&templateEditKey=#editKey#"><img src="images/page_edit.png" border="0" alt="Edit render template" title="Edit render template"></a>
+								<a href="##" onclick="confirmDeleteTemplate('#jsStringFormat(key)#','#jsStringFormat(type)#')"><img src="images/page_delete.png" border="0" alt="Delete render template" title="Delete render template"></a>
+							</td>
+						</tr>
+						<cfset index++>
+					</cfloop>
 				</cfloop>
 			</table>
 			<cfif templateEditKey neq "">
 				<cfif templateEditKey neq "__NEW__">
 					<cfset isNew = false>
-					<cfset stTemplate = oHomePortalsConfigBean.getRenderTemplate(templateEditKey)>
+					<cfset stTemplate = oHomePortalsConfigBean.getRenderTemplate(listFirst(templateEditKey,";"),listLast(templateEditKey,";"))>
 				<cfelse>
 					<cfset isNew = true>
 					<cfset stTemplate = structNew()>	

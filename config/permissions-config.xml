@@ -68,6 +68,7 @@
 		<!-- allowed to administrators and managers -->
 		<resource id="siteSettings" event="ehSiteConfig.*" roles="admin,mngr" />
 		<resource id="siteMap" event="ehSiteMap.*" roles="admin,mngr" />
+		<resource id="siteTemplates" event="ehSiteTemplates.*" roles="admin,mngr" />
 		<resource id="downloadSite" event="ehSites.doArchiveSite" roles="admin,mngr" />
 		<resource id="saveNotes" event="ehSite.doSaveNotes" roles="admin,mngr" />
 	
@@ -76,6 +77,8 @@
 		<resource id="settings" event="ehSettings.*" roles="admin" />
 		<resource id="users" event="ehUsers.*" roles="admin" />
 		<resource id="setup" event="ehSetup.*" roles="admin" />
+		<resource id="renderTemplates" event="ehTemplates.*" roles="admin" />
+		
 	</resources>
 	
 </permissions-config>

@@ -33,11 +33,6 @@
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
-		function loadSite(siteID,firstTime) {
-			if(firstTime==null || firstTime==undefined) firstTime = false;
-			overlay();
-			document.location = 'index.cfm?event=ehSite.doLoadSite&siteID=' + siteID + '&firstTime='+firstTime;
-		}
 		doEvent("ehGeneral.dspHomePortalsCheck","hpInfoPanel");
 	</script>
 </cfsavecontent>
