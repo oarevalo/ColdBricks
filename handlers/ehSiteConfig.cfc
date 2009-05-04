@@ -1119,6 +1119,9 @@
 			if(arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
 	
 			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
+
+			// reload site
+			reloadSite();
 		</cfscript>
 	</cffunction>	
 		
