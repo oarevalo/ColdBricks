@@ -26,6 +26,14 @@
 					accessMapKey="settings">
 				For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files
 			</module>
+
+			<module href = "index.cfm?event=ehTemplates.dspMain"
+					imgSrc = "images/templates_48x48.png"
+					alt = "Manage templates"
+					label = "Templates"
+					accessMapKey = "renderTemplates">
+				The templates module lets you manage the default rendering templates for all sites.
+			</module>
 		</modules>	
 	</server>
 
@@ -63,6 +71,14 @@
 					label = "Resources"
 					accessMapKey = "resources">
 				The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.
+			</module>
+			
+			<module href = "index.cfm?event=ehSiteTemplates.dspMain"
+					imgSrc = "images/templates_48x48.png"
+					alt = "Manage site templates"
+					label = "Templates"
+					accessMapKey = "siteTemplates">
+				The templates module lets you manage all rendering templates in a site.
 			</module>
 
 			<module href = "index.cfm?event=ehSiteMap.dspMain"

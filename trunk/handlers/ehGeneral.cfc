@@ -156,12 +156,14 @@
 			
 			try {
 				// check existence of homeportals engine
-				oHomePortals = createObject("Component","homePortals.components.homePortals").init();
+				oHomePortals = createObject("Component","homePortals.components.homePortals").init("/homePortals");
 				
 				setValue("hpVersion", oHomePortals.getConfig().getVersion());
 					
 				setView("vwHomePortalsCheck");		
+
 			} catch(any e) {
+				setValue("errorInfo",e);
 				setView("vwHomePortalsCheckError");		
 			}
 		</cfscript>

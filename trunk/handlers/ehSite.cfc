@@ -4,6 +4,7 @@
 		<cfscript>
 			var siteID = getValue("siteID");
 			var firstTime = getValue("firstTime",false);	// this is to flag a site being opened for the first time after creation
+			var nextEvent = getValue("nextEvent");
 			var oSiteDAO = 0;
 			var qrySite = 0;
 			var oHomePortals = 0;
@@ -41,7 +42,8 @@
 					
 				}
 
-				setNextEvent("ehSite.dspMain","firstTime=#firstTime#");
+				if(nextEvent eq "") nextEvent = "ehSite.dspMain";
+				setNextEvent(nextEvent,"firstTime=#firstTime#");
 				
 			} catch(any e) {
 				setMessage("error",e.message);

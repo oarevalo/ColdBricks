@@ -3,6 +3,7 @@
 	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml">
 	<cfset variables.accountsConfigPath = "/config/accounts-config.xml.cfm">
 	<cfset variables.modulePropertiesConfigPath = "/config/module-properties.xml">
+	<cfset variables.confirmMessage = "Config file changed. New settings will be applied next time the site is reset">
 	
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -240,7 +241,7 @@
 				// write file
 				saveAppHomePortalsConfigDoc(xmlDoc, true);
 				
-				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -272,7 +273,7 @@
 				oConfigBean.addBaseResource(type, href);
 				saveAppHomePortalsConfigBean( oConfigBean );
 				
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -309,7 +310,7 @@
 				
 				saveAppHomePortalsConfigBean( oConfigBean );
 				
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -342,7 +343,7 @@
 
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -372,7 +373,7 @@
 				oConfigBean.addResourceLibraryPath(path);
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -411,7 +412,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -445,7 +446,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -477,7 +478,7 @@
 				oConfigBean.setContentRenderer(name, path);
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -509,7 +510,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -541,7 +542,7 @@
 				oConfigBean.setPlugin(name, path);
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -573,7 +574,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -607,7 +608,7 @@
 											fileTypes = getValue("fileTypes"));
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -638,7 +639,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -678,7 +679,7 @@
 													label = getValue("label"));
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			
 			} catch(validation e) {
@@ -710,7 +711,7 @@
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			
 			} catch(validation e) {
@@ -746,7 +747,7 @@
 				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -764,6 +765,7 @@
 	<cffunction name="doDeleteRenderTemplate" access="public" returntype="void">
 		<cfscript>
 			var name = getValue("name");
+			var type = getValue("type");
 			var oConfigBean = 0;
 			
 			try {
@@ -772,12 +774,12 @@
 				oConfigBean = getAppHomePortalsConfigBean();
 				
 				// remove render template
-				oConfigBean.removeRenderTemplate(name);
+				oConfigBean.removeRenderTemplate(name, type);
 				
 				// save changes
 				saveAppHomePortalsConfigBean( oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
@@ -815,7 +817,7 @@
 				oConfigBean.setProperty(moduleName, propertyName, propertyValue);
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
@@ -860,7 +862,7 @@
 				// save changes
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
@@ -894,7 +896,7 @@
 				// save changes
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
-				setMessage("info", "Config file changed. You must reset this sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
@@ -973,7 +975,7 @@
 				// write file
 				writeFile(configFile, toString(xmlDoc));
 
-				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setMessage("info", variables.confirmMessage);
 				setNextEvent("ehSiteConfig.dspAccounts");
 			
 			} catch(validation e) {

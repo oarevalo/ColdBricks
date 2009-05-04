@@ -142,5 +142,11 @@ function togglePanel(id) {
 		else	
 			d.style.display='block';
 	}
-	
+}
+
+function loadSite(siteID,firstTime,nextEvent) {
+	if(firstTime==null || firstTime==undefined) firstTime = false;
+	if(nextEvent==null || nextEvent==undefined) nextEvent = "";
+	overlay();
+	document.location = 'index.cfm?event=ehSite.doLoadSite&siteID=' + siteID + '&firstTime='+firstTime + '&nextEvent='+nextEvent;
 }

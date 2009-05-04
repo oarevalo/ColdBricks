@@ -706,6 +706,7 @@
 	<cffunction name="doDeleteRenderTemplate" access="public" returntype="void">
 		<cfscript>
 			var name = getValue("name");
+			var type = getValue("type");
 			var oConfigBean = 0;
 			
 			try {
@@ -714,7 +715,7 @@
 				oConfigBean = getHomePortalsConfigBean();
 				
 				// remove render template
-				oConfigBean.removeRenderTemplate(name);
+				oConfigBean.removeRenderTemplate(name, type);
 				
 				// save changes
 				saveHomePortalsConfigBean( oConfigBean );
