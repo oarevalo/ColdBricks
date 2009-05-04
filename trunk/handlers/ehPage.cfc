@@ -10,6 +10,7 @@
 			var oContext = getService("sessionContext").getContext();
 			var oPage = 0;
 			var cbPageTitle = "";
+			var aLayoutSectionTypes = arrayNew(1);
 			
 			try {
 				hp = oContext.getHomePortals();
@@ -40,12 +41,17 @@
 				else
 					cbPageTitle = cbPageTitle & getFileFromPath(oContext.getPageHREF());
 
+				try {
+					aLayoutSectionTypes = listToArray(hp.getTemplateManager().getLayoutSections(oContext.getPage().getPageTemplate()));
+				} catch(any e) {
+					// ignore error if cant find template
+				}
 				
 				setValue("pageTitle", oContext.getPage().getTitle() );
 				setValue("accountName", oContext.getAccountName());
 				setValue("appRoot", hp.getConfig().getAppRoot() );
 				setValue("resType", oContext.getPageResourceTypeView);
-				setValue("aLayoutSectionTypes", listToArray(hp.getTemplateManager().getLayoutSections(oContext.getPage().getPageTemplate())));
+				setValue("aLayoutSectionTypes", aLayoutSectionTypes);
 				setValue("pageHREF", oContext.getPageHREF());
 				setValue("stPageTemplates", hp.getTemplateManager().getTemplates("page"));
 				
