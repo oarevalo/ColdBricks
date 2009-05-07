@@ -181,6 +181,7 @@
 					throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 			
 				oPage = createObject("component","homePortals.components.pageBean").init();
+				oPage.setTitle(name);
 				pp.save(path & "/" & name, oPage);
 				
 				setMessage("info", "New page created");

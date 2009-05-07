@@ -145,7 +145,7 @@ function changePage(pg) {
 
 function changeSkin(skinID) {
 	if(skinID=="_NEW")
-		document.location='?event=ehResources.dspMain&resType=skin&id=NEW&pkg=__ALL__';
+		document.location='?event=ehResources.dspMain&resourceType=skin&id=NEW&pkg=__ALL__';
 	else if(skinID=="_IMPORT")
 		document.location='?event=ehResources.dspImport';
 	else if(skinID!=0) 
