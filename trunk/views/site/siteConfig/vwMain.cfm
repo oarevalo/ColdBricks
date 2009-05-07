@@ -8,12 +8,12 @@
 
 <cfset aPanels = [
 				{ id = "general", label = "General Settings" },
-				{ id = "resLibs", label = "Resource Libraries" },
 				{ id = "baseResources", label = "Base Resources" },
 				{ id = "renderTemplates", label = "Render Templates" },
 				{ id = "contentRenderers", label = "Content Renderers" },
-				{ id = "plugins", label = "Plugins" },
-				{ id = "resourceTypes", label = "Resource Types" }
+				{ id = "resLibs", label = "Resource Libraries" },
+				{ id = "resourceTypes", label = "Resource Types" },
+				{ id = "plugins", label = "Plugins" }
 			]>
 			
 <script type="text/javascript">
