@@ -1,10 +1,12 @@
 <cfparam name="request.requestState.qrySites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.oUser" default="">
+<cfparam name="request.requestState.showHomePortalsAsSite" default="false">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset oUser = request.requestState.oUser>
+<cfset showHomePortalsAsSite = request.requestState.showHomePortalsAsSite>
 
 <cfset isAdmin = oUser.getIsAdministrator()>
 <cfset stAccessMap = oUser.getAccessMap()>
@@ -35,7 +37,7 @@
 				<div class="helpBox" style="margin-top:10px;padding:10px;border:1px solid silver;">
 					<img src="images/quick_start.gif" style="margin-bottom:5px;"><br>
 					It seems that you have no sites configured to manage with ColdBricks.
-					<cfif qrySites.recordCount eq 1>
+					<cfif qrySites.recordCount eq 1 and showHomePortalsAsSite>
 						The site you see here, <b>HomePortalsEngine</b>, is the runtime engine for
 						the HomePortals framework. <em>It is highly recommended to not modify this site adding 
 						your own content.</em><br>
@@ -59,21 +61,23 @@
 							<cfset tmpRefreshURL = qrySites.path & "/index.cfm?refreshApp=1">
 						</cfif>
 						
-						<tr <cfif qrySites.currentRow mod 2>class="altRow"</cfif>>
-							<td>#qrySites.currentRow#</td>
-							<td><a href="index.cfm?event=ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" alt="Click to open site" title="Click to open site">#qrySites.siteName#</a></td>
-							<td><a href="#qrySites.path#" target="_blank" alt="Click to visit site" title="Click to visit site">#qrySites.path#</a></td></td>
-							<td align="center">
-								<a href="#tmpRefreshURL#" target="_blank"><img src="images/arrow_refresh.png" align="absmiddle" border="0" alt="Reset Site" title="Reset Site"></a>
-								<a href="index.cfm?event=ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" ><img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"></a>
-								<cfif isAdmin>
-									<a href="index.cfm?event=ehSites.dspDelete&siteID=#qrySites.siteID#"><img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"></a>
-								</cfif>
-								<cfif stAccessMap.downloadSite>
-									<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
-								</cfif>
-							</td>
-						</tr>
+						<cfif qrySites.siteName neq "HomePortalsEngine" or (qrySites.siteName eq "HomePortalsEngine" and showHomePortalsAsSite)>
+							<tr <cfif qrySites.currentRow mod 2>class="altRow"</cfif>>
+								<td>#qrySites.currentRow#</td>
+								<td><a href="index.cfm?event=ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" alt="Click to open site" title="Click to open site">#qrySites.siteName#</a></td>
+								<td><a href="#qrySites.path#" target="_blank" alt="Click to visit site" title="Click to visit site">#qrySites.path#</a></td></td>
+								<td align="center">
+									<a href="#tmpRefreshURL#" target="_blank"><img src="images/arrow_refresh.png" align="absmiddle" border="0" alt="Reset Site" title="Reset Site"></a>
+									<a href="index.cfm?event=ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" ><img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"></a>
+									<cfif isAdmin>
+										<a href="index.cfm?event=ehSites.dspDelete&siteID=#qrySites.siteID#"><img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"></a>
+									</cfif>
+									<cfif stAccessMap.downloadSite>
+										<a href="index.cfm?event=ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
+									</cfif>
+								</td>
+							</tr>
+						</cfif>
 					</cfoutput>
 					<cfif qrySites.recordCount eq 0>
 						<tr><td colspan="4"><em>No records found!</em></td></tr>
@@ -101,7 +105,7 @@
 					<img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"> Delete Site&nbsp;&nbsp;
 				</cfif>
 				<cfif stAccessMap.downloadSite>
-					<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Create Achive of Site &nbsp;&nbsp;
+					<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Achive Site &nbsp;&nbsp;
 				</cfif>
 			</p>
 		</td>

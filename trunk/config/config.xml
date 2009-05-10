@@ -38,6 +38,10 @@
 			You can use a ColdFusion mapping for this. -->
 		<Setting name="pluginsRoot" value="/ColdBricksPlugins" />
 	
+		<!-- Set this flag to true to display the HomePortals Engine as a site
+			in ColdBricks -->
+		<setting name="showHomePortalsAsSite" value="false" />
+	
 	</settings>
 
 

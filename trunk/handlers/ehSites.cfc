@@ -21,6 +21,7 @@
 
 				setValue("qrySites",qrySites);
 				setValue("qryUserSites",qryUserSites);
+				setValue("showHomePortalsAsSite", getSetting("showHomePortalsAsSite"));
 				setValue("cbPageTitle", "Site Management");
 				setValue("cbPageIcon", "images/folder_desktop_48x48.png");
 				setView("sites/vwMain");
