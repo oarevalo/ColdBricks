@@ -4,6 +4,7 @@
 <cfparam name="request.requestState.aPlugins" default="">
 <cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oUser" default="">
+<cfparam name="request.requestState.showHomePortalsAsSite" default="false">
 
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
@@ -11,6 +12,7 @@
 <cfset aPlugins = request.requestState.aPlugins>
 <cfset aModules = request.requestState.aModules>
 <cfset oUser = request.requestState.oUser>
+<cfset showHomePortalsAsSite = request.requestState.showHomePortalsAsSite>
 
 <!--- check if there is another site besides the hp engine --->
 <cfquery name="qrySitesCheck" dbtype="query">
@@ -117,7 +119,7 @@
 
 
 			<cf_dashboardMenu title="Site Shortcuts:" id="dsb_sites">
-				<cfif qryHPSite.recordCount eq 1>
+				<cfif showHomePortalsAsSite and qryHPSite.recordCount eq 1>
 					<cf_dashboardMenuItem href="javascript:loadSite('#qryHPSite.siteID#')" 
 											imgSrc="images/Globe_48x48.png"
 											alt="HomePortals Framework runtime engine"

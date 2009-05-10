@@ -132,6 +132,7 @@
 				setValue("qryUserSites",qryUserSites);
 				setValue("aPlugins",aPlugins);
 				setValue("aModules",aModules);
+				setValue("showHomePortalsAsSite", getSetting("showHomePortalsAsSite"));
 				setValue("cbPageTitle", "Administration Dashboard");
 				setView("vwMain");
 			
