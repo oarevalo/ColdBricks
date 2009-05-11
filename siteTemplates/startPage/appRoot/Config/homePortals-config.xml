@@ -20,7 +20,7 @@
 		<resource href="$APP_ROOT$includes/dragdrop.js" type="script" />
 	</baseResources>
 	<renderTemplates>
-		<renderTemplate type="page" href="$APP_ROOT$/Config/page.xml" />
+		<renderTemplate name="page" type="page" href="$APP_ROOT$/Config/page.xml" />
 	</renderTemplates>
 	
 </homePortals>
