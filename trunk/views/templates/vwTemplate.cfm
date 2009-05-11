@@ -86,9 +86,11 @@
 				
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<strong>Template Type:</strong>
-				<input type="radio" name="templateType" value="page" <cfif templateType eq "page">checked</cfif>> Page
-				<input type="radio" name="templateType" value="module" <cfif templateType eq "module">checked</cfif>> Module
+				<span style="white-space:nowrap;">
+					<strong>Template Type:</strong>
+					<input type="radio" name="templateType" value="page" <cfif templateType eq "page">checked</cfif>> Page
+					<input type="radio" name="templateType" value="module" <cfif templateType eq "module">checked</cfif>> Module
+				</span>
 			</div>
 		
 			<div id="pnl_editor">
