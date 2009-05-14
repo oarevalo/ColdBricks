@@ -86,13 +86,13 @@
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
-				stModule = oPage.getModule(moduleID);
+				oModule = oPage.getModule(moduleID);
 
-				objPath = oContext.getHomePortals().getConfig().getContentRenderer(stModule.moduleType);
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(oModule.getModuleType());
 				obj = createObject("component",objPath);
 				tagInfo = getMetaData(obj);
 
-				setValue("stModule", stModule);
+				setValue("oModule", oModule);
 				setValue("tagInfo", tagInfo);
 				setView("site/page/vwModuleProperties");
 				setLayout("Layout.None");
@@ -132,19 +132,19 @@
 				oPage = oContext.getPage();
 				oCatalog = hp.getCatalog();
 
-				stModule = oPage.getModule(moduleID);
+				oModule = oPage.getModule(moduleID);
 
-				objPath = oContext.getHomePortals().getConfig().getContentRenderer(stModule.moduleType);
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(oModule.getModuleType());
 				obj = createObject("component",objPath);
 				tagInfo = getMetaData(obj);
 				
 				// pass values to view
 				setValue("oPage", oPage );
 				setValue("oCatalog", oCatalog );
-				setValue("stModule", stModule);
+				setValue("oModule", oModule);
 				setValue("tagInfo", tagInfo);
 				setValue("pageHREF", oContext.getPageHREF());
-				setValue("tag", stModule.moduleType);
+				setValue("tag", oModule.getModuleType());
 				setValue("stModuleTemplates", hp.getTemplateManager().getTemplates("module"));
 
 				if(oContext.hasAccountSite())
@@ -650,8 +650,10 @@
 					stAttribs[ getValue("newCustomProp_name") ] = getValue("newCustomProp_value");
 				}
 				
+				oModuleBean = createObject("component","homePortals.components.moduleBean").init(stAttribs);
+				oModuleBean.setID(moduleID);
 				
-				oPage.setModule(moduleID, getValue("location"), stAttribs);
+				oPage.setModule(oModuleBean, getValue("location"));
 				savePage();
 				
 				setMessage("info", "Module attributes saved");

@@ -1,9 +1,10 @@
 <cfsetting showdebugoutput="false">
-<cfparam name="request.requestState.stModule" default="">
+<cfparam name="request.requestState.oModule" default="">
 <cfparam name="request.requestState.tagInfo" default="">
 
-<cfset thisModule = request.requestState.stModule>
+<cfset oModule = request.requestState.oModule>
 <cfset tagInfo = request.requestState.tagInfo>
+<cfset thisModule = oModule.toStruct()>
 
 
 <cfset lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output">

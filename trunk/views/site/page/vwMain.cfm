@@ -46,9 +46,9 @@
 	
 	aModules = oPage.getModules();
 	for(i=1;i lte ArrayLen(aModules);i=i+1) {
-		if(not structKeyExists(stModulesByRegion, aModules[i].location))
-			stModulesByRegion[ aModules[i].location ] = arrayNew(1);
-		arrayAppend(stModulesByRegion[ aModules[i].location ] , aModules[i]);
+		if(not structKeyExists(stModulesByRegion, aModules[i].getLocation()))
+			stModulesByRegion[ aModules[i].getLocation() ] = arrayNew(1);
+		arrayAppend(stModulesByRegion[ aModules[i].getLocation() ] , aModules[i]);
 	}
 	
 	numColumns = arrayLen(aLayoutRegions);
@@ -217,7 +217,7 @@
 							}
 						</cfscript>
 						<img src="#imgSrc#" align="Absmiddle">
-						<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1)#</a>	
+						<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
 						&nbsp;&nbsp;&nbsp;
 					</cfloop>
 				</div>
