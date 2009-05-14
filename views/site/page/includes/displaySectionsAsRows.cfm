@@ -23,7 +23,7 @@
 				</div>
 				<ul id="pps_#name#" class="layoutPreviewList">
 				<cfloop from="1" to="#ArrayLen(aModules)#" index="j">
-					<cfset tmpModuleID = aModules[j].id>
+					<cfset tmpModuleID = aModules[j].getID()>
 					<li id="ppm_#tmpModuleID#" class="layoutListItem"><div>#tmpModuleID#</div></li>
 				</cfloop>
 				</ul>

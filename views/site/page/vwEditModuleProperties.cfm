@@ -1,6 +1,6 @@
 <cfparam name="request.requestState.oPage" default="">
 <cfparam name="request.requestState.oCatalog" default="">
-<cfparam name="request.requestState.stModule" default="">
+<cfparam name="request.requestState.oModule" default="">
 <cfparam name="request.requestState.tagInfo" default="">
 <cfparam name="request.requestState.pageHREF" default="">
 <cfparam name="request.requestState.stModuleTemplates" default="">
@@ -9,10 +9,11 @@
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;
 		
-	thisModule = request.requestState.stModule;
+	oModule = request.requestState.oModule;
 	tagInfo = request.requestState.tagInfo;
 	thisPageHREF = request.requestState.pageHREF;	
 	stModuleTemplates = request.requestState.stModuleTemplates;	
+	thisModule = oModule.toStruct();
 
 	lstBaseAttribs = "location,id,title,container,style,icon,moduleType,class,output,moduleTemplate";
 	lstAllAttribs = structKeyList(thisModule);
