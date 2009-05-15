@@ -21,19 +21,19 @@
 
 	for(i=1;i lte arrayLen(aModules);i=i+1) {
 		try {
-			if(aModules[i].moduleType eq "module") {
-				oModuleBean= oCatalog.getResourceNode("module", listLast(aModules[i].name,"/"));
+			if(aModules[i].getModuleType() eq "module") {
+				oModuleBean= oCatalog.getResourceNode("module", listLast(aModules[i].getName(),"/"));
 	
 				// create list of possible events on this page	
 				aEvents = oModuleBean.getEvents();
 				for(j=1;j lte arrayLen(aEvents);j=j+1) {
-					ArrayAppend(aAllEvents, aModules[i].id & "." & aEvents[j].name);
+					ArrayAppend(aAllEvents, aModules[i].getID() & "." & aEvents[j].getName());
 				}
 		
 				// create list of available event handlers
 				aMethods = oModuleBean.getMethods();
 				for(j=1;j lte arrayLen(aMethods);j=j+1) {
-					ArrayAppend(aAllEventHandlers, aModules[i].id & "." & aMethods[j].name);
+					ArrayAppend(aAllEventHandlers, aModules[i].getID() & "." & aMethods[j].getName());
 				}
 			}
 		

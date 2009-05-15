@@ -170,12 +170,12 @@
 						<a href="?event=ehPage.dspMeta">Meta Tags</a>	
 					</div>
 					<div class="buttonImage btnLarge" style="margin:0px;float:left;margin-right:5px;">
-						<img src="images/css.png" align="Absmiddle">
-						<a href="?event=ehPage.dspEditCSS">StyleSheet</a>
+						<img src="images/folder_brick.png" align="Absmiddle">
+						<a href="?event=ehPage.dspPageProperties">Page Properties</a>
 					</div>
 					<div class="buttonImage btnLarge" style="margin:0px;float:left;margin-right:5px;">
-						<img src="images/xml.gif" align="Absmiddle">
-						<a href="?event=ehPage.dspEditXML">Page Source</a>
+						<img src="images/page_lightning.png" align="Absmiddle">
+						<a href="?event=ehPage.dspPageResources">Styles & Scripts</a>
 					</div>
 				</div>
 			</div>
@@ -192,17 +192,13 @@
 				 style="padding:0px;margin-left:10px;margin-right:10px;margin-top:10px;">
 				<div style="margin:4px;text-align:left;">
 					
-					<!--- <div style="float:right;">
-						<strong>Apply Template:</strong>
-						<select name="pageTemplate" style="width:160px;font-size:10px;" onchange="applyPageTemplate(this.value)">
-							<option value="" selected="yes">-- Select layout template --</option>
-							<cfloop query="qryPageTemplates">
-								<option value="#qryPageTemplates.id#">#qryPageTemplates.id#</option>
-							</cfloop>
-							<option value="_NEW">-- New Template --</option>
-							<option value="_IMPORT">-- Import Templates --</option>
-						</select>					
-					</div> --->
+					<div style="float:right;">
+						<img src="images/css.png" align="Absmiddle">
+						<a href="?event=ehPage.dspEditCSS"><b>View CSS</b></a>
+						&nbsp;&nbsp;
+						<img src="images/xml.gif" align="Absmiddle">
+						<a href="?event=ehPage.dspEditXML"><b>View Source</b></a>
+					</div>
 
 					<strong>Page Layout:</strong>
 					&nbsp;&nbsp;&nbsp;
@@ -216,8 +212,10 @@
 									imgSrc = "images/layout_header.png";
 							}
 						</cfscript>
-						<img src="#imgSrc#" align="Absmiddle">
-						<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
+						<span style="white-space:nowrap;">
+							<img src="#imgSrc#" align="Absmiddle">
+							<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
+						</span>
 						&nbsp;&nbsp;&nbsp;
 					</cfloop>
 				</div>

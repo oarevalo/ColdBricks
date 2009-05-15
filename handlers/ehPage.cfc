@@ -462,7 +462,84 @@
 			}
 		</cfscript>
 	</cffunction>
+
+	<cffunction name="dspPageProperties" access="public" returntype="void">
+		<cfscript>
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				hp = oContext.getHomePortals();
+				
+				// check if we have a page loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+				
+				// pass values to view
+				setValue("oPage", oPage );
+				setValue("pageHREF", oContext.getPageHREF() );
+
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Custom Page Properties");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Custom Page Properties");
 	
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
+				
+				setView("site/page/vwPageProperties");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+	
+	<cffunction name="dspPageResources" access="public" returntype="void">
+		<cfscript>
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				hp = oContext.getHomePortals();
+				
+				// check if we have a page loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+				
+				// pass values to view
+				setValue("oPage", oPage );
+				setValue("pageHREF", oContext.getPageHREF() );
+
+				if(oContext.hasAccountSite())
+					setValue("cbPageTitle", "Accounts > #oContext.getAccountSite().getOwner()# > #oPage.getTitle()# > Styles & Scripts");
+				else
+					setValue("cbPageTitle", "Pages > #oPage.getTitle()# > Styles & Scripts");
+	
+				setValue("cbPageIcon", "images/users_48x48.png");
+				setValue("cbShowSiteMenu", true);
+				
+				setView("site/page/vwPageResources");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+
 
 	<!-----  Module Actions  ---->			
 	<cffunction name="doAddResource" access="public" returntype="void">
@@ -1391,6 +1468,161 @@
 	</cffunction>
 
 
+	<!----  Page Properties Actions  ---->
+	<cffunction name="doSetPageProperty" access="public" returntype="void">
+		<cfscript>
+			var name = trim(getValue("propName"));
+			var newname = trim(getValue("newName"));
+			var value = trim(getValue("propValue"));
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+
+				if(newName eq "") throw("Please enter a property name.","coldBricks.validation");
+				oPage.setProperty(newName, value);
+				if(name neq newname and name neq "")
+					oPage.removeProperty(name);
+				savePage();
+
+				setMessage("info", "Custom page property saved.");
+				
+				// go to the event hander view
+				setNextEvent("ehPage.dspPageProperties");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspPageProperties");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspPageProperties");
+			}			
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doRemovePageProperty" access="public" returntype="void">
+		<cfscript>
+			var name = trim(getValue("propName"));
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+		
+				if(name eq "") throw("Please enter a property name.","coldBricks.validation");
+				oPage.removeProperty(name);
+				savePage();
+	
+				setMessage("info", "Custom page property deleted.");
+				
+				// go to the event hander view
+				setNextEvent("ehPage.dspPageProperties");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspPageProperties");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspPageProperties");
+			}			
+		</cfscript>
+	</cffunction>
+
+
+	<!----  Page Resources Actions  ---->
+	<cffunction name="doSavePageResource" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("index",0);
+			var type = getValue("type");
+			var href = getValue("href");
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+		
+				if(index gt 0) oPage.removeMetaTag(name);
+				
+				if(type eq "Stylesheet")
+					oPage.addStylesheet(href);
+				else if(type eq "JavaScript")
+					oPage.addScript(href);
+
+				savePage();
+
+				setMessage("info", "Page resource saved.");
+				
+				// go to the event hander view
+				setNextEvent("ehPage.dspPageResources");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspPageResources");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspPageResources");
+			}			
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeletePageResource" access="public" returntype="void">
+		<cfscript>
+			var index = getValue("index",0);
+			var type = getValue("type");
+			var oPage = 0;
+			var oContext = getService("sessionContext").getContext();
+			var aRes = 0;
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+		
+				if(type eq "Stylesheet")
+					aRes = oPage.getStylesheets();
+				else if(type eq "JavaScript")
+					aRes = oPage.getScripts();
+		
+				if(index lte arrayLen(aRes)) {
+					if(type eq "Stylesheet")
+						aRes = oPage.removeStylesheet(aRes[index]);
+					else if(type eq "JavaScript")
+						aRes = oPage.removeScript(aRes[index]);
+					savePage();
+				}
+
+				setMessage("info", "Page resource deleted.");
+				
+				// go to the event hander view
+				setNextEvent("ehPage.dspPageResources");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspPageResources");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspPageResources");
+			}			
+		</cfscript>
+	</cffunction>
+
+
+
 	<!----  Private Methods  ---->
 	<cffunction name="savePage" access="private" returntype="void">
 		<cfscript>
@@ -1450,7 +1682,7 @@
 		<cfset css = css & "/* Page modules selectors */" & crlf>
 		<cfset tmp = oPage.getModules()>
 		<cfloop from="1" to="#arrayLen(tmp)#" index="i">
-			<cfset css = css & "###tmp[i].id# { }" & crlf>
+			<cfset css = css & "###tmp[i].getID()# { }" & crlf>
 			<!---
 			<cfset css = css & "###tmp[i].id#_Head { }" & crlf>
 			<cfset css = css & "###tmp[i].id#_Body { }" & crlf>
