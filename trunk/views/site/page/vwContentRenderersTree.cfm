@@ -12,7 +12,7 @@
 					<a href="javascript:viewContentTagInfo('#jsstringformat(tag)#')"><img src="images/information.png" align="absmiddle" border="0" alt="Info" title="Info"></a>
 				</div>
 				<div style="width:130px;overflow:hidden;">
-					<a href="javascript:viewContentTagInfo('#jsstringformat(tag)#')" 
+					<a href="javascript:addContentTag('#jsstringformat(tag)#')" 
 						class="cpListLink" 
 						style="font-weight:normal;" 
 						>#tag#</a>

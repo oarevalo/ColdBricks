@@ -71,7 +71,7 @@
 	</fieldset>
 	</p>
 	<br>
-
+	<!---
 	<p>
 	<fieldset class="formEdit">
 		<legend><img src="images/folder_page.png" align="absmiddle"> <b>Add Page From Resource Library</b></legend>
@@ -96,6 +96,7 @@
 		</cfif>
 	</fieldset>
 	</p>
+	---->
 	
 	<p>
 		<input type="button" name="btnCancel" value="Return To Accounts Manager" onClick="document.location='?event=ehAccounts.dspMain'">

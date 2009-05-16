@@ -539,6 +539,51 @@
 		</cfscript>
 	</cffunction>	
 
+	<cffunction name="dspAddContentTag" access="public" returntype="void">
+		<cfscript>
+			var oPage = 0;
+			var oCatalog = 0;
+			var oResourceBean = 0;
+			var tag = getValue("tag");
+			var moduleCatID = "";
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				hp = oContext.getHomePortals();
+				setLayout("Layout.Clean");
+
+				// check if we have a site and page cfcs loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(tag eq "") throw("Please select a module type to add","coldBricks.validation");
+				
+				// get page from session
+				oPage = oContext.getPage();
+				oCatalog = hp.getCatalog();
+
+				objPath = oContext.getHomePortals().getConfig().getContentRenderer(tag);
+				obj = createObject("component",objPath);
+				tagInfo = getMetaData(obj);
+				
+				// pass values to view
+				setValue("oPage", oPage );
+				setValue("oCatalog", oCatalog );
+				setValue("tagInfo", tagInfo);
+				setValue("pageHREF", oContext.getPageHREF());
+				setValue("tag", tag);
+
+				setView("site/page/vwAddContentTag");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+			
+		</cfscript>
+	</cffunction>	
 
 
 	<!-----  Module Actions  ---->			
@@ -798,37 +843,51 @@
 	<cffunction name="doAddContentTag" access="public" returntype="void">
 		<cfscript>
 			var tag = getValue("tag");
-			var locationName = getValue("locationName","");
+			var locationName = getValue("location","");
 			var oPage = 0;
+			var oCatalog = 0;
 			var hp = 0;
-			var	stAttributes = structNew();
+			var lstAllAttribs = "";
+			var	stAttribs = structNew();
 			var oContext = getService("sessionContext").getContext();
 
 			try {
 				hp = oContext.getHomePortals();
+				oCatalog = hp.getCatalog();
 				
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-
 				oPage = oContext.getPage();
-				
+
+				lstAttribs = getValue("_moduleAttribs");
+				for(i=1;i lte listLen(lstAttribs);i=i+1) {
+					fld = listGetAt(lstAttribs,i);
+					if(getValue(fld) neq getValue(fld & "_default") 
+						and getValue(fld) neq "_NOVALUE_") stAttribs[fld] = getValue(fld);
+				}
+
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
-				oPageHelper.addContentTag(tag, locationName, stAttributes);
+
+				if(tag eq "module" and structKeyExists(stAttribs,"moduleID") and stAttribs.moduleID neq "") {
+					resBean = oCatalog.getResourceNode(tag, stAttribs.moduleID);
+					oPageHelper.addModule(resBean, locationName, stAttribs);
+				} else {
+					oPageHelper.addContentTag(tag, locationName, stAttribs);
+				}
+
 				savePage();
 				
-				setMessage("info", "Empty content tag added to page");
-				
-				// go to the page editor
-				setNextEvent("ehPage.dspMain");
+				setMessage("info", "Module added to page");
+				setNextEvent("ehPage.dspAddContentTag","done=true&tag=#tag#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("ehPage.dspAddContentTag","tag=#tag#");
 				
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("ehPage.dspAddContentTag","tag=#tag#");
 			}				
 		</cfscript>
 	</cffunction>	
