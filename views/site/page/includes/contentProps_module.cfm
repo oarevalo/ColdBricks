@@ -93,7 +93,7 @@
 						<input type="hidden" name="#thisAttr#_default" value="#prop.default#">
 					</td>
 				</tr>
-				<cfif prop.hint neq "">
+				<cfif prop.hint neq "" and prop.hint neq "N/A">
 					<tr>
 						<td>&nbsp;</td>
 						<td><div class="formFieldTip">#prop.hint#</div></td>

@@ -71,6 +71,13 @@ function addContentTag(tag) {
 		document.location="?event=ehPage.doAddContentTag&tag="+tag;
 	}
 }
+function addContentTag(tag) {
+	var href = "index.cfm"
+				+ "?event=ehPage.dspAddContentTag" 
+				+ "&tag=" + tag
+
+	fb.loadAnchor(href,"width:480 height:300 loadPageOnClose:self");
+}
 
 function viewContentTagInfo(tag) {
 	doEvent("ehPage.dspContentRenderersInfo","moduleProperties",{tag: tag});
@@ -166,3 +173,4 @@ function applyPageTemplate(resID) {
 	else if(resID!="")
 		document.location='?event=ehPage.doApplyPageTemplate&resourceID='+resID
 }
+

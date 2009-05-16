@@ -78,6 +78,8 @@
 	<script type="text/javascript" src="includes/js/coordinates.js"></script>
 	<script type="text/javascript" src="includes/js/drag.js"></script>
 	<script type="text/javascript" src="includes/js/dragdrop.js"></script>
+	<link type="text/css" rel="stylesheet" href="includes/floatbox/floatbox.css" />
+	<script type="text/javascript" src="includes/floatbox/floatbox.js"></script>
 	<script>
 		window.onload = initLayoutPreview;
 	</script>
