@@ -105,6 +105,14 @@
 					accessMapKey = "downloadSite">
 				Download a zipped version of this site for backup or migration
 			</module>
+
+			<module href = "index.cfm?event=ehSiteMonitor.dspMain"
+					imgSrc = "images/gnome-monitor_48x48.png"
+					alt = "Site Monitor"
+					label = "Site Monitor"
+					accessMapKey = "siteMonitor">
+				Displays runtime statistics and insight into the current status of a site
+			</module>
 		</modules>	
 	</site>
 	
