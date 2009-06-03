@@ -78,6 +78,8 @@
 		<resource id="users" event="ehUsers.*" roles="admin" />
 		<resource id="setup" event="ehSetup.*" roles="admin" />
 		<resource id="renderTemplates" event="ehTemplates.*" roles="admin" />
+		<resource id="siteMonitor" event="ehSiteMonitor.*" roles="admin" />
+		
 		
 	</resources>
 	
