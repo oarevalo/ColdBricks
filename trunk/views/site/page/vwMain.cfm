@@ -204,13 +204,21 @@
 				<a href="index.cfm?event=ehPage.dspMain&pageMode=preview" <cfif pageMode eq "preview">style="font-weight:bold;"</cfif>>Layout Preview</a>
 				&nbsp;&nbsp;
 				<a href="index.cfm?event=ehPage.dspMain&pageMode=contents" <cfif pageMode eq "contents">style="font-weight:bold;"</cfif>>Page Contents</a>
+				&nbsp;&nbsp;
+				<a href="index.cfm?event=ehPage.dspMain&pageMode=details" <cfif pageMode eq "details">style="font-weight:bold;"</cfif>>Page Details</a>
 			</div>
-			<div style="background-color:##ebebeb;height:320px;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;overflow:auto;">
-				<cfif pageMode eq "preview">
-					<cfinclude template="includes/showPagePreview.cfm"> 
-				<cfelse>
-					<cfinclude template="includes/showPageContents.cfm"> 
-				</cfif>
+			<div style="background-color:##ebebeb;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;">
+				<cfswitch expression="#pageMode#">
+					<cfcase value="preview">
+						<cfinclude template="includes/showPagePreview.cfm"> 
+					</cfcase>
+					<cfcase value="contents">
+						<cfinclude template="includes/showPageContents.cfm"> 
+					</cfcase>
+					<cfcase value="details">
+						<cfinclude template="includes/showPageDetails.cfm"> 
+					</cfcase>
+				</cfswitch>
 			</div>
 			
 			<p align="center" style="font-size:9px;">Double-click on module to view/edit properties.</p>
@@ -227,24 +235,26 @@
 						<a href="?event=ehPage.dspEditXML"><b>View Source</b></a>
 					</div>
 
-					<strong>Page Layout:</strong>
-					&nbsp;&nbsp;&nbsp;
-					<cfloop from="1" to="#arrayLen(aLayoutSectionTypes)#" index="i">
-						<cfscript>
-							switch(aLayoutSectionTypes[i]) {
-								case "header": imgSrc = "images/layout_header.png"; break;
-								case "column": imgSrc = "images/layout_sidebar.png"; break;
-								case "footer": imgSrc = "images/page.png"; break;
-								default:
-									imgSrc = "images/layout_header.png";
-							}
-						</cfscript>
-						<span style="white-space:nowrap;">
-							<img src="#imgSrc#" align="Absmiddle">
-							<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
-						</span>
+					<cfif pageMode eq "preview">
+						<strong>Page Layout:</strong>
 						&nbsp;&nbsp;&nbsp;
-					</cfloop>
+						<cfloop from="1" to="#arrayLen(aLayoutSectionTypes)#" index="i">
+							<cfscript>
+								switch(aLayoutSectionTypes[i]) {
+									case "header": imgSrc = "images/layout_header.png"; break;
+									case "column": imgSrc = "images/layout_sidebar.png"; break;
+									case "footer": imgSrc = "images/page.png"; break;
+									default:
+										imgSrc = "images/layout_header.png";
+								}
+							</cfscript>
+							<span style="white-space:nowrap;">
+								<img src="#imgSrc#" align="Absmiddle">
+								<a href="?event=ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
+							</span>
+							&nbsp;&nbsp;&nbsp;
+						</cfloop>
+					</cfif>
 				</div>
 			</div>
 

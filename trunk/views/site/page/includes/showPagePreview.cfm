@@ -1,5 +1,5 @@
 <cfoutput>
-	<table id="tblLayoutPreview" border="1" align="center" style="margin:0px;margin-top:30px;">
+	<table id="tblLayoutPreview" border="1" align="center" style="margin:0px;margin-top:20px;margin-bottom:20px;">
 		
 		<!--- display headers --->
 		<cfif structKeyExists(stLocationsByType,"header")>
