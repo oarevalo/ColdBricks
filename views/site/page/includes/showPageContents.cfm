@@ -1,7 +1,7 @@
-
 <cfoutput>
 	<table border="1" class="browseTable tblGrid" style="width:100%;">
-		<cfloop collection="#stLocationsByType#" item="regionName">
+		<cfloop from="1" to="#arrayLen(aLayoutSectionTypes)#" index="regionIndex">
+			<cfset regionName = aLayoutSectionTypes[regionIndex]>
 			<cfset aSections = stLocationsByType[regionName]>
 			<tr>
 				<th align="left">
