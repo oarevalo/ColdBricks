@@ -10,6 +10,8 @@
 <cfparam name="request.requestState.accountName" default="">
 <cfparam name="request.requestState.stPageTemplates" default="">
 
+<cfparam name="request.requestState.pageMode" default="contents">
+
 <cfscript>
 	pageTitle = request.requestState.pageTitle;
 	thisPageHREF = request.requestState.pageHREF;
@@ -17,6 +19,7 @@
 	appRoot = request.requestState.appRoot;
 	aLayoutSectionTypes = request.requestState.aLayoutSectionTypes;
 	stPageTemplates = request.requestState.stPageTemplates;
+	pageMode = request.requestState.pageMode;
 	
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;	
@@ -183,9 +186,31 @@
 			</div>
 
 			<!--- layout preview --->
-			<div style="text-align:left;font-size:11px;margin:5px;margin-left:10px;margin-top:10px;"><b>Layout Preview:</b></div>
-			<div style="background-color:##ebebeb;height:320px;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;">
-				 <cfinclude template="includes/showPagePreview.cfm"> 
+			<div style="text-align:left;font-size:11px;margin:5px;margin-left:10px;margin-top:10px;height:20px;">
+				
+				<div id="moduleOrderButtons" style="float:right;display:none;margin-right:10px;">
+					<input type="button" name="btnUpdateModuleOrder"
+							style="font-size:10px;"
+							onclick="updateModuleOrder()"
+							value="Apply Changes">
+					<input type="button" name="btnUndoModuleOrder"
+							style="font-size:10px;"
+							onclick="document.location='index.cfm?event=ehPage.dspMain'"
+							value="Undo">
+				</div>
+				
+				<b>View Mode:</b>
+				&nbsp;&nbsp;
+				<a href="index.cfm?event=ehPage.dspMain&pageMode=preview" <cfif pageMode eq "preview">style="font-weight:bold;"</cfif>>Layout Preview</a>
+				&nbsp;&nbsp;
+				<a href="index.cfm?event=ehPage.dspMain&pageMode=contents" <cfif pageMode eq "contents">style="font-weight:bold;"</cfif>>Page Contents</a>
+			</div>
+			<div style="background-color:##ebebeb;height:320px;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;overflow:auto;">
+				<cfif pageMode eq "preview">
+					<cfinclude template="includes/showPagePreview.cfm"> 
+				<cfelse>
+					<cfinclude template="includes/showPageContents.cfm"> 
+				</cfif>
 			</div>
 			
 			<p align="center" style="font-size:9px;">Double-click on module to view/edit properties.</p>
