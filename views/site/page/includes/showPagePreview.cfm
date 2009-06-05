@@ -41,13 +41,5 @@
 		</cfloop>
 		
 	</table>
-	<div id="moduleOrderButtons" style="display:none;margin-top:5px;">
-		<input type="button" name="btnUpdateModuleOrder"
-				onclick="updateModuleOrder()"
-				value="Apply Changes">
-		<input type="button" name="btnUndoModuleOrder"
-				onclick="document.location='index.cfm?event=ehPage.dspMain'"
-				value="Undo">
-	</div>
 
 </cfoutput>
