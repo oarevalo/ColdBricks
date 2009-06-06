@@ -20,6 +20,7 @@
 	<cfset variables.instance.package = "">
 	<cfset variables.instance.resLibIndex = 0>
 	<cfset variables.instance.resourceViewMode = "">
+	<cfset variables.instance.pageViewMode = "">
 	
 	<cffunction name="init" access="public" returntype="contextBean">
 		<cfreturn this>
@@ -203,6 +204,15 @@
 	<cffunction name="setResourceViewMode" access="public" returntype="void">
 		<cfargument name="data" type="string" required="true">
 		<cfset variables.instance.ResourceViewMode = arguments.data>
+	</cffunction>
+
+	<cffunction name="getPageViewMode" access="public" returntype="string">
+		<cfreturn variables.instance.PageViewMode>
+	</cffunction>
+
+	<cffunction name="setPageViewMode" access="public" returntype="void">
+		<cfargument name="data" type="string" required="true">
+		<cfset variables.instance.PageViewMode = arguments.data>
 	</cffunction>
 
 </cfcomponent>

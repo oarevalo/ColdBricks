@@ -1,5 +1,5 @@
 /**************************************************************/	
-/* ColdBricks  (v1.0.x)										  */
+/* ColdBricks  (v1.1.x)										  */
 /* http://www.coldbricks.com
 /**************************************************************/	
 
@@ -50,6 +50,7 @@ and portals created using the HomePortals framework.
 2. Release Notes
 -----------------------------------------------------------------------
 Version 1.1
+- Updated to work with HomePortals version 3.1
 - Updated internal application framework to version 1.3 of the core framework
 - Added support for third-party plugins to extend functionality
 
@@ -63,12 +64,10 @@ Version 1.0
 Since the sites created and managed by ColdBricks rely on the HomePortals engine to function, 
 ColdBricks itself has a very small footprint in your server (around 15mb including the data directory).
 Additional requirements:
-- Adobe ColdFusion server (version 7 and up), Railo 2 and up, BlueDragon 7, OpenBlueDragon (*)
+- Adobe ColdFusion server (version 8 and up), Railo 3 and up
 - HomePortals Framework (version 3) - optionally included in the ColdBricks distribution package
 - ColdBricks can be deployed on any of the ColdFusion supported platforms. 
 
-* The 'Download Site as an Archive' functionality is only available when 
-deployed on an Adobe ColdFusion 8 server
 
 
 -----------------------------------------------------------------------

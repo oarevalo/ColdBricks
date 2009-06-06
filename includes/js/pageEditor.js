@@ -21,8 +21,8 @@ function initLayoutPreview() {
 			// add onclick event to list items
 			items = list.getElementsByTagName( "li" );
 			for (var j = 0; j < items.length; j++) {	
-				items[j].onclick = getModuleProperties;	
-				items[j].ondblclick = editModuleProperties;
+				items[j].onclick = getModulePropertiesHandler;	
+				items[j].ondblclick = editModulePropertiesHandler;
 			}
 		}
 
@@ -83,18 +83,32 @@ function viewContentTagInfo(tag) {
 	doEvent("ehPage.dspContentRenderersInfo","moduleProperties",{tag: tag});
 }
 
-function getModuleProperties(event) {
+function getModulePropertiesHandler(event) {
 	e = fixEvent(event);
-	var modID = this.id;
-	
+
+	getModuleProperties(this.id);
+
+	function fixEvent(event) {
+		if (typeof event == 'undefined') event = window.event;
+		return event;
+	}	
+}
+
+function getModuleProperties(modID) {
+
 	doEvent("ehPage.dspModuleProperties","moduleProperties",{moduleID: modID});
 	
 	var items = document.getElementsByClassName("layoutListItem");
 	for(var i=0;i<items.length;i++) {
 		items[i].style.backgroundColor = "#eee";
 	}
-	$(modID).style.backgroundColor = "#fefcd8";
+	if($(modID)) $(modID).style.backgroundColor = "#fefcd8";
+}
+
+function editModulePropertiesHandler(event) {
+	e = fixEvent(event);
 	
+	editModuleProperties(this.id);
 	
 	function fixEvent(event) {
 		if (typeof event == 'undefined') event = window.event;
@@ -102,9 +116,7 @@ function getModuleProperties(event) {
 	}	
 }
 
-function editModuleProperties(event) {
-	e = fixEvent(event);
-	var modID = this.id;
+function editModuleProperties(modID) {
 	
 	document.location = "?event=ehPage.dspEditModuleProperties&moduleID=" + modID;
 	
@@ -112,13 +124,7 @@ function editModuleProperties(event) {
 	for(var i=0;i<items.length;i++) {
 		items[i].style.backgroundColor = "#eee";
 	}
-	$(modID).style.backgroundColor = "#fefcd8";
-	
-	
-	function fixEvent(event) {
-		if (typeof event == 'undefined') event = window.event;
-		return event;
-	}	
+	if($(modID)) $(modID).style.backgroundColor = "#fefcd8";
 }
 
 function doDeleteModule(moduleID) {
@@ -172,5 +178,13 @@ function applyPageTemplate(resID) {
 		document.location='?event=ehResources.dspImport';
 	else if(resID!="")
 		document.location='?event=ehPage.doApplyPageTemplate&resourceID='+resID
+}
+
+function doSetModuleLocation(modID,locName) {
+	document.location='?event=ehPage.doSetModuleLocation&moduleID='+modID+'&location='+locName;
+}
+
+function doMoveModule(dir,modID) {
+	document.location='?event=ehPage.doMoveModule&moduleID='+modID+'&direction='+dir;
 }
 

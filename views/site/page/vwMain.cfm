@@ -10,7 +10,7 @@
 <cfparam name="request.requestState.accountName" default="">
 <cfparam name="request.requestState.stPageTemplates" default="">
 
-<cfparam name="request.requestState.pageMode" default="contents">
+<cfparam name="request.requestState.pageMode" default="">
 
 <cfscript>
 	pageTitle = request.requestState.pageTitle;
@@ -201,11 +201,11 @@
 				
 				<b>View Mode:</b>
 				&nbsp;&nbsp;
+				<a href="index.cfm?event=ehPage.dspMain&pageMode=details" <cfif pageMode eq "details">style="font-weight:bold;"</cfif>>Modules List</a>
+				&nbsp;&nbsp;
+				<a href="index.cfm?event=ehPage.dspMain&pageMode=contents" <cfif pageMode eq "contents">style="font-weight:bold;"</cfif>>Modules By Section</a>
+				&nbsp;&nbsp;
 				<a href="index.cfm?event=ehPage.dspMain&pageMode=preview" <cfif pageMode eq "preview">style="font-weight:bold;"</cfif>>Layout Preview</a>
-				&nbsp;&nbsp;
-				<a href="index.cfm?event=ehPage.dspMain&pageMode=contents" <cfif pageMode eq "contents">style="font-weight:bold;"</cfif>>Page Contents</a>
-				&nbsp;&nbsp;
-				<a href="index.cfm?event=ehPage.dspMain&pageMode=details" <cfif pageMode eq "details">style="font-weight:bold;"</cfif>>Page Details</a>
 			</div>
 			<div style="background-color:##ebebeb;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;">
 				<cfswitch expression="#pageMode#">
@@ -221,7 +221,9 @@
 				</cfswitch>
 			</div>
 			
-			<p align="center" style="font-size:9px;">Double-click on module to view/edit properties.</p>
+			<cfif pageMode neq "details">
+				<p align="center" style="font-size:9px;">Double-click on module to view/edit properties.</p>
+			</cfif>
 
 			<div class="cp_sectionBox" 
 				 style="padding:0px;margin-left:10px;margin-right:10px;margin-top:10px;">

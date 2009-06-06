@@ -60,6 +60,7 @@
 									</cfloop>
 								</select>
 								<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
+								<cfif tmpAttrValue neq ""><a href="index.cfm?event=ehResources.dspMain&resourceType=#resourceType#&id=#tmpAttrValue#&libpath=auto">[edit]</a></cfif>
 							</cfcase>
 							
 							<cfcase value="boolean">
