@@ -1,12 +1,14 @@
+<cfparam name="editLayoutSection" default="">
+
 <cfoutput>
 	<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;font-size:11px;">
 		<input type="checkbox" name="chkShowLayoutSectionTitles" 
-				onclick="showLayoutSectionTitles(this.checked)" value="1">
+				onclick="showLayoutSectionTitles(this.checked)" value="1"
+				<cfif editLayoutSection neq "">checked</cfif>>
 		Show Section Titles
 	</div>
 
 	<div id="layoutSections" style="margin:5px;margin-top:10px;text-align:left;">
-		<cfparam name="editLayoutSection" default="">
 
 		<div style="margin:2px;">
 			<strong>Section:</strong> &nbsp;&nbsp;

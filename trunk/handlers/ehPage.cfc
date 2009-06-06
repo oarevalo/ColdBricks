@@ -5,6 +5,7 @@
 			var page = getValue("page");
 			var account = getValue("account");
 			var resType = getValue("resType");
+			var pageMode = getValue("pageMode");
 			var pageHREF = "";
 			var hp = 0;
 			var oContext = getService("sessionContext").getContext();
@@ -29,7 +30,9 @@
 
 				// get default resource type
 				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
+				if(oContext.getPageViewMode() eq "") oContext.setPageViewMode("details");
 				if(resType neq "") oContext.setPageResourceTypeView(resType);
+				if(pageMode neq "") oContext.setPageViewMode(pageMode);
 
 				if(oContext.hasAccountSite())
 					cbPageTitle = "Accounts > #oContext.getAccountName()# > ";
@@ -50,7 +53,8 @@
 				setValue("pageTitle", oContext.getPage().getTitle() );
 				setValue("accountName", oContext.getAccountName());
 				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("resType", oContext.getPageResourceTypeView);
+				setValue("resType", oContext.getPageResourceTypeView());
+				setValue("pageMode", oContext.getPageViewMode());
 				setValue("aLayoutSectionTypes", aLayoutSectionTypes);
 				setValue("pageHREF", oContext.getPageHREF());
 				setValue("stPageTemplates", hp.getTemplateManager().getTemplates("page"));
@@ -894,7 +898,100 @@
 
 	<cffunction name="dspContentTagInfo" access="public" returntype="void">
 	</cffunction>	
+
+	<cffunction name="doSetModuleLocation" access="public" returntype="void">
+		<cfscript>
+			var moduleID = getValue("moduleID");
+			var location = getValue("location");
+			var oPage = 0;
+			var oPageHelper = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
 		
+				oModule = oPage.getModule(moduleID);
+				oModule.setLocation(location);
+				oPage.setModule(oModule);
+		
+				savePage();
+				
+				setMessage("info", "Modules location updated");
+				
+				// go to the page editor
+				setNextEvent("ehPage.dspMain");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}			
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doMoveModule" access="public" returntype="void">
+		<cfscript>
+			var moduleID = getValue("moduleID");
+			var direction = getValue("direction");
+			var oPage = 0;
+			var oPageHelper = 0;
+			var oContext = getService("sessionContext").getContext();
+			
+			try {
+				// check if we have a page cfc loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				oPage = oContext.getPage();
+		
+				aModules = oPage.getModules();
+				
+				index = 0;
+				for(i=1;i lte arrayLen(aModules);i=i+1) {
+					if(aModules[i].getID() eq moduleID) {
+						index = i;
+						break;
+					}
+				}
+				
+				if(index gt 0) {
+					if(direction eq "up")
+						arraySwap(aModules,index,index-1);
+					else if(direction eq "down")
+						arraySwap(aModules,index,index+1);
+				}
+
+				// clear all modules from page
+				oPage.removeAllModules();
+	
+				// attach all modules again in the new order
+				for(i=1;i lte arrayLen(aModules);i=i+1) {
+					oPage.addModule(aModules[i]);
+				}
+		
+				savePage();
+				
+				setMessage("info", "Modules position updated");
+				
+				// go to the page editor
+				setNextEvent("ehPage.dspMain");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("ehPage.dspMain");
+				
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("ehPage.dspMain");
+			}			
+		</cfscript>
+	</cffunction>	
+				
 		
 	<!-----  Page Level Actions  ---->		
 	<cffunction name="doRenamePage" access="public" returntype="void">

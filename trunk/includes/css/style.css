@@ -308,8 +308,12 @@ ul.layoutPreviewList li div {
     border-bottom:1px solid silver;
     font-size:9px;
     position:relative;
-    background-color:#fefcd8;
+    background-color:#50628b;
 }
+.layoutSectionLabel a {
+	color:#fff;
+}
+
 .codeEditor {
     width:95%;
     font-size:11px;

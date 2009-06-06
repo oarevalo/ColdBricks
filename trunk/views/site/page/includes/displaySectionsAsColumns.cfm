@@ -1,6 +1,7 @@
 <cfparam name="attributes.columnWidth" type="numeric">
 <cfparam name="attributes.sectionsArray" type="array">
 <cfparam name="attributes.modulesByRegionStruct" type="struct">
+<cfparam name="caller.editLayoutSection" type="string" default="">
 
 <cfset aSections = attributes.sectionsArray>
 <cfset stModulesByRegion = attributes.modulesByRegionStruct>
@@ -11,13 +12,13 @@
 			<cfset name = aSections[i].name>
 			<cfset aModules = stModulesByRegion[ name ]>
 			<td style="width:#attributes.columnWidth#px;">
-				<div class="layoutSectionLabel" style="display:none;" id="#name#_title">
+				<div class="layoutSectionLabel" <cfif caller.editLayoutSection eq "">style="display:none;"</cfif> id="#name#_title">
 					<table style="width:100%;" border="0">
 						<td style="border:0px !important;" align="left">
 							<a href="javascript:document.location='?event=ehPage.dspMain&editLayoutSection=#name#'">#name#</a>
 						</td>
 						<td align="right" style="border:0px !important;">
-							<a href="javascript:document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#name#'"><img src="images/cross.png" align="absmiddle" border="0"></a>
+							<a href="javascript:document.location='?event=ehPage.doDeleteLayoutLocation&locationName=#name#'"><img src="images/delete.png" align="absmiddle" border="0" title="delete section" alt="delete section"></a>
 						</td>
 					</table>
 				</div>
