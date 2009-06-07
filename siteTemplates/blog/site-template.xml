@@ -8,7 +8,7 @@ that ColdBricks uses to create new applications.
 -->
 
 <template>
-	
+	<title>Blog</title>
 	<description>
 		Use the 'Blog' site template to create a simple blog website.
 	</description>
