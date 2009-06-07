@@ -3,7 +3,7 @@
 	<!-- This section describes application-specific settings -->
 	<settings>
 		<setting name="applicationTitle" value="ColdBricks"/>
-		<setting name="versionTag" value="1.1.931 Beta" />
+		<setting name="versionTag" value="1.1.952 Beta" />
 		<setting name="permissionsConfigHREF" value="/ColdBricks/config/permissions-config.xml" />
 		<setting name="interfaceConfigHREF" value="/ColdBricks/config/interface-default.xml" />
 
