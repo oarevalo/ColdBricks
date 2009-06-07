@@ -51,7 +51,7 @@
 										FROM qryResources
 										ORDER BY upackage, uid, id
 								</cfquery>
-								<select name="#thisAttr#" class="formField">
+								<select name="#thisAttr#" class="formField" style="width:350px;">
 									<cfif not prop.required><option value="_NOVALUE_"></option></cfif>
 									<cfloop query="qryResources">
 										<option value="#qryResources.id#"
@@ -60,7 +60,10 @@
 									</cfloop>
 								</select>
 								<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
-								<cfif tmpAttrValue neq ""><a href="index.cfm?event=ehResources.dspMain&resourceType=#resourceType#&id=#tmpAttrValue#&libpath=auto">[edit]</a></cfif>
+								
+								<span style="white-space:nowrap;">
+									<a href="index.cfm?event=ehResources.dspMain&resourceType=#resourceType#&id=#tmpAttrValue#">[Add/Edit]</a>
+								</span>
 							</cfcase>
 							
 							<cfcase value="boolean">
