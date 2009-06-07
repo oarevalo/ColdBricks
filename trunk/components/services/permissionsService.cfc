@@ -11,8 +11,9 @@
 	
 	<cffunction name="init" access="public" returntype="permissionsService" hint="constructor">
 		<cfargument name="configHREF" type="string" required="true" hint="path to config file">
-		<cfset stResources = structNew()>
-		<cfset loadConfig(expandPath(arguments.configHREF))>
+		<cfif arguments.configHREF neq "">
+			<cfset loadConfig(expandPath(arguments.configHREF))>
+		</cfif>
 		<cfreturn this>
 	</cffunction>
 

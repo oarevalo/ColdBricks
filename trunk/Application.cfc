@@ -22,7 +22,7 @@
 	<cfset this.topLevelErrorSender = "info@coldbricks.com">
 	<cfset this.restartKey = "cookieMonster">
 	<cfset this.configDoc = "config.xml">
-	<cfset this.modulesPath = "/ColdBricksPlugins">
+	<cfset this.modulesPath = "modules">
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
 
@@ -263,8 +263,12 @@
 			var viewPath = "";
 			
 			if(arguments.reqState.view neq "") {
-				if(arguments.reqState.module neq "")
-					basePath = this.modulesPath & "/" & arguments.reqState.module;
+				if(arguments.reqState.module neq "") {
+					if(left(this.modulesPath,1) eq "/")
+						basePath = this.modulesPath & "/" & arguments.reqState.module;
+					else
+						basePath = "../" & this.modulesPath & "/" & arguments.reqState.module;
+				}
 				viewPath = basePath & "/views/" & arguments.reqState.view & ".cfm";
 			}
 			

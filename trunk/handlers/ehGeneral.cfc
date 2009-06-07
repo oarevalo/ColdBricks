@@ -3,9 +3,9 @@
 	<cffunction name="onApplicationStart" access="public" returntype="void">
 		<!--- setup data directory (if needed for xml data storage) --->
 		<cfset checkDataRoot()>
-		
-		<!--- setup plugins permissions for admins --->
-		<cfset setupPluginAccess()>
+				
+		<!--- initialize modules --->
+		<cfset initModules()>
 	</cffunction>
 
 	<cffunction name="onRequestStart" access="public" returntype="void">
@@ -63,7 +63,7 @@
 	
 				// if this is a plugin request, then get the plugin info
 				if(listLen(getEvent(),".") eq 3) {
-					oPlugin = getService("plugins").getPluginByModuleName( listFirst(getEvent(),".") );
+				//	oPlugin = getService("plugins").getPluginByModuleName( listFirst(getEvent(),".") );
 				} 
 	
 				// set generally available values on the request context
@@ -80,7 +80,7 @@
 				setValue("cbPageIcon", "");
 				setValue("cbShowSiteMenu", false);
 	
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}
@@ -88,10 +88,10 @@
 	</cffunction>
 
 	<cffunction name="onRequestEnd" access="public" returntype="void">
-		<!--- override main layout for plugins --->	
+		<!--- override main layout for plugins
 		<cfif getLayout() eq "Layout.Main" and getModule() neq "">
 			<cfset setLayout("Layout.Plugin")>
-		</cfif>
+		</cfif> --->	
 	</cffunction>
 
 
@@ -108,7 +108,6 @@
 			var oUserDAO = 0;
 			var qrySites = 0;
 			var oUser = getValue("oUser");
-			var aPlugins = arrayNew(1);
 			var aModules = arrayNew(1);
 	
 			try {
@@ -124,13 +123,10 @@
 				qrySites = oSiteDAO.getAll();
 				qryUserSites = oUserSiteDAO.search(userID = oUser.getID());
 	
-				aPlugins = getService("plugins").getPluginsByType("admin");
-	
 				aModules = getService("UIManager").getServerModules();
 
 				setValue("qrySites",qrySites);
 				setValue("qryUserSites",qryUserSites);
-				setValue("aPlugins",aPlugins);
 				setValue("aModules",aModules);
 				setValue("showHomePortalsAsSite", getSetting("showHomePortalsAsSite"));
 				setValue("cbPageTitle", "Administration Dashboard");
@@ -323,23 +319,30 @@
 		<cfset redirect("index.cfm")>
 	</cffunction>
 
-	<cffunction name="setupPluginAccess" access="private" returntype="void" hint="Allows access to registered plugins to the admin and manager roles">
-		<cfscript>
-			// get list of installed plugins
-			aPlugins = getService("plugins").getPlugins();
-	
-			for(i=1;i lte arrayLen(aPlugins);i=i+1) {
-				tmpEvent = aPlugins[i].getModuleName() & ".*.*";
-				
-				// allow admins to access plugin
-				getService("permissions").addResource(tmpEvent, "admin");
-				
-				// allow site managers to access site plugins
-				if(aPlugins[i].getType() eq "site") {
-					getService("permissions").addResource(tmpEvent, "mngr");
-				}
-			}
-		</cfscript>
+	<cffunction name="initModules" access="private" returntype="void">
+		<cfset var qryDir = 0>
+		<cfset var modulesPath = "/ColdBricks/modules">
+		<cfset var tmp = "">
+		
+		<!--- get existing modules --->
+		<cfdirectory action="list" directory="#expandPath(modulesPath)#" name="qryDir">
+
+		<!--- get only directories, and filter out special purpose dirs --->
+		<cfquery name="qryDir" dbtype="query">
+			SELECT *
+				FROM qryDir
+				WHERE type = 'Dir'
+					AND Name NOT LIKE '.%'
+				ORDER BY Name
+		</cfquery>	
+		
+		<cfloop query="qryDir">
+			<!--- build path of plugin manifest file --->
+			<cfset tmp = modulesPath & "/" & qryDir.name & "/init.cfm">
+			<cfif fileExists(expandPath(tmp))>
+				<cfinclude template="#tmp#">
+			</cfif>
+		</cfloop>	
 	</cffunction>
 
 </cfcomponent>
