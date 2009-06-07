@@ -29,7 +29,7 @@
 		top:5px;
 	}
 	.formField {
-		width:250px;
+		width:250px !important;
 	}
 </style>
 </cfsavecontent>

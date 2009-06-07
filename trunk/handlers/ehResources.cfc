@@ -706,6 +706,7 @@
 			var resourceType = "";
 			var resLibIndex = getValue("resLibIndex");
 			var package = getValue("package");
+			var packageNew = getValue("package_new");
 			var id = getValue("id","");
 			var resFile = getValue("resFile");
 			var oResourceBean = 0;
@@ -717,8 +718,10 @@
 				hp = oContext.getHomePortals();
 
 				if(resLibIndex lte 0) throw("Please select a resource library","coldBricks.validation"); 
-				if(package eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
 				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
+				
+				if(package eq "") package = packageNew;
 				
 				// check if we have a saved context
 				resourceType = oContext.getResourceType();
@@ -726,8 +729,11 @@
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
-				// upload file
+				// check if we need to create the package dir
 				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				if(not directoryExists(path)) directoryCreate(path);
+
+				// upload file
 				stFileInfo = fileUpload(resFile, path);
 				if(not stFileInfo.fileWasSaved) {
 					throw("File upload failed","coldBricks.validation");
@@ -816,7 +822,14 @@
 			</cfif>
 		</cfloop>
 	</cffunction>
-	
+
+	<cffunction name="directoryCreate" output="true" access="private" returntype="void">
+		<cfargument name="path" required="true" type="string">
+		<cfif not(directoryExists(arguments.path))>
+			<cfdirectory action="create" directory="#arguments.path#">
+		</cfif>
+	</cffunction>
+		
 	<cffunction name="fileUpload" access="private" returntype="struct">
 		<cfargument name="fieldName" type="string" required="true">
 		<cfargument name="destPath" type="string" required="true">

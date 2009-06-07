@@ -17,9 +17,9 @@
 	<table border="1" class="browseTable tblGrid" style="width:100%;">
 		<tr>
 			<th style="width:15px;">No.</th>
-			<th style="width:150px;">Module ID</th>
-			<th>Module Type</th>
-			<th>Location</th>
+			<th>Module ID</th>
+			<th style="width:100px;">Module Type</th>
+			<th style="width:150px;">Location</th>
 			<th style="width:100px;">Action</th>
 		</tr>
 		<cfloop from="1" to="#arrayLen(aModules)#" index="i">

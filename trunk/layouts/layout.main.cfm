@@ -15,6 +15,11 @@
 			</title>
 			<link href="includes/css/style.css" rel="stylesheet" type="text/css">
 			<script type="text/javascript" src="includes/js/main.js"></script>
+			<script type="text/javascript">
+				if(top.location != location) {
+					top.location.href = document.location.href;
+				}
+			</script>
 		</head>
 		<body>
 			<div id="header">
