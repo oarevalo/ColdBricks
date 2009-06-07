@@ -1,10 +1,21 @@
 <cfparam name="request.requestState.name" default="">
 <cfparam name="request.requestState.appRoot" default="">
 <cfparam name="request.requestState.siteTemplate" default="">
+<cfparam name="request.requestState.aSites" default="">
 
 <cfset name = request.requestState.name>
 <cfset appRoot = request.requestState.appRoot>
 <cfset siteTemplate = request.requestState.siteTemplate>
+<cfset aSites = request.requestState.aSites>
+
+<cfif siteTemplate neq "">
+	<cfloop from="1" to="#arrayLen(aSites)#" index="i">
+		<cfif aSites[i].name eq siteTemplate>
+			<cfset thisSite = aSites[i]>
+			<cfbreak>
+		</cfif>
+	</cfloop>
+</cfif>
 
 <cfoutput>
 	<table cellspacing="5">
@@ -13,8 +24,13 @@
 				<td width="60">
 					<strong>Site Template:</strong><br>
 				</td>
-				<td style="color:##999;font-weight:bold;font-size:12px;" id="siteTemplate2">#siteTemplate#</td>
+				<td style="color:##999;font-weight:bold;font-size:12px;" id="siteTemplate2">#thisSite.title# (#siteTemplate#)</td>
 			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>#thisSite.description#</td>
+			</tr>
+			<tr><td colspan="2">&nbsp;</td></tr>
 		</cfif>
 		<tr>
 			<td colspan="2">

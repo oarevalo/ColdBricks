@@ -45,6 +45,7 @@
 			<cfset st.name = qryDir.name>
 			<cfset st.path = variables.siteTemplatesRoot & "/" & qryDir.name>
 			<cfset st.description = "">
+			<cfset st.title = qryDir.name>
 			<cfset st.thumbHREF = variables.DEFAULT_ICON_PATH>
 
 			<cftry>
@@ -54,6 +55,9 @@
 				<!--- check if the directory contains a siteTemplate.xml file --->
 				<cfif fileExists(tmp)>
 					<cfset xmlDoc = xmlParse(tmp)>
+					<cfif structKeyExists(xmlDoc.xmlRoot,"title")>
+						<cfset st.title = xmlDoc.xmlRoot.title.xmlText>
+					</cfif>
 					<cfif structKeyExists(xmlDoc.xmlRoot,"description")>
 						<cfset st.description = xmlDoc.xmlRoot.description.xmlText>
 					</cfif>

@@ -16,8 +16,8 @@
 		
 			<cf_dashboardMenuItem href="javascript:selectSiteTemplate('#aSites[i].name#')" 
 									imgSrc="#aSites[i].thumbHREF#"
-									alt="#aSites[i].name#"
-									label="#aSites[i].name#"
+									alt="#aSites[i].title#"
+									label="#aSites[i].title#"
 									help="#tmpDesc#">
 		</cfloop>
 <!--- 
