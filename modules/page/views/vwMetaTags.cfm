@@ -19,7 +19,7 @@
 		content = aMetaTags[index].content;	
 	}
 	
-	lstMetaTags = "description,keywords,robots,author,copyright,refresh";
+	lstMetaTags = "description,keywords,robots,author,copyright,refresh,RSS";
 </cfscript>
 
 
@@ -27,6 +27,15 @@
 function deleteMetaTag(index) {
 	if(confirm('Delete meta tag?')) {
 		document.location = '?event=page.ehPage.doDeleteMetaTag&index='+index;
+	}
+}
+
+function checkTagName(tag) {
+	var d = document.getElementById("tagOtherDiv");
+	if(tag=="__other__") {
+		d.style.display = "block"
+	} else {
+		d.style.display = "none"
 	}
 }
 </script>
@@ -86,11 +95,24 @@ function deleteMetaTag(index) {
 						</tr>
 						<tr valign="top">
 							<td>
-								<select name="name" style="width:200px;font-size:10px;">
+								<select name="name" style="width:200px;font-size:10px;" onchange="checkTagName(this.value)">
+									<option value="" <cfif name eq "">selected</cfif>></option>
+									<cfset otherTag = name>
 									<cfloop list="#lstMetaTags#" index="tag">
-										<option value="#tag#" <cfif name eq tag>selected</cfif>>#tag#</option>
+										<cfif name eq tag>
+											<option value="#tag#" selected>#tag#</option>
+											<cfset otherTag = "">
+										<cfelse>
+											<option value="#tag#">#tag#</option>
+										</cfif>
 									</cfloop>
+									<option value="__other__" <cfif otherTag eq name and name neq "">selected</cfif>>Other...</option>
 								</select>
+								
+								<div <cfif otherTag eq "">style="display:none;"</cfif> id="tagOtherDiv">
+									<br />
+									<input type="text" name="nameOther" value="#otherTag#" style="width:190px;font-size:10px;">
+								</div>
 							</td>	
 							<td>
 								<textarea name="content" rows="3" style="width:400px;">#content#</textarea>

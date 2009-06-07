@@ -1556,6 +1556,7 @@
 		<cfscript>
 			var index = getValue("index",0);
 			var name = getValue("name","");
+			var nameOther = getValue("nameOther","");
 			var content = getValue("content","");
 			var oPage = 0;
 			var oContext = getService("sessionContext").getContext();
@@ -1564,6 +1565,9 @@
 				// check if we have a page cfc loaded 
 				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
+
+				if(name eq "__other__") name = nameOther;
+				if(name eq "") throw("Please enter a meta tag name","coldBricks.validation");
 		
 				if(index gt 0) oPage.removeMetaTag(name);
 				
