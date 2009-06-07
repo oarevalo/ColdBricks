@@ -52,7 +52,7 @@ and portals created using the HomePortals framework.
 Version 1.1
 - Updated to work with HomePortals version 3.1
 - Updated internal application framework to version 1.3 of the core framework
-- Added support for third-party plugins to extend functionality
+- Moved to a modular architecture. All features are now deployed as standalone modules on the modules directory
 
 Version 1.0
 - This is the first public release of ColdBricks. Have fun, send feedback!
@@ -105,12 +105,6 @@ This is the location of directory where ColdBricks will store its
 data files. If the directory doesn't exist, then it will be created.
 You can use an ColdFusion mapping for this. 
 Default value is /ColdBricksData
-
-[[ pluginsRoot ]]
-This is the location of directory where ColdBricks will look for
-installed plugins. If this is changed to other than the default value
-then it must also be changed on the Application.cfc file.
-You can use an ColdFusion mapping for this.
 
 [[ siteTemplatesRoot ]] 
 This is the location where ColdBricks will look for SiteTemplates. You can add your own

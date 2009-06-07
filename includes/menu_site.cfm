@@ -21,7 +21,7 @@
 
 	st = structNew();
 	st.label = "Dashboard";
-	st.event = "ehSite.dspMain";
+	st.event = "site.ehSite.dspMain";
 	st.selected = listFindNoCase("ehSite", listFirst(event,"."));
 	st.hint = "Site Dashboard";
 	st.icon = "images/house.png";
@@ -31,7 +31,7 @@
 
 	st = structNew();
 	st.label = "Pages";
-	st.event = "ehPages.dspMain";
+	st.event = "pages.ehPages.dspMain";
 	st.selected = listFindNoCase("ehPages", listFirst(event,"."));
 	st.hint = "Page management";
 	st.icon = "images/page_copy.png";
@@ -41,7 +41,7 @@
 	
 	st = structNew();
 	st.label = "Accounts";
-	st.event = "ehAccounts.dspMain";
+	st.event = "accounts.ehAccounts.dspMain";
 	st.selected = listFindNoCase("ehAccounts,ehPage", listFirst(event,"."));
 	st.hint = "Site and account management";
 	st.icon = "images/users_24x24.png";
@@ -51,7 +51,7 @@
 
 	st = structNew();
 	st.label = "Resources";
-	st.event = "ehResources.dspMain";
+	st.event = "resources.ehResources.dspMain";
 	st.selected = findnocase("ehResources.", event);
 	st.hint = "Manage the site's resource library";
 	st.icon = "images/folder2_yellow_32x32.png";
@@ -61,7 +61,7 @@
 
 	st = structNew();
 	st.label = "SiteMap";
-	st.event = "ehSiteMap.dspMain";
+	st.event = "siteMap.ehSiteMap.dspMain";
 	st.selected = findnocase("ehSiteMap.", event);
 	st.hint = "SiteMap tool";
 	st.icon = "images/Globe_22x22.png";
@@ -71,7 +71,7 @@
 
 	st = structNew();
 	st.label = "Settings";
-	st.event = "ehSiteConfig.dspMain";
+	st.event = "siteConfig.ehSiteConfig.dspMain";
 	st.selected = findnocase("ehSiteConfig.", event);
 	st.hint = "View and edit configuration files";
 	st.icon = "images/configure_22x22.png";
@@ -109,12 +109,12 @@
 		#attributes.title#
 	</h2>
 	<div class="siteName" style="margin-bottom:15px;">
-		&raquo; Site: <a href="index.cfm?event=ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
+		&raquo; Site: <a href="index.cfm?event=site.ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
 		
 		<cfif hasAccountsPlugin and oContext.hasAccountSite()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.accounts>
-				&raquo; Account: <a href="index.cfm?event=ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>
+				&raquo; Account: <a href="index.cfm?event=accounts.ehAccounts.dspMain&accountID=#accountID#&showAccount=true">#accountName#</a>
 			<cfelse>
 				&raquo; Account: #accountName#
 			</cfif>
@@ -130,7 +130,7 @@
 
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<cfif stAccessMap.pages>
-				&raquo; Page: <a href="index.cfm?event=ehPage.dspMain">#tmpTitle#</a>
+				&raquo; Page: <a href="index.cfm?event=page.ehPage.dspMain">#tmpTitle#</a>
 			<cfelse>
 				&raquo; Page: #tmpTitle#
 			</cfif>

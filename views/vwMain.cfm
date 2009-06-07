@@ -1,7 +1,6 @@
 <cfparam name="request.requestState.qrySites" default="#queryNew("")#">
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
-<cfparam name="request.requestState.aPlugins" default="">
 <cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oUser" default="">
 <cfparam name="request.requestState.showHomePortalsAsSite" default="false">
@@ -9,7 +8,6 @@
 <cfset qrySites = request.requestState.qrySites>
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset loadSiteID = request.requestState.loadSiteID>
-<cfset aPlugins = request.requestState.aPlugins>
 <cfset aModules = request.requestState.aModules>
 <cfset oUser = request.requestState.oUser>
 <cfset showHomePortalsAsSite = request.requestState.showHomePortalsAsSite>
@@ -48,12 +46,12 @@
 			<cfif stAccessMap.sites>
 				<div class="dsb_siteSection" style="width:150px;padding:0px;">
 					<div class="buttonImage btnLarge">
-						<a href="index.cfm?event=ehSites.dspCreate" title="Click here to create a new portal or site"><img src="images/folder_add.png" border="0" align="absmiddle">&nbsp; Create New Site</a>
+						<a href="index.cfm?event=sites.ehSites.dspCreate" title="Click here to create a new portal or site"><img src="images/folder_add.png" border="0" align="absmiddle">&nbsp; Create New Site</a>
 					</div>	
 	
 	
 					<div class="buttonImage btnLarge">
-						<a href="index.cfm?event=ehSites.dspRegister" title="Click here to register an existing portal or site in ColdBricks"><img src="images/folder_page.png" border="0" align="absmiddle">&nbsp; Register Site</a>
+						<a href="index.cfm?event=sites.ehSites.dspRegister" title="Click here to register an existing portal or site in ColdBricks"><img src="images/folder_page.png" border="0" align="absmiddle">&nbsp; Register Site</a>
 					</div>	
 				</div>
 				<br><br>
@@ -91,28 +89,6 @@
 											alt="#aModules[i].alt#"
 											label="#aModules[i].label#"
 											help="#aModules[i].description#">
-				</cfloop>
-
-				<cfloop from="1" to="#arrayLen(aPlugins)#" index="i">
-					<cfset oPlugin = aPlugins[i]>
-					<cfset tmpEvent = oPlugin.getModuleName() & "." & oPlugin.getDefaultEvent()>
-					<cfset tmpName = oPlugin.getName()>
-					<cfset tmpImage = oPlugin.getPath() & "/" & oPlugin.getIconSrc()>
-					<cfset tmpDesc = oPlugin.getDescription()>
-
-					<cfif oPlugin.getIconSrc() eq "">
-						<cfset tmpImage = "images/cb-blocks.png">
-					</cfif>
-					<cfif tmpDesc eq "">
-						<cfset tmpDesc = "<em>No description available</em>">
-					</cfif>
-
-					<cf_dashboardMenuItem href="index.cfm?event=#tmpEvent#" 
-											isAllowed="true"
-											imgSrc="#tmpImage#"
-											alt="Plugin: #tmpName#"
-											label="#tmpName#"
-											help="#tmpDesc#">
 				</cfloop>
 				
 			</cf_dashboardMenu>
