@@ -729,9 +729,13 @@
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
+				// check if we need to create the restype dir
+				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName();
+				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
+
 				// check if we need to create the package dir
 				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
-				if(not directoryExists(path)) directoryCreate(path);
+				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
 
 				// upload file
 				stFileInfo = fileUpload(resFile, path);
