@@ -6,7 +6,7 @@
 <cfset resourceID = request.requestState.resourceID>
 <cfset resType = request.requestState.resType>
 <cfset tmpResTitle = resourceID>
-<cfset tmpHREF = oResourceBean.getHREF()>
+<cfset tmpHREF = oResourceBean.getFullHREF()>
 
 <cfoutput>
 	<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;">
@@ -18,7 +18,7 @@
 			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;width:30px;">Type:</td><td>#resType#</td></tr>
 			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;width:30px;">ID:</td><td>#tmpResTitle#</td></tr>
 			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;width:30px;">Package:</td><td>#oResourceBean.getPackage()#</td></tr>
-			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;width:30px;">HREF:</td><td><a href="#tmpHREF#" target="_blank"><span style="color:green;">#tmpHREF#</span></a></td></tr>
+			<tr valign="top"><td style="font-size:10px;color:##999;text-align:left;width:30px;">HREF:</td><td><a href="#tmpHREF#" onclick="fb.loadAnchor('#jsStringFormat(tmpHREF)#');return false;"><span style="color:green;">#tmpHREF#</span></a></td></tr>
 		</table>
 	
 		<div style="margin:5px;">

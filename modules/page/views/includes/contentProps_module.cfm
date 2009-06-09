@@ -1,3 +1,6 @@
+<cfparam name="forceResourceType" default="">
+<cfparam name="forceResourceID" default="">
+
 <cfoutput>
 	<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">Module Properties</div>
 	
@@ -23,6 +26,10 @@
 					<cfset tmpType = prop.type>
 				</cfif>
 				<cfset lstModuleAttribs = listAppend(lstModuleAttribs, prop.name)>
+				
+				<cfif tmpType eq "resource" and forceResourceType neq "" and forceResourceID neq "" and resourceType eq forceResourceType>
+					<cfset tmpAttrValue = forceResourceID>
+				</cfif>
 				
 				<tr>
 					<td style="width:100px;"><strong>#prop.displayName#:</strong></td>
