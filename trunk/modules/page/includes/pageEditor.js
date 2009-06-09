@@ -57,20 +57,16 @@ function showLayoutSectionTitles(display) {
 }
 
 function addResource(resID,resType) {
-	if(confirm("Add " + resType + " " + resID + "?")) {
-		document.location="?event=page.ehPage.doAddResource&resourceID="+resID+"&resType=" + resType;
-	}
+	var href = "index.cfm"
+				+ "?event=page.ehPage.dspAddResource" 
+				+ "&resourceID=" + resID + "&resType=" + resType;
+	fb.loadAnchor(href,"width:480 height:300 loadPageOnClose:self");
 }
 
 function viewResourceInfo(resID,resType) {
 	doEvent("page.ehPage.dspResourceInfo","moduleProperties",{resourceID: resID, resType: resType});
 }
 
-function addContentTag(tag) {
-	if(confirm("Add " + tag + "?")) {
-		document.location="?event=page.ehPage.doAddContentTag&tag="+tag;
-	}
-}
 function addContentTag(tag) {
 	var href = "index.cfm"
 				+ "?event=page.ehPage.dspAddContentTag" 
@@ -188,3 +184,6 @@ function doMoveModule(dir,modID) {
 	document.location='?event=page.ehPage.doMoveModule&moduleID='+modID+'&direction='+dir;
 }
 
+function loadInFB(href) {
+	fb.loadAnchor(href,"width:480 height:300");
+}

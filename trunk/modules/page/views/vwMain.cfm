@@ -11,6 +11,7 @@
 <cfparam name="request.requestState.stPageTemplates" default="">
 
 <cfparam name="request.requestState.pageMode" default="">
+<cfparam name="request.requestState.treeType" default="resources">
 
 <cfscript>
 	pageTitle = request.requestState.pageTitle;
@@ -20,6 +21,7 @@
 	aLayoutSectionTypes = request.requestState.aLayoutSectionTypes;
 	stPageTemplates = request.requestState.stPageTemplates;
 	pageMode = request.requestState.pageMode;
+	treeType = request.requestState.treeType;
 	
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;	
@@ -66,12 +68,17 @@
 	aStyles = oPage.getStylesheets();
 	
 	if(appRoot eq "/")
-		tmpPageURL = "/index.cfm?page=#thisPageHREF#";
+		tmpPageURL = "/index.cfm";
 	else
-		tmpPageURL = appRoot & "/index.cfm?page=#thisPageHREF#";
+		tmpPageURL = appRoot & "/index.cfm";
 		
+	if(accountName eq "") {
+		tmpPageURL = tmpPageURL & "?page=#thisPageHREF#";
+	} else {
+		tmpPageURL = tmpPageURL & "?page=#listLast(thisPageHREF,'/')#&account=" & accountName;
+	}
+
 	tmpPageURL = reReplace(tmpPageURL,"//*","/","all");	
-	if(accountName neq "") tmpPageURL & "&account=" & accountName;
 </cfscript>
 
 
@@ -147,6 +154,16 @@
 					style="width:210px;padding:0px;margin:0px;">
 				<div style="margin:2px;">
 					<img src="images/brick_add.png" align="absmiddle"> Add Page Content
+				</div>
+			</div>
+			<div style="text-align:left;background-color:##999;">
+				<div style="margin:2px;">
+					<input type="radio" name="treeType" value="resources" 
+							<cfif treeType eq "resources">checked</cfif>
+							onclick="doEvent('page.ehPage.dspResourceTree','resourceTreePanel',{});"> Resources
+					<input type="radio" name="treeType" value="tags" 
+							<cfif treeType eq "tags">checked</cfif>
+							onclick="doEvent('page.ehPage.dspContentRenderersTree','resourceTreePanel',{});"> Module Types
 				</div>
 			</div>
 			<!--- select resource type --->
@@ -274,8 +291,13 @@
 				style="margin-top:0px;width:190px;padding:0px;height:220px;margin-top:0px;margin-right:0px;border-top:0px;">
 				<div id="moduleProperties" style="margin:0px;text-align:left;">
 					<p align="center"><bR>
-						Drag boxes to accomodate modules.<br>
-						Click box to edit properties.
+						<cfif pageMode neq "details">
+							Drag boxes to accomodate modules.<br>
+							Click box to edit properties.
+						<cfelse>
+							Click on Module ID to edit module properties.<br />
+							Click on Info icon to view module details.
+						</cfif>
 					</p>
 				</div>
 			</div>
@@ -299,6 +321,10 @@
 <hr>
 
 <script type="text/javascript">
-	doEvent('page.ehPage.dspContentRenderersTree','resourceTreePanel',{});
+	<cfif treeType eq "resources">
+		doEvent('page.ehPage.dspResourceTree','resourceTreePanel',{});
+	<cfelse>
+		doEvent('page.ehPage.dspContentRenderersTree','renderersTreePanel',{});
+	</cfif>
 </script>
 

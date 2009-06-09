@@ -29,7 +29,6 @@
 				}			
 
 				// get default resource type
-				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
 				if(oContext.getPageViewMode() eq "") oContext.setPageViewMode("details");
 				if(resType neq "") oContext.setPageResourceTypeView(resType);
 				if(pageMode neq "") oContext.setPageViewMode(pageMode);
@@ -393,17 +392,30 @@
 			var resType = getValue("resType");
 			var hp = 0;
 			var oContext = getService("sessionContext").getContext();
+			var aResTypes = arrayNew(1);
+			var i = 0;
 			
 			try {
 				setLayout("Layout.None");
 
 				hp = oContext.getHomePortals();
 			
-				// get default resource type
-				if(oContext.getPageResourceTypeView() eq "") oContext.setPageResourceTypeView("module");
-				if(resType neq "") oContext.setPageResourceTypeView(resType);
+				rlm = hp.getCatalog().getResourceLibraryManager();
+				aAllResTypes = rlm.getResourceTypes();
+				for(i=1;i lte arrayLen(aAllResTypes);i++) {
+					aTags = getTagRenderersForResourceType(aAllResTypes[i]);
+					if(arrayLen(aTags) gt 0) {
+						arrayAppend(aResTypes, aAllResTypes[i]);
+					}
+				}
 
+				// get default resource type
+				if(oContext.getPageResourceTypeView() eq "" and arrayLen(aResTypes) gt 0) 
+					oContext.setPageResourceTypeView(aResTypes[1]);
+				if(resType neq "") oContext.setPageResourceTypeView(resType);
+				
 				setValue("resType", oContext.getPageResourceTypeView());
+				setValue("aResTypes", aResTypes);
 				setValue("oPage", oContext.getPage());
 				setValue("oCatalog", hp.getCatalog() );
 				
@@ -577,6 +589,73 @@
 				setValue("tag", tag);
 
 				setView("vwAddContentTag");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+			
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="dspAddResource" access="public" returntype="void">
+		<cfscript>
+			var oPage = 0;
+			var oCatalog = 0;
+			var oResourceBean = 0;
+			var tag = getValue("tag");
+			var resourceID = getValue("resourceID");
+			var resType = getValue("resType");
+			var moduleCatID = "";
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var aTagNames = arrayNew(1);
+			var stTags = structNew();
+			var tagInfo = structNew();
+			
+			try {
+				hp = oContext.getHomePortals();
+				setLayout("Layout.Clean");
+
+				// check if we have a site and page cfcs loaded 
+				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(resType eq "") throw("Please select a resource type to add","coldBricks.validation");
+				if(resourceID eq "") throw("Please select a resource to add","coldBricks.validation");
+				
+				// get page from session
+				oPage = oContext.getPage();
+				oCatalog = hp.getCatalog();
+
+				aTagNames = getTagRenderersForResourceType(resType);
+				if(arrayLen(aTagNames) eq 1) tag = aTagNames[1];
+				
+				if(tag neq "") {
+					objPath = oContext.getHomePortals().getConfig().getContentRenderer(tag);
+					obj = createObject("component",objPath);
+					tagInfo = getMetaData(obj);
+				} else {
+					for(i=1;i lte arrayLen(aTagNames);i++) {
+						objPath = oContext.getHomePortals().getConfig().getContentRenderer(aTagNames[i]);
+						obj = createObject("component",objPath);
+						stTags[aTagNames[i]] = getMetaData(obj);
+					}
+				}
+				
+				// pass values to view
+				setValue("oPage", oPage );
+				setValue("oCatalog", oCatalog );
+				setValue("tagInfo", tagInfo);
+				setValue("pageHREF", oContext.getPageHREF());
+				setValue("tag", tag);
+				setValue("stTags", stTags);
+
+				if(tag eq "")
+					setView("vwAddResourceSelectTag");
+				else
+					setView("vwAddResource");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -1853,4 +1932,39 @@
 
 		<cfreturn css>
 	</cffunction>
+
+	<cffunction name="getTagRenderersForResourceType" access="private" returntype="array">
+		<cfargument name="resourceType" type="string" required="true">
+		<cfscript>
+			var aTags = arrayNew(1);
+			var stCR = 0;
+			var tag = "";
+			var objPath = "";
+			var obj = 0;
+			var tagInfo = 0;
+			var i = 0;
+			var prop = "";
+			var oContext = getService("sessionContext").getContext();
+			
+			stCR = oContext.getHomePortals().getConfig().getContentRenderers();
+			for(tag in stCR) {
+				try {
+					objPath = oContext.getHomePortals().getConfig().getContentRenderer(tag);
+					obj = createObject("component",objPath);
+					tagInfo = getMetaData(obj);
+					for(i=1;i lte arrayLen(tagInfo.properties);i++) {
+						prop = duplicate(tagInfo.properties[i]);
+						if(structKeyExists(prop,"type") and listLen(prop.type,":") eq 2 and listfirst(prop.type,":") eq "resource") {
+							if(arguments.resourceType eq listlast(prop.type,":")) arrayAppend(aTags, tag);
+						}
+					}
+				} catch(lock e ) {
+					// do nothing
+				}
+			}
+			
+			return aTags;
+		</cfscript>
+	</cffunction>
+		
 </cfcomponent>
