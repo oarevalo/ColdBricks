@@ -36,7 +36,7 @@
 					<td>
 						<cfswitch expression="#tmpType#">
 							<cfcase value="list">
-								<cfif structKeyExist(prop,"values")>
+								<cfif structKeyExists(prop,"values")>
 									<cfset lstValues = prop.values>
 								<cfelse>
 									<cfset lstValues = "">
