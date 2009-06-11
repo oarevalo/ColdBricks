@@ -56,7 +56,7 @@
 		</div>		
 			
 		<div style="margin:5px;">
-			<cfif tagInfo.hint neq "">
+			<cfif structKeyExists(tagInfo,"hint") and tagInfo.hint neq "">
 				<div style="margin:5px;border:1px solid silver;background-color:##f5f5f5;">
 					<div style="margin:5px;">
 						<img src="images/information.png" align="absmiddle">
