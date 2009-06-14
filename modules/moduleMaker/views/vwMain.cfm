@@ -1,6 +1,8 @@
 <cfparam name="request.requestState.stContentRenderers" default="#structNew()#">
+<cfparam name="request.requestState.moduleType" default="">
 
 <cfset stContentRenderers = request.requestState.stContentRenderers>
+<cfset moduleType = request.requestState.moduleType>
 
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
@@ -44,7 +46,7 @@
 			</div>
 			<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;font-size:11px;">
 				<img src="images/add.png" align="absmiddle" style="margin-left:5px;"> 
-				<a href="##" onclick="selectTemplate('','__NEW__')" style="font-weight:bold;">Create Module</a>
+				<a href="##" onclick="loadInFB('index.cfm?event=moduleMaker.ehModuleMaker.dspAddModule',true)" style="font-weight:bold;">Create Module</a>
 			</div>
 			<div class="cp_sectionBox" 
 				style="margin:0px;width:150px;padding:0px;height:428px;border-top:0px;">
@@ -73,14 +75,17 @@
 					
 						<img src="images/quick_start.gif"><br><br>
 						
-						&bull; The list on the left shows the different types of templates available. 
-							Templates are blueprints that describe how content is generated.<br><br>
+						&bull; The list on the left shows the module types defined for this site.
+						<b>Note:</b> Modules defined at a global level are not shown and cannot be edited from
+						within a site.
+						<br><br>
 						
-						&bull; Select a template from the list on the left to edit its contents<br><br>
+						&bull; Select a module type from the list on the left to edit its contents<br><br>
 						
-						&bull; Click on <b>Create Template</b> to add a new template<br><br>
+						&bull; Click on <b>Create Module</b> to create a new custom module for this site<br><br>
 						
-						&bull; <b>Did you know?</b> hint goes here
+						&bull; <b>Did you know?</b> Your custom modules can use any existing item from the resource
+						library or you can also create your own custom resource types.
 							
 					</div>
 
@@ -92,7 +97,19 @@
 				<div style="margin:10px;">
 					<h2>Module Maker</h2>
 					<p>
-						module help
+						Modules are functional blocks that determine how content is displayed on a page. Pages may contain
+						any number of modules to display content in different ways.
+					</p>
+					<p>
+						The Module Maker is a tool to allow you to create simple modules that can be configured to display
+						any content you like. A module is defined by its properties, and its content. Content is divided into
+						<b>Head</b> content and <b>Body</b> content, referring to the section on the final HTML document where
+						that particular content will be placed. Head content is used generally for CSS declarations and JavaScript
+						code. The Body is typically where the user-visible content will go.
+					</p>
+					<p>
+						When you write your head or body content you can access any module properties by using the notation <b>$module_PROP-NAME$</b>,
+						where PROP-NAME is the name of the property or module attribute you wish to use.
 					</p>
 				</div>
 			</div>		
@@ -100,5 +117,10 @@
 	</tr>
 </table>
 
+<cfif moduleType neq "">
+	<script type="text/javascript">
+		selectModuleType('#jsstringformat(moduleType)#');
+	</script>
+</cfif>
 </cfoutput>
 				

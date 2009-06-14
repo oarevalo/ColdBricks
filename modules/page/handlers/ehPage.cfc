@@ -1952,10 +1952,12 @@
 					objPath = oContext.getHomePortals().getConfig().getContentRenderer(tag);
 					obj = createObject("component",objPath);
 					tagInfo = getMetaData(obj);
-					for(i=1;i lte arrayLen(tagInfo.properties);i++) {
-						prop = duplicate(tagInfo.properties[i]);
-						if(structKeyExists(prop,"type") and listLen(prop.type,":") eq 2 and listfirst(prop.type,":") eq "resource") {
-							if(arguments.resourceType eq listlast(prop.type,":")) arrayAppend(aTags, tag);
+					if(structKeyExists(tagInfo,"properties")) {
+						for(i=1;i lte arrayLen(tagInfo.properties);i++) {
+							prop = duplicate(tagInfo.properties[i]);
+							if(structKeyExists(prop,"type") and listLen(prop.type,":") eq 2 and listfirst(prop.type,":") eq "resource") {
+								if(arguments.resourceType eq listlast(prop.type,":")) arrayAppend(aTags, tag);
+							}
 						}
 					}
 				} catch(lock e ) {
