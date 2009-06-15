@@ -31,20 +31,48 @@
 
 				path = oConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
-				
+				md = duplicate(getMetaData(oCR));
 				isCustom = isCustomContentRenderer(oCR);
 					
 				aFields = [
 							{name = "Module ID", token = "$MODULE_ID$"},
 							{name = "Module Title", token = "$MODULE_TITLE$"},
 							{name = "Module Icon", token = "$MODULE_ICON$"},
-							{name = "Module Property", token = "$MODULE_propname$"}
+							{name = "------------", token = ""}
 				];	
+				
+				
+				if(structKeyExists(md,"properties")) {
+					for(i=1;i lte arrayLen(md.properties);i++) {
+						if(structKeyExists(md.properties[i],"displayName"))
+							tmpName = md.properties[i].displayName;
+						else
+							tmpName = md.properties[i].name;
+
+						if(structKeyExists(md.properties[i],"type") and listfirst(md.properties[i].type,":") eq "resource") {
+							rlm = getService("sessionContext").getContext().getHomePortals().getResourceLibraryManager();
+							oResType = rlm.getResourceTypeInfo(listLast(md.properties[i].type,":"));
+							stResProps = oResType.getProperties();
+							
+							st = {name = tmpName & ":href", token = "$MODULE_#md.properties[i].name#|href$"};
+							arrayAppend(aFields,duplicate(st));
+
+							for(prop in stResProps) {
+								st = {name = tmpName & ":" & prop, token = "$MODULE_#md.properties[i].name#|#stResProps[prop].name#$"};
+								arrayAppend(aFields,duplicate(st));
+							}
+							
+						} else {
+							st = {name = tmpName, token = "$MODULE_#md.properties[i].name#$"};
+							arrayAppend(aFields,duplicate(st));
+						}
+					}
+				}
 					
 				setValue("moduleType",moduleType);
 				setValue("isCustom",isCustom);
 				setValue("aFields",aFields);
-				setValue("tagInfo",duplicate(getMetaData(oCR)));
+				setValue("tagInfo",md);
 				if(isCustom) {
 					setValue("head",oCR.getHead());
 					setValue("body",oCR.getBody());
