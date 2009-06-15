@@ -1,6 +1,7 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
 	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml">
+	<cfset pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator")>
 
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -373,7 +374,10 @@
 		<cfargument name="description" type="string" required="true">
 		<cfset var tmppath = expandPath(arguments.path & "/" & arguments.name & ".cfc")>
 		<cfset var txt = "<cfcomponent extends=""homePortals.components.contentTagRenderers.custom"" hint=""#xmlFormat(arguments.description)#""></cfcomponent>">
-		<cffile action="write" output="#txt#" file="#expandPath(tmppath)#">
+		<cfif not directoryExists(expandPath(arguments.path))>
+			<cfdirectory action="create" directory="#expandPath(arguments.path)#">
+		</cfif>
+		<cffile action="write" output="#txt#" file="#tmppath#">
 		<cfset reloadSite()>
 	</cffunction>
 
@@ -385,15 +389,15 @@
 		<cfargument name="head" type="string" required="true">
 		<cfargument name="properties" type="array" required="true">
 		
-		<cfset var tmppath = expandPath(arguments.path & "/" & arguments.name & ".cfc")>
+		<cfset var tmppath = arguments.path & arguments.name & ".cfc">
 		<cfset var txt = "">
 		<cfset var crlf = chr(13) & chr(10)>
 		<cfset var tab = chr(9)>
 		<cfset var i = 0>
 		<cfset var thisProp = 0>
 
-		<cfset var tmpBodyPath = expandPath(arguments.path & "/" & arguments.name & "_body.inc")>
-		<cfset var tmpHeadPath = expandPath(arguments.path & "/" & arguments.name & "_head.inc")>
+		<cfset var tmpBodyPath = arguments.path & arguments.name & "_body.inc">
+		<cfset var tmpHeadPath = arguments.path & arguments.name & "_head.inc">
 
 		<cfset txt = "<cfcomponent extends=""homePortals.components.contentTagRenderers.custom"" hint=""#xmlFormat(arguments.description)#"">" & crlf>
 		<cfloop from="1" to="#arrayLen(arguments.properties)#" index="i">
@@ -426,9 +430,9 @@
 		</cfloop>
 		<cfset txt = txt & "</cfcomponent>">
 
-		<cffile action="write" output="#txt#" file="#expandPath(tmppath)#">
-		<cffile action="write" output="#arguments.body#" file="#expandPath(tmpBodyPath)#">
-		<cffile action="write" output="#arguments.head#" file="#expandPath(tmpHeadPath)#">
+		<cffile action="write" output="#txt#" file="#tmppath#">
+		<cffile action="write" output="#arguments.body#" file="#tmpBodyPath#">
+		<cffile action="write" output="#arguments.head#" file="#tmpHeadPath#">
 		
 		<cfset reloadSite()>
 	</cffunction>
@@ -509,12 +513,18 @@
 	<cffunction name="isCustomContentRenderer" access="public" returntype="boolean">
 		<cfargument name="obj" type="any" required="true">
 		<cftry>
-			<cfparam name="arguments.obj" type="homePortals.components.contentTagRenderers.custom">
+			<cfset __dummy_check_type__(arguments.obj)>
+			<cfreturn true>
 			<cfcatch type="any">
 				<cfreturn false>
 			</cfcatch>
 		</cftry>
-		<cfreturn true>
 	</cffunction>	
+	
+	<cffunction name="__dummy_check_type__" access="private" returntype="void">
+		<cfargument name="obj" type="homePortals.components.contentTagRenderers.custom" required="true">
+		<!--- nothing ---->
+		<cfreturn>
+	</cffunction>
 		
 </cfcomponent>
