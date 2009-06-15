@@ -83,7 +83,7 @@
 				<tr>
 					<td><b>Name:</b></td>
 					<td>
-						<cfif not isNewProp>
+						<cfif isNewProp>
 							<input type="text" name="name" value="#propInfo.name#" class="formField">
 						<cfelse>
 							<input type="hidden" name="name" value="#propInfo.name#">
