@@ -281,7 +281,10 @@
 				oCR = createObject("component",path);
 				md = duplicate(getMetaData(oCR));
 				if(structKeyExists(md,"properties")) {
-					aprops = md.properties;
+					for(i=1;i lte arrayLen(md.properties);i++) {
+						st = duplicate(md.properties[i]);
+						arrayAppend(aProps,st);
+					}
 				}
 				if(structKeyExists(md,"hint")) {
 					desc = md.hint;
@@ -294,7 +297,7 @@
 				st.resourceType = getValue("resourceType");
 				st.default = getValue("default");
 				st.displayName = getValue("displayName");
-				st.required = getValue("required");
+				st.required = getValue("required",false);
 				st.hint = getValue("hint");
 							
 				if(isNewProp) {
@@ -330,13 +333,17 @@
 			var moduleType = getValue("moduleType");
 			var name = getValue("name");
 			var oConfig = getAppHomePortalsConfigBean();
+			var aprops = arrayNew(1);
 			
 			try {
 				path = oConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
 				md = duplicate(getMetaData(oCR));
 				if(structKeyExists(md,"properties")) {
-					aprops = md.properties;
+					for(i=1;i lte arrayLen(md.properties);i++) {
+						st = duplicate(md.properties[i]);
+						arrayAppend(aProps,st);
+					}
 				}
 				if(structKeyExists(md,"hint")) {
 					desc = md.hint;
