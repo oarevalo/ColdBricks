@@ -425,15 +425,15 @@
 				<cfset txt = txt & " required=""#thisProp.required#""">
 			</cfif>
 			<cfif thisProp.values neq "">
-				<cfset txt = txt & " required=""#thisProp.values#""">
+				<cfset txt = txt & " values=""#thisProp.values#""">
 			</cfif>
-			<cfif thisProp.default neq "" or thisProp.default eq "" and (thisProp.required or not thisProp.required)>
+			<cfif thisProp.default neq "" or thisProp.default eq "" and (isBoolean(thisProp.required) and thisProp.required)>
 				<cfset txt = txt & " default=""#thisProp.default#""">
 			</cfif>
 			<cfif thisProp.displayName neq "">
 				<cfset txt = txt & " displayName=""#thisProp.displayName#""">
 			</cfif>
-				<cfset txt = txt & ">" & crlf>
+			<cfset txt = txt & ">" & crlf>
 		</cfloop>
 		<cfset txt = txt & "</cfcomponent>">
 
