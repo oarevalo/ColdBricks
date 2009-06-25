@@ -80,7 +80,7 @@
 				setValue("cbPageIcon", "");
 				setValue("cbShowSiteMenu", false);
 	
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}

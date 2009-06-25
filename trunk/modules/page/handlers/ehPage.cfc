@@ -1960,7 +1960,7 @@
 							}
 						}
 					}
-				} catch(lock e ) {
+				} catch(any e ) {
 					// do nothing
 				}
 			}

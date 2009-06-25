@@ -115,7 +115,7 @@
 			
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("users.ehUsers.dspEdit","editUserID=#editUserID#&username=#username#&firstName=#firstName#&lastName=#lastName#&email=#email#&password=#password#&administrator=#administrator#");
+				setNextEvent("users.ehUsers.dspEdit","editUserID=#editUserID#&username=#username#&firstName=#firstName#&lastName=#lastName#&email=#email#&password=#password#&role=#role#");
 
 			} catch(any e) {
 				setMessage("error",e.message);
