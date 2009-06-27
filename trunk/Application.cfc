@@ -25,6 +25,7 @@
 	<cfset this.modulesPath = "modules">
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
+	<cfset this.scriptProtect = "none">
 
 	<cffunction name="onRequestStart" output="false">
 		<cfparam name="Event" default=""> <!--- use to determine the action to perform --->
