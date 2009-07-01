@@ -97,7 +97,7 @@
 				hp = oContext.getHomePortals();
 				if(hp.getPageProvider().pageExists(path)) {
 					oPage = hp.getPageProvider().load(path);
-					stPage = hp.getPageProvider().query(path);
+					stPage = hp.getPageProvider().getInfo(path);
 				}
 
 				setValue("pageExists", hp.getPageProvider().pageExists(path));
