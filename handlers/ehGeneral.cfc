@@ -253,8 +253,11 @@
 				oUserDAO.save(id = oUser.getID(),
 								password = new_pwd
 								);
-	
-				getService("sessionContext").getContext().setUser( oUser.setPassword(new_pwd) );
+								
+				// update current user obj in memory
+				oUser.setPassword(new_pwd);
+				
+				getService("sessionContext").getContext().setUser( oUser );
 	
 				setMessage("info","Your password has been changed. You must log-in again for changes to take effect");
 			
@@ -262,7 +265,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("ehGeneral.dspChangePassword");
 	
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("ehGeneral.dspChangePassword");
