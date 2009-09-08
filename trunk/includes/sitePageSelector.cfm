@@ -22,13 +22,27 @@
 				<option value="#aPagesSorted[i]#"
 						<cfif aPagesSorted[i] eq getFileFromPath(oContext.getPageHREF())>selected</cfif>>#aPagesSorted[i]#</option>
 			</cfloop>
-			<option value="--NEW--"> -- New Page -- </option>
 		</select>
 	</cfoutput>
 
 <cfelse>
 	<cfoutput>
-		<input type="hidden" name="page" id="page" value="#getFileFromPath(oContext.getPageHREF())#">
+		<cfset _href = oContext.getPageHREF()>
+		<cfset _path = "">
+		<cfif listLen(_href,"/") gt 1>
+			<cfset _path = listDeleteat(_href,listLen(_href,"/"),"/")>
+		</cfif>
+		<cfset _qryPages = oContext.getHomePortals().getPageProvider().listFolder(_path)> 
+
+		<strong>Page:</strong>
+		<select name="page" id="page" style="width:150px;font-size:11px;" class="formField"  onchange="changePage(this.value)">
+			<cfloop query="_qryPages">
+				<cfif _qryPages.type eq "page">
+					<option value="#_path#/#_qryPages.name#"
+							<cfif _qryPages.name eq getFileFromPath(_href)>selected</cfif>>#_qryPages.name#</option>
+				</cfif>
+			</cfloop>
+		</select>
 	</cfoutput>
 </cfif>
 
