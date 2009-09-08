@@ -1,3 +1,5 @@
+<cfset lstModuleTemplates = listSort(structKeyList(stModuleTemplates),"textnocase")>
+
 <cfoutput>
 	<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">General Properties</div>
 
@@ -28,7 +30,7 @@
 				<select name="moduleTemplate" style="width:130px;font-size:11px;" class="formField">
 					<option value="0">-- Select Template --</option>
 					<option value="" <cfif thisModule.moduleTemplate eq "">selected</cfif>>(default)</option>
-					<cfloop collection="#stModuleTemplates#" item="key">
+					<cfloop list="#lstModuleTemplates#" index="key">
 						<option value="#stModuleTemplates[key].name#" 
 								<cfif stModuleTemplates[key].name eq thisModule.moduleTemplate>selected</cfif>>#stModuleTemplates[key].name#</option>
 					</cfloop>

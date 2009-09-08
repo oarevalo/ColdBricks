@@ -146,10 +146,7 @@ function doRenamePage() {
 }
 
 function changePage(pg) {
-	if(pg!='--NEW--')
-		document.location='?event=page.ehPage.dspMain&page='+pg;
-	else 
-		document.location='?event=ehAccounts.dspAddPage';	
+	document.location='?event=page.ehPage.dspMain&page='+pg;
 }
 
 function changeSkin(skinID) {

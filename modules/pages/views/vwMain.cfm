@@ -132,6 +132,7 @@
 </table>
 
 <script>
-loadTreeNode("pagesTree","")
+loadTreeNode("pagesTree","");
+selectTreeNode("/");
 </script>
 </cfoutput>
