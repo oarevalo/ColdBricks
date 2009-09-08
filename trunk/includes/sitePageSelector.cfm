@@ -17,7 +17,7 @@
 	
 	<cfoutput>
 		<strong>Page:</strong>
-		<select name="page" id="page" style="width:150px;font-size:11px;" class="formField"  onchange="changePage(this.value)">
+		<select name="page" id="page" style="width:150px;font-size:11px;" class="formField" onchange="document.location='?event=page.ehPage.dspMain&page='+this.value">
 			<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
 				<option value="#aPagesSorted[i]#"
 						<cfif aPagesSorted[i] eq getFileFromPath(oContext.getPageHREF())>selected</cfif>>#aPagesSorted[i]#</option>
@@ -35,7 +35,7 @@
 		<cfset _qryPages = oContext.getHomePortals().getPageProvider().listFolder(_path)> 
 
 		<strong>Page:</strong>
-		<select name="page" id="page" style="width:150px;font-size:11px;" class="formField"  onchange="changePage(this.value)">
+		<select name="page" id="page" style="width:150px;font-size:11px;" class="formField"  onchange="document.location='?event=page.ehPage.dspMain&page='+this.value">
 			<cfloop query="_qryPages">
 				<cfif _qryPages.type eq "page">
 					<option value="#_path#/#_qryPages.name#"
