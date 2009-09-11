@@ -127,8 +127,8 @@
 		</cfif>
 		&nbsp;&middot;&nbsp;
 		<cfif endRow lte qryPages.recordCount>
-			<a href="##" onclick="doEvent('pages.ehPages.dspNode','nodePanel',{startRow:#nextPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#',path:'#path#})">Next</a> &nbsp;&middot;&nbsp;
-			<a href="##" onclick="doEvent('pages.ehPages.dspNode','nodePanel',{startRow:#lastPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#',path:'#path#})">Last</a> 
+			<a href="##" onclick="doEvent('pages.ehPages.dspNode','nodePanel',{startRow:#nextPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#',path:'#path#'})">Next</a> &nbsp;&middot;&nbsp;
+			<a href="##" onclick="doEvent('pages.ehPages.dspNode','nodePanel',{startRow:#lastPageStartRow#,searchTerm:'#jsstringformat(searchTerm)#',path:'#path#'})">Last</a> 
 		<cfelse>
 			<span style="color:##999;">Next &nbsp;&middot;&nbsp; Last</span>
 		</cfif>
