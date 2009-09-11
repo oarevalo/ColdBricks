@@ -79,7 +79,7 @@
 		<cfset setValue("qryDir", qryDir)>
 		<cfset setValue("path", path)>
 		<cfset setView("vwTreeNode")>
-		<cfset setLayout("Layout.none")>
+		<cfset setLayout("Layout.None")>
 	</cffunction>
 
 	<cffunction name="dspNodeInfo" access="public" returntype="void">
