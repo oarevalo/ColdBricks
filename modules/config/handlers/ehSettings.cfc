@@ -736,6 +736,68 @@
 	</cffunction>	
 
 
+	<!--- Page Properties --->
+
+	<cffunction name="doSaveProperty" access="public" returntype="void">
+		<cfscript>
+			var value = getValue("value");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The page property name is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setPageProperty(name, value);
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeleteProperty" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a page property to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				oConfigBean.removePageProperty(name);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
+
 	<!--- Accounts Plugin Config --->
 
 	<cffunction name="doSaveAccounts" access="public" returntype="void">

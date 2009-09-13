@@ -38,7 +38,6 @@ function deletePageProperty(name) {
 	</tr>
 </table>
 
-
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 		<td>
@@ -54,8 +53,8 @@ function deletePageProperty(name) {
 					<cfloop collection="#stProps#" item="key">
 						<tr <cfif i mod 2>style="background-color:##f3f3f3;"</cfif>>
 							<td align="right"><b>#i#.</b></td>
-							<td>#key#</td>
-							<td>#stProps[key]#</td>
+							<td>#stProps[key].name#</td>
+							<td>#stProps[key].value#</td>
 							<td align="right">
 								<a href="index.cfm?event=page.ehPage.dspPageProperties&propName=#key#"><img src="images/page_edit.png" align="absmiddle" border="0"></a>
 								<a href="javascript:deletePageProperty('#jsStringFormat(key)#')"><img src="images/waste_small.gif" align="absmiddle" border="0"></a>

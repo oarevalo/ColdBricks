@@ -84,7 +84,7 @@
 				</form>
 			<cfelseif pluginEditKey neq "">
 				<cftry>
-					<cfset path = oHomePortalsConfigBean.getPlugin(pluginEditKey)>
+					<cfset path = oAppConfigBean.getPlugin(pluginEditKey)>
 					<cfcatch type="any">
 						<cfset path = "">
 					</cfcatch>
