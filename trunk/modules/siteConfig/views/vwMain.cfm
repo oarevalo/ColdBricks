@@ -13,7 +13,8 @@
 				{ id = "contentRenderers", label = "Content Renderers" },
 				{ id = "resLibs", label = "Resource Libraries" },
 				{ id = "resourceTypes", label = "Resource Types" },
-				{ id = "plugins", label = "Plugins" }
+				{ id = "plugins", label = "Plugins" },
+				{ id = "pageProperties", label = "Page Properties" }
 			]>
 			
 <script type="text/javascript">
@@ -74,6 +75,9 @@
 							</cfcase>
 							<cfcase value="renderTemplates">
 								<cfinclude template="includes/renderTemplates.cfm">
+							</cfcase>
+							<cfcase value="pageProperties">
+								<cfinclude template="includes/pageProperties.cfm">
 							</cfcase>
 						</cfswitch>
 					</table>

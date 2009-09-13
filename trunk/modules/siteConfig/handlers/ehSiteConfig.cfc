@@ -795,6 +795,65 @@
 	</cffunction>	
 
 
+	<!--- Page Properties --->
+
+	<cffunction name="doSaveProperty" access="public" returntype="void">
+		<cfscript>
+			var value = getValue("value");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The page property name is required","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setPageProperty(name, value);
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", variables.confirmMessage);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+
+			} catch(lock e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+
+	<cffunction name="doDeleteProperty" access="public" returntype="void">
+		<cfscript>
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a page property to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.removePageProperty(name);
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", variables.confirmMessage);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			}
+		</cfscript>	
+	</cffunction>	
+
+
+
 	
 	<!--- Module Properties Plugin Config --->
 	
@@ -1094,29 +1153,30 @@
 			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
 			
 			structDelete(arguments.xmlDoc.xmlRoot.xmlAttributes, "version");
-			if(arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
-			if(arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
-			if(arguments.xmlDoc.xmlRoot.homePortalsPath.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "homePortalsPath");
-			if(arguments.xmlDoc.xmlRoot.appRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "appRoot");
-			if(arguments.xmlDoc.xmlRoot.bodyOnLoad.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "bodyOnLoad");
-			if(arguments.xmlDoc.xmlRoot.pageProviderClass.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageProviderClass");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResourceTypes") and arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"initialEvent") and arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"homePortalsPath") and arguments.xmlDoc.xmlRoot.homePortalsPath.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "homePortalsPath");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"appRoot") and arguments.xmlDoc.xmlRoot.appRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "appRoot");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"bodyOnLoad") and arguments.xmlDoc.xmlRoot.bodyOnLoad.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "bodyOnLoad");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProviderClass") and arguments.xmlDoc.xmlRoot.pageProviderClass.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageProviderClass");
 			
 			// remove nodes that we are not editing
 			if(not arguments.includeGeneralSettings) {
-				if(arguments.xmlDoc.xmlRoot.defaultPage.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "defaultPage");
-				if(arguments.xmlDoc.xmlRoot.contentRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentRoot");
-				if(arguments.xmlDoc.xmlRoot.pageCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheSize");
-				if(arguments.xmlDoc.xmlRoot.pageCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheTTL");
-				if(arguments.xmlDoc.xmlRoot.catalogCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheSize");
-				if(arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"defaultPage") and arguments.xmlDoc.xmlRoot.defaultPage.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "defaultPage");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRoot") and arguments.xmlDoc.xmlRoot.contentRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentRoot");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheSize") and arguments.xmlDoc.xmlRoot.pageCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheSize");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheTTL") and arguments.xmlDoc.xmlRoot.pageCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheTTL");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheSize") and arguments.xmlDoc.xmlRoot.catalogCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheSize");
+				if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheTTL") and arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
 			}
 			
-			if(arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
-			if(arrayLen(arguments.xmlDoc.xmlRoot.contentRenderers.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "contentRenderers");
-			if(arrayLen(arguments.xmlDoc.xmlRoot.plugins.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "plugins");
-			if(arrayLen(arguments.xmlDoc.xmlRoot.resourceTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceTypes");
-			if(arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
-			if(arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResources") and arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRenderers") and arrayLen(arguments.xmlDoc.xmlRoot.contentRenderers.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "contentRenderers");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"plugins") and arrayLen(arguments.xmlDoc.xmlRoot.plugins.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "plugins");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceTypes");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
 	
 			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
 

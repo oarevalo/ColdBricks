@@ -254,6 +254,10 @@
 						throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 				}
 
+				if(pp.pageExists(parentPath & "/" & pageName)) {
+					throw("There is already a page named '#pageName#' on this folder. Please enter a different name.","coldbricks.validation");
+				}
+
 				pp.move(pagePath, parentPath & "/" & pageName);
 
 				setMessage("info", "Page has been renamed");
@@ -275,6 +279,7 @@
 			var pagePath = getValue("pagePath","");
 			var oContext = getService("sessionContext").getContext();
 			var nextEvent = getValue("nextEvent","pages.ehPages.dspNode");
+			var currentFolder = "/";
 			var pp = 0;
 			var oPage_src = 0;
 			var oPage_tgt = 0;
@@ -287,18 +292,22 @@
 
 				oPage_src = pp.load(pagePath);
 
-				newPath = parentPath & "/" & getFileFromPath(pagePath) & "_copy";
+				newPath = pagePath & "_copy";
 				oPage_tgt = createObject("component","homePortals.components.pageBean").init(oPage_src.toXML());
 	
 				// make sure the page has a unique name within the account
 				while(bFound) {
-					newPath = parentPath & "/" & getFileFromPath(pagePath) & currIndex;
+					newPath = pagePath & currIndex;
 					bFound = pp.pageExists(newPath);
 					currIndex = currIndex + 1;
 				}	
-	
+
 				pp.save(newPath, oPage_tgt);
 
+				if(listlen(pagePath,"/") gt 1) {
+					currentFolder = listDeleteAt(pagePath,listLen(pagePath,"/"),"/");
+				}
+				
 				setMessage("info", "Page has been copied");
 
 			} catch(coldBricks.validation e) {
@@ -308,7 +317,7 @@
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}			
-			setNextEvent(nextEvent,"path=#parentPath#");
+			setNextEvent(nextEvent,"path=#currentFolder#");
 		</cfscript>
 	</cffunction>	
 				

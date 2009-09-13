@@ -6,6 +6,7 @@
 	<script type="text/javascript">
 		function selectTreeNode(path) {
 			doEvent("pages.ehPages.dspNode","nodePanel",{path: path});
+			clearNodeInfo();
 		}
 				
 		function reloadNode(path) {
@@ -29,18 +30,24 @@
 			if(d2) d2.style.fontWeight="bold";
 		}
 		
+		function clearNodeInfo() {
+			$("nodeInfoPanel").innerHTML = "<p align='center'><br>Select a page from the pages view to view information</p>";
+		}
+		
 		function openPage(path) {
 			document.location = 'index.cfm?event=page.ehPage.dspMain&page='+escape(path);
 		}
 		
 		function deletePage(path,pathToDelete) {
 			if(confirm('Delete page?')) {
+				clearNodeInfo();
 				doEvent("pages.ehPages.doDeleteNodes","nodePanel",{path: path, pathsToDelete: 'page;'+pathToDelete});
 			}
 		}		
 
 		function deleteFolder(path,pathToDelete) {
 			if(confirm('Delete folder and all of its contents?')) {
+				clearNodeInfo();
 				doEvent("pages.ehPages.doDeleteNodes","nodePanel",{path: path, pathsToDelete: 'folder;'+pathToDelete});
 			}
 		}		
@@ -62,6 +69,7 @@
 		function renamePage(parentPath, pagePath) {
 			var name = prompt("Enter the name of the new page:");
 			if(name!="" && name!=null) {
+				clearNodeInfo();
 				doEvent("pages.ehPages.doRenamePage","nodePanel",{parentPath: parentPath, pagePath: pagePath, newName: name});
 			}
 		}

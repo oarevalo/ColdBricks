@@ -17,7 +17,7 @@
 		else
 			tmpPageURL = appRoot & "/index.cfm?page=#path#";
 			
-		parentPath = listDeleteAt(path,listLen(path));
+		parentPath = listDeleteAt(path,listLen(path,"/"),"/");
 		if(parentPath eq "") parentPath = "/";	
 	}
 </cfscript>

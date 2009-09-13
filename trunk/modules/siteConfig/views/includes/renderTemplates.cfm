@@ -85,6 +85,8 @@
 					<cfset stTemplate = structNew()>	
 					<cfset templateEditKey = "">
 				</cfif>
+				<cfset templateEditKey = listFirst(templateEditKey,";")>
+				
 				<cfparam name="stTemplate.name" default="">
 				<cfparam name="stTemplate.type" default="">
 				<cfparam name="stTemplate.href" default="">
@@ -103,7 +105,7 @@
 							<form name="frmEditTemplate" action="index.cfm" method="post">
 								<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveRenderTemplate">
 								<cfif not isNew>
-									<input type="hidden" name="name" value="#templateEditKey#">
+									<input type="text" name="name" value="#templateEditKey#">
 								</cfif>
 								<table>
 									<tr>
