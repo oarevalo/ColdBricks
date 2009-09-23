@@ -125,3 +125,16 @@ function uploadResource(resType,pkg,resLibIndex) {
 
 	fb.loadAnchor(href,"width:440 height:300 loadPageOnClose:self");
 }
+
+function createResource(resType,pkg,resLibIndex) {
+	if(pkg==null || pkg==undefined) pkg="";
+	if(resLibIndex==null || resLibIndex==undefined) resLibIndex="";
+
+	var href = "index.cfm"
+				+ "?event=resources.ehResources.dspCreateResource" 
+				+ "&resourceType=" + resType
+				+ "&pkg=" + pkg
+				+ "&resLibIndex=" + resLibIndex
+
+	fb.loadAnchor(href,"width:440 height:300 loadPageOnClose:self");
+}
