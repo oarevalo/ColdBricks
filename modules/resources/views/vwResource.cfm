@@ -99,6 +99,10 @@
 							&bull; <a href="##" onclick="loadResourceEditor('#jsStringFormat(id)#','plain')">Create using Plain Text Editor</a><br />
 						</cfif>
 					</cfif>
+					
+					<cfif tmpHREF neq "" and stInfo.exists>
+						&bull; <a href="#tmpFullHREF#" target="_blank">Open File in Browser</a><br />
+					</cfif>
 
 					<cfif tmpHREF neq "">
 						<br />

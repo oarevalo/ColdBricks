@@ -345,6 +345,56 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="dspCreateResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oContext = getService("sessionContext").getContext();
+			var fileContent = "";
+			var href = "";
+			var	fullhref = "";
+			var	done = getValue("done",false);
+			
+			try {
+				setLayout("Layout.Clean");
+
+				hp = oContext.getHomePortals();
+
+				setResourceContext();
+				resourceType = getValue("resourceType");
+				resLibIndex = getValue("resLibIndex");
+				package = getValue("pkg");
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+
+				if(resLibIndex gt 0) {
+					oContext.setResLibIndex(resLibIndex);
+					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+					setValue("qryPackages", qryPackages);	
+
+					aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+					oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
+					tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
+					setValue("oResourceBean", oResourceBean);	
+					setValue("resourceTypeConfig", tmp[resourceType]);
+				}
+
+				// set values
+				setValue("resourceType", resourceType);	
+				setValue("package", package);	
+				setValue("resLibIndex", resLibIndex);	
+				setValue("aResLibs", aResLibs);	
+				setValue("done", done);
+				
+				setView("vwCreateResource");
+				
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="dspSelectResourceLibrary" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
@@ -772,6 +822,75 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="doCreateResource" access="public" returntype="void">
+		<cfscript>
+			var hp = 0;
+			var oCatalog = 0;
+			var resourceType = "";
+			var resLibIndex = 0;
+			var package = getValue("package");
+			var packageNew = getValue("package_new");
+			var id = getValue("id","");
+			var description = getValue("description","");
+			var oResourceBean = 0;
+			var resourceLibraryPath = "";
+			var oResourceLibrary = 0;
+			var oContext = getService("sessionContext").getContext();
+
+			try {		
+				hp = oContext.getHomePortals();
+
+				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
+				if(resLibIndex lte 0) throw("Please select a resource library","coldBricks.validation"); 
+				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				
+				if(package eq "") package = packageNew;
+
+				// check if we have a saved context
+				resourceType = oContext.getResourceType();
+
+				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
+				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
+
+				// check if we need to create the restype dir
+				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName();
+				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
+
+				// check if we need to create the package dir
+				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
+
+				// create the bean for the new resource
+				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
+				oResourceBean.setID( id );
+				oResourceBean.setDescription(description); 
+				oResourceBean.setPackage(package); 
+
+				props = oResourceBean.getProperties();
+				for(key in props) {
+					oResourceBean.setProperty(key, getValue("cp_#key#"));
+				}
+	
+				/// add the new resource to the library
+				aResLibs[resLibIndex].saveResource(oResourceBean);
+
+				// update catalog
+				hp.getCatalog().reloadPackage(resourceType,package);
+
+				setMessage("info","Resource created");
+				setNextEvent("resources.ehResources.dspCreateResource","done=true");
+
+			} catch(coldBricks.validation e) {
+				setMessage("warning",e.message);
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}
+		
+			setNextEvent("resources.ehResources.dspCreateResource");
+		</cfscript>
+	</cffunction>
 	
 	
 	<cffunction name="getResourceLibraryPathFromSite" returntype="string" access="private">

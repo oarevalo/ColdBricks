@@ -92,7 +92,7 @@
 			<td align="right" style="padding-right:10px;width:120px;">
 				<cfif resourceType neq "module">
 					<div class="buttonImage btnLarge" style="margin:0px;">
-						<a href="##" onclick="selectResource('#resourceType#','NEW','','#reslibIndex#')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
+						<a href="##" onclick="createResource('#resourceType#','NEW','','#reslibIndex#')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
 					</div>	
 				</cfif>
 			</td>
