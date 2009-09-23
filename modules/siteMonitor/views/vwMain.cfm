@@ -94,6 +94,9 @@
 					</tr>
 					<cfset index=index+1>
 				</cfloop>
+				<cfif arrayLen(aCaches) eq 0>
+					<tr><td colspan="7"><cfif not probeWS.isLoaded()><em>Application not loaded</em><cfelse>No caches found in registry</cfif></td></tr>
+				</cfif>
 			</table>
 		</td>
 		<td width="200">
