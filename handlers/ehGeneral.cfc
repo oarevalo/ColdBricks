@@ -21,7 +21,6 @@
 			var isAllowed = true;
 			var oUser = 0;
 			var oContext = getService("sessionContext").getContext();
-			var oPlugin = 0;
 		
 			// get user object in session (if exists)
 			if(oContext.hasUser())
@@ -42,6 +41,9 @@
 			}
 				
 			try {
+				// if the request is for an external module, then drop the external module prefix 
+				if(listLen(event,".") gt 3) event = listDeleteAt(event,1,".");
+				
 				// check login
 				if(not listFindNoCase(lstFreeEvents,event) and (oUser.getID() eq 0 or oUser.getID() eq "")) {
 					setMessage("Warning","Please enter your username and password");
@@ -60,12 +62,7 @@
 					else
 						setNextEvent("ehGeneral.dspLogin");
 				}
-	
-				// if this is a plugin request, then get the plugin info
-				if(listLen(getEvent(),".") eq 3) {
-				//	oPlugin = getService("plugins").getPluginByModuleName( listFirst(getEvent(),".") );
-				} 
-	
+		
 				// set generally available values on the request context
 				setValue("hostName", hostName);
 				setValue("applicationTitle", appTitle);
@@ -73,7 +70,6 @@
 	
 				setValue("oUser", oUser);
 				setValue("oContext", oContext);
-				setValue("oPlugin", oPlugin);
 	
 				// these are values that can be used to modify the layout
 				setValue("cbPageTitle", "");
@@ -324,28 +320,33 @@
 
 	<cffunction name="initModules" access="private" returntype="void">
 		<cfset var qryDir = 0>
-		<cfset var modulesPath = "/ColdBricks/modules">
+		<cfset var lstModulesPath = "/ColdBricks/modules,/ColdBricksModules">
+		<cfset var modulesPath = "">
 		<cfset var tmp = "">
 		
-		<!--- get existing modules --->
-		<cfdirectory action="list" directory="#expandPath(modulesPath)#" name="qryDir">
-
-		<!--- get only directories, and filter out special purpose dirs --->
-		<cfquery name="qryDir" dbtype="query">
-			SELECT *
-				FROM qryDir
-				WHERE type = 'Dir'
-					AND Name NOT LIKE '.%'
-				ORDER BY Name
-		</cfquery>	
+		<cfloop list="#lstModulesPath#" index="modulesPath">
+			<cfif directoryExists(expandPath(modulesPath))>
+				<!--- get existing modules --->
+				<cfdirectory action="list" directory="#expandPath(modulesPath)#" name="qryDir">
 		
-		<cfloop query="qryDir">
-			<!--- build path of plugin manifest file --->
-			<cfset tmp = modulesPath & "/" & qryDir.name & "/init.cfm">
-			<cfif fileExists(expandPath(tmp))>
-				<cfinclude template="#tmp#">
+				<!--- get only directories, and filter out special purpose dirs --->
+				<cfquery name="qryDir" dbtype="query">
+					SELECT *
+						FROM qryDir
+						WHERE type = 'Dir'
+							AND Name NOT LIKE '.%'
+						ORDER BY Name
+				</cfquery>	
+				
+				<cfloop query="qryDir">
+					<!--- build path of plugin manifest file --->
+					<cfset tmp = modulesPath & "/" & qryDir.name & "/init.cfm">
+					<cfif fileExists(expandPath(tmp))>
+						<cfinclude template="#tmp#">
+					</cfif>
+				</cfloop>	
 			</cfif>
-		</cfloop>	
+		</cfloop>
 	</cffunction>
 
 </cfcomponent>
