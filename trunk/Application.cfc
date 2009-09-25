@@ -23,6 +23,8 @@
 	<cfset this.restartKey = "cookieMonster">
 	<cfset this.configDoc = "config.xml">
 	<cfset this.modulesPath = "modules">
+	<cfset this.extModulesPath = "/ColdBricksModules">
+	<cfset this.extModulesPrefix = "my">
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
 	<cfset this.scriptProtect = "none">
@@ -43,9 +45,16 @@
 			
 			// set initial values in reqState
 			reqState.event = event;
+			reqState._isexternalmodule_ = false;
 			reqState.layout = this.defaultLayout;
 			reqState.view = "";
 			reqState.module = "";
+			
+			// check for external modules
+			if(listLen(event,".") eq 4 and listFirst(event,".") eq this.extModulesPrefix) {
+				reqState.event = listDeleteAt(event,1,".");
+				reqState._isexternalmodule_ = true;
+			}
 
 			// instantiate the general event handler
 			appEventHandler = createObject("component", "handlers.ehGeneral").init(reqState);
@@ -148,12 +157,14 @@
 			var oEventHandler = 0;
 			var eh_cfc = ""; var eh_path = "";
 			var rq = arguments.reqState;
-			var mp = "";
+			var mp = ""; 
+			var modulePath = this.modulesPath;
 
-			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lte 3) {
+			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lte 4) {
 				
 				// convert modulesPath to a valid dot notation
-				mp = replace(this.modulesPath,"/",".","ALL");
+				if(arguments.reqState._isexternalmodule_) modulePath = this.extModulesPath;
+				mp = replace(modulePath,"/",".","ALL");
 				if(left(mp,1) eq ".") mp = right(mp,len(mp)-1);
 				if(right(mp,1) neq ".") mp = mp & ".";
 				
@@ -262,13 +273,15 @@
 		<cfscript>
 			var basePath = "..";
 			var viewPath = "";
+			var modulePath = this.modulesPath;
 			
 			if(arguments.reqState.view neq "") {
 				if(arguments.reqState.module neq "") {
-					if(left(this.modulesPath,1) eq "/")
-						basePath = this.modulesPath & "/" & arguments.reqState.module;
+					if(arguments.reqState._isexternalmodule_) modulePath = this.extModulesPath;
+					if(left(modulePath,1) eq "/")
+						basePath = modulePath & "/" & arguments.reqState.module;
 					else
-						basePath = "../" & this.modulesPath & "/" & arguments.reqState.module;
+						basePath = "../" & modulePath & "/" & arguments.reqState.module;
 				}
 				viewPath = basePath & "/views/" & arguments.reqState.view & ".cfm";
 			}

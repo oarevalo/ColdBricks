@@ -53,6 +53,7 @@ Version 1.1
 - Updated to work with HomePortals version 3.1
 - Updated internal application framework to version 1.3 of the core framework
 - Moved to a modular architecture. All features are now deployed as standalone modules on the modules directory
+- Added support for external modules located outside the application directory
 
 Version 1.0
 - This is the first public release of ColdBricks. Have fun, send feedback!
@@ -83,7 +84,7 @@ AS SOON AS YOU LOGIN INTO COLDBRICKS!!!!
 
 On its first run, ColdBricks will create its data directory. By default, it will create a 
 directory named ColdBricksData right under the webroot. To modify the location of this 
-directory see the next section '6. Configuration Options'. Make sure that the ColdBricks
+directory see the next section '5. Configuration Options'. Make sure that the ColdBricks
 application has enough permissions to write to this directory.
 
 NOTE: It is possible to install ColdBricks on its own webroot (i.e. Apache Virtual Server),
@@ -115,6 +116,10 @@ Default value is /ColdBricks/siteTemplates
 Set this flag to false for archive files to remain in the archives 
 directory (<data_root>/archives) after a site download
 Default value is true
+
+[[ showHomePortalsAsSite ]]
+Set this flag to true to have Coldbricks display the main HomePortals directory
+as a site to be managed with coldbricks. Default is false
 
 **** IMPORTANT ****
 For any change on the config.xml file to take effect, you must logout of the application
