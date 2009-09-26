@@ -827,7 +827,7 @@
 			var hp = 0;
 			var oCatalog = 0;
 			var resourceType = "";
-			var resLibIndex = 0;
+			var resLibIndex = val(getValue("resLibIndex"));
 			var package = getValue("package");
 			var packageNew = getValue("package_new");
 			var id = getValue("id","");
@@ -841,7 +841,7 @@
 				hp = oContext.getHomePortals();
 
 				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
-				if(resLibIndex lte 0) throw("Please select a resource library","coldBricks.validation"); 
+				if(resLibIndex lte 0) throw("Please select a resource library []","coldBricks.validation"); 
 				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
 				
 				if(package eq "") package = packageNew;
