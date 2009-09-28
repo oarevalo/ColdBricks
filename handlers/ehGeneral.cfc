@@ -226,6 +226,7 @@
 
 	<cffunction name="doLogoff" access="public" returntype="void">
 		<cfset getService("sessionContext").flushContext()>
+		<cfset structClear(session)>
 		<cfset setNextEvent("ehGeneral.dspMain")>
 	</cffunction>
 
