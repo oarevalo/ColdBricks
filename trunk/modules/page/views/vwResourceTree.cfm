@@ -59,7 +59,7 @@
 								<a href="javascript:addResource('#jsstringformat(qryResources.id)#','#resType#');"><img src="images/add.png" align="absmiddle" border="0" alt="Add To Page" title="Add To Page"></a>
 								<a href="javascript:viewResourceInfo('#jsstringformat(qryResources.id)#','#resType#')"><img src="images/information.png" align="absmiddle" border="0" alt="Info" title="Info"></a>
 								<cfif resType neq "module">
-									<a href="index.cfm?event=resources.ehResources.dspMain&resType=#resType#&id=#qryResources.id#&pkg=#qryResources.package#"><img src="images/edit-page-yellow.gif" align="absmiddle" border="0" alt="Edit" title="Edit"></a>
+									<a href="javascript:editResource('#jsstringformat(qryResources.id)#','#resType#','#jsStringFormat(qryResources.package)#')"><img src="images/edit-page-yellow.gif" align="absmiddle" border="0" alt="Edit" title="Edit"></a>
 								</cfif>
 							</div>
 							<div style="width:130px;overflow:hidden;">
