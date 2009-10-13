@@ -668,59 +668,6 @@
 		</cfscript>
 	</cffunction>	
 
-	<cffunction name="dspEditResource" access="public" returntype="void">
-		<cfscript>
-			var oPage = 0;
-			var oCatalog = 0;
-			var oResourceBean = 0;
-			var type = getValue("type","info");
-			var resourceID = getValue("resourceID");
-			var resType = getValue("resType");
-			var package = getValue("package");
-			var hp = 0;
-			var oContext = getService("sessionContext").getContext();
-			
-			try {
-				hp = oContext.getHomePortals();
-				setLayout("Layout.Clean");
-
-				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				if(resType eq "") throw("Please select a resource type to edit","coldBricks.validation");
-				if(resourceID eq "") throw("Please select a resource to edit","coldBricks.validation");
-				
-				// get page from session
-				oPage = oContext.getPage();
-				oCatalog = hp.getCatalog();
-
-				oResourceBean = oCatalog.getResourceNode(resType, resourceID, true);
-				
-				// read file
-				if(oResourceBean.targetFileExists()) {
-					fileContent = oResourceBean.readFile();
-					setValue("fullhref", oResourceBean.getFullHREF());	
-				}
-
-				// pass values to view
-				setValue("oPage", oPage );
-				setValue("oCatalog", oCatalog );
-				setValue("fileContent", fileContent);	
-				setValue("pageHREF", oContext.getPageHREF());
-
-				setView("vwEditResource");
-
-			} catch(coldBricks.validation e) {
-				setMessage("warning",e.message);
-
-			} catch(any e) {
-				setMessage("error", e.message);
-				getService("bugTracker").notifyService(e.message, e);
-			}
-			
-		</cfscript>
-	</cffunction>	
-
-
 
 	<!-----  Module Actions  ---->			
 	<cffunction name="doAddResource" access="public" returntype="void">

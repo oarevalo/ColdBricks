@@ -83,6 +83,7 @@
 
 
 <cfsavecontent variable="tmpHTML">
+	<script type="text/javascript" src="modules/resource/includes/resourceEditor.js"></script>
 	<script type="text/javascript" src="modules/page/includes/pageEditor.js"></script>
 	<script type="text/javascript" src="includes/js/prototype-1.4.0.js"></script>
 	<script type="text/javascript" src="modules/page/includes/coordinates.js"></script>
