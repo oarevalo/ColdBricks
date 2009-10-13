@@ -186,8 +186,5 @@ function loadInFB(href) {
 }
 
 function editResource(resID,resType,pkg) {
-	var href = "index.cfm"
-		+ "?event=page.ehPage.dspEditResource" 
-		+ "&resourceID=" + resID + "&resType=" + resType + "&package=" + pkg;
-	fb.loadAnchor(href,"width:600 height:480 loadPageOnClose:self");
+	resourceEditor.open(resID,resType,pkg,0);
 }

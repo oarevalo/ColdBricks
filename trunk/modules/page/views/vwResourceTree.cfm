@@ -33,7 +33,7 @@
 				<div style="background-color:##f5f5f5;margin:-5px;border-bottom:1px dashed silver;padding-left:5px;">
 					<div class="buttonImage btnSmall" style="margin:0px;float:left;margin-right:5px;">
 						<cfif resType neq "module">
-							<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=#resType#&id=NEW" title="Create a new resource of type #resType#">New</a>
+							<a href="javascript:editResource('NEW','#resType#','')" title="Create a new resource of type #resType#">New</a>
 						<cfelse>
 							<span style="color:##999;"><strong>New</strong></span>
 						</cfif>
