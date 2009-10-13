@@ -184,3 +184,10 @@ function doMoveModule(dir,modID) {
 function loadInFB(href) {
 	fb.loadAnchor(href,"width:480 height:300");
 }
+
+function editResource(resID,resType,pkg) {
+	var href = "index.cfm"
+		+ "?event=page.ehPage.dspEditResource" 
+		+ "&resourceID=" + resID + "&resType=" + resType + "&package=" + pkg;
+	fb.loadAnchor(href,"width:600 height:480 loadPageOnClose:self");
+}
