@@ -33,6 +33,8 @@
 		tmpHREF = oResourceBean.getHREF();
 		tmpFullHREF = oResourceBean.getFullHref();
 		tmpDescription = oResourceBean.getDescription();
+		tmpFullPath = oResourceBean.getFullPath();
+		
 	} else {
 		lstPropsConfig = "";
 		tmpDescription = "";
@@ -82,39 +84,42 @@
 			<div class="cp_sectionTitle" style="margin:0px;padding:0px;">&nbsp; Resource Target</div>
 			<div style="margin:5px;">
 				<cfif id neq "">
+				
 					<cfif tmpHREF neq "">
 						<cfscript>
 							stInfo = structNew();
-							stInfo.exists = false;
+							stInfo.exists = oResourceBean.targetFileExists();
 
-							if(not oResourceBean.isExternalTarget()) {
-								fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
-								stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
-								stInfo.size = fileObj.length();
-								stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
-								stInfo.createdOn = stInfo.lastModified;
-								stInfo.path = fileObj.getAbsolutePath();
-								stInfo.exists = fileObj.exists();
+							if(tmpFullPath neq "") {
+								try {
+									fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
+									stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
+									stInfo.size = fileObj.length();
+									stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
+									stInfo.createdOn = stInfo.lastModified;
+									stInfo.path = fileObj.getAbsolutePath();
+									stInfo.exists = fileObj.exists();
+								} catch(any e) {
+									// ignore
+								}
 							}
 						</cfscript>
 					</cfif>
 					
 					<div style="text-align:center;margin:10px;">
 						<cfif tmpHREF neq "">
-							<cfif Not oResourceBean.isExternalTarget()>
-								<!--- for known image types, show the image --->
-								<cfif fileExists(expandPath(tmpFullHREF)) and isImageFile(expandPath(tmpFullHREF))>
-									<cfimage action="resize"
-											    width="100" height="" 
-											    source="#expandPath(tmpFullHREF)#"
-											    name="resImage">
-									<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
-								<cfelse>
-									<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
-								</cfif>
-								<br />#getFileFromPath(tmpHREF)#
-								<cfif not stInfo.exists><br />(not found)</cfif>
+							<!--- for known image types, show the image --->
+							<cfif tmpFullPath neq "" and fileExists(tmpFullPath) and isImageFile(tmpFullPath)>
+								<cfimage action="resize"
+										    width="100" height="" 
+										    source="#tmpFullPath#"
+										    name="resImage">
+								<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
+							<cfelse>
+								<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
 							</cfif>
+							<br />#getFileFromPath(tmpHREF)#
+							<cfif not stInfo.exists><br />(not found)</cfif>
 						<cfelse>
 							<em>No target assigned</em>
 						</cfif>
@@ -133,7 +138,7 @@
 						&bull; <a href="##" onclick="resourceEditor.deleteFile('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Delete File</a><br />
 					</cfif>
 					
-					<cfif not isImageFile(expandPath(tmpFullHREF))>
+					<cfif tmpHREF eq "" or not isImageFile(expandPath(tmpFullHREF))>
 						<cfif tmpHREF neq "" and stInfo.exists>
 							&bull; <a href="##" onclick="resourceEditor.editFileRichText('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Open w/ Rich Text Editor</a><br />
 							&bull; <a href="##" onclick="resourceEditor.editFilePlain('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Open w/ Plain Text Editor</a><br />
@@ -151,8 +156,15 @@
 						<br />
 						<b><u>File Info:</u></b><br />
 						<cfif stInfo.exists>
-							<b>Size:</b> #stInfo.size# bytes<br />
-							<b>Last Modified:</b> #lsDateFormat(stInfo.lastModified)#<br />
+							<cfif structKeyExists(stInfo,"size")>
+								<b>Size:</b> #stInfo.size# bytes<br />
+							</cfif>
+							<cfif structKeyExists(stInfo,"lastModified")>
+								<b>Last Modified:</b> #lsDateFormat(stInfo.lastModified)#<br />
+							</cfif>
+							<cfif not structKeyExists(stInfo,"size") and not structKeyExists(stInfo,"lastModified")>
+								<em>No additional information found</em>
+							</cfif>
 						<cfelse>
 							<em>file not found on server</em>
 						</cfif>

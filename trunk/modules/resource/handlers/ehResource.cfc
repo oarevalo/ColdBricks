@@ -208,6 +208,8 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
+			var type = getValue("type","plain");
+			var contentType = "text/html";
 
 			try {		
 				hp = oContext.getHomePortals();
@@ -217,24 +219,15 @@
 					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
+				if(type eq "plain")
+					contentType = "text/plain";
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
-				// check if we have an existing file
-				fileHREF = oResourceBean.getHREF();
-				
-				if(fileHREF eq "") {
-					fileHREF = oResourceType.getFolderName() & "/" & package & "/" & fileName;
-					oResourceBean.setHREF(fileHREF);
-				}
-
-				filePath = oResourceBean.getFullHREF();
-				fileWrite(expandPath(filePath), body, "utf-8");
-
 				// update the bean 
-				aResLibs[resLibIndex].saveResource(oResourceBean);
+				aResLibs[resLibIndex].saveResourceFile(oResourceBean, body, fileName, contentType);
 		
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
@@ -262,7 +255,6 @@
 			var package = getValue("package","");
 			var resourceID = getValue("resourceID","");
 			var oResourceLibrary = 0;
-			var fileHREF = "";
 			var oContext = getService("sessionContext").getContext();
 
 			try {		
@@ -277,15 +269,9 @@
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
-				fileHREF = oResourceBean.getHREF();
 
 				// delete resource
 				aResLibs[resLibIndex].deleteResource(resourceID, resourceType, package);
-
-				// delete target file
-				if(fileHREF neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & fileHREF))) {
-					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & fileHREF));
-				}
 
 				// remove from catalog
 				hp.getCatalog().deleteResourceNode(resourceType, resourceID);
@@ -315,6 +301,7 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
+			var pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator");
 
 			try {		
 				hp = oContext.getHomePortals();
@@ -333,21 +320,21 @@
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
 				// upload file
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
 				stFileInfo = fileUpload(resFile, path);
-				if(not stFileInfo.fileWasSaved) {
+				if(not stFileInfo.fileWasSaved) 
 					throw("File upload failed","coldBricks.validation");
-				}
-
-				// create the bean for the new resource
-				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
-				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
+				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
 
 				/// update resource in library
-				aResLibs[resLibIndex].saveResource(oResourceBean);
+				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
+				aResLibs[resLibIndex].addResourceFile(oResourceBean, path, stFileInfo.clientFile, stFileInfo.contentType & "/" & stFileInfo.contentSubType);
 			
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
+
+				// delete temp file
+				fileDelete(path);
 
 				setMessage("info","Resource target uploaded");
 
@@ -388,17 +375,10 @@
 				
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 
-				// create the bean for the new resource
+				// get reference to resource
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
-				href = oResourceBean.getHREF();
-				if(href neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & href))) {
-					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & href));
-				}
-				oResourceBean.setHREF( "" );
+				oResourceBean.deleteFile();
 
-				/// update resource in library
-				aResLibs[resLibIndex].saveResource(oResourceBean);
-			
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
 
@@ -427,7 +407,6 @@
 			var id = getValue("id","");
 			var description = getValue("description","");
 			var oResourceBean = 0;
-			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
 
@@ -445,14 +424,6 @@
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
-
-				// check if we need to create the restype dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName();
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
-
-				// check if we need to create the package dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
 
 				// create the bean for the new resource
 				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
@@ -486,50 +457,6 @@
 		</cfscript>
 	</cffunction>
 	
-	
-	
-	<cffunction name="directoryCopy" output="true" access="private" returntype="void">
-		<cfargument name="source" required="true" type="string">
-		<cfargument name="destination" required="true" type="string">
-		<cfargument name="nameconflict" required="true" default="overwrite">
-		<!---
-		 Copies a directory.
-		 
-		 @param source 	 Source directory. (Required)
-		 @param destination 	 Destination directory. (Required)
-		 @param nameConflict 	 What to do when a conflict occurs (skip, overwrite, makeunique). Defaults to overwrite. (Optional)
-		 @return Returns nothing. 
-		 @author Joe Rinehart (joe.rinehart@gmail.com) 
-		 @version 1, July 27, 2005 
-		--->	
-		<cfset var contents = "" />
-		<cfset var dirDelim = "/">
-
-		<cfif server.OS.Name contains "Windows">
-			<cfset dirDelim = "\" />
-		</cfif>
-		
-		<cfif not(directoryExists(arguments.destination))>
-			<cfdirectory action="create" directory="#arguments.destination#">
-		</cfif>
-		
-		<cfdirectory action="list" directory="#arguments.source#" name="contents">
-		
-		<cfloop query="contents">
-			<cfif contents.type eq "file">
-				<cffile action="copy" source="#arguments.source##dirDelim##name#" destination="#arguments.destination##dirDelim##name#" nameconflict="#arguments.nameConflict#">
-			<cfelseif contents.type eq "dir" and name neq ".svn">
-				<cfset directoryCopy(arguments.source & dirDelim & name, arguments.destination & dirDelim &  name) />
-			</cfif>
-		</cfloop>
-	</cffunction>
-
-	<cffunction name="directoryCreate" output="true" access="private" returntype="void">
-		<cfargument name="path" required="true" type="string">
-		<cfif not(directoryExists(arguments.path))>
-			<cfdirectory action="create" directory="#arguments.path#">
-		</cfif>
-	</cffunction>
 		
 	<cffunction name="fileUpload" access="private" returntype="struct">
 		<cfargument name="fieldName" type="string" required="true">
