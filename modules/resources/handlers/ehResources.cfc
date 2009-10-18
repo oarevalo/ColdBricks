@@ -205,48 +205,6 @@
 		</cfscript>	
 	</cffunction>
 	
-	<cffunction name="dspImport" access="public" returntype="void">
-		<cfscript>
-			var oUser = getValue("oUser");
-			var sourceSiteID = getValue("sourceSiteID");
-			var oResourceLibrary = 0;
-			var resRoot = "";
-			var qrySourceSite = 0;
-			var qrySites = 0;
-			
-			////
-			// this feature is currently disabled, redirect to resources homepage
-			setNextEvent("resources.ehResources.dspMain");
-			///
-			
-			oSiteDAO = getService("DAOFactory").getDAO("site");
-
-			if(oUser.getIsAdministrator()) {
-				// administrator can import from all sites
-				qrySites = oSiteDAO.getAll();
-			} else {	
-				// regular users can only import from homePortals site
-				qrySites = oSiteDAO.search(name="HomePortalsEngine");	
-			}
-
-			// get source site
-			if(sourceSiteID neq "") {
-				qrySourceSite = oSiteDAO.get(sourceSiteID);
-				resRoot = getResourceLibraryPathFromSite(qrySourceSite.path);
-				oResourceLibrary = createObject("component","homePortals.components.resourceLibrary").init(resRoot);
-				qryResources = oResourceLibrary.getResourcePackagesList();
-				setValue("qryResources", qryResources);
-			}
-					
-			setValue("qrySites",qrySites);		
-			setValue("cbPageTitle", "Site Resources > Import Packages");
-			setValue("cbPageIcon", "folder2_yellow_48x48.png");
-			setValue("cbShowSiteMenu", true);
-
-			setView("vwImport");	
-		</cfscript>
-	</cffunction>
-
 	<cffunction name="dspResourceEditor" access="public" returntype="void">
 		<cfscript>
 			var hp = 0;
@@ -497,11 +455,15 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
+			var type = getValue("type","plain");
+			var contentType = "text/html";
 
 			try {		
 				hp = oContext.getHomePortals();
 
 				if(id eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
+				if(type eq "plain")
+					contentType = "text/plain";
 
 				resourceType = oContext.getResourceType();
 				resLibIndex = oContext.getResLibIndex();
@@ -510,19 +472,8 @@
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
-				// check if we have an existing file
-				fileHREF = oResourceBean.getHREF();
-				
-				if(fileHREF eq "") {
-					fileHREF = oResourceType.getFolderName() & "/" & package & "/" & fileName;
-					oResourceBean.setHREF(fileHREF);
-				}
-
-				filePath = oResourceBean.getFullHREF();
-				fileWrite(expandPath(filePath), body, "utf-8");
-
 				// update the bean 
-				aResLibs[resLibIndex].saveResource(oResourceBean);
+				aResLibs[resLibIndex].saveResourceFile(oResourceBean, body, fileName, contentType);
 		
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
@@ -566,15 +517,9 @@
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
-				fileHREF = oResourceBean.getHREF();
 
 				// delete resource
 				aResLibs[resLibIndex].deleteResource(id, resourceType, package);
-
-				// delete target file
-				if(fileHREF neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & fileHREF))) {
-					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & fileHREF));
-				}
 
 				// remove from catalog
 				hp.getCatalog().deleteResourceNode(resourceType, id);
@@ -587,53 +532,6 @@
 			}
 		
 			setNextEvent("resources.ehResources.dspMain");
-		</cfscript>	
-	</cffunction>
-	
-	<cffunction name="doImport" access="public" returntype="void">
-		<cfscript>
-			var oUser = getValue("oUser");
-			var sourceSiteID = getValue("sourceSiteID");
-			var lstPackages = getValue("lstPackages");
-			var resRootSrc = ""; var resRootTgt = "";
-			var oContext = getService("sessionContext").getContext();
-			
-			try {				
-				oSiteDAO = getService("DAOFactory").getDAO("site");
-	
-				qrySourceSite = oSiteDAO.get(sourceSiteID);
-				if(qrySourceSite.recordCount eq 0) throw("Site not found!","coldBricks.validation");
-				
-				// resource library root from source site
-				resRootSrc = getResourceLibraryPathFromSite(qrySourceSite.path);
-	
-				// resource library root from target site
-				resRootTgt = getResourceLibraryPathFromSite(oContext.getSiteInfo().getPath());
-	
-				// copy packages
-				for(i=1;i lte listLen(lstPackages);i=i+1) {
-					
-					pkg = listGetAt(lstPackages,i);
-					directoryCopy(
-								expandPath(resRootSrc & "/" & pkg),
-								expandPath(resRootTgt & "/" & pkg),
-								"overwrite"
-							);
-					
-				}
-	
-				setMessage("info","Selected resource packages imported succesfully!");
-				setNextEvent("resources.ehResources.dspMain","rebuildCatalog=true");
-
-			} catch(coldBricks.validation e) {
-				setMessage("warning",e.message);
-				setNextEvent("resources.ehResources.dspImport");
-
-			} catch(any e) {
-				setMessage("error",e.message);
-				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("resources.ehResources.dspImport");
-			}
 		</cfscript>	
 	</cffunction>
 	
@@ -650,6 +548,7 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
+			var pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator");
 
 			try {		
 				hp = oContext.getHomePortals();
@@ -666,21 +565,21 @@
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
 				// upload file
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
+				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
 				stFileInfo = fileUpload(resFile, path);
-				if(not stFileInfo.fileWasSaved) {
+				if(not stFileInfo.fileWasSaved) 
 					throw("File upload failed","coldBricks.validation");
-				}
+				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
 
 				// create the bean for the new resource
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
-				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
+				aResLibs[resLibIndex].addResourceFile(oResourceBean, path, stFileInfo.clientFile, stFileInfo.contentType & "/" & stFileInfo.contentSubType);
 
-				/// update resource in library
-				aResLibs[resLibIndex].saveResource(oResourceBean);
-			
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
+
+				// delete temp file
+				fileDelete(path);
 
 				setMessage("info","Resource target uploaded");
 
@@ -723,14 +622,7 @@
 
 				// create the bean for the new resource
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
-				href = oResourceBean.getHREF();
-				if(href neq "" and fileExists(expandPath(aResLibs[resLibIndex].getPath() & href))) {
-					fileDelete(expandPath(aResLibs[resLibIndex].getPath() & href));
-				}
-				oResourceBean.setHREF( "" );
-
-				/// update resource in library
-				aResLibs[resLibIndex].saveResource(oResourceBean);
+				oResourceBean.deleteFile();
 			
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
@@ -779,33 +671,30 @@
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 
-				// check if we need to create the restype dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName();
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
-
-				// check if we need to create the package dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
-
 				// upload file
+				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
 				stFileInfo = fileUpload(resFile, path);
-				if(not stFileInfo.fileWasSaved) {
+				if(not stFileInfo.fileWasSaved) 
 					throw("File upload failed","coldBricks.validation");
-				}
-				id = getFileFromPath(stFileInfo.serverFile);
+				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
+
+				id = getFileFromPath(stFileInfo.clientFile);
 				if(listLen(id,".") gt 1) id = listDeleteAt(id,listLen(id,"."),".");
 
 				// create the bean for the new resource
 				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
 				oResourceBean.setID( id );
 				oResourceBean.setPackage(package); 
-				oResourceBean.setHREF( oResourceType.getFolderName() & "/" & package & "/" & stFileInfo.serverFile );
 
 				/// add the new resource to the library
 				aResLibs[resLibIndex].saveResource(oResourceBean);
+				aResLibs[resLibIndex].addResourceFile(oResourceBean, path, stFileInfo.clientFile, stFileInfo.contentType & "/" & stFileInfo.contentSubType);
 
 				// update catalog
 				hp.getCatalog().reloadPackage(resourceType,package);
+
+				// delete temp file
+				fileDelete(path);
 
 				setMessage("info","Resource target uploaded");
 				setNextEvent("resources.ehResources.dspUploadResource","done=true");
@@ -851,14 +740,6 @@
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
-
-				// check if we need to create the restype dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName();
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
-
-				// check if we need to create the package dir
-				path = aResLibs[resLibIndex].getPath() & oResourceType.getFolderName() & "/" & package;
-				if(not directoryExists(expandPath(path))) directoryCreate(expandPath(path));
 
 				// create the bean for the new resource
 				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
@@ -910,49 +791,6 @@
 		<cfreturn resRoot>
 	</cffunction>
 	
-	<cffunction name="directoryCopy" output="true" access="private" returntype="void">
-		<cfargument name="source" required="true" type="string">
-		<cfargument name="destination" required="true" type="string">
-		<cfargument name="nameconflict" required="true" default="overwrite">
-		<!---
-		 Copies a directory.
-		 
-		 @param source 	 Source directory. (Required)
-		 @param destination 	 Destination directory. (Required)
-		 @param nameConflict 	 What to do when a conflict occurs (skip, overwrite, makeunique). Defaults to overwrite. (Optional)
-		 @return Returns nothing. 
-		 @author Joe Rinehart (joe.rinehart@gmail.com) 
-		 @version 1, July 27, 2005 
-		--->	
-		<cfset var contents = "" />
-		<cfset var dirDelim = "/">
-
-		<cfif server.OS.Name contains "Windows">
-			<cfset dirDelim = "\" />
-		</cfif>
-		
-		<cfif not(directoryExists(arguments.destination))>
-			<cfdirectory action="create" directory="#arguments.destination#">
-		</cfif>
-		
-		<cfdirectory action="list" directory="#arguments.source#" name="contents">
-		
-		<cfloop query="contents">
-			<cfif contents.type eq "file">
-				<cffile action="copy" source="#arguments.source##dirDelim##name#" destination="#arguments.destination##dirDelim##name#" nameconflict="#arguments.nameConflict#">
-			<cfelseif contents.type eq "dir" and name neq ".svn">
-				<cfset directoryCopy(arguments.source & dirDelim & name, arguments.destination & dirDelim &  name) />
-			</cfif>
-		</cfloop>
-	</cffunction>
-
-	<cffunction name="directoryCreate" output="true" access="private" returntype="void">
-		<cfargument name="path" required="true" type="string">
-		<cfif not(directoryExists(arguments.path))>
-			<cfdirectory action="create" directory="#arguments.path#">
-		</cfif>
-	</cffunction>
-		
 	<cffunction name="fileUpload" access="private" returntype="struct">
 		<cfargument name="fieldName" type="string" required="true">
 		<cfargument name="destPath" type="string" required="true">

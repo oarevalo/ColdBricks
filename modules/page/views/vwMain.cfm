@@ -64,7 +64,6 @@
 	fileName = listDeleteAt(fileName, listlen(fileName,"."), ".");
 	
 	qrySkins = oCatalog.getResourcesByType("skin");
-	qryPageTemplates = oCatalog.getResourcesByType("pageTemplate");
 	aStyles = oPage.getStylesheets();
 	
 	if(appRoot eq "/")
