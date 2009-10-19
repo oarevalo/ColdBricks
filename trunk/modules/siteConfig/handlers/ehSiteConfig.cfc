@@ -1,9 +1,8 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 
-	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml.cfm">
+	<cfset variables.confirmMessage = "Config file changed. New settings will be applied next time the site is reset">
 	<cfset variables.accountsConfigPath = "/config/accounts-config.xml.cfm">
 	<cfset variables.modulePropertiesConfigPath = "/config/module-properties.xml">
-	<cfset variables.confirmMessage = "Config file changed. New settings will be applied next time the site is reset">
 	
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
@@ -12,23 +11,25 @@
 			var panel = "";
 	
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				panel = getValue("panel");
 				if(panel eq "" and structKeyExists(session,"panel")) panel = session.panel;
 				if(panel eq "") panel = "general";
 				session.panel = panel;
 
 				// get config config bean with server defaults
-				oHPConfigBean = getHomePortalsConfigBean("/homePortals");
+				oHPConfigBean = getService("configManager").getHomePortalsConfigBean("/homePortals");
 
 				// get config bean for this application
-				oAppConfigBean = getAppHomePortalsConfigBean();
+				oAppConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 
 				setView("vwMain");
 				setValue("panel", panel);
 				setValue("oHomePortalsConfigBean", oHPConfigBean );
 				setValue("oAppConfigBean", oAppConfigBean );
-				setValue("hasAccountsPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", structKeyExists(oContext.getHomePortals().getConfig().getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(oContext.getHomePortals().getConfig().getPlugins(),"modules") );
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -124,6 +125,7 @@
 			var xmlDocStr = "";
 			var oContext = getService("sessionContext").getContext();
 			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
+			var hpConfigPath = getSetting("homePortalsConfigPath");
 			
 			try {
 				hp = oContext.getHomePortals();
@@ -133,7 +135,7 @@
 				setValue("hasAccountsPlugin", structKeyExists(hp.getConfig().getPlugins(),"accounts") );
 				setValue("hasModulesPlugin", structKeyExists(hp.getConfig().getPlugins(),"modules") );
 					
-				arrayAppend(aConfigFiles, appRoot & variables.homePortalsConfigPath);
+				arrayAppend(aConfigFiles, appRoot & hpConfigPath);
 			
 				if(getValue("hasAccountsPlugin")) {
 					arrayAppend(aConfigFiles, appRoot & variables.accountsConfigPath);
@@ -186,7 +188,7 @@
 					return;
 				}
 
-				writeFile( expandPath( configFile ), xmlContent);
+				fileWrite( expandPath( configFile ), xmlContent, "utf-8");
 				
 				// go to the xml editor
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
@@ -205,6 +207,7 @@
 	<cffunction name="doSaveGeneral" access="public" returntype="void">
 		<cfscript>
 			var appSettings = getValue("appSettings");
+			var oContext = getService("sessionContext").getContext();
 			var xmlDoc = xmlNew();
 			
 			try {
@@ -217,7 +220,7 @@
 				if(listFind(appSettings,"catalogCacheTTL") and val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
 				
 				// get saved config
-				oAppConfigBean = getAppHomePortalsConfigBean();
+				oAppConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// update fields
 				if(listFind(appSettings,"defaultPage")) oAppConfigBean.setDefaultPage( getValue("defaultPage") );
@@ -239,7 +242,10 @@
 				if(not listFind(appSettings,"catalogCacheTTL")) structDelete(xmlDoc.xmlRoot,"catalogCacheTTL");
 				
 				// write file
-				saveAppHomePortalsConfigDoc(xmlDoc, true);
+				getService("configManager").saveAppHomePortalsConfigDoc(oContext, xmlDoc, true);
+				
+				// reload site context
+				reloadSite();
 				
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -266,12 +272,14 @@
 			var href = getValue("href");
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(type eq "") throw("The base resource type is required","validation");
 				if(href eq "") throw("The base resource value is required","validation");
 				
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean( oContext );
 				oConfigBean.addBaseResource(type, href);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 				
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -296,11 +304,13 @@
 			var aRes = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(type eq "") throw("The base resource type is required","validation");
 				if(href eq "") throw("The base resource value is required","validation");
 
 				// remove resource
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				aRes = oConfigBean.getBaseResourcesByType(type);
 				if(index lte arrayLen(aRes))
 					oConfigBean.removeBaseResource(type, aRes[index]);
@@ -308,7 +318,7 @@
 				// add new values for resource
 				oConfigBean.addBaseResource(type, href);
 				
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 				
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -333,15 +343,17 @@
 			var aRes = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(type eq "") throw("The base resource type is required","validation");
 
 				// remove resource
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				aRes = oConfigBean.getBaseResourcesByType(type);
 				if(index lte arrayLen(aRes))
 					oConfigBean.removeBaseResource(type, aRes[index]);
 
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -367,11 +379,13 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(path eq "") throw("The resource library path is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.addResourceLibraryPath(path);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -396,10 +410,12 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(val(index) eq 0) throw("You must select a resource library to edit","validation");
 				if(path eq "") throw("The resource library path is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove resource lib
 				aResLibs = oConfigBean.getResourceLibraryPaths();
@@ -410,7 +426,7 @@
 				oConfigBean.addResourceLibraryPath(path);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -434,9 +450,11 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(val(index) eq 0) throw("You must select a resource library to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove resource lib
 				aResLibs = oConfigBean.getResourceLibraryPaths();
@@ -444,7 +462,7 @@
 					oConfigBean.removeResourceLibraryPath(aResLibs[index]);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -471,12 +489,14 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The content renderer name is required","validation");
 				if(path eq "") throw("The content renderer path is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setContentRenderer(name, path);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -500,15 +520,17 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a content renderer to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removeContentRenderer(name);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -535,12 +557,14 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The plugin name is required","validation");
 				if(path eq "") throw("The plugin path is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setPlugin(name, path);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -564,15 +588,17 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a plugin to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removePlugin(name);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -598,15 +624,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The resource type name is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setResourceType(name = name,
 											folderName = getValue("folderName"),
 											description = getValue("description"),
 											resBeanPath = getValue("resBeanPath"),
 											fileTypes = getValue("fileTypes"));
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -629,15 +657,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a resource type to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removeResourceType(name);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -663,12 +693,14 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The resource type property name is required","validation");
 				if(resTypeEditKey eq "") throw("The resource type name is required","validation");
 
 				if(type eq "resource") type = "resource:" & getValue("resourceType");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setResourceTypeProperty(resType = resTypeEditKey,
 													name = name,
 													description = getValue("description"),
@@ -677,7 +709,7 @@
 													required = getValue("required"),
 													default = getValue("default"),
 													label = getValue("label"));
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
@@ -701,15 +733,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a resource type to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removeResourceTypeProperty(resTypeEditKey, name);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
@@ -739,13 +773,15 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The render template name is required","validation");
 				if(href eq "") throw("The render template path is required","validation");
 				if(type eq "") throw("The render template type is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -769,15 +805,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a render template to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove render template
 				oConfigBean.removeRenderTemplate(name, type);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -804,11 +842,13 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The page property name is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setPageProperty(name, value);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -817,7 +857,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
 
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -831,11 +871,13 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a page property to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.removePageProperty(name);
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -860,13 +902,15 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(getValue("prefix") eq "") throw("The resource library type prefix is required","validation");
 				if(getValue("path") eq "") throw("The resource library type path is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setResourceLibraryType(prefix = getValue("prefix"),
 													path = getValue("path"));
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -889,15 +933,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(prefix eq "") throw("You must select a resource library type to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removeResourceLibraryType(prefix);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("siteConfig.ehSiteConfig.dspMain");
@@ -921,14 +967,16 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("The resource library type property name is required","validation");
 				if(resLibTypeEditKey eq "") throw("The resource library type is required","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setResourceLibraryTypeProperty(prefix = resLibTypeEditKey,
 															name = name,
 															value = getValue("value"));
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
@@ -952,15 +1000,17 @@
 			var oConfigBean = 0;
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				
 				if(name eq "") throw("You must select a resource library type to delete","validation");
 
-				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
 				// remove content renderer
 				oConfigBean.removeResourceLibraryTypeProperty(resLibTypeEditKey, name);
 				
 				// save changes
-				saveAppHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
@@ -1158,7 +1208,7 @@
 				}
 	
 				// write file
-				writeFile(configFile, toString(xmlDoc));
+				fileWrite(configFile, toString(xmlDoc), "utf-8");
 
 				setMessage("info", variables.confirmMessage);
 				setNextEvent("siteConfig.ehSiteConfig.dspAccounts");
@@ -1177,31 +1227,6 @@
 
 	
 	<!--- Private Methods ---->	
-	
-	<cffunction name="writeFile" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfargument name="content" type="string" required="true">
-		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
-	</cffunction>
-
-
-	<cffunction name="getHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
-		<cfargument name="appRoot" type="string" required="true">
-		<cfscript>
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(appRoot & variables.homePortalsConfigPath) );
-			return oConfigBean;
-		</cfscript>
-	</cffunction>
-
-	<cffunction name="getAppHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
-		<cfscript>
-			var oContext = getService("sessionContext").getContext();
-			var appRoot = oContext.getHomePortals().getConfig().getAppRoot();
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(appRoot & variables.homePortalsConfigPath) );
-			return oConfigBean;
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortalsAccounts.components.accountsConfigBean">
 		<cfscript>
@@ -1225,7 +1250,7 @@
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
 		<cfargument name="configBean" type="homePortalsModules.components.modulePropertiesConfigBean" required="true">
-		<cfset writeFile( expandPath(arguments.configPath), toString( arguments.configBean.toXML() ) )>
+		<cfset fileWrite( expandPath(arguments.configPath), toString( arguments.configBean.toXML() ),"utf-8" )>
 	</cffunction>
 		
 	<cffunction name="parseAppAccountsConfigFile" access="private" returntype="struct">
@@ -1247,70 +1272,4 @@
 		</cfscript>
 	</cffunction>	
 	
-
-
-	<cffunction name="saveAppHomePortalsConfigBean" access="private" returntype="void">
-		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
-		<cfargument name="includeGeneralSettings" type="boolean" required="false" default="no">
-		<cfscript>
-			var oContext = getService("sessionContext").getContext();
-			var appRoot = oContext.getHomePortals().getConfig().getAppRoot();
-			saveHomePortalsConfigDoc(appRoot, arguments.configBean.toXML(), arguments.includeGeneralSettings);
-		</cfscript>
-	</cffunction>		
-
-	<cffunction name="saveAppHomePortalsConfigDoc" access="private" returntype="void">
-		<cfargument name="xmlDoc" type="XML" required="true">
-		<cfargument name="includeGeneralSettings" type="boolean" required="false" default="no">
-		<cfscript>
-			var oContext = getService("sessionContext").getContext();
-			var appRoot = oContext.getHomePortals().getConfig().getAppRoot();
-			saveHomePortalsConfigDoc(appRoot, arguments.xmlDoc, arguments.includeGeneralSettings);
-		</cfscript>
-	</cffunction>		
-	
-	<cffunction name="saveHomePortalsConfigDoc" access="private" returntype="void">
-		<cfargument name="appRoot" type="string" required="true">
-		<cfargument name="xmlDoc" type="XML" required="true">
-		<cfargument name="includeGeneralSettings" type="boolean" required="false" default="no">
-		
-		<cfscript>
-			var filePath = arguments.appRoot & variables.homePortalsConfigPath;
-			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
-			
-			structDelete(arguments.xmlDoc.xmlRoot.xmlAttributes, "version");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResourceTypes") and arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"initialEvent") and arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"homePortalsPath") and arguments.xmlDoc.xmlRoot.homePortalsPath.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "homePortalsPath");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"appRoot") and arguments.xmlDoc.xmlRoot.appRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "appRoot");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"bodyOnLoad") and arguments.xmlDoc.xmlRoot.bodyOnLoad.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "bodyOnLoad");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProviderClass") and arguments.xmlDoc.xmlRoot.pageProviderClass.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageProviderClass");
-			
-			// remove nodes that we are not editing
-			if(not arguments.includeGeneralSettings) {
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"defaultPage") and arguments.xmlDoc.xmlRoot.defaultPage.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "defaultPage");
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRoot") and arguments.xmlDoc.xmlRoot.contentRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentRoot");
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheSize") and arguments.xmlDoc.xmlRoot.pageCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheSize");
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheTTL") and arguments.xmlDoc.xmlRoot.pageCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheTTL");
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheSize") and arguments.xmlDoc.xmlRoot.catalogCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheSize");
-				if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheTTL") and arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
-			}
-			
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResources") and arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRenderers") and arrayLen(arguments.xmlDoc.xmlRoot.contentRenderers.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "contentRenderers");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"plugins") and arrayLen(arguments.xmlDoc.xmlRoot.plugins.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "plugins");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceTypes");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryTypes");
-	
-			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
-
-			// reload site
-			reloadSite();
-		</cfscript>
-	</cffunction>	
-		
-		
 </cfcomponent>

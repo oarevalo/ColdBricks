@@ -1,12 +1,12 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
-	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml.cfm">
 	<cfset pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator")>
 
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			try {
-				stContRenders = getAppHomePortalsConfigBean().getContentRenderers();
+				oContext = getService("sessionContext").getContext();
+				stContRenders = getService("configManager").getAppHomePortalsConfigBean(oContext).getContentRenderers();
 				
 				setView("vwMain");
 				setValue("stContentRenderers",stContRenders);
@@ -23,12 +23,14 @@
 	<cffunction name="dspModule" access="public" returntype="void">
 		<cfscript>
 			var moduleType = getValue("moduleType");
-			var oConfig = getAppHomePortalsConfigBean();
 			var isCustom = false;
 			var aFields = arrayNew(1);
 			
 			try {
 				setLayout("Layout.None");
+				
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
 
 				path = oConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
@@ -122,10 +124,12 @@
 			var name = getValue("name");
 			var oContext = getService("sessionContext").getContext();
 			var oConfig = oContext.getHomePortals().getConfig();
-			var oAppConfig = getAppHomePortalsConfigBean();
+			var oAppConfig = 0;
 			var propInfo = structNew();
 			
 			try {
+				oAppConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+
 				path = oAppConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
 				md = duplicate(getMetaData(oCR));
@@ -161,10 +165,12 @@
 			var name = getValue("name");
 			var path = getValue("path");
 			var description = getValue("description");
-			var oConfig = getAppHomePortalsConfigBean();
 			var dotpath = "";
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+
 				if(name eq "") throw("Module name cannot be blank","coldbricks.validation");
 				if(path eq "") throw("Module path cannot be blank","coldbricks.validation");
 				if(reFind("[^A-Za-z0-9_]",name)) 
@@ -179,7 +185,7 @@
 				if(left(dotpath,1) eq ".") dotpath = right(dotpath,len(dotpath)-1);
 				
 				oConfig.setContentRenderer(name, dotpath);	
-				saveAppHomePortalsConfigBean(oConfig);
+				getService("configManager").saveAppHomePortalsConfigBean(oContext, oConfig);
 					
 				setMessage("info", "Module created");
 				setNextEvent("moduleMaker.ehModuleMaker.dspAddModule","done=true");
@@ -198,7 +204,6 @@
 
 	<cffunction name="doSave" access="public" returntype="void">
 		<cfscript>
-			var oConfig = getAppHomePortalsConfigBean();
 			var moduleType = getValue("moduleType");
 			var description = getValue("hint");
 			var body = getValue("body");
@@ -206,6 +211,9 @@
 			var aprops = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+
 				path = oConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
 				md = duplicate(getMetaData(oCR));
@@ -233,9 +241,11 @@
 	<cffunction name="doDelete" access="public" returntype="void">
 		<cfscript>
 			var moduleType = getValue("moduleType");
-			var oConfig = getAppHomePortalsConfigBean();
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+	
 				if(moduleType eq "") throw("Module name cannot be blank","coldbricks.validation");
 
 				path = oConfig.getContentRenderer(moduleType);
@@ -245,7 +255,7 @@
 				deleteModule(moduleType, getDirectoryFromPath(md.path));
 				
 				oConfig.removeContentRenderer(moduleType);
-				saveAppHomePortalsConfigBean(oConfig);
+				getService("configManager").saveAppHomePortalsConfigBean(oContext, oConfig);
 				
 				setMessage("info", "Module deleted");
 				setNextEvent("moduleMaker.ehModuleMaker.dspMain");
@@ -269,10 +279,12 @@
 			var name = getValue("name");
 			var type = getValue("type");
 			var aprops = arrayNew(1);
-			var oConfig = getAppHomePortalsConfigBean();
 			var desc = "";
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+
 				if(name eq "") throw("The module property name is required","coldbricks.validation");
 				if(type eq "") throw("The module property type is required","coldbricks.validation");
 				if(type eq "resource") type = "resource:" & getValue("resourceType");
@@ -332,10 +344,12 @@
 		<cfscript>
 			var moduleType = getValue("moduleType");
 			var name = getValue("name");
-			var oConfig = getAppHomePortalsConfigBean();
 			var aprops = arrayNew(1);
 			
 			try {
+				oContext = getService("sessionContext").getContext();
+				oConfig = getService("configManager").getAppHomePortalsConfigBean(oContext);
+
 				path = oConfig.getContentRenderer(moduleType);
 				oCR = createObject("component",path);
 				md = duplicate(getMetaData(oCR));
@@ -463,62 +477,7 @@
 		
 		<cfset reloadSite()>
 	</cffunction>	
-	
-	<cffunction name="getAppHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
-		<cfscript>
-			var oContext = getService("sessionContext").getContext();
-			var appRoot = oContext.getHomePortals().getConfig().getAppRoot();
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(appRoot & variables.homePortalsConfigPath) );
-			return oConfigBean;
-		</cfscript>
-	</cffunction>
-
-	<cffunction name="saveAppHomePortalsConfigBean" access="private" returntype="void">
-		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
-		<cfscript>
-			var oContext = getService("sessionContext").getContext();
-			var appRoot = oContext.getHomePortals().getConfig().getAppRoot();
-			saveHomePortalsConfigDoc(appRoot, arguments.configBean.toXML());
-		</cfscript>
-	</cffunction>		
-
-	<cffunction name="saveHomePortalsConfigDoc" access="private" returntype="void">
-		<cfargument name="appRoot" type="string" required="true">
-		<cfargument name="xmlDoc" type="XML" required="true">
-	
-		<cfscript>
-			var filePath = arguments.appRoot & variables.homePortalsConfigPath;
-			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
 			
-			structDelete(arguments.xmlDoc.xmlRoot.xmlAttributes, "version");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResourceTypes") and arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"initialEvent") and arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"homePortalsPath") and arguments.xmlDoc.xmlRoot.homePortalsPath.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "homePortalsPath");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"appRoot") and arguments.xmlDoc.xmlRoot.appRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "appRoot");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"bodyOnLoad") and arguments.xmlDoc.xmlRoot.bodyOnLoad.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "bodyOnLoad");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProviderClass") and arguments.xmlDoc.xmlRoot.pageProviderClass.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageProviderClass");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"defaultPage") and arguments.xmlDoc.xmlRoot.defaultPage.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "defaultPage");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRoot") and arguments.xmlDoc.xmlRoot.contentRoot.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "contentRoot");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheSize") and arguments.xmlDoc.xmlRoot.pageCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheSize");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageCacheTTL") and arguments.xmlDoc.xmlRoot.pageCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "pageCacheTTL");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheSize") and arguments.xmlDoc.xmlRoot.catalogCacheSize.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheSize");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheTTL") and arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResources") and arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRenderers") and arrayLen(arguments.xmlDoc.xmlRoot.contentRenderers.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "contentRenderers");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"plugins") and arrayLen(arguments.xmlDoc.xmlRoot.plugins.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "plugins");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceTypes");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryTypes");
-	
-			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
-
-			// reload site
-			reloadSite();
-		</cfscript>
-	</cffunction>	
-		
 	<cffunction name="isCustomContentRenderer" access="public" returntype="boolean">
 		<cfargument name="obj" type="any" required="true">
 		<cftry>

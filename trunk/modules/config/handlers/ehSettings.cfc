@@ -1,12 +1,13 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
-	
-	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml.cfm">
+
 	<cfset variables.accountsConfigPath = "/homePortalsAccounts/config/accounts-config.xml.cfm">
 	<cfset variables.modulePropertiesConfigPath = "/homePortalsModules/config/module-properties.xml">
 	
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
 			try {
+				configBean = getService("configManager").getHomePortalsConfigBean();
+				
 				panel = getValue("panel");
 				if(panel eq "" and structKeyExists(session,"panel")) panel = session.panel;
 				if(panel eq "") panel = "general";
@@ -17,10 +18,10 @@
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
 
-				setValue("oHomePortalsConfigBean", getHomePortalsConfigBean() );
+				setValue("oHomePortalsConfigBean", configBean );
 				
-				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -33,12 +34,14 @@
 	<cffunction name="dspAccounts" access="public" returntype="void">
 		<cfscript>
 			try {
+				configBean = getService("configManager").getHomePortalsConfigBean();
+				
 				setView("vwAccounts");
 				setValue("oAccountsConfigBean", getAccountsConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
-				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -51,12 +54,14 @@
 	<cffunction name="dspModuleProperties" access="public" returntype="void">
 		<cfscript>
 			try {
+				configBean = getService("configManager").getHomePortalsConfigBean();
+				
 				setView("vwModuleProperties");
 				setValue("oModulePropertiesConfigBean", getModulePropertiesConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
-				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -75,17 +80,20 @@
 			var xmlDocStr = "";
 			var qryHelp = 0;
 			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
+			var hpConfigPath = getSetting("homePortalsConfigPath");
 			
 			try {
-				setValue("hasAccountsPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getHomePortalsConfigBean().getPlugins(),"modules") );
+				configBean = getService("configManager").getHomePortalsConfigBean();
 				
-				arrayAppend(aConfigFiles, variables.homePortalsConfigPath);
+				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
+				
+				arrayAppend(aConfigFiles, "/homePortals" & hpConfigPath);
 
 				if(getValue("hasAccountsPlugin")) {
 					arrayAppend(aConfigFiles, variables.accountsConfigPath);
-					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/default.xml");
-					arrayAppend(aConfigFiles, "/homePortals/common/AccountTemplates/newPage.xml");
+					arrayAppend(aConfigFiles, "/homePortalsAccounts/common/pages/default.xml");
+					arrayAppend(aConfigFiles, "/homePortalsAccounts/common/pages/newPage.xml");
 				}
 				if(getValue("hasModulesPlugin")) {
 					arrayAppend(aConfigFiles, variables.modulePropertiesConfigPath);
@@ -132,7 +140,7 @@
 					return;
 				}
 
-				writeFile( expandPath( configFile ), xmlContent);
+				fileWrite( expandPath( configFile ), xmlContent, "utf-8");
 				
 				// go to the xml editor
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
@@ -164,7 +172,7 @@
 				if(val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
 				
 				// set new values
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setDefaultPage(defaultPage);
 				oConfigBean.setPageCacheSize(pageCacheSize);
 				oConfigBean.setPageCacheTTL(pageCacheTTL);
@@ -173,7 +181,7 @@
 				oConfigBean.setContentRoot(contentRoot);
 			
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -204,9 +212,9 @@
 				if(type eq "") throw("The base resource type is required","validation");
 				if(href eq "") throw("The base resource value is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.addBaseResource(type, href);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -236,7 +244,7 @@
 				if(val(index) eq 0) throw("You must select a base resource to edit","validation");
 				if(href eq "") throw("The base resource value is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove resource
 				aRes = oConfigBean.getBaseResourcesByType(type);
@@ -247,7 +255,7 @@
 				oConfigBean.addBaseResource(type, href);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -275,7 +283,7 @@
 				if(type eq "") throw("The base resource type is required","validation");
 				if(val(index) eq 0) throw("You must select a base resource to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove resource
 				aRes = oConfigBean.getBaseResourcesByType(type);
@@ -283,7 +291,7 @@
 					oConfigBean.removeBaseResource(type, aRes[index]);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -311,9 +319,9 @@
 			try {
 				if(path eq "") throw("The resource library path is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.addResourceLibraryPath(path);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -341,7 +349,7 @@
 				if(val(index) eq 0) throw("You must select a resource library to edit","validation");
 				if(path eq "") throw("The resource library path is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove resource lib
 				aResLibs = oConfigBean.getResourceLibraryPaths();
@@ -352,7 +360,7 @@
 				oConfigBean.addResourceLibraryPath(path);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -378,7 +386,7 @@
 			try {
 				if(val(index) eq 0) throw("You must select a resource library to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove resource lib
 				aResLibs = oConfigBean.getResourceLibraryPaths();
@@ -386,7 +394,7 @@
 					oConfigBean.removeResourceLibraryPath(aResLibs[index]);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -416,9 +424,9 @@
 				if(name eq "") throw("The content renderer name is required","validation");
 				if(path eq "") throw("The content renderer path is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setContentRenderer(name, path);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -444,13 +452,13 @@
 			try {
 				if(name eq "") throw("You must select a content renderer to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removeContentRenderer(name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -480,9 +488,9 @@
 				if(name eq "") throw("The plugin name is required","validation");
 				if(path eq "") throw("The plugin path is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setPlugin(name, path);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -507,13 +515,13 @@
 			try {
 				if(name eq "") throw("You must select a plugin to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removePlugin(name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -541,13 +549,13 @@
 			try {
 				if(name eq "") throw("The resource type name is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceType(name = name,
 											folderName = getValue("folderName"),
 											description = getValue("description"),
 											resBeanPath = getValue("resBeanPath"),
 											fileTypes = getValue("fileTypes"));
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -572,13 +580,13 @@
 			try {
 				if(name eq "") throw("You must select a resource type to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removeResourceType(name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -609,7 +617,7 @@
 
 				if(type eq "resource") type = "resource:" & getValue("resourceType");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceTypeProperty(resType = resTypeEditKey,
 													name = name,
 													description = getValue("description"),
@@ -618,7 +626,7 @@
 													required = getValue("required"),
 													default = getValue("default"),
 													label = getValue("label"));
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain","resTypeEditKey=#resTypeEditKey#");
@@ -644,13 +652,13 @@
 			try {
 				if(name eq "") throw("You must select a resource type to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removeResourceTypeProperty(resTypeEditKey, name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain","resTypeEditKey=#resTypeEditKey#");
@@ -684,9 +692,9 @@
 				if(href eq "") throw("The render template path is required","validation");
 				if(type eq "") throw("The render template type is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -712,13 +720,13 @@
 			try {
 				if(name eq "") throw("You must select a render template to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove render template
 				oConfigBean.removeRenderTemplate(name, type);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -746,10 +754,10 @@
 				if(getValue("prefix") eq "") throw("The resource library type prefix is required","validation");
 				if(getValue("path") eq "") throw("The resource library type path is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceLibraryType(prefix = getValue("prefix"),
 													path = getValue("path"));
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -774,13 +782,13 @@
 			try {
 				if(prefix eq "") throw("You must select a resource library type to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removeResourceLibraryType(prefix);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -807,11 +815,11 @@
 				if(name eq "") throw("The resource library type property name is required","validation");
 				if(resLibTypeEditKey eq "") throw("The resource library type is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceLibraryTypeProperty(prefix = resLibTypeEditKey,
 															name = name,
 															value = getValue("value"));
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
@@ -837,13 +845,13 @@
 			try {
 				if(name eq "") throw("You must select a resource library type to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				// remove content renderer
 				oConfigBean.removeResourceLibraryTypeProperty(resLibTypeEditKey, name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
@@ -873,9 +881,9 @@
 			try {
 				if(name eq "") throw("The page property name is required","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setPageProperty(name, value);
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -900,12 +908,12 @@
 			try {
 				if(name eq "") throw("You must select a page property to delete","validation");
 
-				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
 				oConfigBean.removePageProperty(name);
 				
 				// save changes
-				saveHomePortalsConfigBean( oConfigBean );
+				getService("configManager").saveHomePortalsConfigBean( oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
 				setNextEvent("config.ehSettings.dspMain");
@@ -1098,25 +1106,6 @@
 	
 	<!--- Private Methods ---->	
 		
-	<cffunction name="writeFile" access="private" returntype="void">
-		<cfargument name="path" type="string" required="true">
-		<cfargument name="content" type="string" required="true">
-		<cffile action="write" file="#arguments.path#" output="#arguments.content#">
-	</cffunction>
-	
-	<cffunction name="getHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
-		<cfscript>
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
-			return oConfigBean;
-		</cfscript>
-	</cffunction>
-
-	<cffunction name="saveHomePortalsConfigBean" access="private" returntype="void">
-		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
-		<cfset var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init()>
-		<cfset writeFile( expandPath(variables.homePortalsConfigPath), oFormatter.makePretty( arguments.configBean.toXML().xmlRoot ) )>
-	</cffunction>
-
 	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortalsAccounts.components.accountsConfigBean">
 		<cfscript>
 			var oConfigBean = createObject("component","homePortalsAccounts.components.accountsConfigBean").init( expandPath(variables.accountsConfigPath) );
@@ -1126,7 +1115,7 @@
 
 	<cffunction name="saveAccountsConfigBean" access="private" returntype="void">
 		<cfargument name="configBean" type="homePortalsAccounts.components.accountsConfigBean" required="true">
-		<cfset writeFile( expandPath(variables.accountsConfigPath), toString( arguments.configBean.toXML() ) )>
+		<cfset fileWrite( expandPath(variables.accountsConfigPath), toString( arguments.configBean.toXML() ), "utf-8" )>
 	</cffunction>
 
 	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="homePortalsModules.components.modulePropertiesConfigBean">
@@ -1138,7 +1127,7 @@
 
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configBean" type="homePortalsModules.components.modulePropertiesConfigBean" required="true">
-		<cfset writeFile( expandPath(variables.modulePropertiesConfigPath), toString( arguments.configBean.toXML() ) )>
+		<cfset fileWrite( expandPath(variables.modulePropertiesConfigPath), toString( arguments.configBean.toXML() ), "utf-8" )>
 	</cffunction>
 				
 </cfcomponent>
