@@ -1,6 +1,5 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
-	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml.cfm">
 	<cfset variables.view.main = "vwMain">
 	<cfset variables.view.template = "vwTemplate">
 	<cfset variables.eventHandler = "templates.ehTemplates">
@@ -143,19 +142,6 @@
 		</cfscript>	
 	</cffunction>
 
-	<cffunction name="getHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
-		<cfscript>
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(variables.homePortalsConfigPath) );
-			return oConfigBean;
-		</cfscript>
-	</cffunction>
-
-	<cffunction name="saveHomePortalsConfigBean" access="private" returntype="void">
-		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
-		<cfset var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init()>
-		<cfset fileWrite( expandPath(variables.homePortalsConfigPath), oFormatter.makePretty( arguments.configBean.toXML().xmlRoot ), "utf-8" )>
-	</cffunction>
-
 	<cffunction name="setupMainView" access="private" returntype="void">
 		<cfscript>
 			setValue("currentEventHander", variables.eventHandler);
@@ -172,5 +158,15 @@
 	<cffunction name="getDefaultTemplatePath" access="private" returntype="string">
 		<cfreturn "/homePortals/templates/">
 	</cffunction>
+
+	<cffunction name="getHomePortalsConfigBean" access="private" returntype="homePortals.components.homePortalsConfigBean">
+		<cfreturn getService("configManager").getHomePortalsConfigBean( )>
+	</cffunction>
+
+	<cffunction name="saveHomePortalsConfigBean" access="private" returntype="void">
+		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
+		<cfargument name="includeGeneralSettings" type="boolean" required="false" default="no">
+		<cfset getService("configManager").saveHomePortalsConfigBean(arguments.configBean, argumengs.includeGeneralSettings)>
+	</cffunction>		
 	
 </cfcomponent>

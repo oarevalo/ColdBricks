@@ -6,6 +6,7 @@
 		<setting name="versionTag" value="1.1.1001 Beta" />
 		<setting name="permissionsConfigHREF" value="/ColdBricks/config/permissions-config.xml" />
 		<setting name="interfaceConfigHREF" value="/ColdBricks/config/interface-default.xml" />
+		<setting name="homePortalsConfigPath" value="/config/homePortals-config.xml.cfm" />
 
 		<!-- These settings control the bug reporting features. Use 
 			in conjunction with the appropriate bugtracking service.
@@ -82,6 +83,11 @@
 		<!-- this service handles site templates -->
 		<service name="siteTemplates" class="ColdBricks.components.services.siteTemplateService">
 			<init-param name="siteTemplatesRoot" settingName="siteTemplatesRoot" />
+		</service> 
+
+		<!-- this service handles general homeportals configuration management -->
+		<service name="configManager" class="ColdBricks.components.services.hpConfService">
+			<init-param name="homePortalsConfigPath" settingName="homePortalsConfigPath" />
 		</service> 
 
 	</services>
