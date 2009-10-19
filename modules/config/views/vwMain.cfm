@@ -12,7 +12,8 @@
 				{ id = "resLibs", label = "Resource Libraries" },
 				{ id = "resourceTypes", label = "Resource Types" },
 				{ id = "plugins", label = "Plugins" },
-				{ id = "pageProperties", label = "Page Properties" }
+				{ id = "pageProperties", label = "Page Properties" },
+				{ id = "resLibTypes", label = "Resource Library Types" }
 			]>
 
 <script type="text/javascript">
@@ -69,6 +70,9 @@
 						</cfcase>
 						<cfcase value="pageProperties">
 							<cfinclude template="includes/pageProperties.cfm">
+						</cfcase>
+						<cfcase value="resLibTypes">
+							<cfinclude template="includes/resLibTypes.cfm">
 						</cfcase>
 					</cfswitch>
 				</table>

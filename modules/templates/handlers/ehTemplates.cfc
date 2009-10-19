@@ -1,6 +1,6 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
-	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml">
+	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml.cfm">
 	<cfset variables.view.main = "vwMain">
 	<cfset variables.view.template = "vwTemplate">
 	<cfset variables.eventHandler = "templates.ehTemplates">

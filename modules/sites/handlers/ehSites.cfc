@@ -396,7 +396,7 @@
 
 				// check that the target directory points to a valid homeportals application
 				if( Not (directoryExists(expandPath(appRoot & "/config"))
-						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml"))) )
+						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml.cfm"))) )
 					throw("The given application directory does not see,s point to a standard HomePortals application. Please check the directory and try again.","coldBricks.validation");
 
 				// create site record for coldbricks

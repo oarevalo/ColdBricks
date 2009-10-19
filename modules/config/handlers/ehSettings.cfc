@@ -1,6 +1,6 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
-	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml">
+	<cfset variables.homePortalsConfigPath = "/homePortals/config/homePortals-config.xml.cfm">
 	<cfset variables.accountsConfigPath = "/homePortalsAccounts/config/accounts-config.xml.cfm">
 	<cfset variables.modulePropertiesConfigPath = "/homePortalsModules/config/module-properties.xml">
 	
@@ -734,6 +734,132 @@
 			}
 		</cfscript>	
 	</cffunction>	
+
+
+	<!--- Resource Library Types --->
+
+	<cffunction name="doSaveResourceLibraryType" access="public" returntype="void">
+		<cfscript>
+			var oConfigBean = 0;
+			
+			try {
+				if(getValue("prefix") eq "") throw("The resource library type prefix is required","validation");
+				if(getValue("path") eq "") throw("The resource library type path is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setResourceLibraryType(prefix = getValue("prefix"),
+													path = getValue("path"));
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceLibraryType" access="public" returntype="void">
+		<cfscript>
+			var prefix = getValue("prefix");
+			var oConfigBean = 0;
+			
+			try {
+				if(prefix eq "") throw("You must select a resource library type to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceLibraryType(prefix);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain");
+			}
+		</cfscript>	
+	</cffunction>
+
+	<cffunction name="doSaveResourceLibraryTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resLibTypeEditKey = getValue("resLibTypeEditKey");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The resource library type property name is required","validation");
+				if(resLibTypeEditKey eq "") throw("The resource library type is required","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				oConfigBean.setResourceLibraryTypeProperty(prefix = resLibTypeEditKey,
+															name = name,
+															value = getValue("value"));
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceLibraryTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resLibTypeEditKey = getValue("resLibTypeEditKey");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a resource library type to delete","validation");
+
+				oConfigBean = getHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceLibraryTypeProperty(resLibTypeEditKey, name);
+				
+				// save changes
+				saveHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSettings.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			}
+		</cfscript>	
+	</cffunction>
+
 
 
 	<!--- Page Properties --->

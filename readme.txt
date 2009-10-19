@@ -4,7 +4,7 @@
 /**************************************************************/	
 
 /*
-	Copyright 2007-2008 - Oscar Arevalo (http://www.oscararevalo.com)
+	Copyright 2007-2009 - Oscar Arevalo (http://www.oscararevalo.com)
 
     This file is part of ColdBricks.
 

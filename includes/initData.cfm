@@ -5,7 +5,7 @@
 	oUserDAO = getService("DAOFactory").getDAO("user");
 
 	// config files --->
-	oHelpDAO.save(id="", name="homePortals-config.xml", description="This is the main configuration file for a HomePortals application. In addition of the main homeportals-config.xml file in the /homePortals/ directory, each application must have its own homePortals-config.xml to override only the settings needed for that particular application.");
+	oHelpDAO.save(id="", name="homePortals-config.xml.cfm", description="This is the main configuration file for a HomePortals application. In addition of the main homeportals-config.xml file in the /homePortals/ directory, each application must have its own homePortals-config.xml to override only the settings needed for that particular application.");
 	oHelpDAO.save(id="", name="accounts-config.xml.cfm", description="Describes settings related to the storage and operation of accounts. Each application must have its own accounts-config.xml file.");
 	oHelpDAO.save(id="", name="module-properties.xml", description="Properties especific to a given module. See individual module documentation to see which properties it uses and their purpose. Settings defined on this file are per-application only");
 	oHelpDAO.save(id="", name="module.xml", description="This file provides a template of the HTML used when rendering modules on a page. The HomePortals engine replaces the following tokens at runtime: $MODULE_ID$, $MODULE_ICON$, $MODULE_TITLE$, $MODULE_STYLE$ and $MODULE_CONTENT$");
