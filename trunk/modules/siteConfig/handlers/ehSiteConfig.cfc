@@ -1,6 +1,6 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 
-	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml">
+	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml.cfm">
 	<cfset variables.accountsConfigPath = "/config/accounts-config.xml.cfm">
 	<cfset variables.modulePropertiesConfigPath = "/config/module-properties.xml">
 	<cfset variables.confirmMessage = "Config file changed. New settings will be applied next time the site is reset">
@@ -853,6 +853,132 @@
 	</cffunction>	
 
 
+	<!--- Resource Library Types --->
+
+	<cffunction name="doSaveResourceLibraryType" access="public" returntype="void">
+		<cfscript>
+			var oConfigBean = 0;
+			
+			try {
+				if(getValue("prefix") eq "") throw("The resource library type prefix is required","validation");
+				if(getValue("path") eq "") throw("The resource library type path is required","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setResourceLibraryType(prefix = getValue("prefix"),
+													path = getValue("path"));
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceLibraryType" access="public" returntype="void">
+		<cfscript>
+			var prefix = getValue("prefix");
+			var oConfigBean = 0;
+			
+			try {
+				if(prefix eq "") throw("You must select a resource library type to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceLibraryType(prefix);
+				
+				// save changes
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+			}
+		</cfscript>	
+	</cffunction>
+
+	<cffunction name="doSaveResourceLibraryTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resLibTypeEditKey = getValue("resLibTypeEditKey");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("The resource library type property name is required","validation");
+				if(resLibTypeEditKey eq "") throw("The resource library type is required","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				oConfigBean.setResourceLibraryTypeProperty(prefix = resLibTypeEditKey,
+															name = name,
+															value = getValue("value"));
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourceLibraryTypeProperty" access="public" returntype="void">
+		<cfscript>
+			var resLibTypeEditKey = getValue("resLibTypeEditKey");
+			var name = getValue("name");
+			var oConfigBean = 0;
+			
+			try {
+				if(name eq "") throw("You must select a resource library type to delete","validation");
+
+				oConfigBean = getAppHomePortalsConfigBean();
+				
+				// remove content renderer
+				oConfigBean.removeResourceLibraryTypeProperty(resLibTypeEditKey, name);
+				
+				// save changes
+				saveAppHomePortalsConfigBean( oConfigBean );
+
+				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+			}
+		</cfscript>	
+	</cffunction>
+
+
+
 
 	
 	<!--- Module Properties Plugin Config --->
@@ -1177,6 +1303,7 @@
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryTypes");
 	
 			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
 

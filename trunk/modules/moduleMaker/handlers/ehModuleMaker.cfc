@@ -1,6 +1,6 @@
 <cfcomponent extends="ColdBricks.handlers.ehColdBricks">
 	
-	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml">
+	<cfset variables.homePortalsConfigPath = "/config/homePortals-config.xml.cfm">
 	<cfset pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator")>
 
 	<cffunction name="dspMain" access="public" returntype="void">
@@ -510,6 +510,7 @@
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
+			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryTypes");
 	
 			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
 

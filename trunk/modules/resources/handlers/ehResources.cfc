@@ -777,7 +777,7 @@
 	<cffunction name="getResourceLibraryPathFromSite" returntype="string" access="private">
 		<cfargument name="path" type="string" required="true">
 		<cfset var qryDir = queryNew("")>
-		<cfset var configFile = arguments.path & "/config/homePortals-config.xml">
+		<cfset var configFile = arguments.path & "/config/homePortals-config.xml.cfm">
 		<cfset var xmlDoc = 0>
 		<cfset var resRoot = "">
 		
