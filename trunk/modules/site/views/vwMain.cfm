@@ -135,9 +135,15 @@
 											)	
 										)>
 
+					<cfif aModules[i].imgSrc neq "">
+						<cfset tmpImgSrc = aModules[i].imgSrc>
+					<cfelse>
+						<cfset tmpImgSrc = "images/Globe_48x48.png">
+					</cfif>
+
 					<cf_dashboardMenuItem href="#aModules[i].href#" 
 											isAllowed="#isAllowed#"
-											imgSrc="#aModules[i].imgSrc#"
+											imgSrc="#tmpImgSrc#"
 											alt="#aModules[i].alt#"
 											label="#aModules[i].label#"
 											help="#aModules[i].description#">
