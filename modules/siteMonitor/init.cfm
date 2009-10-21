@@ -1,4 +1,5 @@
-<cfset getService("UIManager").registerSiteModule(href = "index.cfm?event=siteMonitor.ehSiteMonitor.dspMain",
+<cfset getService("UIManager").registerSiteModule(name = "siteMonitor",
+												href = "index.cfm?event=siteMonitor.ehSiteMonitor.dspMain",
 												imgSrc = "images/gnome-monitor_48x48.png",
 												alt = "Site Monitor",
 												label = "Site Monitor",

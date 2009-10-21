@@ -33,30 +33,31 @@
 			// get server modules
 			aNodes = xmlSearch(xmlDoc,"//server/modules/module");
 			for(i=1;i lte arrayLen(aNodes);i=i+1) {
-				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", version = "", author = "", authorurl = "" };
+				st = { name = "", accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", version = "", author = "", authorurl = "" };
 				for(attr in aNodes[i].xmlAttributes) {
 					st[attr] = aNodes[i].xmlAttributes[attr];
 				}	
 				st.description = aNodes[i].xmlText;
-				st.uuid = createUUID();
+				st.core = true;
 				registerServerModule(argumentCollection = st);
 			}
 
 			// get site modules
 			aNodes = xmlSearch(xmlDoc,"//site/modules/module");
 			for(i=1;i lte arrayLen(aNodes);i=i+1) {
-				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", bindToPlugin = "", version = "", author = "", authorurl = "" };
+				st = { name = "", accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", bindToPlugin = "", version = "", author = "", authorurl = "" };
 				for(attr in aNodes[i].xmlAttributes) {
 					st[attr] = aNodes[i].xmlAttributes[attr];
 				}	
 				st.description = aNodes[i].xmlText;			
-				st.uuid = createUUID();
+				st.core = true;
 				registerSiteModule(argumentCollection = st);
 			}			
 		</cfscript>		
 	</cffunction>
 	
 	<cffunction name="registerServerModule" access="public" returntype="void">
+		<cfargument name="name" type="string" required="true" hint="Name of the module, must match the containing directory">
 		<cfargument name="accessMapKey" type="string" required="false" default="">
 		<cfargument name="alt" type="string" required="false" default="">
 		<cfargument name="href" type="string" required="false" default="">
@@ -72,6 +73,7 @@
 	</cffunction>
 
 	<cffunction name="registerSiteModule" access="public" returntype="void">
+		<cfargument name="name" type="string" required="true" hint="Name of the module, must match the containing directory">
 		<cfargument name="accessMapKey" type="string" required="false" default="">
 		<cfargument name="alt" type="string" required="false" default="">
 		<cfargument name="href" type="string" required="false" default="">
@@ -82,7 +84,6 @@
 		<cfargument name="version" type="string" required="false" default="">
 		<cfargument name="author" type="string" required="false" default="">
 		<cfargument name="authorurl" type="string" required="false" default="">
-		<cfargument name="uuid" type="string" required="false" default="#createUUID()#">
 		<cfset var st = arguments>
 		<cfset st.uuid = createUUID()>
 		<cfset arrayAppend(variables.instance.aSiteModules, st)>
@@ -95,5 +96,28 @@
 	<cffunction name="getSiteModules" access="public" returntype="array" hint="returns the information about the modules available at the site level">
 		<cfreturn duplicate(variables.instance.aSiteModules)>
 	</cffunction>
+
+	<cffunction name="getModuleInfo" access="public" returntype="array" hint="returns information about a particular module">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="type" type="string" required="true">
+		<cfset var aModules = 0>
+		<cfset var i = 0>
+	
+		<cfif arguments.type eq "server">
+			<cfset aModules = getServerModules()>
+		<cfelseif type eq "site">
+			<cfset aModules = getSiteModules()>
+		<cfelse>
+			<cfthrow message="invalid module type" type="coldbricks.invalidArgument">
+		</cfif>
 		
+		<cfloop from="1" to="#arrayLen(aModules)#" index="i">
+			<cfif aModules[i].name eq arguments.name>
+				<cfreturn duplicate(aModules[i])>
+			</cfif>
+		</cfloop>
+
+		<cfthrow message="Module not found!" type="coldbricks.moduleNotFound">
+	</cffunction>
+
 </cfcomponent>

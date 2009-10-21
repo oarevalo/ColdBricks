@@ -3,7 +3,8 @@
 	
 	<server>
 		<modules>
-			<module href="index.cfm?event=sites.ehSites.dspMain" 
+			<module name="sites"
+					href="index.cfm?event=sites.ehSites.dspMain" 
 					imgSrc="images/folder_desktop_48x48.png"
 					alt="Sites Management"
 					label="Sites"
@@ -14,7 +15,8 @@
 				Access the sites management module, from there you can add, remove, archive and access individual sites		
 			</module>
 	
-			<module href="index.cfm?event=users.ehUsers.dspMain" 
+			<module name="users"
+					href="index.cfm?event=users.ehUsers.dspMain" 
 					imgSrc="images/users_48x48.png"
 					alt="ColdBricks Users Management"
 					label="Users"
@@ -25,7 +27,8 @@
 				This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.
 			</module>
 	
-			<module href="index.cfm?event=config.ehSettings.dspMain" 
+			<module name="config"
+					href="index.cfm?event=config.ehSettings.dspMain" 
 					imgSrc="images/configure_48x48.png"
 					alt="Server Settings"
 					label="Server Settings"
@@ -36,7 +39,8 @@
 				For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files
 			</module>
 
-			<module href = "index.cfm?event=templates.ehTemplates.dspMain"
+			<module name="templates"
+					href = "index.cfm?event=templates.ehTemplates.dspMain"
 					imgSrc = "images/templates_48x48.png"
 					alt = "Manage templates"
 					label = "Templates"
@@ -52,7 +56,8 @@
 	
 	<site>
 		<modules>
-			<module href = "index.cfm?event=site.ehSite.doLoadHomePage"
+			<module name="site"
+					href = "index.cfm?event=site.ehSite.doLoadHomePage"
 					imgSrc = "images/homepage_48x48.png"
 					alt = "Edit Site's Home Page"
 					label = "Home Page"
@@ -63,7 +68,8 @@
 				This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
 			</module>
 			
-			<module href = "index.cfm?event=pages.ehPages.dspMain"
+			<module name="pages"
+					href = "index.cfm?event=pages.ehPages.dspMain"
 					imgSrc = "images/documents_48x48.png"
 					alt = "Manage site pages"
 					label = "Pages"
@@ -74,7 +80,8 @@
 				The pages module lets you manage all pages in a site.
 			</module>
 
-			<module href = "index.cfm?event=accounts.ehAccounts.dspMain"
+			<module name="accounts"
+					href = "index.cfm?event=accounts.ehAccounts.dspMain"
 					imgSrc = "images/users_48x48.png"
 					alt = "Manage accounts"
 					label = "Accounts"
@@ -86,7 +93,8 @@
 				Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.
 			</module>
 
-			<module href = "index.cfm?event=resources.ehResources.dspMain"
+			<module name="resources"
+					href = "index.cfm?event=resources.ehResources.dspMain"
 					imgSrc = "images/folder2_yellow_48x48.png"
 					alt = "Resource Management"
 					label = "Resources"
@@ -97,7 +105,8 @@
 				The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.
 			</module>
 			
-			<module href = "index.cfm?event=templates.ehSiteTemplates.dspMain"
+			<module name="templates"
+					href = "index.cfm?event=templates.ehSiteTemplates.dspMain"
 					imgSrc = "images/templates_48x48.png"
 					alt = "Manage site templates"
 					label = "Templates"
@@ -108,7 +117,8 @@
 				The templates module lets you manage all rendering templates in a site.
 			</module>
 
-			<module href = "index.cfm?event=siteMap.ehSiteMap.dspMain"
+			<module name="siteMap"
+					href = "index.cfm?event=siteMap.ehSiteMap.dspMain"
 					imgSrc = "images/Globe_48x48.png"
 					alt = "Site Map Tool"
 					label = "Site Map"
@@ -120,7 +130,8 @@
 				The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.
 			</module>
 
-			<module href = "index.cfm?event=siteConfig.ehSiteConfig.dspMain"
+			<module name="siteConfig"
+					href = "index.cfm?event=siteConfig.ehSiteConfig.dspMain"
 					imgSrc = "images/configure_48x48.png"
 					alt = "Site Settings"
 					label = "Site Settings"
@@ -131,7 +142,8 @@
 				For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files.
 			</module>
 
-			<module href = "index.cfm?event=site.ehSite.doArchiveSite"
+			<module name="site"
+					href = "index.cfm?event=site.ehSite.doArchiveSite"
 					imgSrc = "images/download_manager_48x48.png"
 					alt = "Download Site"
 					label = "Download"

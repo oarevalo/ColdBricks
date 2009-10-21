@@ -30,7 +30,7 @@ This template checks the login information
 	<cfcatch type="homePortals.accounts.invalidLogin">
 		<cflocation url="../index.cfm?_statusMessage=Invalid%20Login">
 	</cfcatch>		
-	<cfcatch type="lock">
+	<cfcatch type="any">
 		<cflocation url="../index.cfm?_statusMessage=#cfcatch.message#">
 	</cfcatch>
 </cftry>
