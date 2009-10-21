@@ -116,6 +116,74 @@
 		<cfset setView("vwRegister")>
 	</cffunction>
 
+	<cffunction name="dspEditXML" access="public" returntype="void">
+		<cfscript>
+			var xmlDocStr = "";
+			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
+			var hpConfigPath = getSetting("homePortalsConfigPath");
+			var siteID = getValue("siteID");
+			var xmlContent = getValue("xmlContent");
+			var errorMessage = "";
+			var oConfig = 0;
+			
+			try {
+				// get site information
+				oSiteDAO = getService("DAOFactory").getDAO("site");
+				qrySite = oSiteDAO.get(siteID);
+
+				configFile = qrySite.path & getSetting("homePortalsConfigPath");
+
+				if(xmlContent eq "") {
+					if(fileExists(expandPath(configFile))) {
+						try {
+							xmlDoc = xmlParse(expandPath(configFile));
+						} catch(any e) {
+							errorMessage = e.message;
+						}
+					} else {
+						errorMessage = "Config file does not exist";
+					}
+				} else {
+					xmlDoc = xmlContent;
+					try {
+						xmlDoc = xmlParse(xmlDoc);
+					} catch(any e) {
+						errorMessage = e.message;
+					}
+				}
+
+				if(errorMessage eq "") {
+					if(isXMLDoc(xmlDoc)) {
+						xmlDocStr = oFormatter.makePretty(xmlDoc.xmlRoot);
+					} else {
+						errorMessage = "The given content is not a valid XML document";
+					}
+				}
+
+				if(errorMessage eq "") {
+					try {
+						oConfig = createObject("component","homePortals.components.homePortalsConfigBean").init().loadXML(xmlDoc);
+					} catch(any e) {
+						errorMessage = "The given content is not a valid config file. #e.message#";
+					}
+				}
+
+				setView("vwEditXML");
+				setValue("xmlContent", xmlDocStr);
+				setValue("errorMessage", errorMessage);
+				setValue("siteID", siteID);
+				setValue("configFile", configFile);
+				setValue("cbPageTitle", "Site Management > Repair Site Config");
+				setValue("cbPageIcon", "images/configure_48x48.png");
+				
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("sites.ehSites.dspMain");			
+			}
+		</cfscript>		
+	</cffunction>
+
 	<cffunction name="doCreate" access="public" returntype="void">
 		<cfscript>
 			var name = getValue("name");
@@ -476,6 +544,35 @@
 		<cfset setNextEvent("sites.ehSites.dspMain")>
 	</cffunction>
 
+	<cffunction name="doSaveConfigFile" access="public" returntype="void">
+		<cfscript>
+			var xmlContent = getValue("xmlContent","");
+			var configFile = getValue("configFile","");
+			var oConfig = 0;
+			
+			try {
+				// check if we can parse the xml as a valid config file
+				try {
+					oConfig = createObject("component","homePortals.components.homePortalsConfigBean").init().loadXML(xmlContent);
+				} catch(any e) {
+					setMessage("warning", "The given content is not a valid site config file.");
+					dspEditXML();
+					return;
+				}
+
+				fileWrite( expandPath( configFile ), xmlContent, "utf-8");
+				
+				// go to the xml editor
+				setMessage("info", "Config file updated");
+				setNextEvent("sites.ehSites.dspEditXML","siteID=#siteID#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				dspEditXML();
+			}			
+		</cfscript>
+	</cffunction>	
 	
 	<!--- Private Methods --->
 

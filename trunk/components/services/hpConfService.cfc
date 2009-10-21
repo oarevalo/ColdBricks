@@ -11,15 +11,16 @@
 	<cffunction name="getHomePortalsConfigBean" access="public" returntype="homePortals.components.homePortalsConfigBean" hint="returns the homeportals config object for the given app path. If no path is given then returns the main config object">
 		<cfargument name="appRoot" type="string" required="false" default="#variables.homePortalsRoot#">
 		<cfscript>
-			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(appRoot & variables.homePortalsConfigPath) );
+			var oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(arguments.appRoot & variables.homePortalsConfigPath) );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 		
 	<cffunction name="saveHomePortalsConfigBean" access="public" returntype="void" hint="saves the given homeportals config object. This is only used for the global config">
 		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
+		<cfargument name="appRoot" type="string" required="false" default="#variables.homePortalsRoot#">
 		<cfset var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init()>
-		<cfset fileWrite( expandPath(variables.homePortalsRoot & variables.homePortalsConfigPath), oFormatter.makePretty( arguments.configBean.toXML().xmlRoot ), "utf-8" )>
+		<cfset fileWrite( expandPath(arguments.appRoot & variables.homePortalsConfigPath), oFormatter.makePretty( arguments.configBean.toXML().xmlRoot ), "utf-8" )>
 	</cffunction>	
 
 	<cffunction name="getAppHomePortalsConfigBean" access="public" returntype="homePortals.components.homePortalsConfigBean" hint="returns the homeportals config object from the current context">
@@ -58,7 +59,7 @@
 		<cfscript>
 			var filePath = arguments.appRoot & variables.homePortalsConfigPath;
 			var oFormatter = createObject("component","ColdBricks.components.xmlStringFormatter").init();
-			
+
 			structDelete(arguments.xmlDoc.xmlRoot.xmlAttributes, "version");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResourceTypes") and arguments.xmlDoc.xmlRoot.baseResourceTypes.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "baseResourceTypes");
 			if(structKeyExists(arguments.xmlDoc.xmlRoot,"initialEvent") and arguments.xmlDoc.xmlRoot.initialEvent.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "initialEvent");
@@ -77,17 +78,9 @@
 				if(structKeyExists(arguments.xmlDoc.xmlRoot,"catalogCacheTTL") and arguments.xmlDoc.xmlRoot.catalogCacheTTL.xmlText eq "") structDelete(arguments.xmlDoc.xmlRoot, "catalogCacheTTL");
 			}
 			
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"baseResources") and arrayLen(arguments.xmlDoc.xmlRoot.baseResources.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "baseResources");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"contentRenderers") and arrayLen(arguments.xmlDoc.xmlRoot.contentRenderers.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "contentRenderers");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"plugins") and arrayLen(arguments.xmlDoc.xmlRoot.plugins.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "plugins");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceTypes");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryPaths") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryPaths.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryPaths");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"renderTemplates") and arrayLen(arguments.xmlDoc.xmlRoot.renderTemplates.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "renderTemplates");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"pageProperties") and arrayLen(arguments.xmlDoc.xmlRoot.pageProperties.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "pageProperties");
-			if(structKeyExists(arguments.xmlDoc.xmlRoot,"resourceLibraryTypes") and arrayLen(arguments.xmlDoc.xmlRoot.resourceLibraryTypes.xmlChildren) eq 0) structDelete(arguments.xmlDoc.xmlRoot, "resourceLibraryTypes");
-	
-			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8");
+			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8"); 
 		</cfscript>
+		<Cfabort>
 	</cffunction>		
 	
 </cfcomponent>

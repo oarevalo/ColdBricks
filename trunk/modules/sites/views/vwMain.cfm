@@ -52,7 +52,7 @@
 						<th width="20">No</th>
 						<th>Site</th>
 						<th>URL</th>
-						<th width="70">Action</th>
+						<th width="120">Action</th>
 					</tr>
 					<cfoutput query="qrySites">
 						<cfif qrySites.path eq "/">
@@ -74,6 +74,9 @@
 									</cfif>
 									<cfif stAccessMap.downloadSite>
 										<a href="index.cfm?event=sites.ehSites.doArchiveSite&siteID=#qrySites.siteID#"><img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"></a>
+									</cfif>
+									<cfif isAdmin>
+										<a href="index.cfm?event=sites.ehSites.dspEditXML&siteID=#qrySites.siteID#"><img src="images/cog_error.png" align="absmiddle" border="0" alt="Repair Config" title="Repair Config"></a>
 									</cfif>
 								</td>
 							</tr>
@@ -106,6 +109,9 @@
 				</cfif>
 				<cfif stAccessMap.downloadSite>
 					<img src="images/compress.png" align="absmiddle" border="0" alt="Create Achive of Site" title="Create Achive of Site"> Achive Site &nbsp;&nbsp;
+				</cfif>
+				<cfif isAdmin>
+					<img src="images/cog_error.png" align="absmiddle" border="0" alt="Repair Site Config" title="Repair Site Config"> Repair Site Config
 				</cfif>
 			</p>
 		</td>
