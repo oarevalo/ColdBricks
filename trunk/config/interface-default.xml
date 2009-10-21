@@ -7,7 +7,10 @@
 					imgSrc="images/folder_desktop_48x48.png"
 					alt="Sites Management"
 					label="Sites"
-					accessMapKey="sites">
+					accessMapKey="sites"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				Access the sites management module, from there you can add, remove, archive and access individual sites		
 			</module>
 	
@@ -15,7 +18,10 @@
 					imgSrc="images/users_48x48.png"
 					alt="ColdBricks Users Management"
 					label="Users"
-					accessMapKey="users">
+					accessMapKey="users"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.
 			</module>
 	
@@ -23,7 +29,10 @@
 					imgSrc="images/configure_48x48.png"
 					alt="Server Settings"
 					label="Server Settings"
-					accessMapKey="settings">
+					accessMapKey="settings"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files
 			</module>
 
@@ -31,7 +40,10 @@
 					imgSrc = "images/templates_48x48.png"
 					alt = "Manage templates"
 					label = "Templates"
-					accessMapKey = "renderTemplates">
+					accessMapKey = "renderTemplates"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				The templates module lets you manage the default rendering templates for all sites.
 			</module>
 		</modules>	
@@ -44,7 +56,10 @@
 					imgSrc = "images/homepage_48x48.png"
 					alt = "Edit Site's Home Page"
 					label = "Home Page"
-					accessMapKey="pages">
+					accessMapKey="pages"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
 			</module>
 			
@@ -52,7 +67,10 @@
 					imgSrc = "images/documents_48x48.png"
 					alt = "Manage site pages"
 					label = "Pages"
-					accessMapKey = "pages">
+					accessMapKey = "pages"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				The pages module lets you manage all pages in a site.
 			</module>
 
@@ -61,7 +79,10 @@
 					alt = "Manage accounts"
 					label = "Accounts"
 					accessMapKey = "accounts"
-					bindToPlugin = "accounts">
+					bindToPlugin = "accounts"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.
 			</module>
 
@@ -69,7 +90,10 @@
 					imgSrc = "images/folder2_yellow_48x48.png"
 					alt = "Resource Management"
 					label = "Resources"
-					accessMapKey = "resources">
+					accessMapKey = "resources"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.
 			</module>
 			
@@ -77,7 +101,10 @@
 					imgSrc = "images/templates_48x48.png"
 					alt = "Manage site templates"
 					label = "Templates"
-					accessMapKey = "siteTemplates">
+					accessMapKey = "siteTemplates"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				The templates module lets you manage all rendering templates in a site.
 			</module>
 
@@ -86,7 +113,10 @@
 					alt = "Site Map Tool"
 					label = "Site Map"
 					accessMapKey = "siteMap"
-					bindToPlugin = "accounts">
+					bindToPlugin = "accounts"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				The SiteMap Tool allows you to create friendlier URLs to the pages on the site. It works by creating directories and files that act as placeholders that can be linked to existing pages on the site.
 			</module>
 
@@ -94,7 +124,10 @@
 					imgSrc = "images/configure_48x48.png"
 					alt = "Site Settings"
 					label = "Site Settings"
-					accessMapKey = "siteSettings">
+					accessMapKey = "siteSettings"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files.
 			</module>
 
@@ -102,7 +135,10 @@
 					imgSrc = "images/download_manager_48x48.png"
 					alt = "Download Site"
 					label = "Download"
-					accessMapKey = "downloadSite">
+					accessMapKey = "downloadSite"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
 				Download a zipped version of this site for backup or migration
 			</module>
 
