@@ -5,6 +5,7 @@
 	<cffunction name="init" access="public" returntype="hpConfService" hint="constructor">
 		<cfargument name="homePortalsConfigPath" type="string" required="true">
 		<cfset variables.homePortalsConfigPath = arguments.homePortalsConfigPath>
+		<cfreturn this>
 	</cffunction>
 	
 	<cffunction name="getHomePortalsConfigBean" access="public" returntype="homePortals.components.homePortalsConfigBean" hint="returns the homeportals config object for the given app path. If no path is given then returns the main config object">

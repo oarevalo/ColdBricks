@@ -15,7 +15,7 @@
 <script type="text/javascript">
 	function confirmDeleteResType(name) {
 		if(confirm("Delete resource library type ?")) {
-			document.location = "index.cfm?event=config.ehSettings.doDeleteResourceLibraryType&name=" + name;
+			document.location = "index.cfm?event=config.ehSettings.doDeleteResourceLibraryType&prefix=" + name;
 		}
 	}
 	function confirmDeleteResTypeProp(type,name) {
