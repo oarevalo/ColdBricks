@@ -33,22 +33,24 @@
 			// get server modules
 			aNodes = xmlSearch(xmlDoc,"//server/modules/module");
 			for(i=1;i lte arrayLen(aNodes);i=i+1) {
-				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "" };
+				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", version = "", author = "", authorurl = "" };
 				for(attr in aNodes[i].xmlAttributes) {
 					st[attr] = aNodes[i].xmlAttributes[attr];
 				}	
 				st.description = aNodes[i].xmlText;
+				st.uuid = createUUID();
 				registerServerModule(argumentCollection = st);
 			}
 
 			// get site modules
 			aNodes = xmlSearch(xmlDoc,"//site/modules/module");
 			for(i=1;i lte arrayLen(aNodes);i=i+1) {
-				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", bindToPlugin = "" };
+				st = { accessMapKey = "", alt = "", href = "", imgSrc = "", label = "", bindToPlugin = "", version = "", author = "", authorurl = "" };
 				for(attr in aNodes[i].xmlAttributes) {
 					st[attr] = aNodes[i].xmlAttributes[attr];
 				}	
 				st.description = aNodes[i].xmlText;			
+				st.uuid = createUUID();
 				registerSiteModule(argumentCollection = st);
 			}			
 		</cfscript>		
@@ -61,7 +63,12 @@
 		<cfargument name="imgSrc" type="string" required="false" default="">
 		<cfargument name="label" type="string" required="false" default="">
 		<cfargument name="description" type="string" required="false" default="">
-		<cfset arrayAppend(variables.instance.aServerModules, duplicate(arguments))>
+		<cfargument name="version" type="string" required="false" default="">
+		<cfargument name="author" type="string" required="false" default="">
+		<cfargument name="authorurl" type="string" required="false" default="">
+		<cfset var st = arguments>
+		<cfset st.uuid = createUUID()>
+		<cfset arrayAppend(variables.instance.aServerModules, st)>
 	</cffunction>
 
 	<cffunction name="registerSiteModule" access="public" returntype="void">
@@ -72,7 +79,13 @@
 		<cfargument name="label" type="string" required="false" default="">
 		<cfargument name="bindToPlugin" type="string" required="false" default="">
 		<cfargument name="description" type="string" required="false" default="">
-		<cfset arrayAppend(variables.instance.aSiteModules, duplicate(arguments))>
+		<cfargument name="version" type="string" required="false" default="">
+		<cfargument name="author" type="string" required="false" default="">
+		<cfargument name="authorurl" type="string" required="false" default="">
+		<cfargument name="uuid" type="string" required="false" default="#createUUID()#">
+		<cfset var st = arguments>
+		<cfset st.uuid = createUUID()>
+		<cfset arrayAppend(variables.instance.aSiteModules, st)>
 	</cffunction>
 	
 	<cffunction name="getServerModules" access="public" returntype="array" hint="returns the information about the modules available at the server level">
