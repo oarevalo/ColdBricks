@@ -194,7 +194,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("moduleMaker.ehModuleMaker.dspAddModule");
 
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("moduleMaker.ehModuleMaker.dspAddModule");

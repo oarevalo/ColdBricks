@@ -1,11 +1,41 @@
 <cfcomponent extends="ehColdBricks">
 
 	<cffunction name="onApplicationStart" access="public" returntype="void">
-		<!--- setup data directory (if needed for xml data storage) --->
-		<cfset checkDataRoot()>
-				
-		<!--- initialize modules --->
-		<cfset initModules()>
+		<cfset var errors = 0>
+		
+		<cftry>
+			<!--- setup data directory (if needed for xml data storage) --->
+			<cfset checkDataRoot()>
+					
+			<cfcatch type="any">
+				<cfset request.errorStep = "Setting up and verifying data directory">
+				<cfset request.fatal = true>
+				<cfset request.error = cfcatch>
+				<cfinclude template="../views/vwInitError.cfm">
+				<cfabort>
+			</cfcatch>
+		</cftry>
+
+		<cftry>
+			<!--- initialize modules --->
+			<cfset errors = initModules()>
+
+			<cfif arrayLen(errors) gt 0>
+				<cfset request.errorStep = "Initializing and loading modules">
+				<cfset request.fatal = false>
+				<cfset request.moduleInitErrors = errors>
+				<cfinclude template="../views/vwInitError.cfm">
+				<cfabort>
+			</cfif>
+
+			<cfcatch type="any">
+				<cfset request.errorStep = "Initializing and loading modules">
+				<cfset request.fatal = true>
+				<cfset request.error = cfcatch>
+				<cfinclude template="../views/vwInitError.cfm">
+				<cfabort>
+			</cfcatch>
+		</cftry>
 	</cffunction>
 
 	<cffunction name="onRequestStart" access="public" returntype="void">
@@ -262,7 +292,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("ehGeneral.dspChangePassword");
 	
-			} catch(lock e) {
+			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("ehGeneral.dspChangePassword");
@@ -319,11 +349,13 @@
 		<cfset redirect("index.cfm")>
 	</cffunction>
 
-	<cffunction name="initModules" access="private" returntype="void">
+	<cffunction name="initModules" access="private" returntype="array">
 		<cfset var qryDir = 0>
 		<cfset var lstModulesPath = "/ColdBricks/modules,/ColdBricksModules">
 		<cfset var modulesPath = "">
 		<cfset var tmp = "">
+		<cfset var st = structNew()>
+		<cfset var aInitErrors = arrayNew(1)>
 		
 		<cfloop list="#lstModulesPath#" index="modulesPath">
 			<cfif directoryExists(expandPath(modulesPath))>
@@ -343,11 +375,20 @@
 					<!--- build path of plugin manifest file --->
 					<cfset tmp = modulesPath & "/" & qryDir.name & "/init.cfm">
 					<cfif fileExists(expandPath(tmp))>
-						<cfinclude template="#tmp#">
+						<cftry>
+							<cfinclude template="#tmp#">
+							<cfcatch type="any">
+								<cfset st = { name = qryDir.name,
+											  message = cfcatch.message }>
+								<cfset arrayAppend(aInitErrors, st)>
+							</cfcatch>
+						</cftry>
 					</cfif>
 				</cfloop>	
 			</cfif>
 		</cfloop>
+		
+		<cfreturn aInitErrors>
 	</cffunction>
 
 </cfcomponent>
