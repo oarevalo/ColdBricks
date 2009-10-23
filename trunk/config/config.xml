@@ -17,6 +17,9 @@
 		<setting name="bugEmailSender" value="" />
 		<setting name="bugLogListener" value="" />
 
+		<!-- This is the event to use as general homepage (after login) -->
+		<setting name="homeEvent" value="sites.ehSites.dspHome" />
+
 		<!-- This flag controls wether detailed error information is displayed
 			in case the application encounters an unhandled exception -->
 		<setting name="debugMode" value="true" />

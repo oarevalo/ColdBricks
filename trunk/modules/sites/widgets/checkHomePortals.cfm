@@ -3,5 +3,5 @@
 </div>
 
 <script type="text/javascript">
-	doEvent("ehGeneral.dspHomePortalsCheck","hpInfoPanel");
+	doEvent("sites.ehSites.dspHomePortalsCheck","hpInfoPanel");
 </script>

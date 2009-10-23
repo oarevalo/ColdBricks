@@ -79,8 +79,10 @@
 			<cfset __st = structNew()>
 			<cfset __st.title = __aWidgets[__i].title>
 			<cfset __st.body = __tmpContent>
-				
-			<cfset arrayAppend(__content[__pos], __st)>
+			
+			<cfif trim(__tmpContent) neq "">
+				<cfset arrayAppend(__content[__pos], __st)>
+			</cfif>
 		</cfloop>		
 
 		<cfreturn __content>

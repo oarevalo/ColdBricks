@@ -8,7 +8,7 @@
 	resTypeEditKey = request.requestState.resTypeEditKey;
 	resTypePropEditKey = request.requestState.resTypePropEditKey;
 		
-	dspEvent = "siteConfig.ehSiteConfig.dspMain";
+	dspEvent = "config.ehSiteConfig.dspMain";
 	
 	aPropTypes = ["text","list","resource","boolean"];
 </cfscript>
@@ -16,12 +16,12 @@
 <script type="text/javascript">
 	function confirmDeleteResType(name) {
 		if(confirm("Delete resource type?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteResourceType&name=" + name;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteResourceType&name=" + name;
 		}
 	}
 	function confirmDeleteResTypeProp(type,name) {
 		if(confirm("Delete resource type property?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteResourceTypeProperty&resTypeEditKey=" + type + "&name="+name;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteResourceTypeProperty&resTypeEditKey=" + type + "&name="+name;
 		}
 	}
 	function togglePropType(type) {
@@ -124,7 +124,7 @@
 					<tr valign="top">
 						<td style="width:430px;">
 							<form name="frmEditResType" action="index.cfm" method="post">
-								<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveResourceType">
+								<input type="hidden" name="event" value="config.ehSiteConfig.doSaveResourceType">
 								<cfif not isNew>
 									<input type="hidden" name="name" value="#resTypeEditKey#">
 								</cfif>
@@ -217,7 +217,7 @@
 									</cfif>
 
 									<form name="frmEditResTypeProp" action="index.cfm" method="post">
-										<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveResourceTypeProperty">
+										<input type="hidden" name="event" value="config.ehSiteConfig.doSaveResourceTypeProperty">
 										<input type="hidden" name="resTypePropEditKey" value="#resTypePropEditKey#">
 										<input type="hidden" name="resTypeEditKey" value="#resTypeEditKey#">
 										<cfif not isNewProp>

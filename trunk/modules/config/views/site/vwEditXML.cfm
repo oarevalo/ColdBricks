@@ -33,7 +33,7 @@
 		</td>
 		<td align="right">
 			<strong>Page:</strong>
-			<select name="configFile" style="width:300px;font-size:11px;padding:2px;" onchange="document.location='?event=siteConfig.ehSiteConfig.dspEditXML&configFile='+this.value">
+			<select name="configFile" style="width:300px;font-size:11px;padding:2px;" onchange="document.location='?event=config.ehSiteConfig.dspEditXML&configFile='+this.value">
 				<option value="">----  Select Config File  ----</option>
 				<cfloop from="1" to="#arrayLen(aConfigFiles)#" index="i">
 					<option value="#aConfigFiles[i]#"
@@ -46,7 +46,7 @@
 
 <cfif configFile neq "">
 <form name="frm" method="post" action="index.cfm" style="margin:0px;padding:0px;">
-	<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveConfigFile">
+	<input type="hidden" name="event" value="config.ehSiteConfig.doSaveConfigFile">
 	<input type="hidden" name="configFile" value="#configFile#">
 
 	<table style="margin:0px;padding:0px;width:100%;" cellpadding="0" cellspacing="0">

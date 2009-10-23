@@ -8,10 +8,10 @@
 	currentEvent = request.requestState.event;
 	
 	aOptions = [
-					{ event = "siteConfig.ehSiteConfig.dspMain", label = "General", enable = true},
-					{ event = "siteConfig.ehSiteConfig.dspAccounts", label = "Accounts", enable = hasAccountsPlugin},
-					{ event = "siteConfig.ehSiteConfig.dspModuleProperties", label = "Module Properties", enable = hasModulesPlugin},
-					{ event = "siteConfig.ehSiteConfig.dspEditXML", label = "Edit Config Files", enable = true}
+					{ event = "config.ehSiteConfig.dspMain", label = "General", enable = true},
+					{ event = "config.ehSiteConfig.dspAccounts", label = "Accounts", enable = hasAccountsPlugin},
+					{ event = "config.ehSiteConfig.dspModuleProperties", label = "Module Properties", enable = hasModulesPlugin},
+					{ event = "config.ehSiteConfig.dspEditXML", label = "Edit Config Files", enable = true}
 					
 				];
 </cfscript>
