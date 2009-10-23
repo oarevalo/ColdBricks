@@ -149,11 +149,16 @@
 				qrySites = oSiteDAO.getAll();
 				qryUserSites = oUserSiteDAO.search(userID = oUser.getID());
 	
-				aModules = getService("UIManager").getServerModules();
+				// get features
+				aModules = getService("UIManager").getServerFeatures();
 
+				// get widgets
+				stWidgets = renderWidgets( getService("UIManager").getServerWidgets() );
+				
 				setValue("qrySites",qrySites);
 				setValue("qryUserSites",qryUserSites);
 				setValue("aModules",aModules);
+				setValue("stWidgets",stWidgets);
 				setValue("showHomePortalsAsSite", getSetting("showHomePortalsAsSite"));
 				setValue("cbPageTitle", "Administration Dashboard");
 				setView("vwMain");

@@ -2,6 +2,7 @@
 <cfparam name="request.requestState.qryUserSites" default="#queryNew("")#">
 <cfparam name="request.requestState.loadSiteID" default="">
 <cfparam name="request.requestState.aModules" default="">
+<cfparam name="request.requestState.stWidgets" default="">
 <cfparam name="request.requestState.oUser" default="">
 <cfparam name="request.requestState.showHomePortalsAsSite" default="false">
 
@@ -9,8 +10,10 @@
 <cfset qryUserSites = request.requestState.qryUserSites>
 <cfset loadSiteID = request.requestState.loadSiteID>
 <cfset aModules = request.requestState.aModules>
+<cfset stWidgets = request.requestState.stWidgets>
 <cfset oUser = request.requestState.oUser>
 <cfset showHomePortalsAsSite = request.requestState.showHomePortalsAsSite>
+<cfset aWidgets = arrayNew(1)>
 
 <!--- check if there is another site besides the hp engine --->
 <cfquery name="qrySitesCheck" dbtype="query">
@@ -29,12 +32,16 @@
 
 <cfset stAccessMap = oUser.getAccessMap()>
 
+<cfif structKeyExists(stWidgets,"default")>
+	<cfset aWidgets = stWidgets.default>
+<cfelseif structKeyExists(stWidgets,"left")>
+	<cfset aWidgets = stWidgets.left>
+</cfif>
+
+
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript">
-		doEvent("ehGeneral.dspHomePortalsCheck","hpInfoPanel");
-	</script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
 
@@ -43,25 +50,17 @@
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">
-			<cfif stAccessMap.sites>
-				<div class="dsb_siteSection" style="width:150px;padding:0px;">
-					<div class="buttonImage btnLarge">
-						<a href="index.cfm?event=sites.ehSites.dspCreate" title="Click here to create a new portal or site"><img src="images/folder_add.png" border="0" align="absmiddle">&nbsp; Create New Site</a>
-					</div>	
-	
-	
-					<div class="buttonImage btnLarge">
-						<a href="index.cfm?event=sites.ehSites.dspRegister" title="Click here to register an existing portal or site in ColdBricks"><img src="images/folder_page.png" border="0" align="absmiddle">&nbsp; Register Site</a>
-					</div>	
+			
+			<cfloop from="1" to="#arrayLen(aWidgets)#" index="i">
+				<div id="dsb_widget#i#" style="width:150px;margin-bottom:25px;">
+					<cfif aWidgets[i].title neq "">
+						<div class="dsb_secTitle">#aWidgets[i].title#</div>
+					</cfif>
+					<div class="dsb_siteSection">
+						#aWidgets[i].body#
+					</div>
 				</div>
-				<br><br>
-			</cfif>
-
-			<div class="dsb_siteSection" style="width:150px;padding:0px;">
-				<div style="margin:10px;" id="hpInfoPanel">
-					Checking <a href="/homePortals">HomePortals</a> Framework...
-				</div>
-			</div>
+			</cfloop>
 
 		</td>
 		<td>

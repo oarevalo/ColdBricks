@@ -1,8 +1,57 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <interface>
-	
+	<modules>
+			<module name="sites"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
+				Access the sites management module, from there you can add, remove, archive and access individual sites		
+				
+				<features type="server">
+					<feature href="index.cfm?event=sites.ehSites.dspMain" 
+							imgSrc="images/folder_desktop_48x48.png"
+							alt="Sites Management"
+							label="Sites"
+							accessMapKey="sites">
+						Access the sites management module, from there you can add, remove, archive and access individual sites		
+					</feature>
+				</features>
+				
+				<widgets type="server">
+					<widget title="" href="/ColdBricks/modules/sites/widgets/siteButtons.cfm" />
+					<widget title="" href="/ColdBricks/modules/sites/widgets/checkHomePortals.cfm" />
+				</widgets>
+			</module>
+
+			<module name="site"
+					version="1.0"
+					author="ColdBricks"
+					authorURL="http://www.coldbricks.com">
+				Site management
+
+				<features type="site">
+					<feature href = "index.cfm?event=site.ehSite.doLoadHomePage"
+							imgSrc = "images/homepage_48x48.png"
+							alt = "Edit Site's Home Page"
+							label = "Home Page"
+							accessMapKey="pages">
+						This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
+					</feature>
+				</features>
+
+				<widgets type="site">
+					<widget title="" href="/ColdBricks/modules/site/widgets/siteButtons.cfm" position="left" />
+					<widget title="Accounts Summary:" href="/ColdBricks/modules/site/widgets/accounts.cfm" position="left" />
+					<widget title="Resources Summary:" href="/ColdBricks/modules/site/widgets/resources.cfm" position="left" />
+					<widget title="Quick Links:" href="/ColdBricks/modules/site/widgets/accountQuickLinks.cfm" position="right" />
+					<widget title="Site information:" href="/ColdBricks/modules/site/widgets/siteInfo.cfm" position="right" />
+				</widgets>
+
+			</module>
+		
+	</modules>
 	<server>
-		<modules>
+		<modules><!-- 
 			<module name="sites"
 					href="index.cfm?event=sites.ehSites.dspMain" 
 					imgSrc="images/folder_desktop_48x48.png"
@@ -50,6 +99,7 @@
 					authorURL="http://www.coldbricks.com">
 				The templates module lets you manage the default rendering templates for all sites.
 			</module>
+	 -->
 		</modules>	
 	</server>
 
@@ -67,7 +117,7 @@
 					authorURL="http://www.coldbricks.com">
 				This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
 			</module>
-			
+			<!-- 
 			<module name="pages"
 					href = "index.cfm?event=pages.ehPages.dspMain"
 					imgSrc = "images/documents_48x48.png"
@@ -153,6 +203,7 @@
 					authorURL="http://www.coldbricks.com">
 				Download a zipped version of this site for backup or migration
 			</module>
+			 -->
 
 			<!--<module href = "index.cfm?event=siteMonitor.ehSiteMonitor.dspMain"
 					imgSrc = "images/gnome-monitor_48x48.png"
