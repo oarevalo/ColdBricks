@@ -7,14 +7,14 @@
 	templateEditKey = request.requestState.templateEditKey;
 	oAppConfigBean = request.requestState.oAppConfigBean;
 	
-	dspEvent = "siteConfig.ehSiteConfig.dspMain";
+	dspEvent = "config.ehSiteConfig.dspMain";
 </cfscript>
 
 
 <script type="text/javascript">
 	function confirmDeleteTemplate(name,type) {
 		if(confirm("Delete template?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteRenderTemplate&name=" + name + "&type=" + type;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteRenderTemplate&name=" + name + "&type=" + type;
 		}
 	}
 </script>
@@ -103,7 +103,7 @@
 					<tr valign="top">
 						<td style="width:430px;">
 							<form name="frmEditTemplate" action="index.cfm" method="post">
-								<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveRenderTemplate">
+								<input type="hidden" name="event" value="config.ehSiteConfig.doSaveRenderTemplate">
 								<cfif not isNew>
 									<input type="text" name="name" value="#templateEditKey#">
 								</cfif>

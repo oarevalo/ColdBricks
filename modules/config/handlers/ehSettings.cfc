@@ -13,7 +13,7 @@
 				if(panel eq "") panel = "general";
 				session.panel = panel;
 				
-				setView("vwMain");
+				setView("server/vwMain");
 				setValue("panel", panel);
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
@@ -36,7 +36,7 @@
 			try {
 				configBean = getService("configManager").getHomePortalsConfigBean();
 				
-				setView("vwAccounts");
+				setView("server/vwAccounts");
 				setValue("oAccountsConfigBean", getAccountsConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
@@ -56,7 +56,7 @@
 			try {
 				configBean = getService("configManager").getHomePortalsConfigBean();
 				
-				setView("vwModuleProperties");
+				setView("server/vwModuleProperties");
 				setValue("oModulePropertiesConfigBean", getModulePropertiesConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
@@ -112,7 +112,7 @@
 			
 				setValue("aConfigFiles", aConfigFiles);
 				setValue("configFile", configFile);
-				setView("vwEditXML");
+				setView("server/vwEditXML");
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
 				

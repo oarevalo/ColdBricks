@@ -7,13 +7,13 @@
 	propertyEditKey = request.requestState.propertyEditKey;
 	oAppConfigBean = request.requestState.oAppConfigBean;
 	
-	dspEvent = "siteConfig.ehSiteConfig.dspMain";
+	dspEvent = "config.ehSiteConfig.dspMain";
 </cfscript>
 
 <script type="text/javascript">
 	function confirmDeleteProperty(name) {
 		if(confirm("Delete page property?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteProperty&name=" + name;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteProperty&name=" + name;
 		}
 	}
 </script>
@@ -64,7 +64,7 @@
 			</table>
 			<cfif propertyEditKey eq "__NEW__">
 				<form name="frmAddProperty" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveProperty">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSaveProperty">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
@@ -91,7 +91,7 @@
 					</cfcatch>
 				</cftry>
 				<form name="frmEditProperty" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveProperty">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSaveProperty">
 					<input type="hidden" name="name" value="#propertyEditKey#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">

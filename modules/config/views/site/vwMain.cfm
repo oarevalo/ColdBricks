@@ -37,7 +37,7 @@
 			<td style="width:120px;">
 				<br />
 				<cfloop from="1" to="#arrayLen(aPanels)#" index="i">
-					<a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&panel=#aPanels[i].id#"
+					<a href="index.cfm?event=config.ehSiteConfig.dspMain&panel=#aPanels[i].id#"
 						<cfif panel eq aPanels[i].id>style="font-weight:bold;"</cfif>>#aPanels[i].label#</a><br />
 				</cfloop>
 			</td>
@@ -49,7 +49,7 @@
 						<cfswitch expression="#panel#">
 							<cfcase value="general">
 								<form name="frm" method="post" action="index.cfm">
-									<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveGeneral">
+									<input type="hidden" name="event" value="config.ehSiteConfig.doSaveGeneral">
 									<cfinclude template="includes/general.cfm">
 									<cfinclude template="includes/caching.cfm">
 									<tr>

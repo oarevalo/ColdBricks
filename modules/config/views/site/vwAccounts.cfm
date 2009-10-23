@@ -27,10 +27,10 @@
 
 <cfoutput>
 <div>
-	[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
-	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;</cfif>
-	<cfif hasModulesPlugin>[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
-	[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
+	[ <a href="index.cfm?event=config.ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=config.ehSiteConfig.dspAccounts"><strong>Accounts</strong></a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=config.ehSiteConfig.dspModuleProperties">Module Properties</a> ] &nbsp;&nbsp;</cfif>
+	[ <a href="index.cfm?event=config.ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 
 <br>
@@ -40,7 +40,7 @@
 		<td>
 
 			<form name="frm" method="post" action="index.cfm">
-				<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveAccounts">
+				<input type="hidden" name="event" value="config.ehSiteConfig.doSaveAccounts">
 			
 				<table class="dataFormTable">
 					<tr><td colspan="2"><h2>General Settings:</h2></td></tr>
@@ -131,7 +131,7 @@
 						<td>
 							<input type="text" name="newAccountTemplate" value="#newAccountTemplate#" size="30" class="formField" id="fld_newAccountTemplate" <cfif not structKeyExists(stAppConfig,"newAccountTemplate")>disabled</cfif>>
 							<cfif structKeyExists(stAppConfig,"newAccountTemplate")>
-								<a href="index.cfm?event=siteConfig.ehSiteConfig.dspEditXML&configFile=#newAccountTemplate#">Edit XML</a>
+								<a href="index.cfm?event=config.ehSiteConfig.dspEditXML&configFile=#newAccountTemplate#">Edit XML</a>
 							</cfif>
 						</td>
 					</tr>
@@ -143,7 +143,7 @@
 						<td>
 							<input type="text" name="newPageTemplate" value="#newPageTemplate#" size="30" class="formField" id="fld_newPageTemplate" <cfif not structKeyExists(stAppConfig,"newPageTemplate")>disabled</cfif>>
 							<cfif structKeyExists(stAppConfig,"newPageTemplate")>
-								<a href="index.cfm?event=siteConfig.ehSiteConfig.dspEditXML&configFile=#newPageTemplate#">Edit XML</a>
+								<a href="index.cfm?event=config.ehSiteConfig.dspEditXML&configFile=#newPageTemplate#">Edit XML</a>
 							</cfif>
 						</td>
 					</tr>

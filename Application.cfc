@@ -28,6 +28,7 @@
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
 	<cfset this.scriptProtect = "none">
+	<cfset this.extModulesList = -1>
 
 	<cffunction name="onRequestStart" output="false">
 		<cfparam name="Event" default=""> <!--- use to determine the action to perform --->
@@ -51,9 +52,11 @@
 			reqState.module = "";
 			
 			// check for external modules
-			if(listLen(event,".") eq 4 and listFirst(event,".") eq this.extModulesPrefix) {
+			if(Not structKeyExists(application,"_appInited") or resetApp) 
+				structDelete(application, "__core__extModulesList");
+			reqState._isexternalmodule_ = isExternalModule(event);
+			if(listLen(event,".") eq 4 and reqState._isexternalmodule_) {
 				reqState.event = listDeleteAt(event,1,".");
-				reqState._isexternalmodule_ = true;
 			}
 
 			// instantiate the general event handler
@@ -160,7 +163,7 @@
 			var mp = ""; 
 			var modulePath = this.modulesPath;
 
-			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lte 4) {
+			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lt 4) {
 				
 				// convert modulesPath to a valid dot notation
 				if(arguments.reqState._isexternalmodule_) modulePath = this.extModulesPath;
@@ -288,6 +291,34 @@
 			
 			return viewPath;
 		</cfscript>
+	</cffunction>
+
+	<cffunction name="isExternalModule" access="private" returntype="boolean" hint="Checks whether the given event belongs to an external module">
+		<cfargument name="event" type="string" required="true">
+		<cfif listLen(event,".") eq 4 and listFirst(event,".") eq this.extModulesPrefix>
+			<cfreturn true>
+		<cfelseif listLen(event,".") eq 3>
+			<cfreturn listFindNoCase(getExternalModulesList(), listFirst(event,"."))>
+		</cfif>
+		<cfreturn false>
+	</cffunction>
+
+	<cffunction name="getExternalModulesList" access="private" returntype="string">
+		<cfset var list = "">
+		<cfset var qry = 0>
+		<cfif this.extModulesPath neq "">
+			<cfif not structKeyExists(application,"__core__extModulesList")>
+				<cfdirectory action="list" name="qry" directory="#expandPath(this.extModulesPath)#">
+				<cfquery name="qry" dbtype="query">
+					SELECT * FROM qry WHERE type = 'dir'
+				</cfquery>
+				<cflock name="cbBuildExtModules_lock" type="exclusive" timeout="20">
+					<cfset application.__core__extModulesList = valueList(qry.name)>
+				</cflock>
+			</cfif>
+			<cfset list = application.__core__extModulesList>
+		</cfif>
+		<cfreturn list>
 	</cffunction>
 
 </cfcomponent>

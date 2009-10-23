@@ -60,18 +60,8 @@
 	arrayAppend(aOptions,st);
 
 	st = structNew();
-	st.label = "SiteMap";
-	st.event = "siteMap.ehSiteMap.dspMain";
-	st.selected = findnocase("ehSiteMap.", event);
-	st.hint = "SiteMap tool";
-	st.icon = "images/Globe_22x22.png";
-	st.titleicon = "images/Globe_48x48.png";
-	st.hasAccess = hasAccountsPlugin and stAccessMap.siteMap;
-	arrayAppend(aOptions,st);
-
-	st = structNew();
 	st.label = "Settings";
-	st.event = "siteConfig.ehSiteConfig.dspMain";
+	st.event = "config.ehSiteConfig.dspMain";
 	st.selected = findnocase("ehSiteConfig.", event);
 	st.hint = "View and edit configuration files";
 	st.icon = "images/configure_22x22.png";

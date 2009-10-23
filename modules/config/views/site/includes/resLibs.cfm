@@ -9,7 +9,7 @@
 <script type="text/javascript">
 	function confirmDeleteResLibPath(index) {
 		if(confirm("Delete resource library path?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteResLibPath&index=" + index;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteResLibPath&index=" + index;
 		}
 	}
 </script>
@@ -46,9 +46,9 @@
 				<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
 					<tr <cfif index mod 2>class="altRow"</cfif> <cfif resLibPathEditIndex eq i>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-						<td><a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&resLibPathEditIndex=#i#">#aResLibs[i]#</a></td>
+						<td><a href="index.cfm?event=config.ehSiteConfig.dspMain&resLibPathEditIndex=#i#">#aResLibs[i]#</a></td>
 						<td align="center">
-							<a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&resLibPathEditIndex=#i#"><img src="images/page_edit.png" border="0" alt="Edit resource library path" title="Edit resource library path"></a>
+							<a href="index.cfm?event=config.ehSiteConfig.dspMain&resLibPathEditIndex=#i#"><img src="images/page_edit.png" border="0" alt="Edit resource library path" title="Edit resource library path"></a>
 							<a href="##" onclick="confirmDeleteResLibPath(#i#)"><img src="images/page_delete.png" border="0" alt="Delete resource library path" title="Delete resource library path"></a>
 						</td>
 					</tr>
@@ -57,7 +57,7 @@
 			</table>
 			<cfif resLibPathEditIndex eq 0>
 				<form name="frmAddResLibPath" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doAddResLibPath">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doAddResLibPath">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
@@ -66,7 +66,7 @@
 							</td>
 							<td style="width:100px;" align="center">
 								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
-								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspMain'">
+								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspMain'">
 							</td>
 						</tr>
 					</table>
@@ -80,7 +80,7 @@
 					</cfcatch>
 				</cftry>
 				<form name="frmEditResLibPath" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveResLibPath">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSaveResLibPath">
 					<input type="hidden" name="index" value="#resLibPathEditIndex#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
@@ -91,14 +91,14 @@
 							</td>
 							<td style="width:100px;" align="center">
 								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
-								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspMain'">
+								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspMain'">
 							</td>
 						</tr>
 					</table>
 				</form>
 			<cfelse>
 				<br>
-				<a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&resLibPathEditIndex=0">Click Here</a> to add a resource library path
+				<a href="index.cfm?event=config.ehSiteConfig.dspMain&resLibPathEditIndex=0">Click Here</a> to add a resource library path
 			</cfif>
 		</td>
 	</tr>

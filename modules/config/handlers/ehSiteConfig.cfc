@@ -24,7 +24,7 @@
 				// get config bean for this application
 				oAppConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 
-				setView("vwMain");
+				setView("site/vwMain");
 				setValue("panel", panel);
 				setValue("oHomePortalsConfigBean", oHPConfigBean );
 				setValue("oAppConfigBean", oAppConfigBean );
@@ -65,7 +65,7 @@
 				// get struct with only settings defined for this application
 				stAppConfig = parseAppAccountsConfigFile(configFile);
 
-				setView("vwAccounts");
+				setView("site/vwAccounts");
 				setValue("oAccountsConfigBean", oConfigBean);
 				setValue("stAppConfig", stAppConfig );
 				setValue("hasAccountsPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"accounts") );
@@ -98,7 +98,7 @@
 				oConfigBeanBase = getModulePropertiesConfigBean();
 				oConfigBean = getModulePropertiesConfigBean(appRoot & variables.modulePropertiesConfigPath);
 
-				setView("vwModuleProperties");
+				setView("site/vwModuleProperties");
 				setValue("oModulePropertiesConfigBeanBase", oConfigBeanBase );
 				setValue("oModulePropertiesConfigBean", oConfigBean );
 				setValue("hasAccountsPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"accounts") );
@@ -157,7 +157,7 @@
 			
 				setValue("aConfigFiles", aConfigFiles);
 				setValue("configFile", configFile);
-				setView("vwEditXML");
+				setView("site/vwEditXML");
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -200,7 +200,7 @@
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
 			}			
-			setNextEvent("siteConfig.ehSiteConfig.dspMain","configFile=#configFile#");
+			setNextEvent("config.ehSiteConfig.dspMain","configFile=#configFile#");
 		</cfscript>
 	</cffunction>	
 	
@@ -248,16 +248,16 @@
 				reloadSite();
 				
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -282,16 +282,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 				
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","baseResourceEditIndex=0");
+				setNextEvent("config.ehSiteConfig.dspMain","baseResourceEditIndex=0");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -321,16 +321,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 				
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","baseResourceEditIndex=#index#&baseResourceEditType=#type#");
+				setNextEvent("config.ehSiteConfig.dspMain","baseResourceEditIndex=#index#&baseResourceEditType=#type#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>		
 	</cffunction>	
@@ -356,16 +356,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -388,16 +388,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibPathEditIndex=0");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibPathEditIndex=0");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -429,16 +429,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibPathEditIndex=#index#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibPathEditIndex=#index#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>		
 	</cffunction>	
@@ -465,16 +465,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -499,16 +499,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -533,16 +533,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -567,16 +567,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -601,16 +601,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -637,16 +637,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -670,16 +670,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>
@@ -712,16 +712,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			}
 		</cfscript>
 	</cffunction>
@@ -746,16 +746,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resTypeEditKey=#resTypeEditKey#");
 			}
 		</cfscript>	
 	</cffunction>
@@ -784,16 +784,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -818,16 +818,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -851,16 +851,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -880,16 +880,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -913,16 +913,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -946,16 +946,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain");
+				setNextEvent("config.ehSiteConfig.dspMain");
 			}
 		</cfscript>	
 	</cffunction>
@@ -979,16 +979,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 			}
 		</cfscript>
 	</cffunction>
@@ -1013,16 +1013,16 @@
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
 
 				setMessage("info", "Config file changed. You must reset all sites for all changes to be effective");
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
+				setNextEvent("config.ehSiteConfig.dspMain","resLibTypeEditKey=#resLibTypeEditKey#");
 			}
 		</cfscript>	
 	</cffunction>
@@ -1053,16 +1053,16 @@
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties","index=0");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties","index=0");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			}
 		</cfscript>
 	</cffunction>	
@@ -1098,16 +1098,16 @@
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties","index=#index#");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties","index=#index#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			}
 		</cfscript>		
 	</cffunction>	
@@ -1132,16 +1132,16 @@
 				saveModulePropertiesConfigBean( appRoot & "/config/module-properties.xml", oConfigBean );
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspModuleProperties");
+				setNextEvent("config.ehSiteConfig.dspModuleProperties");
 			}
 		</cfscript>	
 	</cffunction>	
@@ -1211,16 +1211,16 @@
 				fileWrite(configFile, toString(xmlDoc), "utf-8");
 
 				setMessage("info", variables.confirmMessage);
-				setNextEvent("siteConfig.ehSiteConfig.dspAccounts");
+				setNextEvent("config.ehSiteConfig.dspAccounts");
 			
 			} catch(validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("siteConfig.ehSiteConfig.dspAccounts");
+				setNextEvent("config.ehSiteConfig.dspAccounts");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("siteConfig.ehSiteConfig.dspAccounts");
+				setNextEvent("config.ehSiteConfig.dspAccounts");
 			}
 		</cfscript>
 	</cffunction>

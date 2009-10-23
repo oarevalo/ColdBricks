@@ -1,32 +1,31 @@
 <cfparam name="request.requestState.oHomePortalsConfigBean" default="">
-<cfparam name="request.requestState.contentRendererEditKey" default="">
+<cfparam name="request.requestState.pluginEditKey" default="">
 <cfparam name="request.requestState.oAppConfigBean" default="">
 
 <cfscript>
 	oHomePortalsConfigBean = request.requestState.oHomePortalsConfigBean;
-	contentRendererEditKey = request.requestState.contentRendererEditKey;
+	pluginEditKey = request.requestState.pluginEditKey;
 	oAppConfigBean = request.requestState.oAppConfigBean;
-
-	dspEvent = "siteConfig.ehSiteConfig.dspMain";
+	
+	dspEvent = "config.ehSiteConfig.dspMain";
 </cfscript>
 
 <script type="text/javascript">
-	function confirmDeleteContentRenderer(name) {
-		if(confirm("Delete content renderer?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteContentRenderer&name=" + name;
+	function confirmDeletePlugin(name) {
+		if(confirm("Delete plugin?")) {
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeletePlugin&name=" + name;
 		}
 	}
 </script>
 
 <cfoutput>
-	<tr><td colspan="2"><h2>Content Renderers:</h2></td></tr>
+	<tr><td colspan="2"><h2>Plugins:</h2></td></tr>
 	<tr>
 		<td colspan="2">
 			<div class="formFieldTip">
-				Content Renderers are used to describe how content elements on a page will be handled. These are the 
-				different types of elements that a page can contain.
+				Plugins are a mechanism used to extend the functionality or features of an application.
 			</div>
-				
+		
 			<table style="width:100%;border:1px solid silver;">
 				<tr>
 					<th style="background-color:##ccc;width:50px;">No.</th>
@@ -35,36 +34,36 @@
 					<th style="background-color:##ccc;width:100px;">Action</th>
 				</tr>
 				<cfset index = 1>
-				<cfset stContRenders = oHomePortalsConfigBean.getContentRenderers()>
-				<cfloop collection="#stContRenders#" item="key">
+				<cfset stPlugins = oHomePortalsConfigBean.getPlugins()>
+				<cfloop collection="#stPlugins#" item="key">
 					<tr <cfif index mod 2>class="altRow"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
 						<td style="width:100px;" align="center">#key#</td>
-						<td>#stContRenders[key]#</td>
+						<td>#stPlugins[key]#</td>
 						<td align="center">
 							< base >
 						</td>
 					</tr>
 					<cfset index++>
-				</cfloop>
-
-				<cfset stContRenders = oAppConfigBean.getContentRenderers()>
-				<cfloop collection="#stContRenders#" item="key">
-					<tr <cfif index mod 2>class="altRow"</cfif> <cfif contentRendererEditKey eq key>style="font-weight:bold;"</cfif>>
+				</cfloop>				
+				
+				<cfset stPlugins = oAppConfigBean.getPlugins()>
+				<cfloop collection="#stPlugins#" item="key">
+					<tr <cfif index mod 2>class="altRow"</cfif> <cfif pluginEditKey eq key>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&contentRendererEditKey=#key#">#key#</a></td>
-						<td>#stContRenders[key]#</td>
+						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#">#key#</a></td>
+						<td>#stPlugins[key]#</td>
 						<td align="center">
-							<a href="index.cfm?event=#dspEvent#&contentRendererEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit content renderer" title="Edit content renderer"></a>
-							<a href="##" onclick="confirmDeleteContentRenderer('#key#')"><img src="images/page_delete.png" border="0" alt="Delete content renderer" title="Delete content renderer"></a>
+							<a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit plugin" title="Edit plugin"></a>
+							<a href="##" onclick="confirmDeletePlugin('#key#')"><img src="images/page_delete.png" border="0" alt="Delete plugin" title="Delete plugin"></a>
 						</td>
 					</tr>
 					<cfset index++>
 				</cfloop>
 			</table>
-			<cfif contentRendererEditKey eq "__NEW__">
-				<form name="frmAddContentRenderer" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveContentRenderer">
+			<cfif pluginEditKey eq "__NEW__">
+				<form name="frmAddPlugin" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSavePlugin">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
@@ -83,23 +82,23 @@
 						</tr>
 					</table>
 				</form>
-			<cfelseif contentRendererEditKey neq "">
+			<cfelseif pluginEditKey neq "">
 				<cftry>
-					<cfset path = oAppConfigBean.getContentRenderer(contentRendererEditKey)>
+					<cfset path = oAppConfigBean.getPlugin(pluginEditKey)>
 					<cfcatch type="any">
 						<cfset path = "">
 					</cfcatch>
 				</cftry>
-				<form name="frmEditBaseResource" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveContentRenderer">
-					<input type="hidden" name="name" value="#contentRendererEditKey#">
+				<form name="frmEditPlugin" action="index.cfm" method="post">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSavePlugin">
+					<input type="hidden" name="name" value="#pluginEditKey#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>Edit:</strong></td>
 							<td style="width:100px;">
 								<strong>Name:</strong><br />
-								#contentRendererEditKey#
+								#pluginEditKey#
 							</td>
 							<td>
 								<strong>Path:</strong><br />
@@ -114,7 +113,7 @@
 				</form>
 			<cfelse>
 				<br>
-				<a href="index.cfm?event=#dspEvent#&contentRendererEditKey=__NEW__">Click Here</a> to add a content renderer
+				<a href="index.cfm?event=#dspEvent#&pluginEditKey=__NEW__">Click Here</a> to register a plugin
 			</cfif>
 		</td>
 	</tr>

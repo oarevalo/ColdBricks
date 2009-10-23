@@ -16,7 +16,7 @@
 <script type="text/javascript">
 	function confirmDeleteBaseResource(type, index) {
 		if(confirm("Delete base resource?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteBaseResource&type=" + type + "&index=" + index;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteBaseResource&type=" + type + "&index=" + index;
 		}
 	}
 </script>
@@ -60,9 +60,9 @@
 						<tr <cfif index mod 2>class="altRow"</cfif> <cfif baseResourceEditIndex eq i>style="font-weight:bold;"</cfif>>
 							<td style="width:50px;" align="right"><strong>#index#.</strong></td>
 							<td style="width:100px;" align="center">#resType#</td>
-							<td><a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&baseResourceEditIndex=#i#&baseResourceEditType=#resType#">#aRes[i]#</a></td>
+							<td><a href="index.cfm?event=config.ehSiteConfig.dspMain&baseResourceEditIndex=#i#&baseResourceEditType=#resType#">#aRes[i]#</a></td>
 							<td align="center">
-								<a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&baseResourceEditIndex=#i#&baseResourceEditType=#resType#"><img src="images/page_edit.png" border="0" alt="Edit base resource" title="Edit base resource"></a>
+								<a href="index.cfm?event=config.ehSiteConfig.dspMain&baseResourceEditIndex=#i#&baseResourceEditType=#resType#"><img src="images/page_edit.png" border="0" alt="Edit base resource" title="Edit base resource"></a>
 								<a href="##" onclick="confirmDeleteBaseResource('#resType#',#i#)"><img src="images/page_delete.png" border="0" alt="Delete base resource" title="Delete base resource"></a>
 							</td>
 						</tr>
@@ -72,7 +72,7 @@
 			</table>
 			<cfif baseResourceEditIndex eq 0>
 				<form name="frmAddBaseResource" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doAddBaseResource">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doAddBaseResource">
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
 						<tr>
 							<td style="width:50px;" align="center"><strong>New:</strong></td>
@@ -88,7 +88,7 @@
 							</td>
 							<td style="width:100px;" align="center">
 								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
-								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspMain'">
+								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspMain'">
 							</td>
 						</tr>
 					</table>
@@ -102,7 +102,7 @@
 					</cfcatch>
 				</cftry>
 				<form name="frmEditBaseResource" action="index.cfm" method="post">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveBaseResource">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSaveBaseResource">
 					<input type="hidden" name="index" value="#baseResourceEditIndex#">
 
 					<table style="width:100%;border:1px solid silver;margin-top:5px;">
@@ -120,14 +120,14 @@
 							</td>
 							<td style="width:100px;" align="center">
 								<input type="submit" name="btnSave" value="Apply" style="font-size:11px;">
-								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspMain'">
+								<input type="button" name="btnCancel" value="Cancel" style="font-size:11px;" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspMain'">
 							</td>
 						</tr>
 					</table>
 				</form>
 			<cfelse>
 				<br>
-				<a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain&baseResourceEditIndex=0">Click Here</a> to add a base resources
+				<a href="index.cfm?event=config.ehSiteConfig.dspMain&baseResourceEditIndex=0">Click Here</a> to add a base resources
 			</cfif>
 		</td>
 	</tr>

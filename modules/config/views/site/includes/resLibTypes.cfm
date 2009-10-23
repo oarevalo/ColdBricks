@@ -8,18 +8,18 @@
 	resLibTypeEditKey = request.requestState.resLibTypeEditKey;
 	resLibTypePropEditKey = request.requestState.resLibTypePropEditKey;
 	
-	dspEvent = "siteConfig.ehSiteConfig.dspMain";
+	dspEvent = "config.ehSiteConfig.dspMain";
 </cfscript>
 
 <script type="text/javascript">
 	function confirmDeleteResType(name) {
 		if(confirm("Delete resource library type ?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteResourceLibraryType&prefix=" + name;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteResourceLibraryType&prefix=" + name;
 		}
 	}
 	function confirmDeleteResTypeProp(type,name) {
 		if(confirm("Delete resource library type  property?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteResourceLibraryTypeProperty&resLibTypeEditKey=" + type + "&name="+name;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteResourceLibraryTypeProperty&resLibTypeEditKey=" + type + "&name="+name;
 		}
 	}
 </script>
@@ -93,7 +93,7 @@
 					<tr valign="top">
 						<td style="width:430px;">
 							<form name="frmEditResType" action="index.cfm" method="post">
-								<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveResourceLibraryType">
+								<input type="hidden" name="event" value="config.ehSiteConfig.doSaveResourceLibraryType">
 								<cfif not isNew>
 									<input type="hidden" name="prefix" value="#resLibTypeEditKey#">
 								</cfif>
@@ -159,7 +159,7 @@
 									</cfif>
 
 									<form name="frmEditResTypeProp" action="index.cfm" method="post">
-										<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveResourceLibraryTypeProperty">
+										<input type="hidden" name="event" value="config.ehSiteConfig.doSaveResourceLibraryTypeProperty">
 										<input type="hidden" name="resLibTypePropEditKey" value="#resLibTypePropEditKey#">
 										<input type="hidden" name="resLibTypeEditKey" value="#resLibTypeEditKey#">
 										<cfif not isNewProp>

@@ -1,37 +1,15 @@
-<cfparam name="request.requestState.oSiteInfo" default="">
-<cfparam name="request.requestState.stResourceTypes" default="">
-<cfparam name="request.requestState.qryResources" default="">
-<cfparam name="request.requestState.qryAccounts" default="">
-<cfparam name="request.requestState.appRoot" default="">
-<cfparam name="request.requestState.defaultAccount" default="">
-<cfparam name="request.requestState.qlAccount" default="">
-<cfparam name="request.requestState.aPages" default="">
 <cfparam name="request.requestState.firstTime" default="false">
 <cfparam name="request.requestState.oUser" default="">
-<cfparam name="request.requestState.hasAccountsPlugin" default="false">
 <cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oContext" default="">
 <cfparam name="request.requestState.isHomePortalsEngine" default="false">
-<cfparam name="request.requestState.hasResourcesModule" default="false">
-<cfparam name="request.requestState.resourcesModuleInfo" default="">
 <cfparam name="request.requestState.stWidgets" default="">
 
-<cfset oSiteInfo = request.requestState.oSiteInfo>
-<cfset stResourceTypes = request.requestState.stResourceTypes>
-<cfset qryResources = request.requestState.qryResources>
-<cfset qryAccounts = request.requestState.qryAccounts>
-<cfset appRoot = request.requestState.appRoot>
-<cfset defaultAccount = request.requestState.defaultAccount>
-<cfset qlAccount = request.requestState.qlAccount>
-<cfset aPages = request.requestState.aPages>
 <cfset firstTime = request.requestState.firstTime>
 <cfset oUser = request.requestState.oUser>
-<cfset hasAccountsPlugin = request.requestState.hasAccountsPlugin>
 <cfset aModules = request.requestState.aModules>
 <cfset oContext = request.requestState.oContext>
 <cfset isHomePortalsEngine = request.requestState.isHomePortalsEngine>
-<cfset hasResourcesModule = request.requestState.hasResourcesModule>
-<cfset resourcesModuleInfo = request.requestState.resourcesModuleInfo>
 <cfset stWidgets = request.requestState.stWidgets>
 
 <cfset stAccessMap = oUser.getAccessMap()>
@@ -45,20 +23,18 @@
 <cfelseif structKeyExists(stWidgets,"left")>
 	<cfset aLeftWidgets = stWidgets.left>
 </cfif>
-
 <cfif structKeyExists(stWidgets,"right")>
 	<cfset aRightWidgets = stWidgets.right>
 </cfif>
 
 
-<cfoutput>
-	
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
 	<link href="includes/css/dashboard.css" rel="stylesheet" type="text/css">
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
-		
+
+<cfoutput>
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">
@@ -82,11 +58,7 @@
 					have quick access to many features. You can return to this screen at any time by 
 					clicking on the <img src="images/house.png" align="absmiddle"> <b><u>dashboard</u></b> link.<br><br>
 					To get started, you may want to 
-					<a href="index.cfm?event=site.ehSite.doLoadAccountPage">Edit your HomePage</a>, 
-					<cfif hasAccountsPlugin>
-						<a href="index.cfm?event=accounts.ehAccounts.dspMain">Manage Accounts</a> or
-					</cfif>
-					<a href="index.cfm?event=resources.ehResources.dspMain">Add/Import Site Resources</a>
+					<a href="index.cfm?event=site.ehSite.doLoadAccountPage">Edit your HomePage</a>
 				</div>
 			</cfif>
 			
@@ -97,9 +69,6 @@
 					Changes made to this site will affect all HomePortals-based sites and applications on this server.
 				</div>
 			</cfif>
-			
-			
-			<cfset hasModuleAccess = false>
 			
 			<cf_dashboardMenu title="Site Management:">
 				<cfloop from="1" to="#arrayLen(aModules)#" index="i">
@@ -130,7 +99,6 @@
 											help="#aModules[i].description#">
 				</cfloop>
 			</cf_dashboardMenu>
-			
 		</td>
 		<td width="350">
 			<cfloop from="1" to="#arrayLen(aRightWidgets)#" index="i">

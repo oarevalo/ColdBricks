@@ -92,6 +92,12 @@
 					else
 						setNextEvent("ehGeneral.dspLogin");
 				}
+
+				// set module path
+				if(getValue("_isexternalmodule_"))
+					setValue("cbModulesPath","/ColdBricksModules");
+				else
+					setValue("cbModulesPath","/ColdBricks/modules");
 		
 				// set generally available values on the request context
 				setValue("hostName", hostName);
@@ -114,12 +120,7 @@
 	</cffunction>
 
 	<cffunction name="onRequestEnd" access="public" returntype="void">
-		<!--- override main layout for plugins
-		<cfif getLayout() eq "Layout.Main" and getModule() neq "">
-			<cfset setLayout("Layout.Plugin")>
-		</cfif> --->	
 	</cffunction>
-
 
 	<cffunction name="dspLogin" access="public" returntype="void">
 		<cfscript>
@@ -129,46 +130,7 @@
 	</cffunction>
 
 	<cffunction name="dspMain" access="public" returntype="void">
-		<cfscript>
-			var oSiteDAO = 0;
-			var oUserDAO = 0;
-			var qrySites = 0;
-			var oUser = getValue("oUser");
-			var aModules = arrayNew(1);
-	
-			try {
-				// clear site from context (releases memory allocated to the site context)
-				getService("sessionContext").getContext().clearSiteContext();
-				
-				// if this is a regular user then go to sites screen
-				if(not oUser.getIsAdministrator()) 	setNextEvent("ehSites.dspMain");
-	
-				oSiteDAO = getService("DAOFactory").getDAO("site");
-				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
-				
-				qrySites = oSiteDAO.getAll();
-				qryUserSites = oUserSiteDAO.search(userID = oUser.getID());
-	
-				// get features
-				aModules = getService("UIManager").getServerFeatures();
-
-				// get widgets
-				stWidgets = renderWidgets( getService("UIManager").getServerWidgets() );
-				
-				setValue("qrySites",qrySites);
-				setValue("qryUserSites",qryUserSites);
-				setValue("aModules",aModules);
-				setValue("stWidgets",stWidgets);
-				setValue("showHomePortalsAsSite", getSetting("showHomePortalsAsSite"));
-				setValue("cbPageTitle", "Administration Dashboard");
-				setView("vwMain");
-			
-			} catch(any e) {
-				setMessage("error",e.message);
-				getService("bugTracker").notifyService(e.message, e);
-				setView("");
-			}
-		</cfscript>
+		<cfset setNextEvent( getSetting("homeEvent") )>
 	</cffunction>
 
 	<cffunction name="dspChangePassword" access="public" returntype="void">
@@ -176,27 +138,6 @@
 		<cfset setView("vwChangePassword")>
 	</cffunction>
 	
-	<cffunction name="dspHomePortalsCheck" access="public" returntype="void">
-		<cfscript>
-			var oHomePortals = 0;
-			
-			setLayout("Layout.None");
-			
-			try {
-				// check existence of homeportals engine
-				oHomePortals = createObject("Component","homePortals.components.homePortals").init("/homePortals");
-				
-				setValue("hpVersion", oHomePortals.getConfig().getVersion());
-					
-				setView("vwHomePortalsCheck");		
-
-			} catch(any e) {
-				setValue("errorInfo",e);
-				setView("vwHomePortalsCheckError");		
-			}
-		</cfscript>
-	</cffunction>
-
 	<cffunction name="doLogin" access="public" returntype="void">
 		<cfset var usr = getValue("usr")>
 		<cfset var pwd = getValue("pwd")>

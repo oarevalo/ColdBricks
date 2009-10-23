@@ -22,7 +22,7 @@
 <script type="text/javascript">
 	function confirmDelete(moduleName, propertyName) {
 		if(confirm("Delete module property?")) {
-			document.location = "index.cfm?event=siteConfig.ehSiteConfig.doDeleteModuleProperty&moduleName=" + moduleName + "&propertyName=" + propertyName;
+			document.location = "index.cfm?event=config.ehSiteConfig.doDeleteModuleProperty&moduleName=" + moduleName + "&propertyName=" + propertyName;
 		}
 	}
 </script>
@@ -30,10 +30,10 @@
 <cfoutput>
 
 <div>
-	[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
-	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
-	<cfif hasModulesPlugin>[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;</cfif>
-	[ <a href="index.cfm?event=siteConfig.ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
+	[ <a href="index.cfm?event=config.ehSiteConfig.dspMain">General</a> ] &nbsp;&nbsp;
+	<cfif hasAccountsPlugin>[ <a href="index.cfm?event=config.ehSiteConfig.dspAccounts">Accounts</a> ] &nbsp;&nbsp;</cfif>
+	<cfif hasModulesPlugin>[ <a href="index.cfm?event=config.ehSiteConfig.dspModuleProperties"><strong>Module Properties</strong></a> ] &nbsp;&nbsp;</cfif>
+	[ <a href="index.cfm?event=config.ehSiteConfig.dspEditXML">Edit Config Files</a> ] &nbsp;&nbsp;
 </div>
 
 <br>
@@ -84,7 +84,7 @@
 						<td style="width:150px;">#qryData.propertyName#</td>
 						<td>#qryData.propertyValue#</td>
 						<td align="center">
-							<a href="index.cfm?event=siteConfig.ehSiteConfig.dspModuleProperties&index=#qryData.currentRow#"><img src="images/page_edit.png" border="0" alt="Edit module property" title="Edit module property"></a>
+							<a href="index.cfm?event=config.ehSiteConfig.dspModuleProperties&index=#qryData.currentRow#"><img src="images/page_edit.png" border="0" alt="Edit module property" title="Edit module property"></a>
 							<a href="##" onclick="confirmDelete('#qryData.moduleName#','#qryData.propertyName#')"><img src="images/page_delete.png" border="0" alt="Delete module property" title="Delete module property"></a>
 						</td>
 					</tr>
@@ -97,7 +97,7 @@
 			
 			<cfif index eq 0>
 				<form name="frm" method="post" action="index.cfm">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doAddModuleProperty">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doAddModuleProperty">
 					<table class="dataFormTable">
 						<tr>
 							<td width="100"><strong>Module Name:</strong></td>
@@ -115,14 +115,14 @@
 						<tr>
 							<td colspan="2" align="left" style="padding-top:5px;">
 								<input type="submit" name="btnSave" value="Save">
-								<input type="button" name="btnCancel" value="Cancel" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspModuleProperties'">
+								<input type="button" name="btnCancel" value="Cancel" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspModuleProperties'">
 							</td>
 						</tr>
 					</table>
 				</form>
 			<cfelseif index gt 0>
 				<form name="frm" method="post" action="index.cfm">
-					<input type="hidden" name="event" value="siteConfig.ehSiteConfig.doSaveModuleProperty">
+					<input type="hidden" name="event" value="config.ehSiteConfig.doSaveModuleProperty">
 					<input type="hidden" name="index" value="#index#">
 					<input type="hidden" name="old_moduleName" value="#qryData.moduleName[index]#">
 					<input type="hidden" name="old_propertyName" value="#qryData.propertyName[index]#">
@@ -143,7 +143,7 @@
 						<tr>
 							<td colspan="2" align="left" style="padding-top:5px;">
 								<input type="submit" name="btnSave" value="Save">
-								<input type="button" name="btnCancel" value="Cancel" onclick="document.location='index.cfm?event=siteConfig.ehSiteConfig.dspModuleProperties'">
+								<input type="button" name="btnCancel" value="Cancel" onclick="document.location='index.cfm?event=config.ehSiteConfig.dspModuleProperties'">
 							</td>
 						</tr>
 					</table>
@@ -152,7 +152,7 @@
 				<input type="button" 
 						name="btnCreate" 
 						value="Add Module Property" 
-						onClick="document.location='?event=siteConfig.ehSiteConfig.dspModuleProperties&index=0'">
+						onClick="document.location='?event=config.ehSiteConfig.dspModuleProperties&index=0'">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<b>Legend:</b> &nbsp;&nbsp;
 				<img src="images/page_edit.png" align="absmiddle" border="0" alt="Edit Module Property" title="Edit Module Property"> Edit Module Property &nbsp;&nbsp;
