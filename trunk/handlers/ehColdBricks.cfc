@@ -43,5 +43,47 @@
 			}
 		</cfscript>	
 	</cffunction>
-	
+
+	<cffunction name="renderWidgets" access="private" returntype="struct" output="true">
+		<cfargument name="__awidgets" type="array" required="true">
+		<cfset var __content = structNew()>
+		<cfset var __tmpContent = "">
+		<cfset var __pos = "default">
+		<cfset var __i = 0>
+		<cfset var __st = 0>
+
+		<cfloop from="1" to="#arrayLen(__aWidgets)#" index="__i">
+			<cfset __st = structNew()>
+			<cfset __st.title = "">
+			<cfset __st.body = "">
+			<cftry>
+				<cfsavecontent variable="__tmpContent">
+					<cfinclude template="#__aWidgets[__i].href#">
+				</cfsavecontent>
+				<cfcatch type="any">
+					<cfset getService("bugTracker").notifyService(cfcatch.message, cfcatch)>
+					<cfset __tmpContent = "<b>Error:</b>" & cfcatch.Message>
+				</cfcatch>
+			</cftry>
+				
+			<cfif __aWidgets[__i].position eq "">
+				<cfset __pos = "default" >
+			<cfelse>
+				<cfset __pos = __aWidgets[__i].position>
+			</cfif>
+			
+			<cfif not structKeyExists(__content,__pos)>
+				<cfset __content[__pos] = arrayNew(1)>
+			</cfif>
+			
+			<cfset __st = structNew()>
+			<cfset __st.title = __aWidgets[__i].title>
+			<cfset __st.body = __tmpContent>
+				
+			<cfset arrayAppend(__content[__pos], __st)>
+		</cfloop>		
+
+		<cfreturn __content>
+	</cffunction>
+		
 </cfcomponent>

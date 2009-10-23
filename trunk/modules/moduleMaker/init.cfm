@@ -1,5 +1,7 @@
-<cfset getService("UIManager").registerSiteModule(name = "moduleMaker",
-												href = "index.cfm?event=moduleMaker.ehModuleMaker.dspMain",
+<cfset getService("UIManager").registerModule(name = "moduleMaker",
+												description = "Create your own custom modules to add to your pages")>
+												
+<cfset getService("UIManager").registerSiteFeature(href = "index.cfm?event=moduleMaker.ehModuleMaker.dspMain",
 												imgSrc = "images/configure_48x48-2.png",
 												alt = "Module Maker",
 												label = "Module Maker",

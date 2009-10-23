@@ -55,78 +55,31 @@
 
 	<cffunction name="dspMain" access="public" returntype="void">
 		<cfscript>
-			var oResourceLibrary = 0;
-			var stResourceTypes = structNew();
 			var hp = 0;
-			var oCatalog = 0;
-			var qryResources = 0;
-			var qryAccounts = 0;
-			var qlAccount = getValue("qlAccount","");
-			var oAccountSite = 0;
-			var aPages = arrayNew(1);
-			var aPagesSorted = arrayNew(1);
 			var oContext = 0;
-			var oSiteInfo = 0;
-			var stModAccess = structNew();
-			var oUser = getValue("oUser");
-			var hasAccountsPlugin = false;
-			var oAccService = 0;
 			var aModules = arrayNew(1);
 			
 			try {
 				oContext = getService("sessionContext").getContext();
-				
-				// get site
-				oSiteInfo = oContext.getSiteInfo();
 
 				// create catalog object and instantiate for this page
 				hp = oContext.getHomePortals();
-				oCatalog = hp.getCatalog();
-				
-				// get resource types
-				stResourceTypes = hp.getResourceLibraryManager().getResourceTypesInfo();
-
-				// get resources
-				qryResources = oCatalog.getResources();
 
 				// if this is the hp engine, display a warning
+				oSiteInfo = oContext.getSiteInfo();
 				if(oSiteInfo.getSiteName() eq "homePortalsEngine") {
 					setValue("isHomePortalsEngine",true);
 				}
 				
-				// get accounts (if enabled)
-				if(hp.getPluginManager().hasPlugin("accounts")) {
-					hasAccountsPlugin = true;
-					oAccService = getAccountsService();
-					qryAccounts = oAccService.search();
-	
-					// if there is an account selected, get the account pages
-					if(qlAccount neq "") {
-						oAccountSite = oAccService.getSite(qlAccount);		
-						aPages = oAccountSite.getPages();		
-	
-						// sort pages
-						for(i=1;i lte arrayLen(aPages);i=i+1) {
-							arrayAppend(aPagesSorted, aPages[i].href);
-						}
-						arraySort(aPagesSorted,"textnocase","asc");
-					}
-					
-					setValue("defaultAccount", oAccService.getConfig().getDefaultAccount() );
-				}
-				
 				// get available modules
-				aModules = getService("UIManager").getSiteModules();
-			
-				setValue("oSiteInfo", oSiteInfo);
-				setValue("stResourceTypes", stResourceTypes);	
-				setValue("qryResources", qryResources);	
-				setValue("qryAccounts",  qryAccounts);
-				setValue("appRoot", hp.getConfig().getAppRoot() );
-				setValue("aPages", aPagesSorted );
+				aModules = getService("UIManager").getSiteFeatures();
+
+				// get widgets
+				stWidgets = renderWidgets( getService("UIManager").getSiteWidgets() );
+
 				setValue("aModules",aModules);
+				setValue("stWidgets",stWidgets);
 				setValue("cbPageTitle", "Site Dashboard :: <span style='color:red;'>#oSiteInfo.getsitename()#</span>");
-				setValue("hasAccountsPlugin", hasAccountsPlugin);
 				setView("vwMain");
 			
 			} catch(any e) {

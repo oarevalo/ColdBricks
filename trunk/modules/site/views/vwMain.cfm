@@ -12,6 +12,9 @@
 <cfparam name="request.requestState.aModules" default="">
 <cfparam name="request.requestState.oContext" default="">
 <cfparam name="request.requestState.isHomePortalsEngine" default="false">
+<cfparam name="request.requestState.hasResourcesModule" default="false">
+<cfparam name="request.requestState.resourcesModuleInfo" default="">
+<cfparam name="request.requestState.stWidgets" default="">
 
 <cfset oSiteInfo = request.requestState.oSiteInfo>
 <cfset stResourceTypes = request.requestState.stResourceTypes>
@@ -27,39 +30,26 @@
 <cfset aModules = request.requestState.aModules>
 <cfset oContext = request.requestState.oContext>
 <cfset isHomePortalsEngine = request.requestState.isHomePortalsEngine>
+<cfset hasResourcesModule = request.requestState.hasResourcesModule>
+<cfset resourcesModuleInfo = request.requestState.resourcesModuleInfo>
+<cfset stWidgets = request.requestState.stWidgets>
 
-<cfset siteID = oSiteInfo.getID()>
 <cfset stAccessMap = oUser.getAccessMap()>
+<cfset aLeftWidgets = arrayNew(1)>
+<cfset aRightWidgets = arrayNew(1)>
 
-<!--- fix appRoot for sites at root level --->
-<cfif appRoot eq "/">
-	<cfset tmpAppRoot = "">
-<cfelse>
-	<cfset tmpAppRoot = appRoot>
-</cfif>
-					
-<!--- sort accounts --->
-<cfif hasAccountsPlugin>
-	<cfquery name="qryAccounts" dbtype="query">
-		SELECT *, upper(accountName) as u_username
-			FROM qryAccounts
-			ORDER BY u_username
-	</cfquery>
+
+<!--- get widgets for each location --->
+<cfif structKeyExists(stWidgets,"default")>
+	<cfset aLeftWidgets = stWidgets.default>
+<cfelseif structKeyExists(stWidgets,"left")>
+	<cfset aLeftWidgets = stWidgets.left>
 </cfif>
 
-<!--- get resource count by type --->
-<cfquery name="qryResCount" dbtype="query">
-	SELECT type, count(*) as resCount
-		FROM qryResources
-		GROUP BY type
-		ORDER BY type
-</cfquery>
+<cfif structKeyExists(stWidgets,"right")>
+	<cfset aRightWidgets = stWidgets.right>
+</cfif>
 
-<!--- index results into a struct --->
-<cfset stResCount = structNew()>
-<cfloop query="qryResCount">
-	<cfset stResCount[qryResCount.type] = qryResCount.resCount>
-</cfloop>
 
 <cfoutput>
 	
@@ -72,25 +62,16 @@
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
 	<tr valign="top">
 		<td width="200">
-			<div class="dsb_siteSection" style="width:150px;padding:0px;">
-				<div class="buttonImage btnLarge">
-					<a href="#appRoot#" target="_blank" title="Open site in a different window"><img src="images/magnifier.png" border="0" align="absmiddle"> Preview Site</a>
-				</div>	
-
-
-				<div class="buttonImage btnLarge">
-					<a href="#tmpAppRoot#/index.cfm?resetApp=1" target="_blank" title="Open the site reloading site settings"><img src="images/arrow_refresh.png" border="0" align="absmiddle"> Reset Site</a>
-				</div>	
-			</div>
-			
-			<cfif hasAccountsPlugin and stAccessMap.accounts>
-				<cfinclude template="includes/accounts.cfm">
-			</cfif>
-			
-			<cfif stAccessMap.resources>
-				<cfinclude template="includes/resources.cfm">
-			</cfif>
-
+			<cfloop from="1" to="#arrayLen(aLeftWidgets)#" index="i">
+				<div id="dsb_lwidget#i#" style="width:150px;margin-bottom:25px;">
+					<cfif aLeftWidgets[i].title neq "">
+						<div class="dsb_secTitle">#aLeftWidgets[i].title#</div>
+					</cfif>
+					<div class="dsb_siteSection">
+						#aLeftWidgets[i].body#
+					</div>
+				</div>
+			</cfloop>
 		</td>
 		<td>
 			<cfif isBoolean(firstTime) and firstTime>
@@ -152,11 +133,16 @@
 			
 		</td>
 		<td width="350">
-			<cfif hasAccountsPlugin and stAccessMap.pages>
-				<cfinclude template="includes/accountQuickLinks.cfm">
-			</cfif>
-		
-			<cfinclude template="includes/siteInfo.cfm">
+			<cfloop from="1" to="#arrayLen(aRightWidgets)#" index="i">
+				<div id="dsb_rwidget#i#" style="width:350px;margin-bottom:25px;">
+					<cfif aRightWidgets[i].title neq "">
+						<div class="dsb_secTitle">#aRightWidgets[i].title#</div>
+					</cfif>
+					<div class="dsb_siteSection">
+						#aRightWidgets[i].body#
+					</div>
+				</div>
+			</cfloop>
 		</td>
 	</tr>
 </table>
