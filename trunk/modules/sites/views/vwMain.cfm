@@ -64,11 +64,11 @@
 						<cfif qrySites.siteName neq "HomePortalsEngine" or (qrySites.siteName eq "HomePortalsEngine" and showHomePortalsAsSite)>
 							<tr <cfif qrySites.currentRow mod 2>class="altRow"</cfif>>
 								<td>#qrySites.currentRow#</td>
-								<td><a href="index.cfm?event=site.ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" alt="Click to open site" title="Click to open site">#qrySites.siteName#</a></td>
+								<td><a href="index.cfm?event=sites.ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" alt="Click to open site" title="Click to open site">#qrySites.siteName#</a></td>
 								<td><a href="#qrySites.path#" target="_blank" alt="Click to visit site" title="Click to visit site">#qrySites.path#</a></td></td>
 								<td align="center">
 									<a href="#tmpRefreshURL#" target="_blank"><img src="images/arrow_refresh.png" align="absmiddle" border="0" alt="Reset Site" title="Reset Site"></a>
-									<a href="index.cfm?event=site.ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" ><img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"></a>
+									<a href="index.cfm?event=sites.ehSite.doLoadSite&siteID=#qrySites.siteID#" onclick="overlay()" ><img src="images/page_edit.png" align="absmiddle" border="0" alt="Open Site" title="Open Site"></a>
 									<cfif isAdmin>
 										<a href="index.cfm?event=sites.ehSites.dspDelete&siteID=#qrySites.siteID#"><img src="images/page_delete.png" align="absmiddle" border="0" alt="Delete Site" title="Delete Site"></a>
 									</cfif>
