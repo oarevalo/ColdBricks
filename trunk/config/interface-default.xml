@@ -159,6 +159,8 @@
 				author="ColdBricks"
 				authorURL="http://www.coldbricks.com">
 
+			Resource library management
+
 			<features type="site">
 				<feature href = "index.cfm?event=resources.ehResources.dspMain"
 						imgSrc = "images/folder2_yellow_48x48.png"
