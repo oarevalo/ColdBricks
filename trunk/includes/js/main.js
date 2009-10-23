@@ -148,5 +148,5 @@ function loadSite(siteID,firstTime,nextEvent) {
 	if(firstTime==null || firstTime==undefined) firstTime = false;
 	if(nextEvent==null || nextEvent==undefined) nextEvent = "";
 	overlay();
-	document.location = 'index.cfm?event=site.ehSite.doLoadSite&siteID=' + siteID + '&firstTime='+firstTime + '&nextEvent='+nextEvent;
+	document.location = 'index.cfm?event=sites.ehSite.doLoadSite&siteID=' + siteID + '&firstTime='+firstTime + '&nextEvent='+nextEvent;
 }

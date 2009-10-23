@@ -21,7 +21,7 @@
 
 	st = structNew();
 	st.label = "Dashboard";
-	st.event = "site.ehSite.dspMain";
+	st.event = "sites.ehSite.dspMain";
 	st.selected = listFindNoCase("ehSite", listFirst(event,"."));
 	st.hint = "Site Dashboard";
 	st.icon = "images/house.png";
@@ -99,7 +99,7 @@
 		#attributes.title#
 	</h2>
 	<div class="siteName" style="margin-bottom:15px;">
-		&raquo; Site: <a href="index.cfm?event=site.ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
+		&raquo; Site: <a href="index.cfm?event=sites.ehSite.dspMain">#oSiteInfo.getSiteName()#</a>
 		
 		<cfif hasAccountsPlugin and oContext.hasAccountSite()>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
