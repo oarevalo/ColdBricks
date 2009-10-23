@@ -5,7 +5,7 @@
 				version="1.0"
 				author="ColdBricks"
 				authorURL="http://www.coldbricks.com">
-			Access the sites management module, from there you can add, remove, archive and access individual sites		
+			Site management
 			
 			<features type="server">
 				<feature href="index.cfm?event=sites.ehSites.dspMain" 
@@ -16,21 +16,9 @@
 					Access the sites management module, from there you can add, remove, archive and access individual sites		
 				</feature>
 			</features>
-			
-			<widgets type="server">
-				<widget title="" href="/ColdBricks/modules/sites/widgets/siteButtons.cfm" />
-				<widget title="" href="/ColdBricks/modules/sites/widgets/checkHomePortals.cfm" />
-			</widgets>
-		</module>
-
-		<module name="site"
-				version="1.0"
-				author="ColdBricks"
-				authorURL="http://www.coldbricks.com">
-			Site management
 
 			<features type="site">
-				<feature href = "index.cfm?event=site.ehSite.doLoadHomePage"
+				<feature href = "index.cfm?event=sites.ehSite.doLoadHomePage"
 						imgSrc = "images/homepage_48x48.png"
 						alt = "Edit Site's Home Page"
 						label = "Home Page"
@@ -38,7 +26,7 @@
 					This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
 				</feature>
 
-				<feature href = "index.cfm?event=site.ehSite.doArchiveSite"
+				<feature href = "index.cfm?event=sites.ehSite.doArchiveSite"
 						imgSrc = "images/download_manager_48x48.png"
 						alt = "Download Site"
 						label = "Download"
@@ -46,10 +34,15 @@
 					Download a zipped version of this site for backup or migration
 				</feature>
 			</features>
+			
+			<widgets type="server">
+				<widget title="" href="/ColdBricks/modules/sites/widgets/siteButtons.cfm" />
+				<widget title="" href="/ColdBricks/modules/sites/widgets/checkHomePortals.cfm" />
+			</widgets>
 
 			<widgets type="site">
-				<widget href="/ColdBricks/modules/site/widgets/siteButtons.cfm" position="left" />
-				<widget title="Site information:" href="/ColdBricks/modules/site/widgets/siteInfo.cfm" position="right" />
+				<widget href="/ColdBricks/modules/sites/widgets/siteViewButtons.cfm" position="left" />
+				<widget title="Site information:" href="/ColdBricks/modules/sites/widgets/siteInfo.cfm" position="right" />
 			</widgets>
 		</module>
 

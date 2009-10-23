@@ -57,7 +57,7 @@
 		<!-- allowed to all users -->
 		<resource id="dashboard" event="ehGeneral.dspMain" roles="*" />
 		<resource id="siteDashboard" event="sites.ehSites.dspMain" roles="*" />
-		<resource id="site" event="site.ehSite.*" roles="*" />
+		<resource id="site" event="sites.ehSite.*" roles="*" />
 
 		<!-- allowed to administrator, managers and editors -->
 		<resource id="pages" event="pages.ehPages.*" roles="admin,mngr,edit" />
@@ -69,7 +69,7 @@
 		<resource id="siteSettings" event="config.ehSiteConfig.*" roles="admin,mngr" />
 		<resource id="siteTemplates" event="templates.ehSiteTemplates.*" roles="admin,mngr" />
 		<resource id="downloadSite" event="sites.ehSites.doArchiveSite" roles="admin,mngr" />
-		<resource id="saveNotes" event="site.ehSite.doSaveNotes" roles="admin,mngr" />
+		<resource id="saveNotes" event="sites.ehSite.doSaveNotes" roles="admin,mngr" />
 	
 		<!-- allowed only to administrators -->
 		<resource id="sites" event="sites.ehSites.*" roles="admin" />
