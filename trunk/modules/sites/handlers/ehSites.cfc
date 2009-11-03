@@ -354,20 +354,14 @@
 			var appRoot = getValue("appRoot");
 			var contentRoot = getValue("contentRoot");
 			var resourcesRoot = getValue("resourcesRoot");
-			var accountsRoot = getValue("accountsRoot");
 			var useDefault_rl = getValue("useDefault_rl",0);
-			var pluginAccounts = getValue("pluginAccounts",false);
-			var pluginModules = getValue("pluginModules",false);
-			var defaultAccount = "default";
 			var oUser = getValue("oUser");
 			var deployToWebRoot = getValue("deployToWebRoot",false);
-			
-			var bCreateAccountDir = false;
 			var bCreateResourceDir = false;
-			
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
 			var siteID = 0;
+			var crlf = chr(10) & chr(13);
 			
 			try {
 				if(isBoolean(deployToWebRoot) and deployToWebRoot) appRoot = "/";
@@ -421,19 +415,41 @@
 					if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
 				}
 				
-				// replace tokens on copied files
-				replaceTokens(appRoot & "/Application.cfc", name, appRoot, accountsRoot, resourcesRoot, contentRoot);
+				// create app directory structure
+				if(appRoot neq "/") createDir(expandPath(appRoot));
+				createDir(expandPath(appRoot & "/config"));
+				createDir(expandPath(contentRoot));
+				if(bCreateResourceDir) createDir(expandPath(resourcesRoot));
+					
+				// create config
+				oConfigBean = createObject("component","homePortals.components.homePortalsConfigBean").init();
+				oConfigBean.setAppRoot(appRoot);
+				oConfigBean.setContentRoot(contentRoot);
+				oConfigBean.setDefaultPage("default");
+				if(resourcesRoot neq "") oConfigBean.addResourceLibraryPath(resourcesRoot);
+				getService("configManager").saveHomePortalsConfigDoc(appRoot, oConfigBean.toXML());
 				
-				// process all files in the config directory for Tokens
-				qryDir = listDir(expandPath(appRoot & "/config"));
-				for(i=1;i lte qryDir.recordCount;i=i+1) {
-					if(qryDir.type[i] eq "file") {
-						replaceTokens(appRoot & "/config/" & qryDir.name[i], name, appRoot, accountsRoot, resourcesRoot, contentRoot);
-					}
-				}
+				// create Application.cfc
+				txt = fileRead(expandPath("/ColdBricks/modules/sites/files/Application.cfc.txt"));
+				txt = replace(txt, "$APP_NAME$", name, "ALL");
+				txt = replace(txt, "$APP_ROOT$", appRoot, "ALL");
+				fileWrite(expandPath(appRoot & "Application.cfc"), txt, "utf-8");
+				
+				// create index.cfm
+				txt = fileRead(expandPath("/ColdBricks/modules/sites/files/index.cfm.txt"));
+				fileWrite(expandPath(appRoot & "index.cfm"), txt, "utf-8");
+
+				// create default.xml
+				txt = fileRead(expandPath("/ColdBricks/modules/sites/files/default.xml.txt"));
+				fileWrite(expandPath(contentRoot & "default.xml"), txt, "utf-8");
 
 				// create site record for coldbricks
-				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");
+				siteID = oSiteDAO.save(id=0, 
+										siteName=name, 
+										path=appRoot, 
+										ownerUserID=oUser.getID(), 
+										createdDate=dateFormat(now(),"mm/dd/yyyy"), 
+										notes="");
 
 				setMessage("info", "The new site has been created.");
 
