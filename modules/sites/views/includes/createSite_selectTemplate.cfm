@@ -20,12 +20,12 @@
 									label="#aSites[i].title#"
 									help="#tmpDesc#">
 		</cfloop>
-<!--- 
-		<cf_dashboardMenuItem href="index.cfm?event=ehSites.dspCreateCustom" 
+
+		<cf_dashboardMenuItem href="index.cfm?event=sites.ehSites.dspCreateCustom" 
 								imgSrc="/ColdBricks/images/Globe_48x48.png"
 								alt="Create custom site"
 								label="Custom..."
-								help="Create a customized site in which you can modify detailed settings"> --->
+								help="Create a customized site in which you can modify detailed settings">
 		
 	</cf_dashboardMenu>
 

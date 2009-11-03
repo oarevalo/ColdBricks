@@ -80,7 +80,6 @@
 			
 			fileWrite(expandPath(filePath), oFormatter.makePretty(arguments.xmlDoc.xmlRoot), "utf-8"); 
 		</cfscript>
-		<Cfabort>
 	</cffunction>		
 	
 </cfcomponent>
