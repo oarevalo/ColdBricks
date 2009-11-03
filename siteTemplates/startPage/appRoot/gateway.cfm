@@ -1,1 +1,0 @@
-<cfinclude template="/homePortalsModules/common/Templates/gateway.cfm">
