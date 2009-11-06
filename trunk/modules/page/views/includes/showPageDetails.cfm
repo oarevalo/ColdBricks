@@ -54,5 +54,8 @@
 				</td>
 			</tr>
 		</cfloop>
+		<cfif arrayLen(aModules) eq 0>
+			<tr><td colspan="5">There are no modules on this page. Use the options on the left to add content.</td></tr>
+		</cfif>
 	</table>
 </cfoutput>
