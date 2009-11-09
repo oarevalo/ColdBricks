@@ -1,5 +1,6 @@
 <cfparam name="forceResourceType" default="">
 <cfparam name="forceResourceID" default="">
+<cfparam name="useResourceEditor" default="false">
 
 <cfoutput>
 	<div style="font-weight:bold;font-size:16px;border-bottom:1px solid silver;">Module Properties</div>
@@ -69,7 +70,16 @@
 								<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
 								
 								<span style="white-space:nowrap;">
-									<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=#resourceType#&id=#tmpAttrValue#">[Add/Edit]</a>
+									&nbsp;&nbsp;
+									<cfif useResourceEditor>
+										<img src="images/page_edit.png" align="absmiddle">
+										<a href="javascript:resourceEditor.open('#jsStringFormat(tmpAttrValue)#','#jsStringFormat(resourceType)#','',0);">Edit</a>
+										&nbsp;
+										<img src="images/page_add.png" align="absmiddle">
+										<a href="javascript:resourceEditor.open('NEW','#jsStringFormat(resourceType)#','',0);">Create</a>
+									<cfelse>
+										<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=#resourceType#&id=#tmpAttrValue#">[Add/Edit]</a>
+									</cfif>
 								</span>
 							</cfcase>
 							

@@ -64,16 +64,26 @@
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
 
+<cfif type eq "richtext">
+	<cfset tmpSwitchEditorLabel = "Switch to Plain Text editor">
+	<cfset tmpSwitchEditorOnClick = "resourceEditor.editFilePlain('#jsStringFormat(resourceID)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">
+<cfelse>
+	<cfset tmpSwitchEditorLabel = "Switch to Rich Text editor">
+	<cfset tmpSwitchEditorOnClick = "resourceEditor.editFileRichText('#jsStringFormat(resourceID)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">
+</cfif>
 
 <cfoutput>
 	<div class="cp_sectionTitle" 
 			style="padding:0px;margin:0px;font-size:14px; width:99%;margin-bottom:5px;">
+		<div style="float:right;margin:4px;width:180px;text-align:right;">
+			<a href="javascript:#tmpSwitchEditorOnClick#" style="color:##fff;">#tmpSwitchEditorLabel#</a>
+		</div>
 		<div style="margin:4px;">
 			Edit Resource Target : '#resourceID#' (#resourceType#)
 		</div>
 	</div>
 	
-	<form name="frm" action="index.cfm" method="post" style="margin:0px;padding:0px;">
+	<form name="frm" id="frmResourceFileEditor" action="index.cfm" method="post" style="margin:0px;padding:0px;">
 		<input type="hidden" name="event" value="resource.ehResource.doSaveFile">
 		<input type="hidden" name="resourceID" value="#resourceID#">
 		<input type="hidden" name="resourceType" value="#resourceType#">
@@ -91,19 +101,27 @@
 							id="body" 
 							style="width:98%;border:1px solid silver;padding:2px;height:395px;">#HTMLEditFormat(fileContent)#</textarea>
 			</div>
-			
-			<div class="pagingControls"style="clear:both;">
-				<div style="float:right;font-weight:normal;">
-					<b>Path:</b> 
-					<cfif len(fullhref) gt 35>
-						<a href="##" onclick="alert('#fullhref#')">#left(fullhref,10)#...#right(fullhref,20)#</a>
-					<cfelse>
-						#fullhref#
-					</cfif>
+
+			<div class="pagingControls" style="clear:both;height:30px;padding-top:0px;">
+				<cfif fullhref neq "">
+					<div style="float:right;font-weight:normal;">
+						<b>Path:</b> 
+						<cfif len(fullhref) gt 35>
+							<a href="##" onclick="alert('#fullhref#')">#left(fullhref,10)#...#right(fullhref,20)#</a>
+						<cfelse>
+							#fullhref#
+						</cfif>
+					</div>
+				</cfif>
+
+				<div class="buttonImage btnLarge" style="margin:0 auto;float:left;margin-left:5px;">
+					&nbsp;<img src="images/disk.png" align="Absmiddle">
+					<a href="javascript:resourceEditor.saveFile(document.getElementById('frmResourceFileEditor'))">Apply Changes</a>
 				</div>
-				<input type="button" name="btnSave" value="Apply Changes" onclick="resourceEditor.saveFile(this.form)">
-				&nbsp;&nbsp;&nbsp;
-				<input type="button" name="btnCancel" value="Cancel" onclick="resourceEditor.main('#jsStringFormat(resourceID)#','#jsStringFormat(resourceType)#','#jsStringFormat(package)#','#resLibIndex#')">
+				
+				<div class="buttonImage btnSmall" style="margin:0 auto;float:left;margin-left:15px;">
+					<a href="javascript:resourceEditor.main('#jsStringFormat(resourceID)#','#jsStringFormat(resourceType)#','#jsStringFormat(package)#','#resLibIndex#')">Cancel</a>
+				</div>
 			</div>
 
 		</div>

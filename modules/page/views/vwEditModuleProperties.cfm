@@ -24,6 +24,14 @@
 	title = oPage.getTitle();
 </cfscript>
 
+<cfsavecontent variable="tmpHTML">
+	<script type="text/javascript" src="modules/resource/includes/resourceEditor.js"></script>
+	<link type="text/css" rel="stylesheet" href="includes/floatbox/floatbox.css" />
+	<script type="text/javascript" src="includes/floatbox/floatbox.js"></script>
+</cfsavecontent>
+<cfhtmlhead text="#tmpHTML#">
+
+
 <cfoutput>
 	<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="8" cellspacing="0">
 		<tr>
@@ -51,6 +59,7 @@
 					<br>
 					<cfinclude template="includes/contentProps_display.cfm">
 					<br>
+					<cfset useResourceEditor = true>
 					<cfinclude template="includes/contentProps_module.cfm">
 					<br>
 					<cfinclude template="includes/contentProps_custom.cfm">

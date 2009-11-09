@@ -20,6 +20,7 @@
 	oCatalog = request.requestState.oCatalog;
 	aResLibs = request.requestState.aResLibs;
 	done = request.requestState.done;
+	tmpHREF = "";
 	
 	if(resLibIndex gt 0) {
 		propsConfig = resourceTypeConfig.getProperties();
@@ -68,93 +69,112 @@
 			style="padding:0px;margin:0px;font-size:14px; width:99%;margin-bottom:5px;">
 		<div style="margin:4px;">
 			<cfif id neq "">
+				<img src="images/page_edit.png" align="absmiddle">
 				Edit '#id#' (#resourceType#)
 			<cfelse>
+				<img src="images/page_add.png" align="absmiddle">
 				Create Resource (#resourceType#)
 			</cfif>
 		</div>
 	</div>
 	
-	<form name="frm" action="index.cfm" method="post" style="margin:0px;padding:0px;" enctype="multipart/form-data">
+	<form name="frm" id="frmResourceEditor" action="index.cfm" method="post" style="margin:0px;padding:0px;" enctype="multipart/form-data">
 		<input type="hidden" name="event" value="resource.ehResource.doSave">
 		<input type="hidden" name="resourceType" value="#resourceType#">
 
 	<div style="width:99%;">
-		<div style="border:1px solid silver;width:200px;float:right;margin-left:5px;" id="pnl_info">
-			<div class="cp_sectionTitle" style="margin:0px;padding:0px;">&nbsp; Resource Target</div>
-			<div style="margin:5px;">
-				<cfif id neq "">
-				
-					<cfif tmpHREF neq "">
-						<cfscript>
-							stInfo = structNew();
-							stInfo.exists = oResourceBean.targetFileExists();
+	
+		<div style="width:200px;float:right;margin-left:5px;">
 
-							if(tmpFullPath neq "") {
-								try {
-									fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
-									stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
-									stInfo.size = fileObj.length();
-									stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
-									stInfo.createdOn = stInfo.lastModified;
-									stInfo.path = fileObj.getAbsolutePath();
-									stInfo.exists = fileObj.exists();
-								} catch(any e) {
-									// ignore
-								}
-							}
-						</cfscript>
-					</cfif>
+			<div style="border:1px solid silver;" id="pnl_info">
+				<div class="cp_sectionTitle" style="margin:0px;padding:0px;">&nbsp; Resource Target</div>
+				<div style="margin:5px;">
+					<cfif id neq "">
 					
-					<div style="text-align:center;margin:10px;">
 						<cfif tmpHREF neq "">
-							<!--- for known image types, show the image --->
-							<cfif tmpFullPath neq "" and fileExists(tmpFullPath) and isImageFile(tmpFullPath)>
-								<cfimage action="resize"
-										    width="100" height="" 
-										    source="#tmpFullPath#"
-										    name="resImage">
-								<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
+							<cfscript>
+								stInfo = structNew();
+								stInfo.exists = oResourceBean.targetFileExists();
+	
+								if(tmpFullPath neq "") {
+									try {
+										fileObj = createObject("java","java.io.File").init(expandPath(tmpFullHREF));
+										stInfo.lastModified = createObject("java","java.util.Date").init(fileObj.lastModified());
+										stInfo.size = fileObj.length();
+										stInfo.readOnly = fileObj.canRead() and not fileObj.canWrite();
+										stInfo.createdOn = stInfo.lastModified;
+										stInfo.path = fileObj.getAbsolutePath();
+										stInfo.exists = fileObj.exists();
+									} catch(any e) {
+										// ignore
+									}
+								}
+							</cfscript>
+						</cfif>
+						
+						<div style="text-align:center;margin:10px;">
+							<cfif tmpHREF neq "">
+								<!--- for known image types, show the image --->
+								<cfif tmpFullPath neq "" and fileExists(tmpFullPath) and isImageFile(tmpFullPath)>
+									<cfimage action="resize"
+											    width="100" height="" 
+											    source="#tmpFullPath#"
+											    name="resImage">
+									<a href="##" onclick="fb.loadAnchor('#tmpFullHREF#')"><cfimage action="writeToBrowser" source="#resImage#"></a>
+								<cfelse>
+									<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
+								</cfif>
+								<br />#getFileFromPath(tmpHREF)#
+								<cfif not stInfo.exists><br />(not found)</cfif>
 							<cfelse>
-								<img src="images/documents_48x48.png" alt="#tmpFullHREF#" title="#tmpFullHREF#"><br />
+								<em>No target assigned</em>
 							</cfif>
-							<br />#getFileFromPath(tmpHREF)#
-							<cfif not stInfo.exists><br />(not found)</cfif>
-						<cfelse>
-							<em>No target assigned</em>
-						</cfif>
-					</div>
-					
-					&bull; <a href="##" onclick="resourceEditor.showUploadFile()">Upload File</a><br />
-					<div id="uploadDiv" style="margin:5px;border:1px solid silver;background-color:##f5f5f5;display:none;">
-						<div style="margin:5px;">
-							<input type="file" name="resFile" class="formField" style="width:140px;font-size:10px;">
-							<input type="button" onclick="resourceEditor.uploadFile(this.form)" name="btnUpload" value="Upload" style="width:auto;font-size:10px;margin-top:4px;">
-							<a href="##" onclick="resourceEditor.hideUploadFile()" style="font-size:10px;">Close</a>
 						</div>
-					</div>
-					
-					<cfif tmpHREF neq "" and stInfo.exists>
-						&bull; <a href="##" onclick="resourceEditor.deleteFile('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Delete File</a><br />
-					</cfif>
-					
-					<cfif tmpHREF eq "" or not isImageFile(expandPath(tmpFullHREF))>
-						<cfif tmpHREF neq "" and stInfo.exists>
-							&bull; <a href="##" onclick="resourceEditor.editFileRichText('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Open w/ Rich Text Editor</a><br />
-							&bull; <a href="##" onclick="resourceEditor.editFilePlain('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Open w/ Plain Text Editor</a><br />
-						<cfelse>
-							&bull; <a href="##" onclick="resourceEditor.editFileRichText('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Create using Rich Text Editor</a><br />
-							&bull; <a href="##" onclick="resourceEditor.editFilePlain('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Create using Plain Text Editor</a><br />
+						
+						<cfif tmpHREF eq "" or not isImageFile(expandPath(tmpFullHREF))>
+							<div class="buttonImage btnLarge" style="margin:0 auto;text-align:left;">
+								&nbsp;
+								<img src="images/page_edit.png" align="Absmiddle">
+								<a href="javascript:resourceEditor.editFileRichText('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Open w/ Editor</a>
+							</div>
 						</cfif>
+						
+						<div class="buttonImage btnLarge" style="margin:0 auto;text-align:left;">
+							&nbsp;<img src="images/add.png" align="Absmiddle">
+							<a href="##" onclick="resourceEditor.showUploadFile()">Upload File</a>
+						</div>
+	
+						<div id="uploadDiv" style="margin:5px;border:1px solid silver;background-color:##f5f5f5;display:none;">
+							<div style="margin:5px;">
+								<input type="file" name="resFile" class="formField" style="width:100px !important;font-size:10px;"><br />
+								<input type="button" onclick="resourceEditor.uploadFile(this.form)" name="btnUpload" value="Upload" style="width:auto;font-size:10px;margin-top:4px;">
+								<a href="##" onclick="resourceEditor.hideUploadFile()" style="font-size:10px;">Close</a>
+							</div>
+						</div>
+						
+						<cfif tmpHREF neq "" and stInfo.exists>
+							<div class="buttonImage btnLarge" style="margin:0 auto;text-align:left;">
+								&nbsp;<img src="images/delete.png" align="Absmiddle">
+								<a href="##" onclick="resourceEditor.deleteFile('#jsStringFormat(id)#','#jsstringformat(resourcetype)#','#jsstringformat(package)#')">Delete File</a>
+							</div>
+						</cfif>
+						
+						<cfif tmpHREF neq "" and stInfo.exists>
+							<div class="buttonImage btnLarge" style="margin:0 auto;text-align:left;">
+								&nbsp;<img src="images/page_lightning.png" align="Absmiddle">
+								<a href="#tmpFullHREF#" target="_blank">Open in Browser</a>
+							</div>
+						</cfif>
+					<cfelse>
+						<p>You must first create the resource before assigning a target to it.</p>
 					</cfif>
-					
-					<cfif tmpHREF neq "" and stInfo.exists>
-						&bull; <a href="#tmpFullHREF#" target="_blank">Open File in Browser</a><br />
-					</cfif>
-
-					<cfif tmpHREF neq "">
-						<br />
-						<b><u>File Info:</u></b><br />
+				</div>
+			</div>
+				
+			<cfif tmpHREF neq "">
+				<div style="border:1px solid silver;margin-top:20px;" id="pnl_info">
+					<div class="cp_sectionTitle" style="margin:0px;padding:0px;">&nbsp; File Information</div>
+					<div style="margin:5px;">
 						<cfif stInfo.exists>
 							<cfif structKeyExists(stInfo,"size")>
 								<b>Size:</b> #stInfo.size# bytes<br />
@@ -168,32 +188,34 @@
 						<cfelse>
 							<em>file not found on server</em>
 						</cfif>
-					</cfif>
-				<cfelse>
-					<p>You must first create the resource before assigning a target to it.</p>
-				</cfif>
-			</div>
+					</div>
+				</div>
+			</cfif>
+			
 			<cfif id neq "" and not oResourceBean.isExternalTarget()>
 				<input type="hidden" name="href" value="#tmpHREF#">
 			</cfif>
 		</div>
-		<div style="margin:3px;height:410px;overflow:auto;">
+		
+		
+		
+		<div style="margin:3px;height:405px;overflow:auto;">
 
 			<table width="100%">
 				<cfif id neq "">
 					<input type="hidden" name="resourceID" value="#id#">
 					<input type="hidden" name="package" value="#package#">
 					<tr>
-						<td width="80"><b>Res Lib:</b></td>
+						<td width="80"><b>Resource ID:</b></td>
+						<td><strong>#oResourceBean.getID()# (#oResourceBean.getType()#)</strong></td>
+					</tr>
+					<tr>
+						<td width="80"><b>Res. Library:</b></td>
 						<td>#oResourceBean.getResourceLibrary().getPath()#</td>
 					</tr>
 					<tr>
 						<td width="80"><b>Package:</b></td>
 						<td>#oResourceBean.getPackage()#</td>
-					</tr>
-					<tr>
-						<td width="80"><b>Resource ID:</b></td>
-						<td><strong>#oResourceBean.getID()# (#oResourceBean.getType()#)</strong></td>
 					</tr>
 					<cfif oResourceBean.isExternalTarget()>
 						<tr>
@@ -203,6 +225,18 @@
 					</cfif>
 				<cfelse>		
 					<tr>
+						<td width="80"><b>Resource ID:</b></td>
+						<td><input type="text" name="resourceID" value="" class="formField" <cfif resLibIndex lte 0>disabled="true"</cfif>></td>
+					</tr>
+					<tr>
+						<td>&nbsp</td>
+						<td>
+							<div class="formFieldTip" style="margin-bottom:0px;">
+								Enter an ID to identify this resource.
+							</div>
+						</td>
+					</tr>
+					<tr>
 						<td><strong>Resource Library:</strong></td>
 						<td>
 							<select name="resLibIndex" class="formField" onchange="resourceEditor.main('NEW','#resourceType#','#package#',this.value)" style="width:250px;">
@@ -211,6 +245,14 @@
 									<option value="#i#" <cfif resLibIndex eq i>selected</cfif>>#aResLibs[i].getPath()#</option>
 								</cfloop>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp</td>
+						<td>
+							<div class="formFieldTip" style="margin-bottom:0px;">
+								Select the Resource Library where this resource will be created.
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -235,18 +277,14 @@
 							</td>
 						</tr>
 					</cfif>
-					<tr>
-						<td width="80"><b>Resource ID:</b></td>
-						<td><input type="text" name="resourceID" value="" class="formField" <cfif resLibIndex lte 0>disabled="true"</cfif>></td>
-					</tr>
 				</cfif>
 				<tr valign="top">
-					<td><strong>Description:</strong></td>
+					<td><strong>Description:</strong><br />(optional)</td>
 					<td><textarea name="description" class="formField" rows="4" <cfif resLibIndex lte 0>disabled="true"</cfif>>#trim(tmpDescription)#</textarea></td>
 				</tr>
 				<cfif lstPropsConfig neq "">
 					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td class="cp_sectionTitle" colspan="2">Resource Properties</td></tr>
+					<tr><td class="cp_sectionTitle" colspan="2">Additional Resource Properties</td></tr>
 					<cfloop list="#lstPropsConfig#" index="key">
 						<cfset tmpValue = "">
 						<cfset tmpLabel = key>
@@ -338,11 +376,21 @@
 		</div>
 	</div>
 	
-	<div class="pagingControls" style="clear:both;">
-		<input type="button" name="btnSave" value="Apply Changes" onclick="resourceEditor.save(this.form)" <cfif resLibIndex lte 0>disabled="true"</cfif>>
+	<div class="pagingControls" style="clear:both;height:30px;padding-top:0px;">
+		<div class="buttonImage btnLarge" style="margin:0 auto;float:left;margin-left:5px;">
+			&nbsp;<img src="images/disk.png" align="Absmiddle">
+			<cfif resLibIndex gt 0>
+				<a href="javascript:resourceEditor.save(document.getElementById('frmResourceEditor'))">Apply Changes</a>
+			<cfelse>
+				Apply Changes
+			</cfif>
+		</div>
+		
 		<cfif id neq "">
-			&nbsp;&nbsp;&nbsp;
-			<input type="button" name="btnDelete" value="Delete Resource" onclick="resourceEditor.delete('#id#','#resourceType#','#package#')">
+			<div class="buttonImage btnLarge" style="margin:0 auto;float:left;margin-left:15px;">
+				&nbsp;<img src="images/delete.png" align="Absmiddle">
+				<a href="javascript:resourceEditor.delete('#jsStringFormat(id)#','#jsStringFormat(resourceType)#','#jsStringFormat(package)#')">Delete Resource</a>
+			</div>
 		</cfif>
 	</div>
 	</form>	
