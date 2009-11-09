@@ -18,17 +18,31 @@
 
 				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
-				
-				if(resourceID neq "NEW" and resLibIndex eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
 
 				if(resourceID eq "NEW") resourceID = "";
+				
+				if(resLibIndex eq 0) 
+					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				
 				if(reslibindex gt 0) {
-					// get resource
+
+					// figure out the package name
+					
 					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
+
+					if(package eq "") {
+						if(resourceID neq "")
+							package = getDefaultResPackage(resourceID,resourceType);
+	
+						else if(qryPackages.recordCount gt 0)
+							package = qryPackages.name;
+					}
+					
+					
+					// get the resource
 					
 					if(resourceID neq "")
 						oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
@@ -36,9 +50,6 @@
 						oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
 					
 					tmp = hp.getResourceLibraryManager().getResourceTypesInfo();
-
-					if(resourceID eq "" and qryPackages.recordCount gt 0)
-						package = qryPackages.name;
 
 					setValue("oResourceBean", oResourceBean);	
 					setValue("qryPackages", qryPackages);	
@@ -474,10 +485,11 @@
 	</cffunction>	
 
 	<cffunction name="getDefaultResLibIndex" access="private" returntype="numeric">
-		<cfargument name="resourceId" type="string" required="true">
-		<cfargument name="resourceType" type="string" required="true">
+		<cfargument name="resourceId" type="string" required="false" default="">
+		<cfargument name="resourceType" type="string" required="false" default="">
 		<cfset var index = -1>
-		<cfset var hp = getService("sessionContext").getContext().getHomePortals()>
+		<cfset var oContext = getService("sessionContext").getContext()>
+		<cfset var hp = oContext.getHomePortals()>
 		<cfset var aResLibs = hp.getResourceLibraryManager().getResourceLibraries()>
 		<cfset var path = "">
 		<cfset var oResourceBean = 0>
@@ -485,6 +497,12 @@
 		<cfif arguments.resourceID neq "">
 			<cfset oResourceBean = hp.getCatalog().getResourceNode(arguments.resourceType, arguments.resourceID)>
 			<cfset path = oResourceBean.getResourceLibrary().getPath()>
+		<cfelse>
+			<cfset oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext)>
+			<cfset aTemp = oConfigBean.getResourceLibraryPaths()>
+			<cfif arrayLen(aTemp)>
+				<cfset path = aTemp[1]>
+			</cfif>
 		</cfif>
 		
 		<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
@@ -496,5 +514,19 @@
 		<cfreturn index>
 	</cffunction>
 
+	<cffunction name="getDefaultResPackage" access="private" returntype="string">
+		<cfargument name="resourceId" type="string" required="false" default="">
+		<cfargument name="resourceType" type="string" required="false" default="">
+		<cfset var pkg = "">
+		<cfset var oContext = getService("sessionContext").getContext()>
+		<cfset var hp = oContext.getHomePortals()>
+		<cfset var oResourceBean = 0>
+
+		<cfif arguments.resourceID neq "">
+			<cfset oResourceBean = hp.getCatalog().getResourceNode(arguments.resourceType, arguments.resourceID)>
+			<cfset pkg = oResourceBean.getPackage()>
+		</cfif>
+		<cfreturn pkg>		
+	</cffunction>
 		
 </cfcomponent>
