@@ -334,7 +334,7 @@
 
 				setMessage("info", "The new site has been created.");
 
-				setNextEvent("ehGeneral.dspMain","loadSiteID=#siteID#");
+				setNextEvent("sites.ehSites.dspHome","loadSiteID=#siteID#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -358,6 +358,7 @@
 			var oUser = getValue("oUser");
 			var deployToWebRoot = getValue("deployToWebRoot",false);
 			var bCreateResourceDir = false;
+			var bCreateContentDir = false;
 			var oSiteDAO = 0;
 			var qrySiteCheck = 0;
 			var siteID = 0;
@@ -415,10 +416,15 @@
 					if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
 				}
 				
+				// check if we need to create the content root
+				if(left(contentRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(right(contentRoot,1) neq "/") contentRoot = contentRoot & "/";
+				bCreateContentDir = (not directoryExists(expandPath(contentRoot))); 
+				
 				// create app directory structure
 				if(appRoot neq "/") createDir(expandPath(appRoot));
 				createDir(expandPath(appRoot & "/config"));
-				createDir(expandPath(contentRoot));
+				if(bCreateContentDir) createDir(expandPath(contentRoot));
 				if(bCreateResourceDir) createDir(expandPath(resourcesRoot));
 					
 				// create config
@@ -440,8 +446,10 @@
 				fileWrite(expandPath(appRoot & "index.cfm"), txt, "utf-8");
 
 				// create default.xml
-				txt = fileRead(expandPath("/ColdBricks/modules/sites/files/default.xml.txt"));
-				fileWrite(expandPath(contentRoot & "default.xml"), txt, "utf-8");
+				if(not fileExists(expandPath(contentRoot & "default.xml"))) {
+					txt = fileRead(expandPath("/ColdBricks/modules/sites/files/default.xml.txt"));
+					fileWrite(expandPath(contentRoot & "default.xml"), txt, "utf-8");
+				}
 
 				// create site record for coldbricks
 				siteID = oSiteDAO.save(id=0, 
@@ -453,7 +461,7 @@
 
 				setMessage("info", "The new site has been created.");
 
-				setNextEvent("ehGeneral.dspMain","loadSiteID=#siteID#");
+				setNextEvent("sites.ehSites.dspHome","loadSiteID=#siteID#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
@@ -552,9 +560,7 @@
 
 				setMessage("info", "The site has been registered.");
 				
-				setNextEvent("ehGeneral.dspMain","loadSiteID=#siteID#");
-
-				setNextEvent("sites.ehSites.dspMain");
+				setNextEvent("sites.ehSites.dspHome","loadSiteID=#siteID#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);

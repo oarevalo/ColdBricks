@@ -12,10 +12,25 @@
 			f1 = $("appRoot");
 			f2 = $("contentRoot");
 			f3 = $("resourcesRoot");
-			
-			if(f1 && f1.value=='') f1.value = '/' + newName;
-			if(f2 && f2.value=='') f2.value = '/' + newName + '/content';
-			if(f3 && f3.value=='') f3.value = '/' + newName + '/resourceLibrary';
+			b1 = $("btnCreate");
+
+			if(newName != '') {
+				f1.disabled = false;
+				f2.disabled = false;
+				f3.disabled = false;
+				b1.disabled = false;
+				if(f1) f1.value = '/' + newName;
+				if(f2) f2.value = '/' + newName + '/content';
+				if(f3) f3.value = '/' + newName + '/resourceLibrary';
+			} else {
+				f1.value = '';
+				f2.value = '';
+				f3.value = '';
+				f1.disabled = true;
+				f2.disabled = true;
+				f3.disabled = true;
+				b1.disabled = true;
+			}
 		}
 	</script>
 </cfsavecontent>

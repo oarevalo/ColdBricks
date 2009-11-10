@@ -43,7 +43,7 @@
 		<tr valign="top">
 			<td width="100">&nbsp;</td>
 			<td>
-				<input type="text" id="name" name="name" value="#name#" size="50" class="formField" onblur="onChangeSiteName(this.value)"> 
+				<input type="text" id="name" name="name" value="#name#" size="50" class="formField" onkeyup="onChangeSiteName(this.value)"> 
 				&nbsp; <span style="color:red;font-weight:bold;">required</span>
 			</td>
 		</tr>
@@ -60,9 +60,9 @@
 		<tr valign="top">
 			<td>&nbsp;</td>
 			<td>
-				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField"> 
+				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField" disabled="true"> 
 				&nbsp; <span style="color:red;font-weight:bold;">required</span><br />
-				<input type="checkbox" name="deployToWebRoot" value="1" onclick="$('appRoot').disabled=this.checked"> 
+				<input type="checkbox" name="deployToWebRoot" id="deployToWebRoot" value="1" onclick="$('appRoot').disabled=this.checked"> 
 				<span style="color:##666;line-height:18px;">Deploy site to web root?</span>
 			</td>
 		</tr>
@@ -80,7 +80,7 @@
 			<tr valign="top">
 				<td>&nbsp;</td>
 				<td>
-					<input type="text" id="contentRoot" name="contentRoot" value="" size="50" class="formField"> 
+					<input type="text" id="contentRoot" name="contentRoot" value="" size="50" class="formField" disabled="true"> 
 					&nbsp; <span style="color:red;font-weight:bold;">required</span>
 				</td>
 			</tr>
@@ -99,7 +99,7 @@
 			<tr valign="top">
 				<td>&nbsp;</td>
 				<td>
-					<input type="radio" name="useDefault_rl" value="1" checked="true"> <input type="text" id="resourcesRoot" name="resourcesRoot" value="" size="50" class="formField"><br />
+					<input type="radio" name="useDefault_rl" value="1" checked="true"> <input type="text" id="resourcesRoot" name="resourcesRoot" value="" size="50" class="formField" disabled="true"><br />
 					<input type="radio" name="useDefault_rl" value="0"> <em>None</em> <br />
 				</td>
 			</tr>
@@ -109,6 +109,6 @@
 	<br>
 	<p>
 		<input type="button" name="btnBack" value="<< Back" onclick="document.location='index.cfm?event=sites.ehSites.dspCreate'">&nbsp;
-		<input type="submit" name="btn" value="Create Site" style="font-weight:bold;">
+		<input type="submit" name="btn" value="Create Site" style="font-weight:bold;" id="btnCreate" disabled="true">
 	</p>
 </cfoutput>

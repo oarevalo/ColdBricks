@@ -58,7 +58,7 @@
 					have quick access to many features. You can return to this screen at any time by 
 					clicking on the <img src="images/house.png" align="absmiddle"> <b><u>dashboard</u></b> link.<br><br>
 					To get started, you may want to 
-					<a href="index.cfm?event=sites.ehSite.doLoadAccountPage">Edit your HomePage</a>
+					<a href="index.cfm?event=sites.ehSite.doLoadHomePage">Edit your HomePage</a>
 				</div>
 			</cfif>
 			
