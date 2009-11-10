@@ -1,12 +1,15 @@
 <cfparam name="editLayoutSection" default="">
+<cfparam name="pageMode" default="">
 
 <cfoutput>
-	<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;font-size:11px;">
-		<input type="checkbox" name="chkShowLayoutSectionTitles" 
-				onclick="showLayoutSectionTitles(this.checked)" value="1"
-				<cfif editLayoutSection neq "">checked</cfif>>
-		Show Section Titles
-	</div>
+	<cfif pageMode eq "preview">
+		<div style="border-bottom:1px solid black;background-color:##ccc;text-align:left;line-height:22px;font-size:11px;">
+			<input type="checkbox" name="chkShowLayoutSectionTitles" 
+					onclick="showLayoutSectionTitles(this.checked)" value="1"
+					<cfif editLayoutSection neq "">checked</cfif>>
+			Show Section Titles
+		</div>
+	</cfif>
 
 	<div id="layoutSections" style="margin:5px;margin-top:10px;text-align:left;">
 
