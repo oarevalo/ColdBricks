@@ -114,6 +114,22 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="dspCopyPage" access="public" returntype="void">
+		<cfscript>
+			var parentPath = getValue("parentPath","");
+			var pagePath = getValue("pagePath","");
+			
+			try {
+				setLayout("Layout.Clean");
+				setView("vwCopyPage");
+
+			} catch(any e) {
+				setMessage("error",e.message);
+				getService("bugTracker").notifyService(e.message, e);
+			}			
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction name="doCreateFolder" access="public" returntype="void">
 		<cfscript>
@@ -153,14 +169,17 @@
 			var oContext = getService("sessionContext").getContext();
 			var path = getValue("path");
 			var name = getValue("name");
+			var pageTemplate = getValue("pageTemplate");
 			var hp = 0;
 			var pp = 0;
+			var tm = 0;
 			var tmpFirstPart = "";
 			var oPage = 0;
 			
 			try {
 				hp = oContext.getHomePortals();
 				pp = hp.getPageProvider();
+				tm = hp.getTemplateManager();
 				
 				if(name eq "") 
 					throw("Page name cannot be empty","coldBricks.validation");
@@ -182,6 +201,15 @@
 			
 				oPage = createObject("component","homePortals.components.pageBean").init();
 				oPage.setTitle(name);
+				
+				// create a default layout based on the default page template
+				if(pageTemplate eq "") pageTemplate = tm.getDefaultTemplate("page");
+				lstLayoutSections = tm.getLayoutSections( pageTemplate.name );
+				for(i=1;i lte listLen(lstLayoutSections);i++) {
+					oPage.addLayoutRegion(lcase(listGetAt(lstLayoutSections,i)), lcase(listGetAt(lstLayoutSections,i)));
+				}
+				
+				
 				pp.save(path & "/" & name, oPage);
 				
 				setMessage("info", "New page created");
@@ -275,8 +303,9 @@
 
 	<cffunction name="doCopyPage" access="public" returntype="void">
 		<cfscript>
-			var parentPath = getValue("parentPath","");
-			var pagePath = getValue("pagePath","");
+			var parentPath = getValue("parentPath");
+			var pagePath = getValue("pagePath");
+			var layoutOnly = getValue("layoutOnly",false)
 			var oContext = getService("sessionContext").getContext();
 			var nextEvent = getValue("nextEvent","pages.ehPages.dspNode");
 			var currentFolder = "/";
@@ -294,6 +323,11 @@
 
 				newPath = pagePath & "_copy";
 				oPage_tgt = createObject("component","homePortals.components.pageBean").init(oPage_src.toXML());
+	
+				// handle copying of page layout only
+				if(isBoolean(layoutOnly) and layoutOnly) {
+					oPage_tgt.removeAllModules();
+				}
 	
 				// make sure the page has a unique name within the account
 				while(bFound) {
