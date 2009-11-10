@@ -75,11 +75,15 @@
 		}
 
 		function copyPage(parentPath, pagePath) {
-			doEvent("pages.ehPages.doCopyPage","nodePanel",{parentPath: parentPath, pagePath: pagePath});
-		}
-		
-		
+			var href = "index.cfm"
+				+ "?event=pages.ehPages.dspCopyPage" 
+				+ "&parentPath=" + parentPath + "&pagePath=" + pagePath;
+			fb.loadAnchor(href,"width:300 height:150 loadPageOnClose:self");
+		}		
 	</script>
+
+	<link type="text/css" rel="stylesheet" href="includes/floatbox/floatbox.css" />
+	<script type="text/javascript" src="includes/floatbox/floatbox.js"></script>
 </cfsavecontent>
 <cfhtmlhead text="#tmpHTML#">
 

@@ -218,10 +218,13 @@
 				
 				<b>View Mode:</b>
 				&nbsp;&nbsp;
+				<cfif pageMode eq "details"><b>&raquo;</b></cfif>
 				<a href="index.cfm?event=page.ehPage.dspMain&pageMode=details" <cfif pageMode eq "details">style="font-weight:bold;"</cfif>>Modules List</a>
 				&nbsp;&nbsp;
+				<cfif pageMode eq "contents"><b>&raquo;</b></cfif>
 				<a href="index.cfm?event=page.ehPage.dspMain&pageMode=contents" <cfif pageMode eq "contents">style="font-weight:bold;"</cfif>>Modules By Section</a>
 				&nbsp;&nbsp;
+				<cfif pageMode eq "preview"><b>&raquo;</b></cfif>
 				<a href="index.cfm?event=page.ehPage.dspMain&pageMode=preview" <cfif pageMode eq "preview">style="font-weight:bold;"</cfif>>Layout Preview</a>
 			</div>
 			<div style="background-color:##ebebeb;border:1px dashed ##000;margin-right:10px;margin-top:5px;margin-left:10px;">
@@ -269,10 +272,14 @@
 							</cfscript>
 							<span style="white-space:nowrap;">
 								<img src="#imgSrc#" align="Absmiddle">
-								<a href="?event=page.ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
+								<a href="?event=page.ehPage.doAddLayoutLocation&locationType=#aLayoutSectionTypes[i]#&pageMode=preview" style="font-weight:normal;">Add #ucase(left(aLayoutSectionTypes[i],1))##lcase(right(aLayoutSectionTypes[i],len(aLayoutSectionTypes[i])-1))#</a>	
 							</span>
 							&nbsp;&nbsp;&nbsp;
 						</cfloop>
+					<cfelseif pageMode eq "details">
+						<strong>TIP:</strong>
+						To view or modify page layout sections, switch to 
+						<a href="index.cfm?event=page.ehPage.dspMain&pageMode=preview"><u>Preview Mode</u></a>
 					</cfif>
 				</div>
 			</div>

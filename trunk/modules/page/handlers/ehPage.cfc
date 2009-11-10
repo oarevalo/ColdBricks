@@ -1437,7 +1437,8 @@
 	<!----  Page Layout Actions  ---->
 	<cffunction name="doAddLayoutLocation" access="public" returntype="void">
 		<cfscript>
-			var locationType = getValue("locationType","");
+			var locationType = getValue("locationType");
+			var pageMode = getValue("pageMode");
 			var oPage = 0;
 			var newLocationName = "";
 			var testLocationName = "";
@@ -1472,7 +1473,7 @@
 				setMessage("info", "Layout section created.");
 				
 				// go to the page editor
-				setNextEvent("page.ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain","pageMode=#pageMode#");
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
