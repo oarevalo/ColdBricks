@@ -59,6 +59,9 @@
 		<cfset st.description = "">
 		<cfset st.title = name>
 		<cfset st.thumbHREF = variables.DEFAULT_ICON_PATH>
+		<cfset st.version = "">
+		<cfset st.author = "">
+		<cfset st.authorURL = "">
 
 		<!--- build path of plugin manifest file --->
 		<cfset tmp = expandPath(arguments.templatePath & "/site-template.xml")>
@@ -71,6 +74,15 @@
 			</cfif>
 			<cfif structKeyExists(xmlDoc.xmlRoot,"description")>
 				<cfset st.description = xmlDoc.xmlRoot.description.xmlText>
+			</cfif>
+			<cfif structKeyExists(xmlDoc.xmlRoot,"version")>
+				<cfset st.version = xmlDoc.xmlRoot.version.xmlText>
+			</cfif>
+			<cfif structKeyExists(xmlDoc.xmlRoot,"author")>
+				<cfset st.author = xmlDoc.xmlRoot.author.xmlText>
+			</cfif>
+			<cfif structKeyExists(xmlDoc.xmlRoot,"authorURL")>
+				<cfset st.authorURL = xmlDoc.xmlRoot.authorURL.xmlText>
 			</cfif>
 		</cfif>
 
@@ -91,7 +103,7 @@
 		<cfreturn aRtn>
 	</cffunction>
 
-	<cffunction name="getSiteTemplate" access="public" returntype="plugin" hint="Retrieves a registered site template by its name">
+	<cffunction name="getSiteTemplate" access="public" returntype="struct" hint="Retrieves a registered site template by its name">
 		<cfargument name="name" type="string" required="true">
 		<cfif structKeyExists(variables.siteTemplatesMap, arguments.name)>
 			<cfreturn variables.siteTemplatesMap[arguments.name]>
@@ -99,5 +111,10 @@
 			<cfthrow message="Site Template not found" type="siteTemplateService.siteTemplateNotFound">
 		</cfif>
 	</cffunction>
-		
+
+	<cffunction name="hasSiteTemplate" access="public" returntype="boolean" hint="Checks if there is a registered site template by its name">
+		<cfargument name="name" type="string" required="true">
+		<cfreturn structKeyExists(variables.siteTemplatesMap, arguments.name)>
+	</cffunction>
+			
 </cfcomponent>
