@@ -60,7 +60,7 @@
 		<tr valign="top">
 			<td>&nbsp;</td>
 			<td>
-				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField" disabled="true"> 
+				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField" <cfif name eq "">disabled="true"</cfif>> 
 				&nbsp; <span style="color:red;font-weight:bold;">required</span><br />
 				<input type="checkbox" name="deployToWebRoot" id="deployToWebRoot" value="1" onclick="$('appRoot').disabled=this.checked"> 
 				<span style="color:##666;line-height:18px;">Deploy site to web root?</span>
@@ -80,7 +80,7 @@
 			<tr valign="top">
 				<td>&nbsp;</td>
 				<td>
-					<input type="text" id="contentRoot" name="contentRoot" value="" size="50" class="formField" disabled="true"> 
+					<input type="text" id="contentRoot" name="contentRoot" value="" size="50" class="formField" <cfif name eq "">disabled="true"</cfif>> 
 					&nbsp; <span style="color:red;font-weight:bold;">required</span>
 				</td>
 			</tr>
@@ -109,6 +109,6 @@
 	<br>
 	<p>
 		<input type="button" name="btnBack" value="<< Back" onclick="document.location='index.cfm?event=sites.ehSites.dspCreate'">&nbsp;
-		<input type="submit" name="btn" value="Create Site" style="font-weight:bold;" id="btnCreate" disabled="true">
+		<input type="submit" name="btn" value="Create Site" style="font-weight:bold;" id="btnCreate" <cfif name eq "">disabled="true"</cfif>>
 	</p>
 </cfoutput>
