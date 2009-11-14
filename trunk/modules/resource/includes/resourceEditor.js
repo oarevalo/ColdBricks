@@ -1,4 +1,4 @@
-var resourceEditor = {
+resourceEditor = {
 
 	open: function(resID,resType,pkg,resLibIndex) {
 				var href = "index.cfm"
@@ -28,7 +28,7 @@ var resourceEditor = {
 			frm.submit();
 		},
 
-	delete: function(resID,resType,pkg,resLibIndex) {
+	deleteRes: function(resID,resType,pkg,resLibIndex) {
 			if(confirm("Delete resource '" + resID + "' ?")) {
 				var href = "index.cfm"
 					+ "?event=resource.ehResource.doDelete" 

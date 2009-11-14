@@ -389,7 +389,7 @@
 		<cfif id neq "">
 			<div class="buttonImage btnLarge" style="margin:0 auto;float:left;margin-left:15px;">
 				&nbsp;<img src="images/delete.png" align="Absmiddle">
-				<a href="javascript:resourceEditor.delete('#jsStringFormat(id)#','#jsStringFormat(resourceType)#','#jsStringFormat(package)#')">Delete Resource</a>
+				<a href="javascript:resourceEditor.deleteRes('#jsStringFormat(id)#','#jsStringFormat(resourceType)#','#jsStringFormat(package)#')">Delete Resource</a>
 			</div>
 		</cfif>
 	</div>
