@@ -76,7 +76,6 @@
 		<resource id="settings" event="config.ehSettings.*" roles="admin" />
 		<resource id="users" event="users.ehUsers.*" roles="admin" />
 		<resource id="renderTemplates" event="templates.ehTemplates.*" roles="admin" />
-		<resource id="extensions" event="extensions.ehGeneral.*" roles="admin" />
 		
 	</resources>
 	

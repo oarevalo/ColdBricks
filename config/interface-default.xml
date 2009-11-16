@@ -176,22 +176,6 @@
 			</widgets>
 		</module>
 
-		<module name="extensions"
-				version="1.0"
-				author="ColdBricks"
-				authorURL="http://www.coldbricks.com">
-			Install and uninstall modules and site templates
-			<features type="server">
-				<feature href = "index.cfm?event=extensions.ehGeneral.dspMain"
-						imgSrc = "images/cb-blocks.png"
-						alt = "Install/uninstall extensions"
-						label = "Extensions Manager"
-						accessMapKey = "extensions">
-					The pages module lets you install and uninstall modules and site templates.
-				</feature>
-			</features>
-		</module>
-
 	</modules>
 </interface>
 
