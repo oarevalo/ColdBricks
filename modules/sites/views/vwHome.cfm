@@ -73,8 +73,8 @@
 						the HomePortals framework. <em>It is highly recommended to not modify this site adding 
 						your own content.</em><br>
 					</cfif>
-					<b>To get started with your first site,</b> either <a href="index.cfm?event=ehSites.dspCreate" title="Click here to go to the create site screen">Create a Site</a> 
-					or <a href="index.cfm?event=ehSites.dspRegister" title="Click here to register an existing HomePortals-based site on this server">Register an Existing Site</a>
+					<b>To get started with your first site,</b> either <a href="index.cfm?event=sites.ehSites.dspCreate" title="Click here to go to the create site screen">Create a Site</a> 
+					or <a href="index.cfm?event=sites.ehSites.dspRegister" title="Click here to register an existing HomePortals-based site on this server">Register an Existing Site</a>
 				</div>
 				<br>
 			</cfif>
