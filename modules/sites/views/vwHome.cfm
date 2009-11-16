@@ -68,7 +68,7 @@
 				<div class="helpBox" style="padding:10px;border:1px solid silver;margin-right:10px;">
 					<img src="images/quick_start.gif" style="margin-bottom:5px;"><br>
 					It seems that you have no sites configured to manage with ColdBricks.
-					<cfif qrySites.recordCount eq 1>
+					<cfif qrySites.recordCount eq 1 and showHomePortalsAsSite>
 						The site you see here, <b>HomePortalsEngine</b>, is the runtime engine for
 						the HomePortals framework. <em>It is highly recommended to not modify this site adding 
 						your own content.</em><br>
