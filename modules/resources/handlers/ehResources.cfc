@@ -655,6 +655,7 @@
 			var resourceLibraryPath = "";
 			var oResourceLibrary = 0;
 			var oContext = getService("sessionContext").getContext();
+			var pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator");
 
 			try {		
 				hp = oContext.getHomePortals();
