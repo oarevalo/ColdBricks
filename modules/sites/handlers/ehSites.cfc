@@ -671,10 +671,15 @@
 		<cfargument name="contentRoot" type="string" required="true">
 		<cfscript>
 			var txtDoc = "";
+			var appRootDotted = replace(arguments.appRoot,"/",".","ALL");
+			
+			if(left(appRootDotted,1) eq ".") appRootDotted = right(appRootDotted,len(appRootDotted)-1);
+			if(right(appRootDotted,1) eq ".") appRootDotted = left(appRootDotted,len(appRootDotted)-1);
 			
 			txtDoc = readFile(expandPath(arguments.path));
 			txtDoc = replace(txtDoc, "$APP_NAME$", arguments.name, "ALL");
 			txtDoc = replace(txtDoc, "$APP_ROOT$", arguments.appRoot, "ALL");
+			txtDoc = replace(txtDoc, "$APP.ROOT$", appRootDotted, "ALL");
 			txtDoc = replace(txtDoc, "$ACCOUNTS_ROOT$", arguments.accountsRoot, "ALL");
 			txtDoc = replace(txtDoc, "$RESOURCES_ROOT$", arguments.resourcesRoot, "ALL");
 			txtDoc = replace(txtDoc, "$CONTENT_ROOT$", arguments.contentRoot, "ALL");
