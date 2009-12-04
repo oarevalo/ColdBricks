@@ -305,7 +305,7 @@
 		<cfscript>
 			var parentPath = getValue("parentPath");
 			var pagePath = getValue("pagePath");
-			var layoutOnly = getValue("layoutOnly",false)
+			var layoutOnly = getValue("layoutOnly",false);
 			var oContext = getService("sessionContext").getContext();
 			var nextEvent = getValue("nextEvent","pages.ehPages.dspNode");
 			var currentFolder = "/";
