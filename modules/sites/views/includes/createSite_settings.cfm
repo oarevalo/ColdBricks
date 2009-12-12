@@ -62,7 +62,7 @@
 			<td>
 				<input type="text" id="appRoot" name="appRoot" value="#appRoot#" size="50" class="formField" <cfif name eq "">disabled="true"</cfif>> 
 				&nbsp; <span style="color:red;font-weight:bold;">required</span><br />
-				<input type="checkbox" name="deployToWebRoot" id="deployToWebRoot" value="1" onclick="$('appRoot').disabled=this.checked"> 
+				<input type="checkbox" name="deployToWebRoot" id="deployToWebRoot" value="1"  <cfif name eq "">disabled="true"</cfif> onclick="onChangeDeployToRoot(this.checked)" >
 				<span style="color:##666;line-height:18px;">Deploy site to web root?</span>
 			</td>
 		</tr>

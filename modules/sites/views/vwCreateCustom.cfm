@@ -13,23 +13,48 @@
 			f2 = $("contentRoot");
 			f3 = $("resourcesRoot");
 			b1 = $("btnCreate");
+			c1 = $("deployToWebRoot");
 
 			if(newName != '') {
 				f1.disabled = false;
 				f2.disabled = false;
 				f3.disabled = false;
 				b1.disabled = false;
+				c1.disabled = false;
 				if(f1) f1.value = '/' + newName;
 				if(f2) f2.value = '/' + newName + '/content';
 				if(f3) f3.value = '/' + newName + '/resourceLibrary';
+				onChangeDeployToRoot(c1.checked);
 			} else {
 				f1.value = '';
 				f2.value = '';
 				f3.value = '';
+				c1.checked = false;
 				f1.disabled = true;
 				f2.disabled = true;
 				f3.disabled = true;
 				b1.disabled = true;
+				c1.disabled = true;
+			}
+		}
+		
+		function onChangeDeployToRoot(checked) {
+			f0 = $("name");
+			f1 = $("appRoot");
+			f2 = $("contentRoot");
+			f3 = $("resourcesRoot");
+
+			if(checked) {
+				if(f1) f1.value = '/';
+				if(f2) f2.value = '/content';
+				if(f3) f3.value = '/resourceLibrary';
+				f1.disabled = true;
+
+			} else {
+				if(f1) f1.value = '/' + f0.value;
+				if(f2) f2.value = '/' + f0.value + '/content';
+				if(f3) f3.value = '/' + f0.value + '/resourceLibrary';
+				f1.disabled = false;
 			}
 		}
 	</script>
