@@ -127,16 +127,20 @@
 			var siteID = getValue("siteID");
 			var oSiteDAO = 0;
 			var qrySite = 0;
+			var allowDeleteFiles = true;
 			
 			try {			
 				// get site information
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySite = oSiteDAO.get(siteID);
 
-				if(qrySite.path eq "/")
-					throw("Sites located at the root level cannot be deleted from within this application.","coldBricks.validation");
+				if(qrySite.path eq "/") {
+					allowDeleteFiles = false;
+					setMessage("warning","You cannot delete files from sites located at root level. They can only be unregistered from ColdBricks.");
+				}
 
 				setValue("qrySite",qrySite);
+				setValue("allowDeleteFiles",allowDeleteFiles);
 				setValue("cbPageTitle", "Site Management > Confirm Site Deletion");
 				setValue("cbPageIcon", "images/folder_desktop_48x48.png");
 				setView("vwDelete");
@@ -488,18 +492,18 @@
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySite = oSiteDAO.get(siteID);
 
-				// make sure we are deleting something safe (if directory exists at all)
-				if(qrySite.path neq "/" 
-					and left(qrySite.path,6) neq "/homePortals/"
-					and qrySite.path neq "/homePortals" 
-					and left(qrySite.path,11) neq "/ColdBricks"
-					and left(qrySite.path,1) eq "/" ) {
-				} else {
-					throw("You are trying to delete a restricted directory","coldBricks.validation");
-				}
-
 				// delete files (if requested and directory exists)
 				if(isBoolean(deleteFiles) and deleteFiles and directoryExists( expandPath(qrySite.path))) {
+					// make sure we are deleting something safe (if directory exists at all)
+					if(qrySite.path neq "/" 
+						and left(qrySite.path,6) neq "/homePortals/"
+						and qrySite.path neq "/homePortals" 
+						and left(qrySite.path,11) neq "/ColdBricks"
+						and left(qrySite.path,1) eq "/" ) {
+					} else {
+						throw("You are trying to delete a restricted directory","coldBricks.validation");
+					}
+
 					deleteDir( expandPath(qrySite.path) );
 				}
 				
