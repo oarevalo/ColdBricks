@@ -105,7 +105,7 @@
 							<form name="frmEditTemplate" action="index.cfm" method="post">
 								<input type="hidden" name="event" value="config.ehSiteConfig.doSaveRenderTemplate">
 								<cfif not isNew>
-									<input type="text" name="name" value="#templateEditKey#">
+									<input type="hidden" name="name" value="#templateEditKey#">
 								</cfif>
 								<table>
 									<tr>
