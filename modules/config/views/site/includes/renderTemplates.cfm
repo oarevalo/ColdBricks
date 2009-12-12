@@ -40,20 +40,23 @@
 					<th style="background-color:##ccc;width:100px;">Action</th>
 				</tr>
 				<cfset stTemplates = oHomePortalsConfigBean.getRenderTemplates()>
+				<cfset stAppTemplates = oAppConfigBean.getRenderTemplates()>
 				<cfset index = 1>
 				<cfloop collection="#stTemplates#" item="type">
 					<cfloop collection="#stTemplates[type]#" item="key">
-						<tr <cfif index mod 2>class="altRow"</cfif>>
-							<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-							<td style="width:100px;" align="center">#key#</td>
-							<td style="width:100px;" align="center">#type#</td>
-							<td>#stTemplates[type][key].href#</td>
-							<td align="center"><cfif isBoolean(stTemplates[type][key].isDefault) and stTemplates[type][key].isDefault>Yes</cfif></td>
-							<td align="center">
-								< base >
-							</td>
-						</tr>
-						<cfset index++>
+						<cfif not (structKeyExists(stAppTemplates,type) and structKeyExists(stAppTemplates[type],key))>
+							<tr <cfif index mod 2>class="altRow"</cfif>>
+								<td style="width:50px;" align="right"><strong>#index#.</strong></td>
+								<td style="width:100px;" align="center">#key#</td>
+								<td style="width:100px;" align="center">#type#</td>
+								<td>#stTemplates[type][key].href#</td>
+								<td align="center"><cfif isBoolean(stTemplates[type][key].isDefault) and stTemplates[type][key].isDefault>Yes</cfif></td>
+								<td align="center">
+									< base >
+								</td>
+							</tr>
+							<cfset index++>
+						</cfif>
 					</cfloop>				
 				</cfloop>				
 				
