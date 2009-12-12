@@ -673,8 +673,10 @@
 			var txtDoc = "";
 			var appRootDotted = replace(arguments.appRoot,"/",".","ALL");
 			
-			if(left(appRootDotted,1) eq ".") appRootDotted = right(appRootDotted,len(appRootDotted)-1);
-			if(right(appRootDotted,1) eq ".") appRootDotted = left(appRootDotted,len(appRootDotted)-1);
+			if(len(appRootDotted) gt 1) {
+				if(left(appRootDotted,1) eq ".") appRootDotted = right(appRootDotted,len(appRootDotted)-1);
+				if(right(appRootDotted,1) neq ".") appRootDotted = appRootDotted & ".";
+			}
 			
 			txtDoc = readFile(expandPath(arguments.path));
 			txtDoc = replace(txtDoc, "$APP_NAME$", arguments.name, "ALL");
