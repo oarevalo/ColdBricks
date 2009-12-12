@@ -1,7 +1,10 @@
 <cfparam name="request.requestState.siteID" default="">
 <cfparam name="request.requestState.qrySite" default="">
+<cfparam name="request.requestState.allowDeleteFiles" default="">
+
 <cfset siteID = request.requestState.siteID>
 <cfset qrySite = request.requestState.qrySite>
+<cfset allowDeleteFiles = request.requestState.allowDeleteFiles>
 
 <cfoutput>
 <form name="frm" method="post" action="index.cfm">
@@ -13,7 +16,13 @@
 	</p>
 	
 	<p>
-		<input type="checkbox" name="deleteFiles" value="true" checked="true"> Delete site files on server?
+		<input type="checkbox" name="deleteFiles" value="true" 
+				<cfif not allowDeleteFiles>
+					disabled checked="false"
+				<cfelse>
+					checked="true"
+				</cfif>
+				 > Delete site files on server?
 		&nbsp;&nbsp;&nbsp;
 		<b style="color:red;">This action is not reversible!</b>
 	</p>
