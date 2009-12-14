@@ -34,12 +34,14 @@
 	<br>
 	<table style="margin:0px;padding:0px;width:100%;" cellpadding="0" cellspacing="0">
 		<tr valign="top">
-			<td style="width:120px;">
+			<td style="width:150px;">
 				<br />
+				<div style="line-height:18px;font-size:12px;">
 				<cfloop from="1" to="#arrayLen(aPanels)#" index="i">
-					<a href="index.cfm?event=config.ehSiteConfig.dspMain&panel=#aPanels[i].id#"
-						<cfif panel eq aPanels[i].id>style="font-weight:bold;"</cfif>>#aPanels[i].label#</a><br />
+					&raquo; <a href="index.cfm?event=config.ehSiteConfig.dspMain&panel=#aPanels[i].id#"
+						<cfif panel eq aPanels[i].id>style="font-weight:bold;color:green;"</cfif>>#aPanels[i].label#</a><br />
 				</cfloop>
+				</div>
 			</td>
 			<td>
 				<form name="frm" method="post" action="index.cfm">
