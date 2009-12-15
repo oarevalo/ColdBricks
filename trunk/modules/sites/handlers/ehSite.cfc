@@ -236,7 +236,7 @@
 	<cffunction name="doArchiveSite" access="public" returntype="void">
 		<cfset var oContext = getService("sessionContext").getContext()>
 		<cfset var siteID = oContext.getSiteInfo().getID()>
-		<cflocation url="index.cfm?event=ehSites.doArchiveSite&siteID=#siteID#" addtoken="false">
+		<cflocation url="index.cfm?event=sites.ehSites.doArchiveSite&siteID=#siteID#" addtoken="false">
 	</cffunction>
 
 </cfcomponent>
