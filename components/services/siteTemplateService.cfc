@@ -28,7 +28,7 @@
 		<cfquery name="qryDir" dbtype="query">
 			SELECT *
 				FROM qryDir
-				WHERE type = 'Dir'
+				WHERE upper(type) = 'DIR'
 					AND Name NOT LIKE '.%'
 				ORDER BY Name
 		</cfquery>
