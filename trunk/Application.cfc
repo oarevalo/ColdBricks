@@ -310,7 +310,7 @@
 			<cfif not structKeyExists(application,"__core__extModulesList")>
 				<cfdirectory action="list" name="qry" directory="#expandPath(this.extModulesPath)#">
 				<cfquery name="qry" dbtype="query">
-					SELECT * FROM qry WHERE type = 'dir'
+					SELECT * FROM qry WHERE upper(type) = 'DIR'
 				</cfquery>
 				<cflock name="cbBuildExtModules_lock" type="exclusive" timeout="20">
 					<cfset application.__core__extModulesList = valueList(qry.name)>
