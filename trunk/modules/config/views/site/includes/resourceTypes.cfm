@@ -11,6 +11,9 @@
 	dspEvent = "config.ehSiteConfig.dspMain";
 	
 	aPropTypes = ["text","list","resource","boolean"];
+	
+	stAllResTypes = oHomePortalsConfigBean.getResourceTypes();
+	structAppend(stAllResTypes, oAppConfigBean.getResourceTypes(), true);
 </cfscript>
 
 <script type="text/javascript">
@@ -246,7 +249,7 @@
 												<td><b>Resource Type:</b></td>
 												<td>
 													<select name="resourceType" style="width:200px;" class="formField">
-														<cfloop collection="#stResTypes#" item="key">
+														<cfloop collection="#stAllResTypes#" item="key">
 															<option value="#key#" <cfif tmpResourceType eq key>selected</cfif>>#key#</option>
 														</cfloop>
 													</select>
