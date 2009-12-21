@@ -342,6 +342,7 @@
 				setValue("package", package);	
 				setValue("resLibIndex", resLibIndex);	
 				setValue("aResLibs", aResLibs);	
+				setValue("oCatalog", hp.getCatalog());	
 				setValue("done", done);
 				
 				setView("vwCreateResource");

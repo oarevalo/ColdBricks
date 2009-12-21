@@ -6,6 +6,7 @@
 <cfparam name="request.requestState.done" default="false">
 <cfparam name="request.requestState.resourceTypeConfig" default="">
 <cfparam name="request.requestState.oResourceBean" default="">
+<cfparam name="request.requestState.oCatalog" default="">
 
 <cfscript>
 	resLibIndex = request.requestState.resLibIndex;
@@ -16,6 +17,7 @@
 	done = request.requestState.done;
 	resourceTypeConfig = request.requestState.resourceTypeConfig;
 	oResourceBean = request.requestState.oResourceBean;
+	oCatalog = request.requestState.oCatalog;
 
 	if(resLibIndex gt 0) {
 		propsConfig = resourceTypeConfig.getProperties();
