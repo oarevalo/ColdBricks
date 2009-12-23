@@ -67,6 +67,11 @@
 		<cfset variables.instance.accountViewType = "">
 		<cfset variables.instance.page = 0>
 		<cfset variables.instance.pageResourceTypeView = "">
+		<cfset variables.instance.resourceType = "">
+		<cfset variables.instance.package = "">
+		<cfset variables.instance.resLibIndex = 0>
+		<cfset variables.instance.resourceViewMode = "">
+		<cfset variables.instance.pageViewMode = "">
 	</cffunction>
 
 
