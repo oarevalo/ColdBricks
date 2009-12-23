@@ -406,68 +406,7 @@
 			setNextEvent("resource.ehResource.dspMain","resourceID=#resourceID#&package=#package#&resourceType=#resourceType#");
 		</cfscript>	
 	</cffunction>	
-		
-	<cffunction name="doCreateResource" access="public" returntype="void">
-		<cfscript>
-			var hp = 0;
-			var oCatalog = 0;
-			var resourceType = "";
-			var resLibIndex = val(getValue("resLibIndex"));
-			var package = getValue("package");
-			var packageNew = getValue("package_new");
-			var id = getValue("id","");
-			var description = getValue("description","");
-			var oResourceBean = 0;
-			var oResourceLibrary = 0;
-			var oContext = getService("sessionContext").getContext();
-
-			try {		
-				hp = oContext.getHomePortals();
-
-				if(id eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
-				if(resLibIndex lte 0) throw("Please select a resource library []","coldBricks.validation"); 
-				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
-				
-				if(package eq "") package = packageNew;
-
-				// check if we have a saved context
-				resourceType = oContext.getResourceType();
-
-				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
-				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
-
-				// create the bean for the new resource
-				oResourceBean = aResLibs[resLibIndex].getNewResource(resourceType);
-				oResourceBean.setID( id );
-				oResourceBean.setDescription(description); 
-				oResourceBean.setPackage(package); 
-
-				props = oResourceBean.getProperties();
-				for(key in props) {
-					oResourceBean.setProperty(key, getValue("cp_#key#"));
-				}
-	
-				/// add the new resource to the library
-				aResLibs[resLibIndex].saveResource(oResourceBean);
-
-				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
-
-				setMessage("info","Resource created");
-				setNextEvent("resources.ehResources.dspCreateResource","done=true");
-
-			} catch(coldBricks.validation e) {
-				setMessage("warning",e.message);
-
-			} catch(any e) {
-				setMessage("error",e.message);
-				getService("bugTracker").notifyService(e.message, e);
-			}
-		
-			setNextEvent("resources.ehResources.dspCreateResource");
-		</cfscript>
-	</cffunction>
-	
+			
 		
 	<cffunction name="fileUpload" access="private" returntype="struct">
 		<cfargument name="fieldName" type="string" required="true">

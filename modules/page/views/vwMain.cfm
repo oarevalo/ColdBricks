@@ -118,12 +118,11 @@
 					<option value="#qrySkins.id#" <cfif qrySkins.id eq skinID>selected</cfif>>#qrySkins.id#</option>
 				</cfloop>
 				<option value="_NEW">-- New Skin --</option>
-				<!--- <option value="_IMPORT">-- Import Skins --</option> --->
 			</select>
 			<cfif skinID neq "">
-				<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=skin&id=#skinID#&libpath=auto">Edit</a>
+				<a href="##" onclick="resourceEditor.open('#jsStringFormat(skinID)#','skin','',0);">Edit</a>
 			<cfelse>
-				<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=skin&id=NEW&pkg=__ALL__">New</a>
+				<a href="##" onclick="resourceEditor.open('NEW','skin','',0);">New</a>
 			</cfif>
 		</td>
 

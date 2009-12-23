@@ -71,7 +71,7 @@
 
 
 <cfoutput>
-	<!--- [resLibIndex:#resLibIndex#][id:#id#][resourceType:#resourceType#][pkg:#package#]  --->
+	<!--- [resLibIndex:#resLibIndex#][id:#id#][resourceType:#resourceType#][pkg:#package#] --->
 	<table style="width:100%;border:1px solid silver;background-color:##ebebeb;" cellpadding="0" cellspacing="0">
 		<tr>
 			<td nowrap="yes" style="width:200px;">
@@ -92,7 +92,7 @@
 			<td align="right" style="padding-right:10px;width:120px;">
 				<cfif resourceType neq "module">
 					<div class="buttonImage btnLarge" style="margin:0px;">
-						<a href="##" onclick="createResource('#resourceType#','NEW','','#reslibIndex#')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
+						<a href="##" onclick="createResource('#resourceType#','','#reslibIndex#')"><img src="images/add.png" align="absmiddle" border="0"> Create #resourceType#</a>
 					</div>	
 				</cfif>
 			</td>
@@ -143,16 +143,22 @@
 				<th width="70">Action</th>
 			</tr>
 			<cfset currentLibPath = "">
+			<cfset currentLibIndex = 0>
 			<cfloop query="qryResources" startrow="#startRow#" endrow="#endRow#">
 				<cfset index = qryResources.currentRow>
 				<cfif qryResources.libPath neq currentLibPath>
 					<tr><td colspan="4" style="font-weight:bold;font-family:verdana;background-color:##ebebeb;"><em>#qryResources.libPath#</em></td></tr>
 					<cfset currentLibPath = qryResources.libPath>
+					<cfloop from="1" to="#arrayLen(aResLibs)#" index="i">
+						<cfif aResLibs[i].getPath() eq currentLibPath>
+							<cfset currentLibIndex = i>
+						</cfif>
+					</cfloop>
 				</cfif>
 				<tr <cfif index mod 2>class="altRow"</cfif>>
 					<td width="20" align="right">#index#.</td>
 					<td>
-						<a onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#reslibIndex#')"
+						<a onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#currentLibIndex#')"
 							class="pagesViewItem" id="pagesViewItem_#index#"	
 							alt="Click to open in page editor"
 							title="Click to open in page editor"
@@ -161,10 +167,10 @@
 					<td>#qryResources.package#</td>
 					<td align="center">
 						<cfif resourceType neq "module">
-							<a href="##" onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#reslibIndex#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit resource" title="Edit resource" border="0"></a>
+							<a href="##" onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#currentLibIndex#')"><img src="images/page_edit.png" align="absmiddle" alt="Edit resource" title="Edit resource" border="0"></a>
 							<a href="##" onclick="if(confirm('Delete resource?')){document.location='index.cfm?event=resources.ehResources.doDeleteResource&id=#qryResources.id#&resourceType=#resourceType#&pkg=#qryResources.package#'}"><img src="images/waste_small.gif" align="absmiddle" alt="Delete resource" title="Delete resource" border="0"></a>
 						<cfelse>
-							<a href="##" onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#reslibIndex#')"><img src="images/magnifier.png" align="absmiddle" alt="View module information" title="View module information" border="0"></a>
+							<a href="##" onclick="selectResource('#resourceType#','#jsstringFormat(qryResources.id)#','#jsStringFormat(qryResources.package)#','#currentLibIndex#')"><img src="images/magnifier.png" align="absmiddle" alt="View module information" title="View module information" border="0"></a>
 						</cfif>
 					</td>
 				</tr>

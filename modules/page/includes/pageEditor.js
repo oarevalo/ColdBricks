@@ -151,9 +151,7 @@ function changePage(pg) {
 
 function changeSkin(skinID) {
 	if(skinID=="_NEW")
-		document.location='?event=resources.ehResources.dspMain&resourceType=skin&id=NEW&pkg=__ALL__';
-	else if(skinID=="_IMPORT")
-		document.location='?event=resources.ehResources.dspImport';
+		resourceEditor.open('NEW','skin','',0);
 	else if(skinID!=0) 
 		document.location='?event=page.ehPage.doApplySkin&skinID=' + skinID;
 }
@@ -162,15 +160,6 @@ function changePageTemplate(pageTemplateName) {
 	if(pageTemplateName!="0") {
 		document.location='?event=page.ehPage.doSetPageTemplate&templateName=' + pageTemplateName;
 	}
-}
-
-function applyPageTemplate(resID) {
-	if(resID=="_NEW")
-		document.location='?event=resources.ehResources.dspMain&resType=pagetemplate&id=NEW';
-	else if(resID=="_IMPORT")
-		document.location='?event=resources.ehResources.dspImport';
-	else if(resID!="")
-		document.location='?event=page.ehPage.doApplyPageTemplate&resourceID='+resID
 }
 
 function doSetModuleLocation(modID,locName) {
