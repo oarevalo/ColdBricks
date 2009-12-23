@@ -29,8 +29,8 @@
 
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
-	<script language="javascript" type="text/javascript" src="/ColdBricks/includes/tiny_mce/tiny_mce.js"></script>
 	<script type="text/javascript" src="modules/resources/includes/resourceEditor.js"></script>
+	<script type="text/javascript" src="modules/resource/includes/resourceEditor.js"></script>
 	<style type="text/css">
 		.buttonImage {
 			white-space:nowrap;
