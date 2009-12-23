@@ -62,7 +62,7 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type="checkbox" name="appSettings" value="catalogCacheTTL" <cfif hasCatalogCacheTTL>checked</cfif> onclick="toggleField(this.checked,'catalogCacheTTL')">
 			<strong>TTL (min):</strong>
-			<input type="text" name="catalogCacheTTL" value="#catalogCacheTTL#" id="fld_CatalogCacheTTL" size="5" style="width:50px;" class="formField" <cfif not hasCatalogCacheTTL>disabled</cfif>>
+			<input type="text" name="catalogCacheTTL" value="#catalogCacheTTL#" id="fld_catalogCacheTTL" size="5" style="width:50px;" class="formField" <cfif not hasCatalogCacheTTL>disabled</cfif>>
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
