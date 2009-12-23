@@ -803,7 +803,7 @@
 				filefield="resFile" 
 				nameconflict="makeunique"  
 				result="stFile"
-				destination="#expandPath(arguments.destPath)#">
+				destination="#arguments.destPath#">
 		
 		<cfreturn stFile>
 	</cffunction>	
