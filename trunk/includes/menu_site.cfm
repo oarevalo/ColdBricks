@@ -32,7 +32,7 @@
 	st = structNew();
 	st.label = "Pages";
 	st.event = "pages.ehPages.dspMain";
-	st.selected = listFindNoCase("page", listFirst(event,"."));
+	st.selected = listFindNoCase("pages", listFirst(event,"."));
 	st.hint = "Page management";
 	st.icon = "images/page_copy.png";
 	st.titleIcon = "images/documents_48x48.png";
@@ -42,7 +42,7 @@
 	st = structNew();
 	st.label = "Accounts";
 	st.event = "accounts.ehAccounts.dspMain";
-	st.selected = listFindNoCase("accounts,page", listFirst(event,"."));
+	st.selected = listFindNoCase("accounts", listFirst(event,"."));
 	st.hint = "Site and account management";
 	st.icon = "images/users_24x24.png";
 	st.titleIcon = "images/users_48x48.png";
