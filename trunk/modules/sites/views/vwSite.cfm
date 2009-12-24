@@ -1,32 +1,14 @@
 <cfparam name="request.requestState.firstTime" default="false">
-<cfparam name="request.requestState.oUser" default="">
 <cfparam name="request.requestState.aModules" default="">
-<cfparam name="request.requestState.oContext" default="">
 <cfparam name="request.requestState.isHomePortalsEngine" default="false">
-<cfparam name="request.requestState.stWidgets" default="">
+<cfparam name="request.requestState.aLeftWidgets" default="#arrayNew(1)#">
+<cfparam name="request.requestState.aRightWidgets" default="#arrayNew(1)#">
 
 <cfset firstTime = request.requestState.firstTime>
-<cfset oUser = request.requestState.oUser>
 <cfset aModules = request.requestState.aModules>
-<cfset oContext = request.requestState.oContext>
 <cfset isHomePortalsEngine = request.requestState.isHomePortalsEngine>
-<cfset stWidgets = request.requestState.stWidgets>
-
-<cfset stAccessMap = oUser.getAccessMap()>
-<cfset aLeftWidgets = arrayNew(1)>
-<cfset aRightWidgets = arrayNew(1)>
-
-
-<!--- get widgets for each location --->
-<cfif structKeyExists(stWidgets,"default")>
-	<cfset aLeftWidgets = stWidgets.default>
-<cfelseif structKeyExists(stWidgets,"left")>
-	<cfset aLeftWidgets = stWidgets.left>
-</cfif>
-<cfif structKeyExists(stWidgets,"right")>
-	<cfset aRightWidgets = stWidgets.right>
-</cfif>
-
+<cfset aLeftWidgets = request.requestState.aLeftWidgets>
+<cfset aRightWidgets = request.requestState.aRightWidgets>
 
 <cfsavecontent variable="tmpHTML">
 	<script type="text/javascript" src="includes/js/prototype-1.6.0.js"></script>
@@ -70,30 +52,10 @@
 				</div>
 			</cfif>
 			
-			<cf_dashboardMenu title="Site Management:">
+			<cf_dashboardMenu title="Site Management:" defaultImgSrc="images/Globe_48x48.png">
 				<cfloop from="1" to="#arrayLen(aModules)#" index="i">
-					<cfset isAllowed = structKeyExists(stAccessMap, aModules[i].accessMapKey)
-										and stAccessMap[aModules[i].accessMapKey]
-										and
-										(
-											aModules[i].bindToPlugin eq ""
-											or
-											(
-												aModules[i].bindToPlugin neq ""
-												and
-												oContext.getHomePortals().getPluginManager().hasPlugin( aModules[i].bindToPlugin )
-											)	
-										)>
-
-					<cfif aModules[i].imgSrc neq "">
-						<cfset tmpImgSrc = aModules[i].imgSrc>
-					<cfelse>
-						<cfset tmpImgSrc = "images/Globe_48x48.png">
-					</cfif>
-
 					<cf_dashboardMenuItem href="#aModules[i].href#" 
-											isAllowed="#isAllowed#"
-											imgSrc="#tmpImgSrc#"
+											imgSrc="#aModules[i].imgSrc#"
 											alt="#aModules[i].alt#"
 											label="#aModules[i].label#"
 											help="#aModules[i].description#">

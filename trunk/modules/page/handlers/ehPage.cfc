@@ -70,7 +70,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSite.dspMain");
+				setNextEvent("sites.ehSite.dspMain");
 			}			
 		</cfscript>
 	</cffunction>
@@ -161,12 +161,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -200,12 +200,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -235,12 +235,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -280,12 +280,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>
@@ -348,12 +348,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -507,12 +507,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>	
@@ -545,12 +545,12 @@
 
 			} catch(coldBricks.validation e) {
 				setMessage("warning",e.message);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 
 			} catch(any e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehPage.dspMain");
+				setNextEvent("page.ehPage.dspMain");
 			}
 		</cfscript>
 	</cffunction>	

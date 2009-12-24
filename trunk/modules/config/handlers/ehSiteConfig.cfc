@@ -38,7 +38,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSite.dspMain");			
+				setNextEvent("sites.ehSite.dspMain");			
 			}
 		</cfscript>
 	</cffunction>
@@ -78,7 +78,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSite.dspMain");			
+				setNextEvent("sites.ehSite.dspMain");			
 			}
 		</cfscript>
 	</cffunction>	
@@ -111,7 +111,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSite.dspMain");			
+				setNextEvent("sites.ehSite.dspMain");			
 			}
 		</cfscript>
 	</cffunction>
@@ -166,7 +166,7 @@
 			} catch(any e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
-				setNextEvent("ehSite.dspMain");			
+				setNextEvent("sites.ehSite.dspMain");			
 			}
 		</cfscript>		
 	</cffunction>

@@ -13,7 +13,7 @@
 				getService("sessionContext").getContext().clearSiteContext();
 				
 				// if this is a regular user then go to sites screen
-				if(not oUser.getIsAdministrator()) 	setNextEvent("ehSites.dspMain");
+				if(not oUser.getIsAdministrator()) 	setNextEvent("sites.ehSites.dspMain");
 	
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
@@ -60,7 +60,7 @@
 				// if this is a regular user that has only one site, then 
 				// go directly to that site
 				if(not oUser.getIsAdministrator() and qryUserSites.recordCount eq 1)
-					setNextEvent("ehSite.doLoadSite","siteID=#qryUserSites.siteID#");
+					setNextEvent("sites.ehSite.doLoadSite","siteID=#qryUserSites.siteID#");
 
 				setValue("qrySites",qrySites);
 				setValue("qryUserSites",qryUserSites);

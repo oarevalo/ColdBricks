@@ -1,6 +1,7 @@
 <!--- dashboardMenu --->
 <cfparam name="attributes.id" type="string" default="">  
 <cfparam name="attributes.title" type="string" default="">  
+<cfparam name="attributes.defaultImgSrc" type="string" default="">  
 
 <cfif thisTag.ExecutionMode eq "end">
 	<cfparam name="thisTag.itemTags" type="array" default="#ArrayNew(1)#">
@@ -31,6 +32,9 @@
 
 				<cfloop from="1" to="#arrayLen(thisTag.itemTags)#" index="i">
 					<cfset item = thisTag.itemTags[i]>
+					<cfif item.imgSrc eq "">
+						<cfset item.imgSrc = attributes.defaultImgSrc>
+					</cfif>
 					<cfif item.isAllowed>
 						<div class="dsb_secBox">
 							<a href="#item.href#" onmouseover="showDBHelp_#attributes.id#(#i#)" onmouseout="hideDBHelp_#attributes.id#()" onfocus="showDBHelp_#attributes.id#(#i#)" onblur="hideDBHelp_#attributes.id#()"><img src="#item.imgSrc#" border="0" alt="#item.alt#" title="#item.alt#"><br>

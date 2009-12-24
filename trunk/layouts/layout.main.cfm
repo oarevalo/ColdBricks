@@ -3,6 +3,7 @@
 <cfparam name="request.requestState.applicationTitle" default="#application.applicationName#">
 <cfparam name="request.requestState.viewTemplatePath" default="">
 <cfparam name="request.requestState.cbPageTitle" default="">
+<cfparam name="request.requestState.cbPageHTMLTitle" default="#request.requestState.cbPageTitle#">
 <cfparam name="request.requestState.cbPageIcon" default="">
 <cfparam name="request.requestState.cbShowSiteMenu" default="">
 
@@ -11,7 +12,7 @@
 		<head>
 			<title>
 				#request.requestState.applicationTitle# 
-				<cfif request.requestState.cbPageTitle neq "">:: #request.requestState.cbPageTitle#</cfif>
+				<cfif request.requestState.cbPageHTMLTitle neq "">:: #request.requestState.cbPageHTMLTitle#</cfif>
 			</title>
 			<link href="includes/css/style.css" rel="stylesheet" type="text/css">
 			<script type="text/javascript" src="includes/js/main.js"></script>
