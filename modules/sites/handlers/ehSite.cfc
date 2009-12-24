@@ -102,7 +102,7 @@
 				else if(structKeyExists(stWidgets,"left")) 
 					aLeftWidgets = stWidgets.left;		
 				if(structKeyExists(stWidgets,"right"))
-					aRightWidgets = stWidgets.right
+					aRightWidgets = stWidgets.right;
 
 
 				setValue("aModules",aModules);
