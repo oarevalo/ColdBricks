@@ -31,7 +31,7 @@
 				if(loaded)
 					setNextEvent("ehGeneral.dspMain");		// this is to avoid circular redirects when first opening the site
 				else
-					setNextEvent("ehSite.dspMain");
+					setNextEvent("sites.ehSite.dspMain");
 			}				
 		</cfscript>
 	</cffunction>

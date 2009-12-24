@@ -22,7 +22,7 @@
 	st = structNew();
 	st.label = "Dashboard";
 	st.event = "sites.ehSite.dspMain";
-	st.selected = listFindNoCase("ehSite", listFirst(event,"."));
+	st.selected = listFindNoCase("sites", listFirst(event,"."));
 	st.hint = "Site Dashboard";
 	st.icon = "images/house.png";
 	st.titleIcon = "";
@@ -32,7 +32,7 @@
 	st = structNew();
 	st.label = "Pages";
 	st.event = "pages.ehPages.dspMain";
-	st.selected = listFindNoCase("ehPages", listFirst(event,"."));
+	st.selected = listFindNoCase("page", listFirst(event,"."));
 	st.hint = "Page management";
 	st.icon = "images/page_copy.png";
 	st.titleIcon = "images/documents_48x48.png";
@@ -42,7 +42,7 @@
 	st = structNew();
 	st.label = "Accounts";
 	st.event = "accounts.ehAccounts.dspMain";
-	st.selected = listFindNoCase("ehAccounts,ehPage", listFirst(event,"."));
+	st.selected = listFindNoCase("accounts,page", listFirst(event,"."));
 	st.hint = "Site and account management";
 	st.icon = "images/users_24x24.png";
 	st.titleIcon = "images/users_48x48.png";
@@ -52,7 +52,7 @@
 	st = structNew();
 	st.label = "Resources";
 	st.event = "resources.ehResources.dspMain";
-	st.selected = findnocase("ehResources.", event);
+	st.selected = findnocase("resources.", event);
 	st.hint = "Manage the site's resource library";
 	st.icon = "images/folder2_yellow_32x32.png";
 	st.titleicon = "images/folder2_yellow_48x48.png";
@@ -62,7 +62,7 @@
 	st = structNew();
 	st.label = "Settings";
 	st.event = "config.ehSiteConfig.dspMain";
-	st.selected = findnocase("ehSiteConfig.", event);
+	st.selected = findnocase("config.", event);
 	st.hint = "View and edit configuration files";
 	st.icon = "images/configure_22x22.png";
 	st.titleicon = "images/configure_48x48.png";

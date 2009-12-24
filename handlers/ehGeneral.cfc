@@ -83,14 +83,15 @@
 				// check authorization
 				isAllowed = getService("permissions").isAllowed(event, oUser.getRole());
 				if(not isAllowed) {
-					setMessage("Warning","The requested action is restricted.");
+					setMessage("Warning","The requested action is restricted. [#event#]");
 					
 					// check if we can send the user to the admin dashboard page
 					// if not, then send them to the login page
-					if(getService("permissions").isAllowed("ehGeneral.dspMain", oUser.getRole()))
-						setNextEvent("ehGeneral.dspMain");
-					else
+					if(getService("permissions").isAllowed( getSetting("homeEvent") , oUser.getRole())) {
+						setNextEvent( getSetting("homeEvent") );
+					} else {
 						setNextEvent("ehGeneral.dspLogin");
+					}
 				}
 
 				// set module path

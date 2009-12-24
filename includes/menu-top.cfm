@@ -18,8 +18,8 @@
 
 	st = structNew();
 	st.label = "My Sites";
-	st.event = "ehSites.dspMain";
-	st.selected = listFindNoCase("ehSites", listFirst(event,"."));
+	st.event = "sites.ehSites.dspMain";
+	st.selected = listFindNoCase("sites", listFirst(event,"."));
 	st.display = not oUser.getIsAdministrator();
 	st.hint = "Displays a list of existing sites for the current user";
 	arrayAppend(aOptions,st);

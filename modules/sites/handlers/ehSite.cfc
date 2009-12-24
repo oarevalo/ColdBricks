@@ -58,6 +58,9 @@
 			var hp = 0;
 			var oContext = 0;
 			var aModules = arrayNew(1);
+			var aAllModules = arrayNew(1);
+			var aLeftWidgets = arrayNew(1);
+			var aRightWidgets = arrayNew(1);
 			
 			try {
 				oContext = getService("sessionContext").getContext();
@@ -72,14 +75,41 @@
 				}
 				
 				// get available modules
-				aModules = getService("UIManager").getSiteFeatures();
+				aAllModules = getService("UIManager").getSiteFeatures();
+				stAccessMap = getValue("oUser").getAccessMap();
 
-				// get widgets
+				for(i=1;i lte arrayLen(aAllModules);i++) {
+					isAllowed = structKeyExists(stAccessMap, aAllModules[i].accessMapKey)
+										and stAccessMap[aAllModules[i].accessMapKey]
+										and
+										(
+											aAllModules[i].bindToPlugin eq ""
+											or
+											(
+												aAllModules[i].bindToPlugin neq ""
+												and
+												hp.getPluginManager().hasPlugin( aAllModules[i].bindToPlugin )
+											)	
+										);
+					if(isAllowed) arrayAppend(aModules, aAllModules[i]);
+				}
+
+
+				// get widgets for each location
 				stWidgets = renderWidgets( getService("UIManager").getSiteWidgets() );
+				if(structKeyExists(stWidgets,"default")) 
+					aLeftWidgets = stWidgets.default;
+				else if(structKeyExists(stWidgets,"left")) 
+					aLeftWidgets = stWidgets.left;		
+				if(structKeyExists(stWidgets,"right"))
+					aRightWidgets = stWidgets.right
+
 
 				setValue("aModules",aModules);
-				setValue("stWidgets",stWidgets);
+				setValue("aLeftWidgets",aLeftWidgets);
+				setValue("aRightWidgets",aRightWidgets);
 				setValue("cbPageTitle", "Site Dashboard :: <span style='color:red;'>#oSiteInfo.getsitename()#</span>");
+				setValue("cbPageHTMLTitle", "Site Dashboard :: #oSiteInfo.getsitename()#");
 				setView("vwSite");
 			
 			} catch(any e) {
