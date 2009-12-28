@@ -23,8 +23,8 @@
 	<cfset this.restartKey = "cookieMonster">
 	<cfset this.configDoc = "config.xml">
 	<cfset this.modulesPath = "modules">
-	<cfset this.extModulesPath = "/ColdBricksModules">
-	<cfset this.extModulesPrefix = "my">
+	<cfset this.externalModulesRoot = "">
+	<cfset this.externalModulesPrefix = "my">
 	<cfset this.emailErrors = false>
 	<cfset this.customtagpaths = expandPath("includes")>
 	<cfset this.scriptProtect = "none">
@@ -50,6 +50,10 @@
 			reqState.layout = this.defaultLayout;
 			reqState.view = "";
 			reqState.module = "";
+			
+			// check if there are any override of default app settings from the config file
+			// (NOTE: any overrides will only take effect after the app has been initialized with the default settings)
+			checkAppSettingsOverride("externalModulesRoot,externalModulesPrefix,topLevelErrorRecipient,topLevelErrorSender,emailErrors");
 			
 			// check for external modules
 			if(Not structKeyExists(application,"_appInited") or resetApp) 
@@ -126,19 +130,35 @@
 	<!--- Do application startup --->
 	<cffunction name="startApplication" access="private" returntype="void" hint="This method handles the application startup tasks">
 		<cfargument name="appHandler" type="any" required="true">
-		<cfset var xmlDoc = 0>
+		<cfset var xmlConfigDoc = 0>
+		<cfset var xmlMyConfigDoc = 0>
+		<cfset var hasMyConfig = false>
 
 		<cflock name="frAppStart_#this.name#" type="exclusive" timeout="10">
 			<cfscript>
 				if(this.configDoc neq "") {
+					// initialize area for settings and services
+					application["_appSettings"] = structNew();
+					application["_appServices"] = structNew();
+	
 					// load configuration file
-					xmlDoc = xmlParse(expandPath("config/" & this.configDoc));
+					xmlConfigDoc = xmlParse(expandPath("config/" & this.configDoc));
 	
 					// load application settings
-					loadApplicationSettings(xmlDoc);
+					loadApplicationSettings(xmlConfigDoc);
+
+					// load custom overrides to config
+					if(fileExists(expandPath("config/my." & this.configDoc))) {
+						hasMyConfig = true;
+						xmlMyConfigDoc = xmlParse(expandPath("config/my." & this.configDoc));
+						loadApplicationSettings(xmlMyConfigDoc);
+					} 
 	
 					// load application services
-					loadApplicationServices(xmlDoc);
+					loadApplicationServices(xmlConfigDoc);
+					
+					// load custom overrides to config
+					if(hasMyConfig) loadApplicationServices(xmlMyConfigDoc);
 				}
 	
 				// execute application-specific initialization tasks
@@ -166,7 +186,7 @@
 			if(listLen(rq.event,".") gte 2 and listLen(rq.event,".") lt 4) {
 				
 				// convert modulesPath to a valid dot notation
-				if(arguments.reqState._isexternalmodule_) modulePath = this.extModulesPath;
+				if(arguments.reqState._isexternalmodule_) modulePath = this.externalModulesRoot;
 				mp = replace(modulePath,"/",".","ALL");
 				if(left(mp,1) eq ".") mp = right(mp,len(mp)-1);
 				if(right(mp,1) neq ".") mp = mp & ".";
@@ -198,9 +218,6 @@
 			var i = 0;
 			var xmlNode = 0;
 
-			// initialize area for settings
-			application["_appSettings"] = structNew();
-	
 			// read application settings
 			if(structKeyExists(arguments.xmlConfig.xmlRoot,"settings")) {
 				for(i=1;i lte arrayLen(arguments.xmlConfig.xmlRoot.settings.xmlChildren);i=i+1) {
@@ -222,9 +239,6 @@
 			var xmlNode = 0;
 			var stArguments = structNew();
 			var oService = 0;
-
-			// initialize area for services
-			application["_appServices"] = structNew();
 
 			// read application services
 			if(structKeyExists(arguments.xmlConfig.xmlRoot,"services")) {
@@ -248,22 +262,13 @@
 						}
 	
 						// instantiate service
-						if( (xmlNode.xmlAttributes.class DOES NOT CONTAIN ".") OR ((xmlNode.xmlAttributes.class CONTAINS ".") AND (xmlNode.xmlAttributes.class DOES NOT CONTAIN "/") AND (xmlNode.xmlAttributes.class DOES NOT CONTAIN "\")) ) {
-							// class is a regular cfc path
-							oService = createObject("component", xmlNode.xmlAttributes.class);
-						} else {
-							// class is a relative path
-							oProxy = createObject("java", "coldfusion.runtime.TemplateProxyFactory");
-							oFile = createObject("java", "java.io.File").init( expandPath(xmlNode.xmlAttributes.class) );
-							oService = oProxy.resolveFile(getPageContext(), oFile);
-						}
+						oService = createObject("component", xmlNode.xmlAttributes.class);
 
 						// initialize service
 						oService.init(argumentCollection = stArguments);
 	
 						// add service instance into application scope
 						application["_appServices"][xmlNode.xmlAttributes.name] = oService;
-						
 					}
 				}
 			}
@@ -280,7 +285,7 @@
 			
 			if(arguments.reqState.view neq "") {
 				if(arguments.reqState.module neq "") {
-					if(arguments.reqState._isexternalmodule_) modulePath = this.extModulesPath;
+					if(arguments.reqState._isexternalmodule_) modulePath = this.externalModulesRoot;
 					if(left(modulePath,1) eq "/")
 						basePath = modulePath & "/" & arguments.reqState.module;
 					else
@@ -295,7 +300,7 @@
 
 	<cffunction name="isExternalModule" access="private" returntype="boolean" hint="Checks whether the given event belongs to an external module">
 		<cfargument name="event" type="string" required="true">
-		<cfif listLen(event,".") eq 4 and listFirst(event,".") eq this.extModulesPrefix>
+		<cfif listLen(event,".") eq 4 and listFirst(event,".") eq this.externalModulesPrefix>
 			<cfreturn true>
 		<cfelseif listLen(event,".") eq 3>
 			<cfreturn listFindNoCase(getExternalModulesList(), listFirst(event,"."))>
@@ -306,9 +311,9 @@
 	<cffunction name="getExternalModulesList" access="private" returntype="string">
 		<cfset var list = "">
 		<cfset var qry = 0>
-		<cfif this.extModulesPath neq "">
+		<cfif this.externalModulesRoot neq "">
 			<cfif not structKeyExists(application,"__core__extModulesList")>
-				<cfdirectory action="list" name="qry" directory="#expandPath(this.extModulesPath)#">
+				<cfdirectory action="list" name="qry" directory="#expandPath(this.externalModulesRoot)#">
 				<cfquery name="qry" dbtype="query">
 					SELECT * FROM qry WHERE upper(type) = 'DIR'
 				</cfquery>
@@ -319,6 +324,17 @@
 			<cfset list = application.__core__extModulesList>
 		</cfif>
 		<cfreturn list>
+	</cffunction>
+	
+	<cffunction name="checkAppSettingsOverride" access="private" returntype="void">
+		<cfargument name="overridableKeys" type="string" required="true" hint="list of keys that can be overriden">
+		<cfif structKeyExists(application,"_appSettings")>
+			<cfloop list="#arguments.overridableKeys#" index="key">
+				<cfif structKeyExists(application._appSettings,key)>
+					<cfset this[key] = application._appSettings[key]>
+				</cfif>
+			</cfloop>
+		</cfif>
 	</cffunction>
 
 </cfcomponent>

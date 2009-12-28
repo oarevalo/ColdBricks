@@ -77,7 +77,7 @@
 		<cftry>
 			<cfswitch expression="#type#">
 				<cfcase value="module">
-					<cfset basePath = "/ColdBricksModules/">
+					<cfset basePath = getSetting("externalModulesRoot") & "/">
 					<cfset nextEvent = "extensions.ehGeneral.dspModules">
 				</cfcase>
 				<cfcase value="siteTemplate">
@@ -166,8 +166,8 @@
 		
 		<cfif directoryExists(expandPath("/ColdBricks/modules/#arguments.name#"))>
 			<cfset fullpath = "/ColdBricks/modules/#arguments.name#">
-		<cfelseif directoryExists(expandPath("/ColdBricksModules/#arguments.name#"))>
-			<cfset fullpath = "/ColdBricksModules/#arguments.name#">
+		<cfelseif directoryExists(expandPath(getSetting("externalModulesRoot") & "/#arguments.name#"))>
+			<cfset fullpath = getSetting("externalModulesRoot") & "/#arguments.name#">
 		<cfelse>
 			<cfthrow message="Module not found">
 		</cfif>
