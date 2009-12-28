@@ -96,7 +96,7 @@
 
 				// set module path
 				if(getValue("_isexternalmodule_"))
-					setValue("cbModulesPath","/ColdBricksModules");
+					setValue("cbModulesPath", getSetting("externalModulesRoot"));
 				else
 					setValue("cbModulesPath","/ColdBricks/modules");
 		
@@ -298,7 +298,7 @@
 
 	<cffunction name="initModules" access="private" returntype="array">
 		<cfset var qryDir = 0>
-		<cfset var lstModulesPath = "/ColdBricks/modules,/ColdBricksModules">
+		<cfset var lstModulesPath = listAppend("/ColdBricks/modules", getSetting("externalModulesRoot"))>
 		<cfset var modulesPath = "">
 		<cfset var tmp = "">
 		<cfset var st = structNew()>
