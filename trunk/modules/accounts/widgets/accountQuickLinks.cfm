@@ -10,6 +10,7 @@
 	qlAccount = getValue("qlAccount");
 	oAccService = getAccountsService();
 	qryAccounts = oAccService.search();
+	aPagesSorted = arrayNew(1);
 	
 	// if there is an account selected, get the account pages
 	if(qlAccount neq "") {
@@ -29,7 +30,7 @@
 		FROM qryAccounts
 		ORDER BY u_username
 </cfquery>
-	
+
 <cfoutput>
 	Use the following dropdowns to quckly access any
 	page on this site.<br><br>
@@ -45,9 +46,10 @@
 		<select name="page" style="width:130px;font-size:10px;border:1px solid silver;"
 				onchange="document.location='index.cfm?event=sites.ehSite.doLoadAccountPage&account=#qlAccount#&page='+this.value">
 				<option value="">-- Select Page --</option>
-			<cfloop from="1" to="#arrayLen(aPages)#" index="i">
-				<option value="#aPages[i]#">#aPages[i]#</option>
+			<cfloop from="1" to="#arrayLen(aPagesSorted)#" index="i">
+				<option value="#aPagesSorted[i]#">#aPagesSorted[i]#</option>
 			</cfloop>
 		</select>
 	</cfif>
 </cfoutput>
+
