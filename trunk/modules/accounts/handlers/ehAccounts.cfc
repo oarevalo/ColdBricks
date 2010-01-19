@@ -159,7 +159,7 @@
 			var oAccounts = 0;
 			var accountID = 0;
 			var qryAccount = 0;
-			var aCatalogPages = 0;
+			var aCatalogPages = arrayNew(1);
 			var aPages = 0;
 			var oContext = getService("sessionContext").getContext();
 
@@ -181,7 +181,11 @@
 
 				// get catalog
 				oCatalog = hp.getCatalog();
-				aCatalogPages = oCatalog.getResourcesByType("page");
+				try {
+					aCatalogPages = oCatalog.getResourcesByType("page");
+				} catch(homePortals.resourceLibraryManager.resourceTypeNotFound e) {
+					// no resource of type 'pages', no big deal
+				}
 				
 				setValue("qryAccount", qryAccount);
 				setValue("aPages", aPages);
