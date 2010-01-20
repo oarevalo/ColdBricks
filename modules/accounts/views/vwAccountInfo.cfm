@@ -12,11 +12,13 @@
 	numPages = request.requestState.numPages;
 	appRoot = request.requestState.appRoot;
 	oContext = request.requestState.oContext;
+
+	pageHREF = oContext.getHomePortals().getPluginManager().getPlugin("accounts").getPageAlias(accountName);
 	
 	if(appRoot eq "/")
-		tmpAppURL = "/index.cfm?account=#accountName#";
+		tmpAppURL = "/index.cfm?page=#pageHREF#";
 	else
-		tmpAppURL = appRoot & "/index.cfm?account=#accountName#";
+		tmpAppURL = appRoot & "/index.cfm?page=#pageHREF#";
 
 	contentRoot = oContext.getHomePortals().getConfig().getContentRoot();
 	siteHREF = oContext.getAccountSite().getSiteHREF();

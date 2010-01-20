@@ -7,6 +7,7 @@
 <cfset appRoot = request.requestState.appRoot>
 <cfset accountName = request.requestState.accountName>
 <cfset pageExists = request.requestState.pageExists>
+<cfset oContext = request.requestState.oContext>
 
 <cfscript>
 	if(isStruct(stPage)) {
@@ -14,10 +15,10 @@
 		fileName = getFilefromPath(thisPageHREF);
 		fileName = listDeleteAt(fileName, listlen(fileName,"."), ".");
 	
-		if(appRoot eq "/")
-			tmpPageURL = "/index.cfm?account=#accountName#&page=#fileName#";
-		else
-			tmpPageURL = appRoot & "/index.cfm?account=#accountName#&page=#fileName#";
+		pageHREF = oContext.getHomePortals().getPluginManager().getPlugin("accounts").getPageAlias(accountName,fileName);
+		
+		if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
+		tmpPageURL = appRoot & "index.cfm?page=#pageHREF#";
 	}
 </cfscript>
 
