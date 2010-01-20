@@ -25,6 +25,7 @@
 	
 	oPage = request.requestState.oPage;
 	oCatalog = request.requestState.oCatalog;	
+	oContext = request.requestState.oContext;
 
 	accountName = request.requestState.accountName;
 	
@@ -74,7 +75,8 @@
 	if(accountName eq "") {
 		tmpPageURL = tmpPageURL & "?page=#thisPageHREF#";
 	} else {
-		tmpPageURL = tmpPageURL & "?page=#listLast(thisPageHREF,'/')#&account=" & accountName;
+		tmpPageAlias = oContext.getHomePortals().getPluginManager().getPlugin("accounts").getPageAlias(accountName,fileName);
+		tmpPageURL = tmpPageURL & "?page=" & tmpPageAlias;
 	}
 
 	tmpPageURL = reReplace(tmpPageURL,"//*","/","all");	
