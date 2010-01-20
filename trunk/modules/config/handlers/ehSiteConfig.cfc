@@ -50,26 +50,28 @@
 			var appRoot = 0;
 			var configFile = "";
 			var oContext = getService("sessionContext").getContext();
+			var stAppConfig = structNew();
+			var stPlugins = oContext.getHomePortals().getConfig().getPlugins();
 
 			try {
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				configFile = expandPath(appRoot & variables.accountsConfigPath);
 
-				// get config bean with mix of base and app settings
+				// get base config bean
 				oConfigBean = getAccountsConfigBean();
-				oConfigBean.load(configFile);
 
-				configFile = expandPath(appRoot & variables.accountsConfigPath);
-
-				// get struct with only settings defined for this application
-				stAppConfig = parseAppAccountsConfigFile(configFile);
+				// get app-specific settings
+				if(fileExists(configFile)) {
+					oConfigBean.load(configFile);
+					stAppConfig = parseAppAccountsConfigFile(configFile);
+				}
 
 				setView("site/vwAccounts");
 				setValue("oAccountsConfigBean", oConfigBean);
 				setValue("stAppConfig", stAppConfig );
-				setValue("hasAccountsPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", structKeyExists(stPlugins,"accounts") );
+				setValue("hasModulesPlugin", structKeyExists(stPlugins,"modules") );
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -138,15 +140,29 @@
 				arrayAppend(aConfigFiles, appRoot & hpConfigPath);
 			
 				if(getValue("hasAccountsPlugin")) {
+
 					arrayAppend(aConfigFiles, appRoot & variables.accountsConfigPath);
+
+					// get struct with only settings defined for this application
+					if(fileExists( expandPath(appRoot & variables.accountsConfigPath) )) {
+						stAppConfig = parseAppAccountsConfigFile( expandPath(appRoot & variables.accountsConfigPath) );
+	
+						if(structKeyExists(stAppConfig,"newAccountTemplate") and stAppConfig.newAccountTemplate neq "") 
+							arrayAppend(aConfigFiles, stAppConfig.newAccountTemplate );
+	
+						if(structKeyExists(stAppConfig,"newPageTemplate") and stAppConfig.newPageTemplate neq "") 
+							arrayAppend(aConfigFiles, stAppConfig.newPageTemplate );
+					}
 				}
 				if(getValue("hasModulesPlugin")) {
 					arrayAppend(aConfigFiles, appRoot & variables.modulePropertiesConfigPath);
 				}
 			
 				if(configFile neq "") {
-					xmlDoc = xmlParse(expandPath(configFile));
-					xmlDocStr = oFormatter.makePretty(xmlDoc.xmlRoot);
+					if(fileExists(expandPath(configFile))) {
+						xmlDoc = xmlParse(expandPath(configFile));
+						xmlDocStr = oFormatter.makePretty(xmlDoc.xmlRoot);
+					}
 					setValue("xmlDoc", xmlDocStr);
 					
 					// get help on selected file
@@ -615,6 +631,46 @@
 		</cfscript>	
 	</cffunction>	
 
+	<cffunction name="doUpdateStandardPlugins" access="public" returntype="void">
+		<cfscript>
+			var chkModulesPlugin = getValue("chkModulesPlugin",0);
+			var chkAccountsPlugin = getValue("chkAccountsPlugin",0);
+			var oConfigBean = 0;
+			
+			try {
+				oContext = getService("sessionContext").getContext();
+				
+				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
+				
+				if(chkModulesPlugin eq 1) {
+					oConfigBean.setPlugin("modules", "homePortals.plugins.modules.plugin");
+				} else {
+					oConfigBean.removePlugin("modules");
+				}
+
+				if(chkAccountsPlugin eq 1) {
+					oConfigBean.setPlugin("accounts", "homePortals.plugins.accounts.plugin");
+				} else {
+					oConfigBean.removePlugin("accounts");
+				}
+
+				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
+
+				setMessage("info", variables.confirmMessage);
+				setNextEvent("config.ehSiteConfig.dspMain");
+			
+			} catch(validation e) {
+				setMessage("warning",e.message);
+				setNextEvent("config.ehSiteConfig.dspMain");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				getService("bugTracker").notifyService(e.message, e);
+				setNextEvent("config.ehSiteConfig.dspMain");
+			}
+		</cfscript>
+	</cffunction>	
+	
 
 	<!--- Resource Types --->
 
@@ -1228,28 +1284,29 @@
 	
 	<!--- Private Methods ---->	
 
-	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortalsAccounts.components.accountsConfigBean">
+	<cffunction name="getAccountsConfigBean" access="private" returntype="homePortals.plugins.accounts.components.accountsConfigBean">
 		<cfscript>
-			var oConfigBean = createObject("component","homePortalsAccounts.components.accountsConfigBean").init( expandPath("/homePortalsAccounts" & variables.accountsConfigPath) );
+			var configFile = expandPath("/homePortals/plugins/accounts" & variables.accountsConfigPath);
+			var oConfigBean = createObject("component","homePortals.plugins.accounts.components.accountsConfigBean").init( configFile );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="homePortalsModules.components.modulePropertiesConfigBean">
+	<cffunction name="getModulePropertiesConfigBean" access="private" returntype="homePortals.plugins.modules.components.modulePropertiesConfigBean">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
 		<cfscript>
 			var oConfigBean = 0;
 			if(fileExists(expandPath(arguments.configPath)))
-				oConfigBean = createObject("component","homePortalsModules.components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
+				oConfigBean = createObject("component","homePortals.plugins.modules.components.modulePropertiesConfigBean").init( expandPath(arguments.configPath) );
 			else
-				oConfigBean = createObject("component","homePortalsModules.components.modulePropertiesConfigBean").init( );
+				oConfigBean = createObject("component","homePortals.plugins.modules.components.modulePropertiesConfigBean").init( );
 			return oConfigBean;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configPath" type="string" required="false" default="#variables.modulePropertiesConfigPath#">
-		<cfargument name="configBean" type="homePortalsModules.components.modulePropertiesConfigBean" required="true">
+		<cfargument name="configBean" type="homePortals.plugins.modules.components.modulePropertiesConfigBean" required="true">
 		<cfset fileWrite( expandPath(arguments.configPath), toString( arguments.configBean.toXML() ),"utf-8" )>
 	</cffunction>
 		

@@ -111,12 +111,12 @@
 		<cfset variables.instance.AccountName = arguments.data>
 	</cffunction>
 
-	<cffunction name="getAccountSite" access="public" returntype="homePortalsAccounts.components.site">
+	<cffunction name="getAccountSite" access="public" returntype="homePortals.plugins.accounts.components.site">
 		<cfreturn variables.instance.AccountSite>
 	</cffunction>
 
 	<cffunction name="setAccountSite" access="public" returntype="void">
-		<cfargument name="data" type="homePortalsAccounts.components.site" required="true">
+		<cfargument name="data" type="homePortals.plugins.accounts.components.site" required="true">
 		<cfset variables.instance.AccountSite = arguments.data>
 	</cffunction>
 
