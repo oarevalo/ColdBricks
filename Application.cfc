@@ -254,6 +254,10 @@
 								// check if the parameter value is binded to an application setting
 								if(structKeyExists(xmlNode.xmlChildren[j].xmlAttributes,"settingName")) {
 									stArguments[ xmlNode.xmlChildren[j].xmlAttributes.name ] = application["_appSettings"][xmlNode.xmlChildren[j].xmlAttributes.settingName];
+
+								} else if(structKeyExists(xmlNode.xmlChildren[j].xmlAttributes,"serviceName")) {
+									stArguments[ xmlNode.xmlChildren[j].xmlAttributes.name ] = application["_appServices"][xmlNode.xmlChildren[j].xmlAttributes.serviceName];
+
 								} else {
 									// append to argument collection
 									stArguments[ xmlNode.xmlChildren[j].xmlAttributes.name ] = xmlNode.xmlChildren[j].xmlText;

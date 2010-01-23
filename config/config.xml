@@ -85,6 +85,11 @@
 			<init-param name="configHREF" settingName="interfaceConfigHREF" />
 		</service> 		
 
+		<!-- this service is used to customize the user interface for each site -->
+		<service name="siteUIManager" class="ColdBricks.components.services.siteUIManager">
+			<init-param name="UIManager" serviceName="UIManager" />
+		</service> 		
+
 		<!-- this service handles site templates -->
 		<service name="siteTemplates" class="ColdBricks.components.services.siteTemplateService">
 			<init-param name="siteTemplatesRoot" settingName="siteTemplatesRoot" />

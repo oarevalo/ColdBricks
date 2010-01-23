@@ -46,6 +46,7 @@
 
 	<cffunction name="renderWidgets" access="private" returntype="struct" output="true">
 		<cfargument name="__awidgets" type="array" required="true">
+		<cfargument name="__defaultLocation" type="string" required="false" default="default">
 		<cfset var __content = structNew()>
 		<cfset var __tmpContent = "">
 		<cfset var __pos = "default">
@@ -67,7 +68,7 @@
 			</cftry>
 				
 			<cfif __aWidgets[__i].position eq "">
-				<cfset __pos = "default" >
+				<cfset __pos = arguments.__defaultLocation >
 			<cfelse>
 				<cfset __pos = __aWidgets[__i].position>
 			</cfif>
