@@ -64,7 +64,13 @@
 	fileName = getFilefromPath(thisPageHREF);
 	fileName = listDeleteAt(fileName, listlen(fileName,"."), ".");
 	
-	qrySkins = oCatalog.getResourcesByType("skin");
+	if(oContext.getHomePortals().getResourceLibraryManager().hasResourceType("skin")) {
+		hasSkins = true;
+		qrySkins = oCatalog.getResourcesByType("skin");
+	} else {
+		hasSkins = false;
+		qrySkins = queryNew("");
+	}
 	aStyles = oPage.getStylesheets();
 	
 	if(appRoot eq "/")
@@ -112,19 +118,21 @@
 		</td>
 
 		<td align="left" nowrap="yes" style="width:180px;">
-			<strong>Skin:</strong>
-			<select name="skin" style="width:110px;font-size:11px;" class="formField"  onchange="changeSkin(this.value)">
-				<option value="0">-- Select Skin --</option>
-				<option value="NONE">-- None --</option>
-				<cfloop query="qrySkins">
-					<option value="#qrySkins.id#" <cfif qrySkins.id eq skinID>selected</cfif>>#qrySkins.id#</option>
-				</cfloop>
-				<option value="_NEW">-- New Skin --</option>
-			</select>
-			<cfif skinID neq "">
-				<a href="##" onclick="resourceEditor.open('#jsStringFormat(skinID)#','skin','',0);">Edit</a>
-			<cfelse>
-				<a href="##" onclick="resourceEditor.open('NEW','skin','',0);">New</a>
+			<cfif hasSkins>
+				<strong>Skin:</strong>
+				<select name="skin" style="width:110px;font-size:11px;" class="formField"  onchange="changeSkin(this.value)">
+					<option value="0">-- Select Skin --</option>
+					<option value="NONE">-- None --</option>
+					<cfloop query="qrySkins">
+						<option value="#qrySkins.id#" <cfif qrySkins.id eq skinID>selected</cfif>>#qrySkins.id#</option>
+					</cfloop>
+					<option value="_NEW">-- New Skin --</option>
+				</select>
+				<cfif skinID neq "">
+					<a href="##" onclick="resourceEditor.open('#jsStringFormat(skinID)#','skin','',0);">Edit</a>
+				<cfelse>
+					<a href="##" onclick="resourceEditor.open('NEW','skin','',0);">New</a>
+				</cfif>
 			</cfif>
 		</td>
 
