@@ -49,7 +49,7 @@
 				<cfloop collection="#stResTypes#" item="key">
 					<tr <cfif index mod 2>class="altRow"</cfif> <cfif resLibTypeEditKey eq key>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&resLibTypeEditKey=#key#">#stResTypes[key].prefix#</a></td>
+						<td style="width:100px;" align="center">#stResTypes[key].prefix#</td>
 						<td>#stResTypes[key].path#</td>
 						<td align="center">< base ></td>
 					</tr>
