@@ -217,6 +217,10 @@
 						<td width="80"><b>Package:</b></td>
 						<td>#oResourceBean.getPackage()#</td>
 					</tr>
+					<tr>
+						<td width="80"><b>Created On:</b></td>
+						<td>#lsDateFormat(oResourceBean.getCreatedOn())# #lsTimeFormat(oResourceBean.getCreatedOn())#</td>
+					</tr>
 					<cfif oResourceBean.isExternalTarget()>
 						<tr>
 							<td width="80"><b>HREF:</b></td>
