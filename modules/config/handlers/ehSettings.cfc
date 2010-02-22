@@ -20,8 +20,8 @@
 
 				setValue("oHomePortalsConfigBean", configBean );
 				
-				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", configHasPlugin(configBean,"accounts") );
+				setValue("hasModulesPlugin", configHasPlugin(configBean,"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -40,8 +40,8 @@
 				setValue("oAccountsConfigBean", getAccountsConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
-				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", configHasPlugin(configBean,"accounts") );
+				setValue("hasModulesPlugin", configHasPlugin(configBean,"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -60,8 +60,8 @@
 				setValue("oModulePropertiesConfigBean", getModulePropertiesConfigBean() );
 				setValue("cbPageTitle", "Server Settings");
 				setValue("cbPageIcon", "images/configure_48x48.png");
-				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", configHasPlugin(configBean,"accounts") );
+				setValue("hasModulesPlugin", configHasPlugin(configBean,"modules") );
 				
 			} catch(any e) {
 				setMessage("error",e.message);
@@ -86,8 +86,8 @@
 			try {
 				configBean = getService("configManager").getHomePortalsConfigBean();
 				
-				setValue("hasAccountsPlugin", structKeyExists(configBean.getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(configBean.getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", configHasPlugin(configBean,"accounts") );
+				setValue("hasModulesPlugin", configHasPlugin(configBean,"modules") );
 				
 				arrayAppend(aConfigFiles, "/homePortals" & hpConfigPath);
 
@@ -104,6 +104,8 @@
 				if(getValue("hasModulesPlugin")) {
 					arrayAppend(aConfigFiles, variables.modulePropertiesConfigPath);
 				}
+			
+				if(configFile eq "" and arrayLen(aConfigFiles) gt 0) configFile = aConfigFiles[1];
 			
 				if(configFile neq "") {
 					xmlDoc = xmlParse(expandPath(configFile));
@@ -1134,6 +1136,20 @@
 	<cffunction name="saveModulePropertiesConfigBean" access="private" returntype="void">
 		<cfargument name="configBean" type="homePortals.plugins.modules.components.modulePropertiesConfigBean" required="true">
 		<cfset fileWrite( expandPath(variables.modulePropertiesConfigPath), toString( arguments.configBean.toXML() ), "utf-8" )>
+	</cffunction>
+			
+	<cffunction name="configHasPlugin" access="private" returntype="boolean">
+		<cfargument name="configBean" type="any" required="true">
+		<cfargument name="pluginName" type="string" required="true">
+		<cfset var aPlugins = arguments.configBean.getPlugins()>
+		
+		<cfloop array="#aPlugins#" index="plugin">
+			<cfif plugin.name eq arguments.pluginName>
+				<cfreturn true>
+			</cfif>
+		</cfloop>
+		
+		<cfreturn false>		
 	</cffunction>
 				
 </cfcomponent>

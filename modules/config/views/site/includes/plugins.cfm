@@ -9,7 +9,18 @@
 	
 	dspEvent = "config.ehSiteConfig.dspMain";
 	
-	lstStandardPlugins = "modules,accounts";
+	lstStandardPlugins = "";
+
+	aHPPlugins = oHomePortalsConfigBean.getPlugins();
+	aAppPlugins = oAppConfigBean.getPlugins();
+	stHPPlugins = structNew();
+	stAppPlugins = structNew();
+	for(i=1;i lte arrayLen(aHPPlugins);i++) {
+		stHPPlugins[aHPPlugins[i].name] = aHPPlugins[i].path;
+	}
+	for(i=1;i lte arrayLen(aAppPlugins);i++) {
+		stAppPlugins[aAppPlugins[i].name] = aAppPlugins[i].path;
+	}
 </cfscript>
 
 <script type="text/javascript">
@@ -28,50 +39,68 @@
 				Plugins are a mechanism used to extend the functionality or features of an application.
 			</div>
 		
-			<br /><b>Standard Plugins</b><br /><br />
+			<br /><b>Built-in Plugins</b><br /><br />
 		
-			<cfset stHPPlugins = oHomePortalsConfigBean.getPlugins()>
-			<cfset stAppPlugins = oAppConfigBean.getPlugins()>
-		
-			<div  style="border:1px solid silver;">
+			<cfdirectory action="list" directory="#expandPath('/homePortals/plugins')#" name="qryDir">
+			<div style="border:1px solid silver;">
 			<form name="frmAddPlugin" action="index.cfm" method="post">
 				<input type="hidden" name="event" value="config.ehSiteConfig.doUpdateStandardPlugins">
 				<table width="100%">
-					<tr valign="top">
-						<td style="width:50px;text-align:center;">
-							<input type="checkbox" name="chkModulesPlugin" value="1"
-									<cfif structKeyExists(stHPPlugins,"modules")>
-										disabled="true"
-										checked
-									<cfelseif structKeyExists(stAppPlugins,"modules")>
-										checked
-									</cfif>
-									>
-						</td>
-						<td>
-							<b>Module Resources plugin</b><br />
-							This plugin provides a resource library of ready-to-use interactive widgets
-							that can be added directly to pages.
-						</td>
+					<tr>
+						<td align="center" style="background-color:##ccc;width:50px;"><strong>Enable</strong></td>
+						<td align="center" style="background-color:##ccc;width:50px;"><strong>Disable</strong></td>
+						<td style="background-color:##ccc;"><strong>Plugin</strong></td>
+						<td align="center" style="background-color:##ccc;width:50px;"><strong>Status</strong></td>
 					</tr>
-					<tr valign="top">
-						<td style="width:50px;text-align:center;">
-							<input type="checkbox" name="chkAccountsPlugin" value="1"
-									<cfif structKeyExists(stHPPlugins,"accounts")>
-										disabled="true"
-										checked
-									<cfelseif structKeyExists(stAppPlugins,"accounts")>
-										checked
-									</cfif>
-									>
-						</td>
-						<td>
-							<b>Accounts plugin</b><br />
-							This plugin adds support for creating user accounts and assigning pages to 
-							each user.
-						</td>
-					</tr>
+					<cfset index = 1>
+					<cfloop query="qryDir">
+						<cfset pluginCFCPath = "">
+						<cfif left(qryDir.name,1) neq ".">
+							<cfif qryDir.type eq "Dir" and fileExists(expandPath("/homePortals/plugins/#qryDir.name#/plugin.cfc"))>
+								<cfset pluginCFCPath = "/homePortals/plugins/#qryDir.name#/plugin.cfc">
+								<cfset pluginName = qryDir.name>
+							<cfelseif qryDir.type eq "File" and righ(qryDir.name,4) eq ".cfc">	
+								<cfset pluginCFCPath = "/homePortals/plugins/#qryDir.name#">
+								<cfset pluginName = replaceNoCase(qryDir.name,".cfc","")>
+							</cfif>
+							<cfset pluginEnabled = (structKeyExists(stHPPlugins,pluginName) or structKeyExists(stAppPlugins,pluginName))>
+							<cfif pluginCFCPath neq "">
+								<cfset md = getMetaData(createObject("component",pluginCFCPath))>
+								<cfset lstStandardPlugins = listAppend(lstStandardPlugins, pluginName)>
+								<tr <cfif index mod 2>class="altRow"</cfif>>
+									<td align="center">
+										<input type="radio" name="plugin_#pluginName#" value="#pluginCFCPath#"
+												<cfif structKeyExists(stHPPlugins,pluginName) or structKeyExists(stAppPlugins,pluginName)>
+													disabled="true"
+													checked="true"
+												</cfif>
+												>
+									</td>
+									<td align="center">
+										<input type="radio" name="plugin_#pluginName#" value="__REMOVE__"
+												<cfif structKeyExists(stHPPlugins,pluginName) or !structKeyExists(stAppPlugins,pluginName)>
+													disabled="true"
+												</cfif>
+												>
+									</td>
+									<td <cfif Not pluginEnabled>style="color:##999;"</cfif>>
+										<b><cfif structKeyExists(md,"displayName")>#md.displayName#<cfelse>#pluginName#</cfif> plugin</b><br />
+										<cfif structKeyExists(md,"hint")>#md.hint#<cfelse>Enable/disable this plugin</cfif>
+									</td>
+									<td align="center">
+										<cfif pluginEnabled>
+											<span style="color:green;font-weight:bold;">Enabled</span>
+										<cfelse>
+											<span style="color:silver;font-weight:bold;">Disabled</span>
+										</cfif>
+									</td>
+								</tr>
+								<cfset index++>
+							</cfif>
+						</cfif>
+					</cfloop>
 				</table>
+				<input type="hidden" name="pluginNames" value="#lstStandardPlugins#">
 				<p style="margin-left:10px;">
 					<input type="submit" name="btnSave" value="Apply Changes" style="font-size:11px;">
 				</p>
@@ -89,13 +118,13 @@
 					<th style="background-color:##ccc;width:100px;">Action</th>
 				</tr>
 				<cfset index = 1>
-				<cfset stPlugins = oHomePortalsConfigBean.getPlugins()>
-				<cfloop collection="#stPlugins#" item="key">
-					<cfif not listFindNoCase(lstStandardPlugins,key)>
+				<cfset aPlugins = oHomePortalsConfigBean.getPlugins()>
+				<cfloop array="#aPlugins#" index="plugin">
+					<cfif not listFindNoCase(lstStandardPlugins,plugin.name)>
 						<tr <cfif index mod 2>class="altRow"</cfif>>
 							<td style="width:50px;" align="right"><strong>#index#.</strong></td>
-							<td style="width:100px;" align="center">#key#</td>
-							<td>#stPlugins[key]#</td>
+							<td style="width:100px;" align="center">#plugin.name#</td>
+							<td>#plugin.path#</td>
 							<td align="center">
 								< base >
 							</td>
@@ -104,13 +133,14 @@
 					</cfif>
 				</cfloop>				
 				
-				<cfset stPlugins = oAppConfigBean.getPlugins()>
-				<cfloop collection="#stPlugins#" item="key">
-					<cfif not listFindNoCase(lstStandardPlugins,key)>
+				<cfset aPlugins = oAppConfigBean.getPlugins()>
+					<cfloop array="#aPlugins#" index="plugin">
+						<cfset key = plugin.name>
+						<cfif not listFindNoCase(lstStandardPlugins,plugin.name)>
 						<tr <cfif index mod 2>class="altRow"</cfif> <cfif pluginEditKey eq key>style="font-weight:bold;"</cfif>>
 							<td style="width:50px;" align="right"><strong>#index#.</strong></td>
 							<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#">#key#</a></td>
-							<td>#stPlugins[key]#</td>
+							<td>#plugin.path#</td>
 							<td align="center">
 								<a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit plugin" title="Edit plugin"></a>
 								<a href="##" onclick="confirmDeletePlugin('#key#')"><img src="images/page_delete.png" border="0" alt="Delete plugin" title="Delete plugin"></a>
