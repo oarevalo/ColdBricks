@@ -5,7 +5,7 @@
 	oHomePortalsConfigBean = request.requestState.oHomePortalsConfigBean;
 	pluginEditKey = request.requestState.pluginEditKey;
 	
-	stPlugins = oHomePortalsConfigBean.getPlugins();
+	aPlugins = oHomePortalsConfigBean.getPlugins();
 	
 	dspEvent = "config.ehSettings.dspMain";
 </cfscript>
@@ -34,11 +34,12 @@
 					<th style="background-color:##ccc;width:100px;">Action</th>
 				</tr>
 				<cfset index = 1>
-				<cfloop collection="#stPlugins#" item="key">
+				<cfloop array="#aPlugins#" index="plugin">
+					<cfset key = plugin.name>
 					<tr <cfif index mod 2>class="altRow"</cfif> <cfif pluginEditKey eq key>style="font-weight:bold;"</cfif>>
 						<td style="width:50px;" align="right"><strong>#index#.</strong></td>
 						<td style="width:100px;" align="center"><a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#">#key#</a></td>
-						<td>#stPlugins[key]#</td>
+						<td>#plugin.path#</td>
 						<td align="center">
 							<a href="index.cfm?event=#dspEvent#&pluginEditKey=#key#"><img src="images/page_edit.png" border="0" alt="Edit plugin" title="Edit plugin"></a>
 							<a href="##" onclick="confirmDeletePlugin('#key#')"><img src="images/page_delete.png" border="0" alt="Delete plugin" title="Delete plugin"></a>

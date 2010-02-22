@@ -28,8 +28,8 @@
 				setValue("panel", panel);
 				setValue("oHomePortalsConfigBean", oHPConfigBean );
 				setValue("oAppConfigBean", oAppConfigBean );
-				setValue("hasAccountsPlugin", structKeyExists(oContext.getHomePortals().getConfig().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(oContext.getHomePortals().getConfig().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("accounts") );
+				setValue("hasModulesPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("modules") );
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -70,8 +70,8 @@
 				setView("site/vwAccounts");
 				setValue("oAccountsConfigBean", oConfigBean);
 				setValue("stAppConfig", stAppConfig );
-				setValue("hasAccountsPlugin", structKeyExists(stPlugins,"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(stPlugins,"modules") );
+				setValue("hasAccountsPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("accounts") );
+				setValue("hasModulesPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("modules") );
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -103,8 +103,8 @@
 				setView("site/vwModuleProperties");
 				setValue("oModulePropertiesConfigBeanBase", oConfigBeanBase );
 				setValue("oModulePropertiesConfigBean", oConfigBean );
-				setValue("hasAccountsPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(getService("sessionContext").getContext().getHomePortals().getConfig().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("accounts") );
+				setValue("hasModulesPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("modules") );
 
 				setValue("cbPageTitle", "Site Settings");
 				setValue("cbPageIcon", "configure_48x48.png");
@@ -134,8 +134,8 @@
 				appRoot = hp.getConfig().getAppRoot();
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 
-				setValue("hasAccountsPlugin", structKeyExists(hp.getConfig().getPlugins(),"accounts") );
-				setValue("hasModulesPlugin", structKeyExists(hp.getConfig().getPlugins(),"modules") );
+				setValue("hasAccountsPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("accounts") );
+				setValue("hasModulesPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("modules") );
 					
 				arrayAppend(aConfigFiles, appRoot & hpConfigPath);
 			
@@ -157,6 +157,8 @@
 				if(getValue("hasModulesPlugin")) {
 					arrayAppend(aConfigFiles, appRoot & variables.modulePropertiesConfigPath);
 				}
+			
+				if(configFile eq "" and arrayLen(aConfigFiles) gt 0) configFile = aConfigFiles[1];
 			
 				if(configFile neq "") {
 					if(fileExists(expandPath(configFile))) {
@@ -633,25 +635,21 @@
 
 	<cffunction name="doUpdateStandardPlugins" access="public" returntype="void">
 		<cfscript>
-			var chkModulesPlugin = getValue("chkModulesPlugin",0);
-			var chkAccountsPlugin = getValue("chkAccountsPlugin",0);
+			var pluginNames = getValue("pluginNames","");
 			var oConfigBean = 0;
+			var tmp = "";
 			
 			try {
 				oContext = getService("sessionContext").getContext();
-				
 				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				
-				if(chkModulesPlugin eq 1) {
-					oConfigBean.setPlugin("modules", "homePortals.plugins.modules.plugin");
-				} else {
-					oConfigBean.removePlugin("modules");
-				}
-
-				if(chkAccountsPlugin eq 1) {
-					oConfigBean.setPlugin("accounts", "homePortals.plugins.accounts.plugin");
-				} else {
-					oConfigBean.removePlugin("accounts");
+				aPlugins = listToArray(pluginNames);
+				for(i=1;i lte arrayLen(aPlugins);i++) {
+					tmp = getValue("plugin_" & aPlugins[i]);
+					if(tmp eq "__REMOVE__")
+						oConfigBean.removePlugin(aPlugins[i]);
+					else if(tmp neq "")
+						oConfigBean.setPlugin(aPlugins[i], tmp);
 				}
 
 				getService("configManager").saveAppHomePortalsConfigBean( oContext, oConfigBean );
@@ -663,7 +661,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("config.ehSiteConfig.dspMain");
 
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error", e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("config.ehSiteConfig.dspMain");
