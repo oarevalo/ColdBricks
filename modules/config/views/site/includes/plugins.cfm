@@ -64,12 +64,23 @@
 								<cfset pluginName = replaceNoCase(qryDir.name,".cfc","")>
 							</cfif>
 							<cfset pluginEnabled = (structKeyExists(stHPPlugins,pluginName) or structKeyExists(stAppPlugins,pluginName))>
-							<cfif pluginCFCPath neq "">
-								<cfset md = getMetaData(createObject("component",pluginCFCPath))>
+							<cfif pluginCFCPath neq "" and fileExists(expandPath(pluginCFCPath))>
+								<cfset pluginCFCPathDot = replace(pluginCFCPath,"/",".","all")>
+								<cfif left(pluginCFCPathDot,1) eq ".">
+									<cfset pluginCFCPathDot = right(pluginCFCPathDot,len(pluginCFCPathDot)-1)>
+								</cfif>
+								<cfif right(pluginCFCPathDot,1) eq ".">
+									<cfset pluginCFCPathDot = left(pluginCFCPathDot,len(pluginCFCPathDot)-1)>
+								</cfif>
+								<cfif right(pluginCFCPathDot,4) eq ".cfc">
+									<cfset pluginCFCPathDot = left(pluginCFCPathDot,len(pluginCFCPathDot)-4)>
+								</cfif>
+							
+								<cfset md = getMetaData(createObject("component",pluginCFCPathDot))>
 								<cfset lstStandardPlugins = listAppend(lstStandardPlugins, pluginName)>
 								<tr <cfif index mod 2>class="altRow"</cfif>>
 									<td align="center">
-										<input type="radio" name="plugin_#pluginName#" value="#pluginCFCPath#"
+										<input type="radio" name="plugin_#pluginName#" value="#pluginCFCPathDot#"
 												<cfif structKeyExists(stHPPlugins,pluginName) or structKeyExists(stAppPlugins,pluginName)>
 													disabled="true"
 													checked="true"
