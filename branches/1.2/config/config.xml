@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<config>
+	<!-- This section describes application-specific settings -->
+	<settings>
+		<setting name="applicationTitle" value="ColdBricks"/>
+		<setting name="versionTag" value="1.2.1095 Beta" />
+		<setting name="permissionsConfigHREF" value="/ColdBricks/config/permissions-config.xml" />
+		<setting name="interfaceConfigHREF" value="/ColdBricks/config/interface-default.xml" />
+		<setting name="homePortalsConfigPath" value="/config/homePortals-config.xml.cfm" />
+
+		<!-- These settings control the bug reporting features. Use 
+			in conjunction with the appropriate bugtracking service.
+			To start submittng bug reports add an email address to the
+			bugEmailRecipients setting; and/or use the bugLogListener
+			setting to hook into a bugLog server -->
+		<setting name="bugEmailRecipients" value="" />
+		<setting name="bugEmailSender" value="" />
+		<setting name="bugLogListener" value="" />
+
+		<!-- This is the event to use as general homepage (after login) -->
+		<setting name="homeEvent" value="sites.ehSites.dspHome" />
+
+		<!-- This flag controls wether detailed error information is displayed
+			in case the application encounters an unhandled exception -->
+		<setting name="debugMode" value="true" />
+		
+		<!-- This is the location of directory where ColdBricks will store its
+			data files. If the directory doesnt exist, then it will be created.
+			You can use an ColdFusion mapping for this. -->
+		<Setting name="dataRoot" value="/ColdBricksData" />
+
+		<!-- This is the location where ColdBricks will look for SiteTemplates -->			
+		<setting name="siteTemplatesRoot" value="/ColdBricks/siteTemplates"/>
+
+		<!-- This is the location where to search for external modules -->
+		<setting name="externalModulesRoot" value="/ColdBricksModules" />
+	
+		<!-- Set this flag to false for archive files to remain in the archives 
+			directory (<data_root>/archives) after an archive download -->	
+		<setting name="deleteAfterArchiveDownload" value="true" />
+	
+		<!-- Set this flag to true to display the HomePortals Engine as a site
+			in ColdBricks -->
+		<setting name="showHomePortalsAsSite" value="false" />
+	</settings>
+
+
+	<!-- This section describes all services that will be loaded into the application -->
+	<services>
+		<service name="rss" class="ColdBricks.components.services.rss">
+		</service>
+
+		<!-- error reporting service -->
+		<service name="bugTracker" class="ColdBricks.components.services.bugTrackerService">
+			<init-param name="bugEmailSender" settingName="bugEmailSender" />
+			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
+		</service> 
+
+		<!-- Use this service to hook into a bugLog server 
+		<service name="bugTracker" class="ColdBricks.components.services.bugLogService">
+			<init-param name="bugLogListener" settingName="bugLogListener" />
+			<init-param name="bugEmailRecipients" settingName="bugEmailRecipients" />
+			<init-param name="bugEmailSender" settingName="bugEmailSender" />
+		</service> -->
+		
+		<!-- use permissions service to control access to event handlers -->
+		<service name="permissions" class="ColdBricks.components.services.permissionsService">
+			<init-param name="configHREF" settingName="permissionsConfigHREF" />
+		</service> 
+
+		<!-- this service is used to create DAO instances -->
+		<service name="DAOFactory" class="ColdBricks.components.services.dao.XMLDAOFactory">
+			<init-param name="dataRoot" settingName="dataRoot" />
+			<init-param name="modelsPath">ColdBricks.components.model.db.</init-param>>
+		</service>
+
+		<!-- this service handles access to the session scope -->
+		<service name="sessionContext" class="ColdBricks.components.services.sessionContext">
+			<init-param name="contextBeanClass">ColdBricks.components.model.contextBean</init-param>
+			<init-param name="contextName">cbContext</init-param>
+		</service> 		
+
+		<!-- this service is used to customize the user interface -->
+		<service name="UIManager" class="ColdBricks.components.services.UIManager">
+			<init-param name="configHREF" settingName="interfaceConfigHREF" />
+		</service> 		
+
+		<!-- this service is used to customize the user interface for each site -->
+		<service name="siteUIManager" class="ColdBricks.components.services.siteUIManager">
+			<init-param name="UIManager" serviceName="UIManager" />
+		</service> 		
+
+		<!-- this service handles site templates -->
+		<service name="siteTemplates" class="ColdBricks.components.services.siteTemplateService">
+			<init-param name="siteTemplatesRoot" settingName="siteTemplatesRoot" />
+		</service> 
+
+		<!-- this service handles general homeportals configuration management -->
+		<service name="configManager" class="ColdBricks.components.services.hpConfService">
+			<init-param name="homePortalsConfigPath" settingName="homePortalsConfigPath" />
+		</service> 
+
+	</services>
+</config>
+
