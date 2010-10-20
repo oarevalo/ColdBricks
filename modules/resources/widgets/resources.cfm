@@ -14,7 +14,7 @@
 	stResourceTypes = hp.getResourceLibraryManager().getResourceTypesInfo();
 
 	// get resources
-	qryResources = oCatalog.getResources();
+	qryResources = oCatalog.getIndex();
 </cfscript>
 
 <!--- get resource count by type --->
@@ -53,7 +53,7 @@
 			<img src="#imgSrc#" align="absmiddle"> 
 			<a href="index.cfm?event=resources.ehResources.dspMain&resourceType=#key#" 
 				class="resTreeItem" 
-				id="resTreeItem_#key#">#stResourceTypes[key].getFolderName()#</a> 
+				id="resTreeItem_#key#">#key#</a> 
 			(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
 		</div>
 	</cfloop>

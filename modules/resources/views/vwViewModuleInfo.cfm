@@ -22,7 +22,7 @@
 <h2 style="margin-top:0px;" class="title">Description:</h2>
 #oResourceBean.getdescription()#
 
-<cfset aResources = oResourceBean.getResources()>
+<cfset aResources = oResourceBean.getIndex()>
 <cfif arrayLen(aResources) gt 0>
 	<h2 class="title">Resources:</h2>
 	<ul style="margin-left:20px;">

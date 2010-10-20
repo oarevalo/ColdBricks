@@ -302,7 +302,7 @@
 			try {
 				hp = oContext.getHomePortals();
 				oCatalog = hp.getCatalog();
-				oResourceBean = oCatalog.getResourceNode(resType, resourceID);
+				oResourceBean = oCatalog.getResource(resType, resourceID);
 
 				// pass values to view
 				setValue("oResourceBean", oResourceBean);
@@ -700,7 +700,7 @@
 						moduleID = "rssReader";
 				
 						// get the resource info
-						resBean = oCatalog.getResourceNode(resType, resourceID);
+						resBean = oCatalog.getResource(resType, resourceID);
 				
 						// set default properties
 						stAttributes["rss"] = resBean.getHREF();
@@ -727,7 +727,7 @@
 						throw("The given resource type cannot be added directly to a page","coldBricks.invalidResourceType");
 				}
 				
-				resBean = oCatalog.getResourceNode(moduleResType, moduleID);
+				resBean = oCatalog.getResource(moduleResType, moduleID);
 				
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
 				oPageHelper.addModule(resBean, locationName, stAttributes);
@@ -952,7 +952,7 @@
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage );
 
 				if(tag eq "module" and structKeyExists(stAttribs,"moduleID") and stAttribs.moduleID neq "") {
-					resBean = oCatalog.getResourceNode(tag, stAttribs.moduleID);
+					resBean = oCatalog.getResource(tag, stAttribs.moduleID);
 					oPageHelper.addModule(resBean, locationName, stAttribs);
 				} else {
 					oPageHelper.addContentTag(tag, locationName, stAttribs);
@@ -1148,7 +1148,7 @@
 		
 				if(skinID eq "NONE") skinID = "";
 		
-				oPage.setSkinID(skinID);
+				oPage.setProperty("skinID",skinID);
 				savePage();
 				
 				if(skinID eq "") 
@@ -1190,7 +1190,7 @@
 		
 				// get pagetemplate resource
 				oCatalog = hp.getCatalog();
-				oResourceBean = oCatalog.getResourceNode("pageTemplate", resourceID);
+				oResourceBean = oCatalog.getResource("pageTemplate", resourceID);
 		
 				// apply template
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oPage, oContext.getPageHREF() );

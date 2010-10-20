@@ -89,7 +89,6 @@
 					<cfset resTypeEditKey = "">
 				</cfif>
 				<cfparam name="stResType.name" default="">
-				<cfparam name="stResType.folderName" default="">
 				<cfparam name="stResType.fileTypes" default="">
 				<cfparam name="stResType.resBeanPath" default="">
 				<cfparam name="stResType.description" default="">
@@ -113,10 +112,6 @@
 									<tr>
 										<td><b>Name:</b></td>
 										<td><input type="text" name="name" value="#stResType.name#" style="width:300px;" class="formField" <cfif not isNew>disabled</cfif>></td>
-									</tr>
-									<tr>
-										<td><b>Folder Name:</b></td>
-										<td><input type="text" name="folderName" value="#stResType.folderName#" style="width:300px;" class="formField"></td>
 									</tr>
 									<tr>
 										<td><b>File Types:</b></td>

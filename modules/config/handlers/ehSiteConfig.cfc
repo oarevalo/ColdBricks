@@ -133,6 +133,8 @@
 				hp = oContext.getHomePortals();
 				appRoot = hp.getConfig().getAppRoot();
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
+				
+				hpConfigPath = hp.getConfigFilePath();
 
 				setValue("hasAccountsPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("accounts") );
 				setValue("hasModulesPlugin", oContext.getHomePortals().getPluginManager().hasPlugin("modules") );
@@ -578,7 +580,6 @@
 				oContext = getService("sessionContext").getContext();
 				
 				if(name eq "") throw("The plugin name is required","validation");
-				if(path eq "") throw("The plugin path is required","validation");
 
 				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setPlugin(name, path);
@@ -684,7 +685,6 @@
 
 				oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext);
 				oConfigBean.setResourceType(name = name,
-											folderName = getValue("folderName"),
 											description = getValue("description"),
 											resBeanPath = getValue("resBeanPath"),
 											fileTypes = getValue("fileTypes"));
