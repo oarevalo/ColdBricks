@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<permissions-config default="deny">
+	<!-- permissions-config.xml
+		
+		This file defines the permissions to access the different aspects
+		of the application. Each resource maps to a specific event handler
+		and indicates which roles are allowed to access such event handler.
+		
+		Event handlers are declared using the resource tag. The ID attribute
+		identifies a specific event handler. The star (*) is a wildcard that
+		is used to mean any value.
+		
+		To flag a resource as open to everyone (with or without a role) use
+		an empty string for the roles attribute.
+		
+		To flag a resource as open to only users that have an assigned role,
+		use a star (*) for the roles attribute.
+		
+		If an event handler is not found, then the attribute 'default' on the
+		root element will determine if the user will be allowed or denied access
+		to such resource. Possible values are "allow" or "deny".
+		
+		The roles section is only used to declare the list of roles that the
+		application can use. The host application can call the method getRoles()
+		on the permissions service to obtain this list.
+	-->
+
+	<roles>
+		<role name="admin" label="Administrator">
+			Administrator users have unrestricted access to any part of the application. 
+			They are the only ones that can create/register sites, manage ColdBricks users 
+			and modify server-wide settings.
+		</role>
+		<role name="mngr" label="Site Manager">
+			Site Managers have complete access to the sites assigned to them. Within their sites
+			they have full control over configuration, archiving and content.
+		</role>
+		<role name="edit" label="Site Editor">
+			Site Editors have access to modify site content, manage site accounts, and 
+			manage site resources. Site Editors cannot alter the configuration or settings of
+			a site.
+		</role>
+		<role name="cont" label="Site Contributor">
+			Site Contributors are only allowed to work on site resources. They can only
+			create or modify resources for the sites they have been granted access.
+		</role>
+		<role name="plugins" label="Plugins Only">
+			The plugins-only role does not have access to any standard ColdBricks module,
+			however they can be given access to specific plugins or extension modules.
+		</role>
+	</roles>
+	
+	<resources>
+		<!-- open to anyone -->
+		<resource id="public" event="ehGeneral.*" roles="" />
+		
+		<!-- allowed to all users -->
+		<resource id="dashboard" event="ehGeneral.dspMain" roles="*" />
+		<resource id="siteDashboard" event="sites.ehSites.dspMain" roles="*" />
+		<resource id="home" event="sites.ehSites.dspHome" roles="*" />
+		<resource id="site" event="sites.ehSite.*" roles="*" />
+
+		<!-- allowed to administrator, managers and editors -->
+		<resource id="pages" event="pages.ehPages.*" roles="admin,mngr,edit" />
+		<resource id="accounts" event="accounts.ehAccounts.*" roles="admin,mngr,edit" />
+		<resource id="page" event="page.ehPage.*" roles="admin,mngr,edit" />
+		<resource id="resources" event="resources.ehResources.*" roles="admin,mngr,edit,cont" />
+
+		<!-- allowed to administrators and managers -->
+		<resource id="siteSettings" event="config.ehSiteConfig.*" roles="admin,mngr" />
+		<resource id="siteTemplates" event="templates.ehSiteTemplates.*" roles="admin,mngr" />
+		<resource id="downloadSite" event="sites.ehSites.doArchiveSite" roles="admin,mngr" />
+		<resource id="saveNotes" event="sites.ehSite.doSaveNotes" roles="admin,mngr" />
+	
+		<!-- allowed only to administrators -->
+		<resource id="sites" event="sites.ehSites.*" roles="admin" />
+		<resource id="settings" event="config.ehSettings.*" roles="admin" />
+		<resource id="users" event="users.ehUsers.*" roles="admin" />
+		<resource id="renderTemplates" event="templates.ehTemplates.*" roles="admin" />
+		
+	</resources>
+	
+</permissions-config>

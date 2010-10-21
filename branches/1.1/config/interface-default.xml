@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<interface>
+	<modules>
+		<module name="sites"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+			Site management
+			
+			<features type="server">
+				<feature href="index.cfm?event=sites.ehSites.dspMain" 
+						imgSrc="images/folder_desktop_48x48.png"
+						alt="Sites Management"
+						label="Sites"
+						accessMapKey="sites">
+					Access the sites management module, from there you can add, remove, archive and access individual sites		
+				</feature>
+			</features>
+
+			<features type="site">
+				<feature href = "index.cfm?event=sites.ehSite.doLoadHomePage"
+						imgSrc = "images/homepage_48x48.png"
+						alt = "Edit Site's Home Page"
+						label = "Home Page"
+						accessMapKey="pages">
+					This shortcut allows you to quickly access and edit the initial page (or 'Home Page') of your site.		
+				</feature>
+
+				<feature href = "index.cfm?event=sites.ehSite.doArchiveSite"
+						imgSrc = "images/download_manager_48x48.png"
+						alt = "Download Site"
+						label = "Download"
+						accessMapKey = "downloadSite">
+					Download a zipped version of this site for backup or migration
+				</feature>
+			</features>
+			
+			<widgets type="server">
+				<widget title="" href="/ColdBricks/modules/sites/widgets/siteButtons.cfm" />
+				<widget title="" href="/ColdBricks/modules/sites/widgets/checkHomePortals.cfm" />
+			</widgets>
+
+			<widgets type="site">
+				<widget href="/ColdBricks/modules/sites/widgets/siteViewButtons.cfm" position="left" />
+				<widget title="Site information:" href="/ColdBricks/modules/sites/widgets/siteInfo.cfm" position="right" />
+			</widgets>
+		</module>
+
+		<module name="users"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+			User Management
+					
+			<features type="server">
+				<feature href="index.cfm?event=users.ehUsers.dspMain" 
+						imgSrc="images/users_48x48.png"
+						alt="ColdBricks Users Management"
+						label="Users"
+						accessMapKey="users">
+					This screen allows you to manage all ColdBricks users. From here you can add, delete and edit user information.
+				</feature>
+			</features>
+		</module>
+
+		<module name="config"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+			Manage global configuration
+			<features type="server">
+				<feature href="index.cfm?event=config.ehSettings.dspMain" 
+						imgSrc="images/configure_48x48.png"
+						alt="Server Settings"
+						label="Server Settings"
+						accessMapKey="settings">
+					For greater control and customization of all HomePortals sites in this server, use the Settings module to manually edit the HomePortals XML configuration files
+				</feature>
+			</features>
+			<features type="site">
+				<module href = "index.cfm?event=config.ehSiteConfig.dspMain"
+						imgSrc = "images/configure_48x48.png"
+						alt = "Site Settings"
+						label = "Site Settings"
+						accessMapKey = "siteSettings">
+					For greater control and customization of your site, use the Settings module to manually edit the HomePortals XML configuration files.
+				</module>
+			</features>
+		</module>
+
+		<module name="templates"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+
+			Global template management	
+
+			<features type="server">
+				<feature href = "index.cfm?event=templates.ehTemplates.dspMain"
+						imgSrc = "images/templates_48x48.png"
+						alt = "Manage templates"
+						label = "Templates"
+						accessMapKey = "renderTemplates">
+					The templates module lets you manage the default rendering templates for all sites.
+				</feature>
+			</features>
+
+			<features type="site">
+				<feature href = "index.cfm?event=templates.ehSiteTemplates.dspMain"
+						imgSrc = "images/templates_48x48.png"
+						alt = "Manage site templates"
+						label = "Templates"
+						accessMapKey = "siteTemplates">
+					The templates module lets you manage all rendering templates in a site.
+				</feature>
+			</features>
+		</module>
+
+		<module name="pages"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+			Page management
+			<features type="site">
+				<feature href = "index.cfm?event=pages.ehPages.dspMain"
+						imgSrc = "images/documents_48x48.png"
+						alt = "Manage site pages"
+						label = "Pages"
+						accessMapKey = "pages">
+					The pages module lets you manage all pages in a site.
+				</feature>
+			</features>
+		</module>
+
+		<module name="accounts"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+			Account management
+			<features type="site">
+				<feature href = "index.cfm?event=accounts.ehAccounts.dspMain"
+						imgSrc = "images/users_48x48.png"
+						alt = "Manage accounts"
+						label = "Accounts"
+						accessMapKey = "accounts"
+						bindToPlugin = "accounts">
+					Pages can also be grouped into accounts. Use the Accounts module to add, modify or delete pages from a site.
+				</feature>
+			</features>
+
+			<widgets type="site">
+				<widget title="Accounts Summary:" href="/ColdBricks/modules/accounts/widgets/accounts.cfm" position="left" />
+				<widget title="Quick Links:" href="/ColdBricks/modules/accounts/widgets/accountQuickLinks.cfm" position="right" />
+			</widgets>
+		</module>
+	
+		<module name="resources"
+				version="1.0"
+				author="ColdBricks"
+				authorURL="http://www.coldbricks.com">
+
+			Resource library management
+
+			<features type="site">
+				<feature href = "index.cfm?event=resources.ehResources.dspMain"
+						imgSrc = "images/folder2_yellow_48x48.png"
+						alt = "Resource Management"
+						label = "Resources"
+						accessMapKey = "resources">
+					The Resource Library module contains all reusable elements that can be used in sites and pages. Available resource types include modules, feeds, skins, page templates, content articles and HTML blocks.
+				</feature>
+			</features>
+
+			<widgets type="site">
+				<widget title="Resources Summary:" href="/ColdBricks/modules/resources/widgets/resources.cfm" position="left" />
+			</widgets>
+		</module>
+
+	</modules>
+</interface>
+
