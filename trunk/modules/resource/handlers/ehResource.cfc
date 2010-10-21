@@ -434,7 +434,7 @@
 		<cfset var oResourceBean = 0>
 		
 		<cfif arguments.resourceID neq "">
-			<cfset oResourceBean = hp.getCatalog().getResourceNode(arguments.resourceType, arguments.resourceID)>
+			<cfset oResourceBean = hp.getCatalog().getResource(arguments.resourceType, arguments.resourceID)>
 			<cfset path = oResourceBean.getResourceLibrary().getPath()>
 		<cfelse>
 			<cfset oConfigBean = getService("configManager").getAppHomePortalsConfigBean(oContext)>
@@ -462,7 +462,7 @@
 		<cfset var oResourceBean = 0>
 
 		<cfif arguments.resourceID neq "">
-			<cfset oResourceBean = hp.getCatalog().getResourceNode(arguments.resourceType, arguments.resourceID)>
+			<cfset oResourceBean = hp.getCatalog().getResource(arguments.resourceType, arguments.resourceID)>
 			<cfset pkg = oResourceBean.getPackage()>
 		</cfif>
 		<cfreturn pkg>		
