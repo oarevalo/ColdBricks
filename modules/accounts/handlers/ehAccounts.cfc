@@ -182,7 +182,7 @@
 				// get catalog
 				oCatalog = hp.getCatalog();
 				try {
-					aCatalogPages = oCatalog.getResourcesByType("page");
+					aCatalogPages = oCatalog.getIndex("page");
 				} catch(homePortals.resourceLibraryManager.resourceTypeNotFound e) {
 					// no resource of type 'pages', no big deal
 				}
@@ -545,7 +545,7 @@
 		
 				// get pagetemplate resource
 				oCatalog = hp.getCatalog();
-				oResourceBean = oCatalog.getResourceNode("page", resourceID);
+				oResourceBean = oCatalog.getResource("page", resourceID);
 				
 				// add page resource
 				oSite.addPageResource(oResourceBean, resRoot);

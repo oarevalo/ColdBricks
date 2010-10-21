@@ -29,7 +29,7 @@
 			}
 
 			// get resources
-			qryResources = oCatalog.getResources();
+			qryResources = oCatalog.getIndex();
 								
 			setResourceContext();
 			resourceType = getValue("resourceType");
@@ -92,17 +92,18 @@
 				aResLibs = oResLibManager.getResourceLibraries();
 				//if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
 				if(resLibIndex gt 0) {
-					qryResources = oCatalog.getResourcesByType(resourceType, aResLibs[resLibIndex].getPath());
+					throw("needs filtering by lib path");
+					qryResources = oCatalog.getIndex(resourceType, aResLibs[resLibIndex].getPath());
 					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
 				} else {
-					qryResources = oCatalog.getResourcesByType(resourceType);
+					qryResources = oCatalog.getIndex(resourceType);
 				
 				}
 				
 				// get info on resource type
 				oResType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
 				setValue("resourceTypeInfo", oResType.getDescription());
-				resTypeLabel = oResType.getFolderName();
+				resTypeLabel = resourceType;
 								
 				switch(resourceType) {
 					case "module":  	resTypeIcon="brick.png"; break;
@@ -348,7 +349,7 @@
 			
 			if(id neq "" and id neq "NEW" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
-				oResource = hp.getCatalog().getResourceNode(resType, id);
+				oResource = hp.getCatalog().getResource(resType, id);
 				for(i=1;i lte arrayLen(aResLibs);i++) {
 					if(aResLibs[i].getPath() eq oResource.getResourceLibrary().getPath()) {
 						resLibIndex = i;

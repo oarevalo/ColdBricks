@@ -7,7 +7,7 @@
 	oCatalog = request.requestState.oCatalog;	
 	aResTypes = request.requestState.aResTypes;	
 
-	qryResources = oCatalog.getResourcesByType(resType);
+	qryResources = oCatalog.getIndex(resType);
 </cfscript>	
 
 <cfoutput>

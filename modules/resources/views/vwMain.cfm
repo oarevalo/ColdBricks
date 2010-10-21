@@ -93,7 +93,7 @@
 							<a href="##" 
 								onclick="selectResourceType('#key#','','','#reslibindex#')"
 								class="resTreeItem" 
-								id="resTreeItem_#key#">#stResourceTypes[key].getFolderName()#</a> 
+								id="resTreeItem_#key#">#key#</a> 
 							(<cfif structKeyExists(stResCount,key)>#stResCount[key]#<cfelse>0</cfif>)
 						</div>
 					</cfloop>

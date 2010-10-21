@@ -494,7 +494,6 @@
 			
 			try {
 				if(name eq "") throw("The plugin name is required","validation");
-				if(path eq "") throw("The plugin path is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setPlugin(name, path);
@@ -559,7 +558,6 @@
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceType(name = name,
-											folderName = getValue("folderName"),
 											description = getValue("description"),
 											resBeanPath = getValue("resBeanPath"),
 											fileTypes = getValue("fileTypes"));

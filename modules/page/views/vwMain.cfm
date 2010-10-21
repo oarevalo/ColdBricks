@@ -30,7 +30,10 @@
 	accountName = request.requestState.accountName;
 	
 	title = oPage.getTitle();
-	skinID = oPage.getSkinID();
+	if(oPage.hasProperty("SkinID"))
+		skinID = oPage.getProperty("SkinID");
+	else
+		skinID = "";
 	pageTemplateName = oPage.getPageTemplate();
 	
 	stLocationsByType = structNew();
@@ -66,12 +69,14 @@
 	
 	if(oContext.getHomePortals().getResourceLibraryManager().hasResourceType("skin")) {
 		hasSkins = true;
-		qrySkins = oCatalog.getResourcesByType("skin");
+		qrySkins = oCatalog.getIndex("skin");
 	} else {
 		hasSkins = false;
 		qrySkins = queryNew("");
 	}
 	aStyles = oPage.getStylesheets();
+	
+	hasModules = (oContext.getHomePortals().getResourceLibraryManager().hasResourceType("module"));
 	
 	if(appRoot eq "/")
 		tmpPageURL = "/index.cfm";
@@ -192,10 +197,12 @@
 				</div>
 
 				<div style="margin:4px;text-align:left;padding-top:0px;">
-					<div class="buttonImage btnLarge" style="margin:0px;float:left;margin-right:5px;">
-						<img src="images/cog.png" align="Absmiddle">
-						<a href="?event=page.ehPage.dspEventHandlers">Event Handlers</a>
-					</div>
+					<cfif hasModules>
+						<div class="buttonImage btnLarge" style="margin:0px;float:left;margin-right:5px;">
+							<img src="images/cog.png" align="Absmiddle">
+							<a href="?event=page.ehPage.dspEventHandlers">Event Handlers</a>
+						</div>
+					</cfif>
 					<div class="buttonImage btnLarge" style="margin:0px;float:left;margin-right:5px;">
 						<img src="images/page_code.png" align="Absmiddle">
 						<a href="?event=page.ehPage.dspMeta">Meta Tags</a>	
