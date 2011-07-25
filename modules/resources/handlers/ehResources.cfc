@@ -90,15 +90,12 @@
 
 				// get resources
 				aResLibs = oResLibManager.getResourceLibraries();
-				//if(resLibIndex eq 0 and arrayLen(aResLibs) gt 0) resLibIndex = 1;
+				qryResources = oCatalog.getIndex(resourceType);
+
 				if(resLibIndex gt 0) {
-					throw("needs filtering by lib path");
-					qryResources = oCatalog.getIndex(resourceType, aResLibs[resLibIndex].getPath());
+					qryResources = filterByResLib( qryResources, aResLibs[resLibIndex] );				
 					qryPackages = aResLibs[resLibIndex].getResourcePackagesList(resourceType);
-				} else {
-					qryResources = oCatalog.getIndex(resourceType);
-				
-				}
+				}			
 				
 				// get info on resource type
 				oResType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
@@ -215,7 +212,7 @@
 				aResLibs[resLibIndex].deleteResource(id, resourceType, package);
 
 				// remove from catalog
-				hp.getCatalog().deleteResourceNode(resourceType, id);
+				hp.getCatalog().index(resourceType, package);
 
 				setMessage("info","Resource deleted");
 
@@ -279,7 +276,7 @@
 				aResLibs[resLibIndex].addResourceFile(oResourceBean, path, stFileInfo.clientFile, stFileInfo.contentType & "/" & stFileInfo.contentSubType);
 
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
+				hp.getCatalog().index(resourceType,package);
 
 				// delete temp file
 				fileDelete(path);
@@ -349,7 +346,7 @@
 			
 			if(id neq "" and id neq "NEW" and resType neq "" and (libPath eq "auto" or resLibIndex eq -1)) {
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
-				oResource = hp.getCatalog().getResource(resType, id);
+				oResource = hp.getCatalog().getResource(resType, pkg & "/" & id);
 				for(i=1;i lte arrayLen(aResLibs);i++) {
 					if(aResLibs[i].getPath() eq oResource.getResourceLibrary().getPath()) {
 						resLibIndex = i;
@@ -372,5 +369,17 @@
 			setValue("pkg", package);
 		</cfscript>
 	</cffunction>
+		
+	<cffunction name="filterByResLib" returntype="query" access="private">
+		<cfargument name="resources" type="query" required="true">
+		<cfargument name="resLib" type="any" required="true">
+		<cfset var qry = 0>
+		<cfquery name="qry" dbtype="query">
+			SELECT *
+				FROM arguments.resources
+				WHERE libpath like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.resLib.getPath()#">
+		</cfquery>
+		<cfreturn qry>
+	</cffunction>	
 		
 </cfcomponent>

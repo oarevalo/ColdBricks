@@ -21,9 +21,12 @@
 
 				if(resourceID eq "NEW") resourceID = "";
 				
-				if(resLibIndex eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
-
+				if(resLibIndex eq 0) {
+					if(resourceID neq "")
+						resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
+					else
+						resLibIndex = getDefaultResLibIndex("",resourceType);
+				}
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				
@@ -102,7 +105,7 @@
 
 				if(resourceID eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
 				if(val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
 				
@@ -166,7 +169,7 @@
 				if(package eq "") package = packageNew;
 
 				if(resourceID neq "NEW" and val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
@@ -189,7 +192,7 @@
 				aResLibs[resLibIndex].saveResource(oResourceBean);
 			
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
+				hp.getCatalog().index(resourceType,package);
 
 				setMessage("info","Resource saved");
 
@@ -227,7 +230,7 @@
 
 				if(resourceID eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
 				if(val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
 				if(type eq "plain")
@@ -241,7 +244,7 @@
 				aResLibs[resLibIndex].saveResourceFile(oResourceBean, body, fileName, contentType);
 		
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
+				hp.getCatalog().index(resourceType,package);
 
 				setMessage("info","Resource target saved");
 
@@ -273,7 +276,7 @@
 				setLayout("Layout.Clean");
 
 				if(val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
@@ -285,7 +288,7 @@
 				aResLibs[resLibIndex].deleteResource(resourceID, resourceType, package);
 
 				// remove from catalog
-				hp.getCatalog().deleteResourceNode(resourceType, resourceID);
+				hp.getCatalog().index(resourceType,package);
 
 				setMessage("info","Resource deleted");
 				setNextEvent("resource.ehResource.dspClose");
@@ -322,7 +325,7 @@
 				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
 				
 				if(val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
@@ -342,7 +345,7 @@
 				aResLibs[resLibIndex].addResourceFile(oResourceBean, path, stFileInfo.clientFile, stFileInfo.contentType & "/" & stFileInfo.contentSubType);
 			
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
+				hp.getCatalog().index(resourceType,package);
 
 				// delete temp file
 				fileDelete(path);
@@ -379,7 +382,7 @@
 
 				if(resourceID eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
 				if(val(resLibIndex) eq 0) 
-					resLibIndex = getDefaultResLibIndex(resourceID,resourceType);
+					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
 					throw("Please select a resource library first","coldbricks.validation");
@@ -391,7 +394,7 @@
 				oResourceBean.deleteFile();
 
 				// update catalog
-				hp.getCatalog().reloadPackage(resourceType,package);
+				hp.getCatalog().index(resourceType,package);
 
 				setMessage("info","Resource target deleted");
 
