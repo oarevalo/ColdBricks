@@ -16,14 +16,15 @@
 			c1 = $("deployToWebRoot");
 
 			if(newName != '') {
+				var str = newName.split(' ').join('');
 				f1.disabled = false;
 				f2.disabled = false;
 				f3.disabled = false;
 				b1.disabled = false;
 				c1.disabled = false;
-				if(f1) f1.value = '/' + newName;
-				if(f2) f2.value = '/' + newName + '/content';
-				if(f3) f3.value = '/' + newName + '/resourceLibrary';
+				if(f1) f1.value = '/' + str;
+				if(f2) f2.value = '/' + str + '/content';
+				if(f3) f3.value = '/' + str + '/resourceLibrary';
 				onChangeDeployToRoot(c1.checked);
 			} else {
 				f1.value = '';
@@ -51,9 +52,10 @@
 				f1.disabled = true;
 
 			} else {
-				if(f1) f1.value = '/' + f0.value;
-				if(f2) f2.value = '/' + f0.value + '/content';
-				if(f3) f3.value = '/' + f0.value + '/resourceLibrary';
+				var str = f0.value.split(' ').join('');
+				if(f1) f1.value = '/' + str;
+				if(f2) f2.value = '/' + str + '/content';
+				if(f3) f3.value = '/' + str + '/resourceLibrary';
 				f1.disabled = false;
 			}
 		}
