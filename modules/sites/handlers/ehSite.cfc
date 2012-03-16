@@ -138,7 +138,7 @@
 				hp = oContext.getHomePortals();
 				
 				if(not hp.getPluginManager().hasPlugin("accounts")) {
-					throw("Accounts plugin not found");
+					throwException("Accounts plugin not found");
 				}
 				
 				// if not account given, then get the default account
@@ -223,7 +223,7 @@
 				}
 
 				if(pageHREF eq "")
-					throw("No default page set. You can set a default homepage by editing the site settings","validation");
+					throwException("No default page set. You can set a default homepage by editing the site settings","validation");
 				
 				oContext.setPage( oPage );
 				oContext.setPageHREF( pageHREF );

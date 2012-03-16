@@ -144,10 +144,10 @@
 				pp = hp.getPageProvider();
 				
 				if(name eq "") 
-					throw("Folder name cannot be empty","coldBricks.validation");
+					throwException("Folder name cannot be empty","coldBricks.validation");
 				
 				if(pp.folderExists(path & "/" & name))
-					throw("You are trying to create a folder that already exists","coldBricks.validation");
+					throwException("You are trying to create a folder that already exists","coldBricks.validation");
 			
 				pp.createFolder(path,name);
 				
@@ -182,10 +182,10 @@
 				tm = hp.getTemplateManager();
 				
 				if(name eq "") 
-					throw("Page name cannot be empty","coldBricks.validation");
+					throwException("Page name cannot be empty","coldBricks.validation");
 				
 				if(pp.pageExists(path & "/" & name))
-					throw("You are trying to create a page that already exists","coldBricks.validation");
+					throwException("You are trying to create a page that already exists","coldBricks.validation");
 			
 				// if the pageName contains any spaces, then replace them with _
 				name = replace(name," ","_","ALL");
@@ -197,7 +197,7 @@
 					
 				// check that the page name only contains simple characters
 				if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
-					throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+					throwException("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 			
 				oPage = createObject("component","homePortals.components.pageBean").init();
 				oPage.setTitle(name);
@@ -269,7 +269,7 @@
 			try {
 				pp = oContext.getHomePortals().getPageProvider();
 
-				if(pageName eq "" or pageName eq "null") throw("The page name cannot be blank.","coldBricks.validation");
+				if(pageName eq "" or pageName eq "null") throwException("The page name cannot be blank.","coldBricks.validation");
 
 				// if the pageName contains any spaces, then replace them with _
 				pageName = replace(pageName," ","_","ALL");
@@ -279,11 +279,11 @@
 			
 					// check that the page name only contains simple characters
 					if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
-						throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+						throwException("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 				}
 
 				if(pp.pageExists(parentPath & "/" & pageName)) {
-					throw("There is already a page named '#pageName#' on this folder. Please enter a different name.","coldbricks.validation");
+					throwException("There is already a page named '#pageName#' on this folder. Please enter a different name.","coldbricks.validation");
 				}
 
 				pp.move(pagePath, parentPath & "/" & pageName);

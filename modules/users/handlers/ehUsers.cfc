@@ -80,10 +80,10 @@
 				oUserSiteDAO = getService("DAOFactory").getDAO("userSite");
 				
 				// validate record
-				if(username eq "") throw("Username cannot be empty","coldBricks.validation");
-				if(password eq "") throw("Password cannot be empty","coldBricks.validation");
-				if(len(password) lt 5) throw("Password must be at least 5 characters long","coldBricks.validation");
-				if(role eq "") throw("User role cannot be empty","coldBricks.validation");
+				if(username eq "") throwException("Username cannot be empty","coldBricks.validation");
+				if(password eq "") throwException("Password cannot be empty","coldBricks.validation");
+				if(len(password) lt 5) throwException("Password must be at least 5 characters long","coldBricks.validation");
+				if(role eq "") throwException("User role cannot be empty","coldBricks.validation");
 				
 				// save record
 				editUserID = oUserDAO.save(id = editUserID,

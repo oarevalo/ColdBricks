@@ -271,39 +271,39 @@
 			
 			try {
 				if(isBoolean(deployToWebRoot) and deployToWebRoot) appRoot = "/";
-				if(name eq "") throw("Site name cannot be empty","coldBricks.validation");
-				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
-				if(siteTemplate eq "") throw("Please select a site template","coldBricks.validation");
+				if(name eq "") throwException("Site name cannot be empty","coldBricks.validation");
+				if(appRoot eq "") throwException("Application root cannot be empty","coldBricks.validation");
+				if(siteTemplate eq "") throwException("Please select a site template","coldBricks.validation");
 
 				// check that application root and name only contains valid characters
-				if(reFind("[^A-Za-z0-9_\ ]",name)) throw("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
-				if(reFind("[^A-Za-z0-9_/\-]",appRoot)) throw("The application root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+				if(reFind("[^A-Za-z0-9_\ ]",name)) throwException("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
+				if(reFind("[^A-Za-z0-9_/\-]",appRoot)) throwException("The application root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
 
 				// make sure the approot doesnt exist already
 				if(appRoot neq "/" and directoryExists(expandPath(appRoot))) 
-					throw("The given application directory already exists. Please select a different directory","coldBricks.validation");
+					throwException("The given application directory already exists. Please select a different directory","coldBricks.validation");
 				
 				// check that the directory is not a restricted one
 				if(left(appRoot,6) eq "/homePortals/" 
 					or appRoot eq "/homePortals"
 					or left(appRoot,11) eq "/ColdBricks") {
-					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
+					throwException("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
 				}
 
 				// make sure application root path start and end with / for consistency and to avoid problems later
-				if(left(appRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(left(appRoot,1) neq "/") throwException("All paths must be relative to the website root and start with '/'","coldBricks.validation");
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 				
 				// check if site is already registered in coldbricks
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySiteCheck = oSiteDAO.search(siteName = name);
 				if(qrySiteCheck.recordCount gt 0) 
-					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
+					throwException("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
 
 				// check if there is another site pointing to this path
 				qrySiteCheck = oSiteDAO.search(path = appRoot);
 				if(qrySiteCheck.recordCount gt 0) 
-					throw("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
+					throwException("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
 
 				resourcesRoot = appRoot & "resourceLibrary/";
 				contentRoot = appRoot & "content/";
@@ -370,44 +370,44 @@
 			
 			try {
 				if(isBoolean(deployToWebRoot) and deployToWebRoot) appRoot = "/";
-				if(name eq "") throw("Site name cannot be empty","coldBricks.validation");
-				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
+				if(name eq "") throwException("Site name cannot be empty","coldBricks.validation");
+				if(appRoot eq "") throwException("Application root cannot be empty","coldBricks.validation");
 	
 				// check that application root and name only contains valid characters
-				if(reFind("[^A-Za-z0-9_\ ]",name)) throw("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
-				if(reFind("[^A-Za-z0-9_/\-]",appRoot)) throw("The application root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+				if(reFind("[^A-Za-z0-9_\ ]",name)) throwException("The site name can only contain characters from the alphabet, digits, the underscore symbol and the space","coldbricks.validation");
+				if(reFind("[^A-Za-z0-9_/\-]",appRoot)) throwException("The application root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
 
 				// make sure the approot doesnt exist already
 				if(appRoot neq "/" and directoryExists(expandPath(appRoot))) 
-					throw("The given application directory already exists. Please select a different directory","coldBricks.validation");
+					throwException("The given application directory already exists. Please select a different directory","coldBricks.validation");
 				
 				// check that the directory is not a restricted one
 				if(left(appRoot,6) eq "/homePortals/" 
 					or appRoot eq "/homePortals"
 					or left(appRoot,11) eq "/ColdBricks") {
-					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
+					throwException("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
 				}
 
 				// make sure application root path start and end with / for consistency and to avoid problems later
-				if(left(appRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(left(appRoot,1) neq "/") throwException("All paths must be relative to the website root and start with '/'","coldBricks.validation");
 				if(right(appRoot,1) neq "/") appRoot = appRoot & "/";
 				
 				// check if site is already registered in coldbricks
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySiteCheck = oSiteDAO.search(siteName = name);
 				if(qrySiteCheck.recordCount gt 0) 
-					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
+					throwException("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
 
 				// check if there is another site pointing to this path
 				qrySiteCheck = oSiteDAO.search(path = appRoot);
 				if(qrySiteCheck.recordCount gt 0) 
-					throw("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
+					throwException("There is already another site pointing to the same directory '#appRoot#', please select a different application root.","coldBricks.validation");
 
 
 				// create custom site
-				if(contentRoot eq "") throw("Content root cannot be empty","coldBricks.validation");
-				if(reFind("[^A-Za-z0-9_/\-]",contentRoot)) throw("The content root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
-				if(useDefault_rl eq 1 and resourcesRoot eq "") throw("Resource Library root cannot be empty","coldBricks.validation");
+				if(contentRoot eq "") throwException("Content root cannot be empty","coldBricks.validation");
+				if(reFind("[^A-Za-z0-9_/\-]",contentRoot)) throwException("The content root can only contain characters from the alphabet, digits, the underscore symbol and the backslash","coldbricks.validation");
+				if(useDefault_rl eq 1 and resourcesRoot eq "") throwException("Resource Library root cannot be empty","coldBricks.validation");
 				if(useDefault_rl eq 0) resourcesRoot = "";
 
 				// check if we need to create the resources root
@@ -416,12 +416,12 @@
 				}
 
 				if(useDefault_rl eq 1) {
-					if(left(resourcesRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+					if(left(resourcesRoot,1) neq "/") throwException("All paths must be relative to the website root and start with '/'","coldBricks.validation");
 					if(right(resourcesRoot,1) neq "/") resourcesRoot = resourcesRoot & "/";
 				}
 				
 				// check if we need to create the content root
-				if(left(contentRoot,1) neq "/") throw("All paths must be relative to the website root and start with '/'","coldBricks.validation");
+				if(left(contentRoot,1) neq "/") throwException("All paths must be relative to the website root and start with '/'","coldBricks.validation");
 				if(right(contentRoot,1) neq "/") contentRoot = contentRoot & "/";
 				bCreateContentDir = (not directoryExists(expandPath(contentRoot))); 
 				
@@ -501,7 +501,7 @@
 						and left(qrySite.path,11) neq "/ColdBricks"
 						and left(qrySite.path,1) eq "/" ) {
 					} else {
-						throw("You are trying to delete a restricted directory","coldBricks.validation");
+						throwException("You are trying to delete a restricted directory","coldBricks.validation");
 					}
 
 					deleteDir( expandPath(qrySite.path) );
@@ -536,29 +536,29 @@
 			var siteID = 0;
 
 			try {
-				if(name eq "") throw("Site name cannot be empty","coldBricks.validation");
-				if(appRoot eq "") throw("Application root cannot be empty","coldBricks.validation");
+				if(name eq "") throwException("Site name cannot be empty","coldBricks.validation");
+				if(appRoot eq "") throwException("Application root cannot be empty","coldBricks.validation");
 
 				// check if site is already registered in coldbricks
 				oSiteDAO = getService("DAOFactory").getDAO("site");
 				qrySiteCheck = oSiteDAO.search(siteName = name);
 				if(qrySiteCheck.recordCount gt 0) 
-					throw("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
+					throwException("There is already another site registered with the name '#name#', please select a different site name.","coldBricks.validation");
 
 				// make sure the approot points to an existing directory
 				if(not directoryExists(expandPath(appRoot))) 
-					throw("The given application directory does not exist. If you wish to create a new site use the 'Create Site' option.","coldBricks.validation");
+					throwException("The given application directory does not exist. If you wish to create a new site use the 'Create Site' option.","coldBricks.validation");
 
 				// check that the directory is not a restricted one
 				if(left(appRoot,11) eq "/ColdBricks") {
-					throw("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
+					throwException("You are trying to use a restricted directory as the application root. Please select a different application root.","coldBricks.validation");
 				}
 
 				// check that the target directory points to a valid homeportals application
 				if( Not (directoryExists(expandPath(appRoot & "/config"))
 						and fileExists(expandPath(appRoot & "/config/homePortals-config.xml.cfm")))
 					and Not fileExists(expandPath(appRoot & "/homePortals-config.xml.cfm")))
-					throw("The given application directory does not see,s point to a standard HomePortals application. Please check the directory and try again.","coldBricks.validation");
+					throwException("The given application directory does not see,s point to a standard HomePortals application. Please check the directory and try again.","coldBricks.validation");
 
 				// create site record for coldbricks
 				siteID = oSiteDAO.save(id=0, siteName=name, path=appRoot, ownerUserID=oUser.getID(), createdDate=dateFormat(now(),"mm/dd/yyyy"), notes="");

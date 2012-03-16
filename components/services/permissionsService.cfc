@@ -104,12 +104,12 @@
 			var i = 0; 
 			
 			if(not fileExists(configPath))
-				throw("Permissions config file not found!");
+				throwException("Permissions config file not found!");
 				
 			xmlDoc = xmlParse(configPath);
 			
 			if(xmlDoc.xmlRoot.xmlName neq "permissions-config")
-				throw("Invalid config file");
+				throwException("Invalid config file");
 				
 			// get default permission	
 			if(structKeyExists(xmlDoc.xmlRoot.xmlAttributes,"default"))
@@ -177,7 +177,7 @@
 	</cffunction>
 
 
-	<cffunction name="throw" access="private" hint="Facade for cfthrow">
+	<cffunction name="throwException" access="private" hint="Facade for cfthrow">
 		<cfargument name="message" 		type="String" required="yes">
 		<cfargument name="type" 		type="String" required="no" default="custom">
 		<cfthrow type="#arguments.type#" message="#arguments.message#">
