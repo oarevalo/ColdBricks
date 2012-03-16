@@ -139,7 +139,7 @@
 			
 			try {
 				if(configFile eq "") {
-					throw("You must select a config file from the list to edit","coldBricks.validation");
+					throwException("You must select a config file from the list to edit","coldBricks.validation");
 				}
 				
 				if(not isXml(xmlContent)) {
@@ -174,10 +174,10 @@
 			var catalogCacheTTL = getValue("catalogCacheTTL");
 
 			try {
-				if(val(pageCacheSize) eq 0) throw("You must enter a valid number for the page cache maximum size","validation");
-				if(val(pageCacheTTL) eq 0) throw("You must enter a valid number for the page cache TTL","validation");
-				if(val(catalogCacheSize) eq 0) throw("You must enter a valid number for the resources cache maximum size","validation");
-				if(val(catalogCacheTTL) eq 0) throw("You must enter a valid number for the resources cache TTL","validation");
+				if(val(pageCacheSize) eq 0) throwException("You must enter a valid number for the page cache maximum size","validation");
+				if(val(pageCacheTTL) eq 0) throwException("You must enter a valid number for the page cache TTL","validation");
+				if(val(catalogCacheSize) eq 0) throwException("You must enter a valid number for the resources cache maximum size","validation");
+				if(val(catalogCacheTTL) eq 0) throwException("You must enter a valid number for the resources cache TTL","validation");
 				
 				// set new values
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
@@ -217,8 +217,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(type eq "") throw("The base resource type is required","validation");
-				if(href eq "") throw("The base resource value is required","validation");
+				if(type eq "") throwException("The base resource type is required","validation");
+				if(href eq "") throwException("The base resource value is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.addBaseResource(type, href);
@@ -248,9 +248,9 @@
 			var aRes = arrayNew(1);
 			
 			try {
-				if(type eq "") throw("The base resource type is required","validation");
-				if(val(index) eq 0) throw("You must select a base resource to edit","validation");
-				if(href eq "") throw("The base resource value is required","validation");
+				if(type eq "") throwException("The base resource type is required","validation");
+				if(val(index) eq 0) throwException("You must select a base resource to edit","validation");
+				if(href eq "") throwException("The base resource value is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -288,8 +288,8 @@
 			var aRes = arrayNew(1);
 			
 			try {
-				if(type eq "") throw("The base resource type is required","validation");
-				if(val(index) eq 0) throw("You must select a base resource to delete","validation");
+				if(type eq "") throwException("The base resource type is required","validation");
+				if(val(index) eq 0) throwException("You must select a base resource to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -325,7 +325,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(path eq "") throw("The resource library path is required","validation");
+				if(path eq "") throwException("The resource library path is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.addResourceLibraryPath(path);
@@ -354,8 +354,8 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
-				if(val(index) eq 0) throw("You must select a resource library to edit","validation");
-				if(path eq "") throw("The resource library path is required","validation");
+				if(val(index) eq 0) throwException("You must select a resource library to edit","validation");
+				if(path eq "") throwException("The resource library path is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -392,7 +392,7 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
-				if(val(index) eq 0) throw("You must select a resource library to delete","validation");
+				if(val(index) eq 0) throwException("You must select a resource library to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -429,8 +429,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The content renderer name is required","validation");
-				if(path eq "") throw("The content renderer path is required","validation");
+				if(name eq "") throwException("The content renderer name is required","validation");
+				if(path eq "") throwException("The content renderer path is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setContentRenderer(name, path);
@@ -458,7 +458,7 @@
 			var aResLibs = arrayNew(1);
 			
 			try {
-				if(name eq "") throw("You must select a content renderer to delete","validation");
+				if(name eq "") throwException("You must select a content renderer to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -493,7 +493,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The plugin name is required","validation");
+				if(name eq "") throwException("The plugin name is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setPlugin(name, path);
@@ -520,7 +520,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a plugin to delete","validation");
+				if(name eq "") throwException("You must select a plugin to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -554,7 +554,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The resource type name is required","validation");
+				if(name eq "") throwException("The resource type name is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceType(name = name,
@@ -584,7 +584,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a resource type to delete","validation");
+				if(name eq "") throwException("You must select a resource type to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -618,8 +618,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The resource type property name is required","validation");
-				if(resTypeEditKey eq "") throw("The resource type name is required","validation");
+				if(name eq "") throwException("The resource type property name is required","validation");
+				if(resTypeEditKey eq "") throwException("The resource type name is required","validation");
 
 				if(type eq "resource") type = "resource:" & getValue("resourceType");
 
@@ -656,7 +656,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a resource type to delete","validation");
+				if(name eq "") throwException("You must select a resource type to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -694,9 +694,9 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The render template name is required","validation");
-				if(href eq "") throw("The render template path is required","validation");
-				if(type eq "") throw("The render template type is required","validation");
+				if(name eq "") throwException("The render template name is required","validation");
+				if(href eq "") throwException("The render template path is required","validation");
+				if(type eq "") throwException("The render template type is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setRenderTemplate(name, type, href, description, isDefault);
@@ -724,7 +724,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a render template to delete","validation");
+				if(name eq "") throwException("You must select a render template to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -757,8 +757,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(getValue("prefix") eq "") throw("The resource library type prefix is required","validation");
-				if(getValue("path") eq "") throw("The resource library type path is required","validation");
+				if(getValue("prefix") eq "") throwException("The resource library type prefix is required","validation");
+				if(getValue("path") eq "") throwException("The resource library type path is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceLibraryType(prefix = getValue("prefix"),
@@ -786,7 +786,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(prefix eq "") throw("You must select a resource library type to delete","validation");
+				if(prefix eq "") throwException("You must select a resource library type to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -818,8 +818,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The resource library type property name is required","validation");
-				if(resLibTypeEditKey eq "") throw("The resource library type is required","validation");
+				if(name eq "") throwException("The resource library type property name is required","validation");
+				if(resLibTypeEditKey eq "") throwException("The resource library type is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setResourceLibraryTypeProperty(prefix = resLibTypeEditKey,
@@ -849,7 +849,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a resource library type to delete","validation");
+				if(name eq "") throwException("You must select a resource library type to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -885,7 +885,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The page property name is required","validation");
+				if(name eq "") throwException("The page property name is required","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				oConfigBean.setPageProperty(name, value);
@@ -912,7 +912,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a page property to delete","validation");
+				if(name eq "") throwException("You must select a page property to delete","validation");
 
 				oConfigBean = getService("configManager").getHomePortalsConfigBean();
 				
@@ -954,24 +954,24 @@
 			var dataroot = getValue("dataroot");
 
 			try {
-				if(accountsRoot eq "") throw("The accounts root directory is required","validation");
-				if(storageType eq "") throw("The storage type is required","validation");
+				if(accountsRoot eq "") throwException("The accounts root directory is required","validation");
+				if(storageType eq "") throwException("The storage type is required","validation");
 
-				if(newAccountTemplate eq "") throw("The location of the 'New Account' template is required","validation");
-				if(newPageTemplate eq "") throw("The location of the 'New Page' template is required","validation");
+				if(newAccountTemplate eq "") throwException("The location of the 'New Account' template is required","validation");
+				if(newPageTemplate eq "") throwException("The location of the 'New Page' template is required","validation");
 
 				switch(storageType) {
 					case "xml":
-						if(dataroot eq "") throw("For 'XML File' storage, data root is required","validation");
+						if(dataroot eq "") throwException("For 'XML File' storage, data root is required","validation");
 						break;
 
 					case "db":
-						if(datasource eq "") throw("For 'Database' storage, the datasource is required","validation");
-						if(dbType eq "") throw("For 'Database' storage, the database type is required","validation");
+						if(datasource eq "") throwException("For 'Database' storage, the datasource is required","validation");
+						if(dbType eq "") throwException("For 'Database' storage, the database type is required","validation");
 						break;
 
 					default:
-						throw("You have selected an invalid storage type.","validation");
+						throwException("You have selected an invalid storage type.","validation");
 				} 
 
 				// set new values
@@ -1016,8 +1016,8 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(moduleName eq "") throw("The module name is required","validation");
-				if(propertyName eq "") throw("The property name is required","validation");
+				if(moduleName eq "") throwException("The module name is required","validation");
+				if(propertyName eq "") throwException("The property name is required","validation");
 
 				oConfigBean = getModulePropertiesConfigBean();
 				oConfigBean.setProperty(moduleName, propertyName, propertyValue);
@@ -1049,9 +1049,9 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(moduleName eq "") throw("The module name is required","validation");
-				if(propertyName eq "") throw("The property name is required","validation");
-				if(val(index) eq 0) throw("You must select a module property to edit","validation");
+				if(moduleName eq "") throwException("The module name is required","validation");
+				if(propertyName eq "") throwException("The property name is required","validation");
+				if(val(index) eq 0) throwException("You must select a module property to edit","validation");
 
 				oConfigBean = getModulePropertiesConfigBean();
 				

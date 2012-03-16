@@ -103,11 +103,11 @@
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 
-				if(resourceID eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
+				if(resourceID eq "") throwException("Please select a resource to edit/create its target file","coldBricks.validation");
 				if(val(resLibIndex) eq 0) 
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 				
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
 				
@@ -164,15 +164,15 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(resourceID eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
-				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
+				if(resourceID eq "") throwException("Resource ID cannot be empty","coldBricks.validation"); 
+				if(package eq "" and packageNew eq "") throwException("Package name cannot be empty","coldBricks.validation"); 
 				if(package eq "") package = packageNew;
 
 				if(resourceID neq "NEW" and val(resLibIndex) eq 0) 
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 	
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 
@@ -228,11 +228,11 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(resourceID eq "") throw("Please select a resource to edit/create its target file","coldBricks.validation");
+				if(resourceID eq "") throwException("Please select a resource to edit/create its target file","coldBricks.validation");
 				if(val(resLibIndex) eq 0) 
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 				if(type eq "plain")
 					contentType = "text/plain";
 
@@ -279,7 +279,7 @@
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, resourceID);
@@ -320,15 +320,15 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(resourceID eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
-				if(package eq "") throw("Package name cannot be empty","coldBricks.validation"); 
-				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
+				if(resourceID eq "") throwException("Resource ID cannot be empty","coldBricks.validation"); 
+				if(package eq "") throwException("Package name cannot be empty","coldBricks.validation"); 
+				if(resFile eq "") throwException("Please select a file to upload","coldBricks.validation"); 
 				
 				if(val(resLibIndex) eq 0) 
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceType = hp.getResourceLibraryManager().getResourceTypeInfo(resourceType);
@@ -337,7 +337,7 @@
 				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
 				stFileInfo = fileUpload(resFile, path);
 				if(not stFileInfo.fileWasSaved) 
-					throw("File upload failed","coldBricks.validation");
+					throwException("File upload failed","coldBricks.validation");
 				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
 
 				/// update resource in library
@@ -380,12 +380,12 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(resourceID eq "") throw("Resource ID cannot be empty","coldBricks.validation"); 
+				if(resourceID eq "") throwException("Resource ID cannot be empty","coldBricks.validation"); 
 				if(val(resLibIndex) eq 0) 
 					resLibIndex = getDefaultResLibIndex(package & "/" & resourceID,resourceType);
 
 				if(reslibindex lte 0) 
-					throw("Please select a resource library first","coldbricks.validation");
+					throwException("Please select a resource library first","coldbricks.validation");
 				
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 

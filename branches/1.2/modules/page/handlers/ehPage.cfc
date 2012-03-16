@@ -86,7 +86,7 @@
 				moduleID = replace(moduleID,"ppm_","","ALL");
 
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				oModule = oPage.getModule(moduleID);
@@ -128,8 +128,8 @@
 				moduleID = replace(moduleID,"ppm_","","ALL");
 				
 				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				if(moduleID eq "") throw("Please select a module to edit","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
+				if(moduleID eq "") throwException("Please select a module to edit","coldBricks.validation");
 				
 				// get page from session
 				oPage = oContext.getPage();
@@ -181,7 +181,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// pass values to view
@@ -217,7 +217,7 @@
 			
 			try {
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 
 				// pass values to view
@@ -255,7 +255,7 @@
 			
 			try {
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// get page helper
@@ -329,7 +329,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// pass values to view
@@ -366,7 +366,7 @@
 
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				stModule = oPage.getModule(moduleID);
@@ -488,7 +488,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// pass values to view
@@ -526,7 +526,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// pass values to view
@@ -570,8 +570,8 @@
 				setLayout("Layout.Clean");
 
 				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				if(tag eq "") throw("Please select a module type to add","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
+				if(tag eq "") throwException("Please select a module type to add","coldBricks.validation");
 				
 				// get page from session
 				oPage = oContext.getPage();
@@ -621,9 +621,9 @@
 				setLayout("Layout.Clean");
 
 				// check if we have a site and page cfcs loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
-				if(resType eq "") throw("Please select a resource type to add","coldBricks.validation");
-				if(resourceID eq "") throw("Please select a resource to add","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
+				if(resType eq "") throwException("Please select a resource type to add","coldBricks.validation");
+				if(resourceID eq "") throwException("Please select a resource to add","coldBricks.validation");
 				
 				// get page from session
 				oPage = oContext.getPage();
@@ -687,7 +687,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 
 				oPage = oContext.getPage();
 				oCatalog = hp.getCatalog();
@@ -724,7 +724,7 @@
 						break;
 						
 					default:
-						throw("The given resource type cannot be added directly to a page","coldBricks.invalidResourceType");
+						throwException("The given resource type cannot be added directly to a page","coldBricks.invalidResourceType");
 				}
 				
 				resBean = oCatalog.getResource(moduleResType, moduleID);
@@ -758,7 +758,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				oPage.removeModule(moduleID);
@@ -790,7 +790,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				// remove prefixes added to avoid mixing with existing page elements
@@ -827,7 +827,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				lstAttribs = getValue("_baseAttribs");
@@ -892,7 +892,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 
 				oPage = oContext.getPage();
 				
@@ -939,7 +939,7 @@
 				oCatalog = hp.getCatalog();
 				
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 
 				lstAttribs = getValue("_moduleAttribs");
@@ -988,7 +988,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				oModule = oPage.getModule(moduleID);
@@ -1024,7 +1024,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				aModules = oPage.getModules();
@@ -1085,10 +1085,10 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
+				if(pageName eq "") throwException("The page name cannot be blank.","coldBricks.validation");
 
 				// if the pageName contains any spaces, then replace them with _
 				pageName = replace(pageName," ","_","ALL");
@@ -1098,7 +1098,7 @@
 			
 					// check that the page name only contains simple characters
 					if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
-						throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+						throwException("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 				}
 
 				// get the original location of the page
@@ -1143,7 +1143,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				if(skinID eq "NONE") skinID = "";
@@ -1181,7 +1181,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				// get resource root
@@ -1224,7 +1224,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				if(not isXml(xmlContent)) {
@@ -1238,7 +1238,7 @@
 					oPageCheck =  createObject("component","homePortals.components.pageBean").init(xmlContent);
 				} catch(any e) {
 					// assume any error here as a parsing error
-					throw("The XML provided is not a valid xml for a page. #e.message#","coldBricks.validation");
+					throwException("The XML provided is not a valid xml for a page. #e.message#","coldBricks.validation");
 				}
 				
 				// update the page
@@ -1270,7 +1270,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 
 				// get page helper
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), contentRoot & oContext.getPageHREF() );
@@ -1303,10 +1303,10 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				if(pageTitle eq "") throw("The page title cannot be blank.","coldBricks.validation");
+				if(pageTitle eq "") throwException("The page title cannot be blank.","coldBricks.validation");
 
 				// get the original location of the page
 				pageHREF = oContext.getPageHREF();
@@ -1360,8 +1360,8 @@
 				oPageHelper = createObject("component","homePortals.components.pageHelper").init( oContext.getPage(), oContext.getPageHREF() );
 				body = oPageHelper.getPageCSS();
 
-				if(name eq "") throw("The skin name cannot be empty","coldBricks.validation"); 
-				if(body eq "") throw("The skin body cannot be empty","coldBricks.validation"); 
+				if(name eq "") throwException("The skin name cannot be empty","coldBricks.validation"); 
+				if(body eq "") throwException("The skin body cannot be empty","coldBricks.validation"); 
 
 				// Use a cleaned version fo the name for the ID
 				id = replace(name," ","-","ALL");
@@ -1407,7 +1407,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				if(templateName eq 0) 
@@ -1450,7 +1450,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				// create a name for the new location
@@ -1498,7 +1498,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				oPage.removeLayoutRegion(locationOriginalName);
@@ -1530,7 +1530,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 				
 				// delete location		
@@ -1565,12 +1565,12 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				// check data
-				if(eventName eq "") throw("You must select an event from the list","coldBricks.validation");
-				if(eventHandler eq "") throw("The event action cannot be empty. Available event actions are given by the existing modules on the page","coldBricks.validation");
+				if(eventName eq "") throwException("You must select an event from the list","coldBricks.validation");
+				if(eventHandler eq "") throwException("The event action cannot be empty. Available event actions are given by the existing modules on the page","coldBricks.validation");
 		
 				oPage.addEventListener(listFirst(eventName,"."), listLast(eventName,"."), eventHandler);
 				savePage();
@@ -1601,7 +1601,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				aListeners = oPage.getEventListeners();
@@ -1643,11 +1643,11 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 
 				if(name eq "__other__") name = nameOther;
-				if(name eq "") throw("Please enter a meta tag name","coldBricks.validation");
+				if(name eq "") throwException("Please enter a meta tag name","coldBricks.validation");
 		
 				if(index gt 0) oPage.removeMetaTag(name);
 				
@@ -1680,7 +1680,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				aMetaTags = oPage.getMetaTags();
@@ -1719,10 +1719,10 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 
-				if(newName eq "") throw("Please enter a property name.","coldBricks.validation");
+				if(newName eq "") throwException("Please enter a property name.","coldBricks.validation");
 				oPage.setProperty(newName, value);
 				if(name neq newname and name neq "")
 					oPage.removeProperty(name);
@@ -1753,10 +1753,10 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
-				if(name eq "") throw("Please enter a property name.","coldBricks.validation");
+				if(name eq "") throwException("Please enter a property name.","coldBricks.validation");
 				oPage.removeProperty(name);
 				savePage();
 	
@@ -1789,7 +1789,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				if(index gt 0) oPage.removeMetaTag(name);
@@ -1828,7 +1828,7 @@
 			
 			try {
 				// check if we have a page cfc loaded 
-				if(Not oContext.hasPage()) throw("Please select a page.","coldBricks.validation");
+				if(Not oContext.hasPage()) throwException("Please select a page.","coldBricks.validation");
 				oPage = oContext.getPage();
 		
 				if(type eq "Stylesheet")

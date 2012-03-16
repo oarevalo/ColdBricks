@@ -167,7 +167,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a site cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				
 				// get site from session
 				oSite = oContext.getAccountSite();
@@ -217,7 +217,7 @@
 				hp = oContext.getHomePortals();
 				
 				// check if we have a site cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				
 				// get site from session
 				oSite = oContext.getAccountSite();
@@ -266,7 +266,7 @@
 				oAccounts = getAccountsService();
 				stAccountInfo = oAccounts.getConfig();
 	
-				if(accountID eq 0) throw("Please select an account first");
+				if(accountID eq 0) throwException("Please select an account first");
 	
 				// search account
 				qryAccount = oAccounts.getAccountByID(accountID);
@@ -319,10 +319,10 @@
 				hp = oContext.getHomePortals();
 				oAccounts = getAccountsService();
 
-				if(accountname eq "") throw("Account name cannot be empty.","coldBricks.validation");
-				if(accountID eq "" and password eq "") throw("Password cannot be empty.","coldBricks.validation");
-				if(accountID neq "" and changePwd and pwd_new eq "")  throw("New password cannot be empty.","coldBricks.validation");
-				if(accountID neq "" and changePwd and pwd_new neq pwd_new2)  throw("Passwords do not match.","coldBricks.validation");
+				if(accountname eq "") throwException("Account name cannot be empty.","coldBricks.validation");
+				if(accountID eq "" and password eq "") throwException("Password cannot be empty.","coldBricks.validation");
+				if(accountID neq "" and changePwd and pwd_new eq "")  throwException("New password cannot be empty.","coldBricks.validation");
+				if(accountID neq "" and changePwd and pwd_new neq pwd_new2)  throwException("Passwords do not match.","coldBricks.validation");
 
 				if(accountID neq "") {
 					oAccounts.UpdateAccount(accountID, firstName, lastName, email);
@@ -360,7 +360,7 @@
 			var oContext = getService("sessionContext").getContext();
 
 			try {
-				if(accountID eq "") throw("Please indicate the name of the account to delete.","coldBricks.validation");
+				if(accountID eq "") throwException("Please indicate the name of the account to delete.","coldBricks.validation");
 				
 				hp = oContext.getHomePortals();
 				oAccounts = getAccountsService();
@@ -453,10 +453,10 @@
 			
 			try {
 				// get site from session
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				oSite = oContext.getAccountSite();
 				
-				if(pageName eq "") throw("The page name cannot be blank.","coldBricks.validation");
+				if(pageName eq "") throwException("The page name cannot be blank.","coldBricks.validation");
 				
 				// if the pageName contains any spaces, then replace them with _
 				pageName = replace(pageName," ","_","ALL");
@@ -468,7 +468,7 @@
 					
 				// check that the page name only contains simple characters
 				if(reFind("[^A-Za-z0-9_]",tmpFirstPart)) 
-					throw("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
+					throwException("Page names can only contain characters from the alphabet, digits and the underscore symbol","coldbricks.validation");
 				
 				// add page
 				oSite.addPage(pageName);
@@ -500,10 +500,10 @@
 			
 			try {
 				// get site from session
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				oSite = oContext.getAccountSite();
 				
-				if(val(numCopies) eq 0) throw("The number of copies to make must be a valid number greater or equal to 1","coldBricks.validation");
+				if(val(numCopies) eq 0) throwException("The number of copies to make must be a valid number greater or equal to 1","coldBricks.validation");
 				if(tokenize eq 1) setNextEvent("accounts.ehAccounts.dspTokenizePage","pageHREF=#pageHREF#&numCopies=#numCopies#");
 				
 				for(i=1;i lte val(numCopies);i=i+1) {
@@ -536,7 +536,7 @@
 			
 			try {
 				// get site from session
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				oSite = oContext.getAccountSite();
 				
 				// get resource root
@@ -582,11 +582,11 @@
 			
 			try {
 				// get site from session
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.","coldBricks.validation");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.","coldBricks.validation");
 				oSite = oContext.getAccountSite();
 				
-				if(val(numCopies) eq 0) throw("Please enter a valid greater or equal to 1 for the number of copies to be made","coldBricks.validation");
-				if(val(numTokens) eq 0) throw("Please enter a valid greater or equal to 1 for the number of tokens to use","coldBricks.validation");
+				if(val(numCopies) eq 0) throwException("Please enter a valid greater or equal to 1 for the number of copies to be made","coldBricks.validation");
+				if(val(numTokens) eq 0) throwException("Please enter a valid greater or equal to 1 for the number of tokens to use","coldBricks.validation");
 
 				// process all copies
 				for(i=1;i lte val(numCopies);i=i+1) {
@@ -607,7 +607,7 @@
 
 						// check that new page is a valid XML document
 						if(not isXml(newXMLContent)) {
-							throw("The given content is not a valid XML document");
+							throwException("The given content is not a valid XML document");
 						}						
 
 						// add blank page to site
@@ -638,7 +638,7 @@
 				
 				
 				// check if we have a site cfc loaded 
-				if(Not oContext.hasAccountSite()) throw("Please select an account first.");
+				if(Not oContext.hasAccountSite()) throwException("Please select an account first.");
 				
 				// get site from session
 				oSite = oContext.getAccountSite();

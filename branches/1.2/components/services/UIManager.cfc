@@ -31,12 +31,12 @@
 			var itemType = "";
 			
 			if(not fileExists(arguments.configPath))
-				throw("interface config file not found!");
+				throwException("interface config file not found!");
 				
 			xmlDoc = xmlParse(arguments.configPath);
 			
 			if(xmlDoc.xmlRoot.xmlName neq "interface")
-				throw("Invalid config file");
+				throwException("Invalid config file");
 
 			aNodes = xmlSearch(xmlDoc,"//modules/module");
 

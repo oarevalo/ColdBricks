@@ -46,7 +46,7 @@
 		<cflocation url="#arguments.url#">
 	</cffunction>
 	
-	<cffunction name="throw" access="private" hint="Facade for cfthrow">
+	<cffunction name="throwException" access="private" hint="Facade for cfthrow">
 		<cfargument name="message" 		type="String" required="yes">
 		<cfargument name="type" 		type="String" required="no" default="custom">
 		<cfthrow type="#arguments.type#" message="#arguments.message#">

@@ -60,7 +60,7 @@
 					break;
 					
 				default:
-					throw("The location provided for the bugLogListener is invalid.");	
+					throwException("The location provided for the bugLogListener is invalid.");	
 			}
 		</cfscript>
 		<cfreturn this>
@@ -287,7 +287,7 @@
 		<cfreturn tmpHTML>
 	</cffunction>
 
-	<cffunction name="throw" access="private" returntype="void" hint="facade for cfthrow">
+	<cffunction name="throwException" access="private" returntype="void" hint="facade for cfthrow">
 		<cfargument name="message" type="String" required="true">
 		<cfthrow message="#arguments.message#">
 	</cffunction>

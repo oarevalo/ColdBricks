@@ -156,7 +156,7 @@
 				qry = oUserDAO.search(username = usr, password = pwd);
 	
 				if(qry.recordCount eq 0) 
-					throw("Invalid username/password","coldBricks.validation");
+					throwException("Invalid username/password","coldBricks.validation");
 				else {
 					// build user bean
 					oUser = createObject("component","ColdBricks.components.model.userBean").init();
@@ -219,9 +219,9 @@
 				oUserDAO = getService("DAOFactory").getDAO("user");
 				
 				// validate record
-				if(curr_pwd neq oUser.getPassword()) throw("Invalid password","coldBricks.validation");
-				if(new_pwd neq new_pwd2) throw("Password confirmation did not match","coldBricks.validation");
-				if(len(new_pwd) lt 5) throw("Password must be at least 5 characters long","coldBricks.validation");
+				if(curr_pwd neq oUser.getPassword()) throwException("Invalid password","coldBricks.validation");
+				if(new_pwd neq new_pwd2) throwException("Password confirmation did not match","coldBricks.validation");
+				if(len(new_pwd) lt 5) throwException("Password must be at least 5 characters long","coldBricks.validation");
 				
 				// save record
 				oUserDAO.save(id = oUser.getID(),

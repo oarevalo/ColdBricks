@@ -203,7 +203,7 @@
 				resLibIndex = getValue("resLibIndex");
 				package = getValue("pkg");
 
-				if(reslibindex lte 0) throw("Please select a resource library first","coldbricks.validation");
+				if(reslibindex lte 0) throwException("Please select a resource library first","coldbricks.validation");
 
 				aResLibs = hp.getResourceLibraryManager().getResourceLibraries();
 				oResourceBean = aResLibs[resLibIndex].getResource(resourceType, package, id);
@@ -244,9 +244,9 @@
 			try {		
 				hp = oContext.getHomePortals();
 
-				if(resLibIndex lte 0) throw("Please select a resource library","coldBricks.validation"); 
-				if(package eq "" and packageNew eq "") throw("Package name cannot be empty","coldBricks.validation"); 
-				if(resFile eq "") throw("Please select a file to upload","coldBricks.validation"); 
+				if(resLibIndex lte 0) throwException("Please select a resource library","coldBricks.validation"); 
+				if(package eq "" and packageNew eq "") throwException("Package name cannot be empty","coldBricks.validation"); 
+				if(resFile eq "") throwException("Please select a file to upload","coldBricks.validation"); 
 				
 				if(package eq "") package = packageNew;
 				
@@ -260,7 +260,7 @@
 				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
 				stFileInfo = fileUpload(resFile, path);
 				if(not stFileInfo.fileWasSaved) 
-					throw("File upload failed","coldBricks.validation");
+					throwException("File upload failed","coldBricks.validation");
 				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
 
 				id = getFileFromPath(stFileInfo.clientFile);

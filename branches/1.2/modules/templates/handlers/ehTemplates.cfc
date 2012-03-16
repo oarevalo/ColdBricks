@@ -65,9 +65,9 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("The render template name is required","validation");
-				if(href eq "") throw("The render template path is required","validation");
-				if(type eq "") throw("The render template type is required","validation");
+				if(name eq "") throwException("The render template name is required","validation");
+				if(href eq "") throwException("The render template path is required","validation");
+				if(type eq "") throwException("The render template type is required","validation");
 
 				// save file
 				if(not directoryExists(getDirectoryFromPath(expandPath(href))))
@@ -105,7 +105,7 @@
 			var oConfigBean = 0;
 			
 			try {
-				if(name eq "") throw("You must select a render template to delete","validation");
+				if(name eq "") throwException("You must select a render template to delete","validation");
 
 				oConfigBean = getHomePortalsConfigBean();
 				
