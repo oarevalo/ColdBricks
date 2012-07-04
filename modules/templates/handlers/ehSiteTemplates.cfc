@@ -27,7 +27,7 @@
 		<cfargument name="configBean" type="homePortals.components.homePortalsConfigBean" required="true">
 		<cfargument name="includeGeneralSettings" type="boolean" required="false" default="no">
 		<cfset var oContext = getService("sessionContext").getContext()>
-		<cfset getService("configManager").saveAppHomePortalsConfigDoc(oContext, arguments.configBean, argumengs.includeGeneralSettings)>
+		<cfset getService("configManager").saveAppHomePortalsConfigDoc(oContext, arguments.configBean, arguments.includeGeneralSettings)>
 	</cffunction>		
 	
 </cfcomponent>
