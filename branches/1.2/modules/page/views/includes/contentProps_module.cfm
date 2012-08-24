@@ -62,9 +62,14 @@
 								<select name="#thisAttr#" class="formField" style="width:350px;">
 									<cfif not prop.required><option value="_NOVALUE_"></option></cfif>
 									<cfloop query="qryResources">
-										<option value="#qryResources.id#"
+										<cfif qryResources.package neq "">
+											<cfset tmpResID = qryResources.package & "/" & qryResources.id>
+										<cfelse>
+											<cfset tmpResID = qryResources.id>
+										</cfif>
+										<option value="#tmpResID#"
 												<cfif tmpAttrValue eq qryResources.id>selected</cfif>	
-													>[#qryResources.package#] #qryResources.id#</option>
+													>#tmpResID#</option>
 									</cfloop>
 								</select>
 								<cfif prop.required><span style="color:red;">&nbsp; * required</span></cfif>
