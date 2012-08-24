@@ -258,7 +258,7 @@
 
 				// upload file
 				path = getTempFile(getTempDirectory(),"coldbricksResourceUpload");
-				stFileInfo = fileUpload(resFile, path);
+				stFileInfo = fileUploadInternal("resFile", path);
 				if(not stFileInfo.fileWasSaved) 
 					throwException("File upload failed","coldBricks.validation");
 				path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
@@ -288,7 +288,7 @@
 				setMessage("warning",e.message);
 				setNextEvent("resources.ehResources.dspUploadResource");
 
-			} catch(any e) {
+			} catch(lock e) {
 				setMessage("error",e.message);
 				getService("bugTracker").notifyService(e.message, e);
 				setNextEvent("resources.ehResources.dspUploadResource");
@@ -315,14 +315,14 @@
 		<cfreturn resRoot>
 	</cffunction>
 	
-	<cffunction name="fileUpload" access="private" returntype="struct">
+	<cffunction name="fileUploadInternal" access="private" returntype="struct">
 		<cfargument name="fieldName" type="string" required="true">
 		<cfargument name="destPath" type="string" required="true">
 		
 		<cfset var stFile = structNew()>
 		
 		<cffile action="upload" 
-				filefield="resFile" 
+				filefield="#fieldName#" 
 				nameconflict="makeunique"  
 				result="stFile"
 				destination="#arguments.destPath#">
