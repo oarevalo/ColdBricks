@@ -68,7 +68,7 @@
 											<cfset tmpResID = qryResources.id>
 										</cfif>
 										<option value="#tmpResID#"
-												<cfif tmpAttrValue eq qryResources.id>selected</cfif>	
+												<cfif tmpAttrValue eq tmpResID>selected</cfif>	
 													>#tmpResID#</option>
 									</cfloop>
 								</select>
